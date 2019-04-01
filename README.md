@@ -1,2 +1,5 @@
 # Algorithm
-This is the repository for algorithm problems
+This is the repository for algorithm problems from leetcode...
+
+Sort based on different types of the problem...
+
