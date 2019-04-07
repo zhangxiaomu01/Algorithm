@@ -1,3 +1,10 @@
+#include<windows.h>
+#include<algorithm>
+#include<vector>
+#include<limits>
+#include<cmath>
+using namespace std;
+
 //48. Rotate Matrix
 //https://leetcode.com/problems/rotate-image/
 //Note the rotate the 2D matrix (n*n) is equivalent to 
@@ -138,4 +145,100 @@ public:
     }
 };
 
+
+//329. Longest Increasing Path in a Matrix
+//https://leetcode.com/problems/longest-increasing-path-in-a-matrix/
+/*
+This is not a hard problem, however, I got stuck with how to convert the 
+pure recursive solution to recursion + memorization. Note the structure of code is
+important. Some structures make the problem easier.
+*/
+//Pure recursive solution, will get time limit exeed error
+class Solution {
+public:
+    int rec(vector<vector<int>>& M, int len, int i, int j){
+        int m = M.size();
+        int n = m? M[0].size() : 0;
+        if(i < 0 || j<0 || i > m || j > n)
+            return len;
+        int l, r, u, d;
+        l = r = u = d = len;
+        if(i+1 < m && M[i+1][j] > M[i][j]){
+            d++;
+            d = rec(M, d, i+1, j);
+        }
+        if(i-1 >= 0 && M[i-1][j] > M[i][j]){
+            u++;
+            u = rec(M, u, i-1, j);
+        }
+        if(j+1 < n && M[i][j+1] > M[i][j]){
+            r++;
+            r = rec(M, r, i, j+1);
+        }
+        if(j-1 >= 0 && M[i][j-1] > M[i][j]){
+            l++;
+            l = rec(M, l, i, j-1);
+        }
+        
+        len = max(len, max(max(u,d), max(l, r)));    
+        return len;
+    }
+    int longestIncreasingPath(vector<vector<int>>& matrix) {
+        int m = matrix.size();
+        int n = m ? matrix[0].size() : 0;
+        if(m == 0) return 0;
+        int res = 0;
+        
+        for(int i = 0; i < m; i++){
+            for(int j = 0; j < n; j++){
+                res = max(res, rec(matrix,1, i, j));
+            }
+        }
+        return res;
+    }
+};
+//Recursion + Memorization
+class Solution {
+public:
+    int rec(vector<vector<int>>& M, vector<vector<int>>& memo, int len, int i, int j){
+        int m = M.size();
+        int n = m? M[0].size() : 0;
+        if(i < 0 || j<0 || i > m || j > n)
+            return len;
+        
+        if(memo[i][j]!= 0) return memo[i][j];
+        
+        int l, r, u, d;
+        l = r = u = d = len;
+        if(i+1 < m && M[i+1][j] > M[i][j]){
+            d = rec(M,memo, d, i+1, j);
+        }
+        if(i-1 >= 0 && M[i-1][j] > M[i][j]){
+            u = rec(M,memo, u, i-1, j);
+        }
+        if(j+1 < n && M[i][j+1] > M[i][j]){
+            r = rec(M,memo, r, i, j+1);
+        }
+        if(j-1 >= 0 && M[i][j-1] > M[i][j]){
+            l = rec(M,memo, l, i, j-1);
+        }
+        len = max(max(u,d), max(l, r)) + 1;   
+        memo[i][j] = len;
+        return memo[i][j];
+    }
+    int longestIncreasingPath(vector<vector<int>>& matrix) {
+        int m = matrix.size();
+        int n = m ? matrix[0].size() : 0;
+        if(m == 0) return 0;
+        int res = 0;
+        vector<vector<int>> memo(m, vector<int>(n,0));
+        for(int i = 0; i < m; i++){
+            for(int j = 0; j < n; j++){
+                //if(memo[i][j] == 0)
+                res = max(res, rec(matrix,memo, 0, i, j));
+            }
+        }
+        return res;
+    }
+};
 
