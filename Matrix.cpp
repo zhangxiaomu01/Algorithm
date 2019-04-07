@@ -1,4 +1,5 @@
 //48. Rotate Matrix
+//https://leetcode.com/problems/rotate-image/
 //Note the rotate the 2D matrix (n*n) is equivalent to 
 //First reverse the order of rows, and swap each
 //pair of diagonal elements swap(M[i][j], M[j][i])
@@ -17,3 +18,6 @@ public:
 };
 
 /******************************************************************/
+
+//54. Spiral Matrix
+//https://leetcode.com/problems/spiral-matrix/
