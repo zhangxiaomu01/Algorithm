@@ -234,7 +234,7 @@ public:
 
 
 //Most optimized solution, reduce the space complexity to linear.
-//Hard to get and implement
+//Hard to get and implement. Read carefully
 class Solution {
 public:
     int maxProfit(int k, vector<int>& prices) {
