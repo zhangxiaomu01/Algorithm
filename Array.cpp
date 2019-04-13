@@ -3,6 +3,8 @@
 #include<vector>
 #include<array>
 #include<cmath>
+#include<random>
+#include<sstream>
 using namespace std;
 
 //121. Best Time to buy and sell stock 
@@ -261,3 +263,52 @@ public:
         return dp[k];
     }
 };
+
+
+/**************************************************************
+The following problems are related to random number generation. 
+Some also related to generate specific distribution.
+**************************************************************/
+
+//Sample Offline data
+/*
+Implement an algorith that takes as input an array of distinct elements and size, and returns a subset of the given size of the array elements. All subsets should be equally likely. Return the result in input array itself.
+*/
+void randomSampling(int k, std::vector<int>& A)
+{
+	int len = A.size();
+	if (k <= 0 || len <= k) return;
+	std::default_random_engine seed((std::random_device())());
+	for (int i = 0; i < k; i++) {
+		std::uniform_int_distribution<int> distribution(i, static_cast<int>(len) - 1);
+		int num = distribution(seed);
+		std::swap(A[i], A[num]);
+	}
+	for (int i = 0; i < k; i++)
+		std::cout << A[i] << " ";
+
+	std::cout << std::endl;
+}
+
+//Sample Online data
+/*
+Design a program that takes as input of a size k, and reads packets, continuously maintaining a uniform random subset of size k of the read packets.
+*/
+std::vector<int> randomSamplingStream(std::istringstream *s, int k)
+{
+	int x;
+	std::vector<int> res;
+	for (int i = 0; i < k && *s >> x; i++) {
+		res.push_back(x);
+	}
+	std::default_random_engine seed((std::random_device())());
+	int num_sofar = k;
+	while (*s >> x) {
+		num_sofar++;
+		const int index = std::uniform_int_distribution<int>{ 0, num_sofar - 1}(seed);
+		if (index < res.size())
+			res[index] = x;
+	}
+	return res;
+}
+
