@@ -5,6 +5,10 @@
 #include<cmath>
 #include<random>
 #include<sstream>
+#include<unordered_map>
+#include<numeric>
+#include<iterator>
+
 using namespace std;
 
 //121. Best Time to buy and sell stock 
@@ -312,3 +316,66 @@ std::vector<int> randomSamplingStream(std::istringstream *s, int k)
 	return res;
 }
 
+//Compute a random subset
+/*
+Write a program that takes as input a positive integer n and a size k <= n, and returns a size k subset of [0, n-1]. The subset should be represented as an array, all subsets should be equally likely and, in addition, all permutations of elements of the array should be equally likely.
+*/
+//n is the total range, k is the subset of the range
+std::vector<int> randomSubset(int n, int k)
+{
+	std::vector<int> res;
+	std::unordered_map<int, int> map;
+	std::default_random_engine seed((std::random_device())());
+	for (int i = 0; i < k; i++) {
+		//int index = std::uniform_int_distribution<int>{i, n-1}(seed);
+		std::uniform_int_distribution<int> temp(i, n - 1);
+		int index = temp(seed);
+		auto p1 = map.find(i);
+		auto p2 = map.find(index);
+		if (p1 == map.end() && p2 == map.end()) {
+			map[i] = index;
+			map[index] = i;
+		}
+		else if (p1 != map.end() && p2 == map.end()) {
+			map[index] = p1->second;
+			p1->second = index;
+		}
+		else if (p1 == map.end() && p2 != map.end()) {
+			map[i] = p2->second;
+			p2->second = i;
+		}
+		else {
+			int temp = p1->second;
+			p1->second = p2->second;
+			p2->second = temp;
+		}
+	}
+
+	for (int i = 0; i < k; i++) {
+		res.emplace_back(map[i]);
+		std::cout << res[i] << " ";
+	}
+	std::cout << '\n';
+	return res;
+}
+
+
+//Generate nonuniform random numbers
+/*
+Given a random number generator which produces values in [0,1] uniformly (floating number), how could you generate one of the n numers according to the specific probability? say [3, 5, 7, 11], we have coresponding probability [9/18, 6/18, 2/18, 1/18].
+*/
+int nonuniformRandomNumberGenerator(std::vector<int> nums, std::vector<double> p)
+{
+	if (p.size() != nums.size()) return -1;
+	
+	std::vector<double> prefixSumP;
+	prefixSumP.emplace_back(0.0);
+	std::partial_sum(p.cbegin(), p.cend(), std::back_inserter(prefixSumP));
+
+	std::default_random_engine seed((std::random_device())());
+	const double uniform_0_1 = std::generate_canonical<double, std::numeric_limits<double>::digits>(seed);
+
+	const int index = std::distance(prefixSumP.cbegin(), std::upper_bound(prefixSumP.cbegin(), prefixSumP.cend(), uniform_0_1));
+
+	return nums[index];
+}
