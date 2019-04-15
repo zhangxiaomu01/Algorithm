@@ -3,6 +3,8 @@
 #include<vector>
 #include<limits>
 #include<cmath>
+#include<queue>
+#include<utility>
 using namespace std;
 
 //48. Rotate Matrix
@@ -242,3 +244,71 @@ public:
     }
 };
 
+//378. Kth Smallest Element in a Sorted Matrix
+//https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/
+/*
+Using heap to keep track of the smallest element in the matrix, each time we pop 1.
+In order to save space complexity, we can only store the first column as initial state.
+O(klog n)
+*/
+class Solution {
+private:
+    struct comp{
+       bool operator()(const pair<int, pair<int, int>>& a, const pair<int, pair<int, int>>& b){
+           return a.first > b.first;
+       } 
+    };
+public:
+    int kthSmallest(vector<vector<int>>& matrix, int k) {
+        int row = matrix.size();
+        int col = row ? matrix[0].size() : 0;
+        //We keep track of the smallest element in the heap and its corresponding index
+        priority_queue<pair<int, pair<int, int>>, vector<pair<int, pair<int, int>>>, comp> pQ;
+        
+        for(int i = 0; i < row; i++)
+            pQ.push(make_pair(matrix[i][0], make_pair(i, 0)));
+        
+        int count = k;
+        int res = 0;
+        //We iterate each element one by one
+        while(count-- > 0){
+            res = pQ.top().first;
+            int i = pQ.top().second.first;
+            int j = pQ.top().second.second;
+            pQ.pop();
+            if(j < col - 1)
+                pQ.push(make_pair(matrix[i][j+1], make_pair(i, j + 1)));
+        }
+        return res;
+    }
+};
+//Another solution, with time complexity O(nlog(max - min))
+class Solution
+{
+public:
+	int kthSmallest(vector<vector<int>>& matrix, int k)
+	{
+		int n = matrix.size();
+		int le = matrix[0][0], ri = matrix[n - 1][n - 1];
+		int mid = 0;
+		while (le < ri)
+		{
+			mid = le + (ri-le)/2;
+			int num = 0;
+			for (int i = 0; i < n; i++)
+			{
+				int pos = upper_bound(matrix[i].begin(), matrix[i].end(), mid) - matrix[i].begin();
+				num += pos;
+			}
+			if (num < k)
+			{
+				le = mid + 1;
+			}
+			else
+			{
+				ri = mid;
+			}
+		}
+		return le;
+	}
+};
