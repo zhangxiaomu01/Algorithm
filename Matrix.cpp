@@ -312,3 +312,71 @@ public:
 		return le;
 	}
 };
+
+//74. Search a 2D Matrix
+//https://leetcode.com/problems/search-a-2d-matrix/
+/*
+Basically we can do binary search, note this method we need to convert the 2D
+array to a 1D array, and map the index back to 2D when do the real comparison.
+This conversion should be careful...
+*/
+//Binary search
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        int row = matrix.size();
+        int col = row ? matrix[0].size() : 0;
+        if(row == 0 || col == 0) return false;
+        int lo = 0, hi = row*col - 1;
+        while(lo < hi){
+            int mid = lo + (hi - lo)/2;
+            //Note how we convert the 1D index back to 2D index
+            int i = mid/col, j = mid%col;
+            if(matrix[i][j] == target)
+                return true;
+            //Note we need shift lo and hi by 1, since we already cover the equal situation
+            else if(matrix[i][j] < target)
+                lo = mid + 1;
+            else
+                hi = mid - 1;
+        }
+        
+        return matrix[lo/col][lo%col] == target;
+    }
+};
+/*
+Another natural solution is to use two passes, first pass we determine which row our target will be,
+then we do binary search for the selected row. 
+Binary search, we need to treat coner case carefully...
+*/
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        if(matrix.empty()||matrix[0].empty()) return false;
+        int row = matrix.size(), col = matrix[0].size();
+        int head = 0, tail = row - 1;
+        if(target < matrix[0][0] || target > matrix[row - 1][col - 1]) return false;
+        
+        //The loop condition is tricky, we need to shift mid to the right, in order to prevent tail to be negative. 
+        while(head<tail && matrix[tail][0] > target){
+            int mid = (head + tail + 1)/2;
+            if(matrix[mid][0] > target) tail = mid - 1;
+            else if(matrix[mid][0] < target) head = mid;
+            else return true;
+        }
+        
+        int k = tail;
+        tail = col - 1;
+        head = 0;
+        //Be careful about When will we exit the loop...
+        while(head<=tail){
+            int mid = (head + tail) /2;
+            if(matrix[k][mid] > target) tail = mid - 1;
+            else if(matrix[k][mid] < target) head = mid + 1;
+            else return true;
+        }
+        return false;
+        
+    }
+};
+
