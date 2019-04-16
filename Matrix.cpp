@@ -408,3 +408,157 @@ public:
         return false;
     }
 };
+
+//79. Word Search
+//https://leetcode.com/problems/word-search/
+/*
+A natural approach is to do BFS for each characters and
+using backtracking.
+*/
+class Solution {
+public:
+    bool exist(vector<vector<char>>& board, string word) {
+        int row = board.size();
+        int col = row ? board[0].size() : 0;
+        int index = 0;
+        for(int i = 0; i < row; i++){
+            for(int j = 0; j < col; j++){
+                if(search(board, i, j, word, index)) return true;
+            }
+        }
+        return false;
+    }
+    bool search(vector<vector<char>>& B, int i, int j, string& W, int index){
+        if(index == W.size())
+            return true;
+        //Set the false condition...
+        if(i < 0 || i > B.size()-1 || j < 0 || j > B[0].size()-1 || B[i][j] != W[index])
+            return false;
+        bool res;
+        char tempC = B[i][j];
+        B[i][j] = '-';
+        res = search(B, i+1, j, W, index+1)||search(B, i-1, j, W, index+1)||
+              search(B, i, j+1, W, index+1)||search(B, i, j-1, W, index+1);
+        B[i][j] = tempC;
+        return res;
+    }
+};
+
+//212. Word Search II
+//https://leetcode.com/problems/word-search-ii/
+/*
+A natural approach will be the same as word search I, we keep searching each word from
+the vector, and for each string, we will do an exhaustive search, the time complexity is
+huge. For each string, the time complexity should be O(mn * mn), if we have k string, then
+in total, it will be O(k*(mn)^2)
+A better way is to do a preprocessing first, we first preprocessing all the strings, and 
+save them to a trie, so we can compare all of them together. This is a hard problem, not 
+only the logic, but also involves too much coding.
+*/
+struct TrieNode {
+    bool isWord;
+    TrieNode* nextC[26];
+    TrieNode():isWord(false){
+        for(int i = 0; i < 26; i++){
+            nextC[i] = nullptr;
+        }
+    }
+};
+//Implementing trie data structure here
+//Without deconstructor, will have memory leak
+class Trie{
+private:
+    TrieNode* root = new TrieNode();
+    bool findWord(string& s, TrieNode*& p){
+        for(char c: s){
+            int index = c - 'a';
+            if(!p->nextC[index])
+                return false;
+            p = p->nextC[index];
+        }
+        return true;
+    }
+public:
+    Trie(){};
+    void insertWord(string& s){
+        TrieNode* p = root;
+        for(char c:s){
+            int index = c - 'a';
+            if(!p->nextC[index]){
+                p->nextC[index] = new TrieNode();
+            }
+            p = p->nextC[index];
+        }
+        p->isWord = true;
+    }
+    bool searchWord(string& s){
+        TrieNode* p = root;
+        if(!findWord(s, p)){
+            return false;
+        }
+        bool res = p->isWord;
+        //Whenever we find a valid word from words list,
+        //We eliminate it from our trie.
+        p->isWord = false;
+        return res;
+    }
+    
+    bool searchPrefix(string& s){
+        TrieNode* p = root;
+        if(!findWord(s, p)){
+            return false;
+        }
+        return true;
+    }
+    
+};
+class Solution {
+private:
+    //BFS for all the potential word
+    void matching(Trie& trie, vector<vector<char>>& b, vector<string>& res, string& temp, int i, int j){
+        int m = b.size();
+        int n = b[0].size();
+        if(i < 0 || j < 0|| i>=m || j >= n || b[i][j] == '0'){
+            return;
+        }
+        //Backtracking temp
+        temp.push_back(b[i][j]);
+        if(!trie.searchPrefix(temp)){
+            temp.pop_back();
+            return;
+        }
+        if(trie.searchWord(temp)){
+            res.push_back(temp);
+        }
+        char tempC = b[i][j];
+        b[i][j] = '0';
+        matching(trie, b, res, temp, i-1, j);
+        matching(trie, b, res, temp, i+1, j);
+        matching(trie, b, res, temp, i, j-1);
+        matching(trie, b, res, temp, i, j+1);
+        b[i][j] = tempC;
+        temp.pop_back();
+    }
+public:
+    vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
+        int m = board.size();
+        int n = m ? board[0].size() : 0;
+        vector<string> res;
+        if(m == 0 || words.size() == 0) return res;
+        Trie trie;
+        for(auto& s: words){
+            trie.insertWord(s);
+        }
+        string word("");
+        //We have to start with potentially every grid
+        for(int i = 0; i < m; i++){
+            for(int j = 0; j < n; j++){
+                matching(trie, board, res, word, i, j);
+                if(res.size() >= words.size())
+                    return res;
+            }
+        }
+        return res;
+    }  
+};
+
