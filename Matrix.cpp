@@ -380,3 +380,31 @@ public:
     }
 };
 
+
+//240. Search a 2D Matrix II
+/*
+A natura approach is to iterate through each row, and do the binary search, the 
+time complexity should be O(m log n), we can potentially have some optimization 
+like a preprocessing, to get rid of impossible rows.
+Another neatural approach is to use priority queue, we keep adding and deleting
+elements and compare each of them with target, until we find the one. The time 
+complexity shoul be the same, however the space complexity should be O(n).
+The following algorithm is great, it runs in O(m+n), we guide the search direction
+at each iteration and make the search more efficient!
+*/
+//Search from lower left to top right
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        int row = matrix.size();
+        int col = row ? matrix[0].size() : 0;
+        int c = 0, r = row - 1;
+        while (r >= 0 && c < col){
+            if(matrix[r][c] == target)
+                return true;
+            else
+                matrix[r][c] > target ? r-- : c++;
+        }
+        return false;
+    }
+};
