@@ -562,3 +562,90 @@ public:
     }  
 };
 
+
+//36. Valid Sudoku
+//https://leetcode.com/problems/valid-sudoku/
+/*
+The problem is not hard, we only need to check whether each row/column/black contains valid
+1-9 numbers. A natural approach is we check each row, column and block (by calculating the 
+entry of each block), and check whether we have duplicate numbers by saving existing number 
+to a 1D array. When we find a conflict exists we know it's invalid.
+*/
+class Solution {
+private:
+    bool hasDuplicate(const vector<vector<char>>& B, int iS, int iE, int jS, int jE){
+        int* dict = new int[9];
+        for(int i = 0; i < 9; i++)
+            dict[i] = 0;
+        for(int i = iS; i < iE; i++){
+            for(int j = jS; j < jE; j++){
+                if(B[i][j] != '.'){
+                    int index = B[i][j] - '0' - 1;
+                    if(dict[index] != 0)
+                        return true;
+                    dict[index] = 1;
+                }
+            }   
+        }
+        delete []dict;
+        return false;
+    }
+public:
+    bool isValidSudoku(vector<vector<char>>& board) {
+        //We first check each row
+        for(int i = 0; i < 9; i++){
+            if(hasDuplicate(board, i, i+1, 0, 9))
+                return false;
+        }
+        //Then we check each column
+        for(int i = 0; i < 9; i++){
+            if(hasDuplicate(board, 0, 9, i, i+1)){
+                return false;
+            }
+        }
+        for(int i = 0; i < 3; i++){
+            for(int j = 0; j < 3; j++){
+                if(hasDuplicate(board, i*3, i*3 + 3, j*3, j*3 + 3))
+                    return false;
+            }
+        }
+        return true;
+    }
+};
+/*
+Another approach is to allocate 3 9*9 array, which represent all rows/columns/blocks, and 
+check whether we have invalid duplicates in each of the array.
+*/
+class Solution {
+public:
+    bool isValidSudoku(vector<vector<char>>& board) {
+        //C++ 11 suppor this, or we need more complex way to define 2D array
+        auto row = new int[9][9], col = new int[9][9], block = new int[9][9];
+        
+        for(int i = 0; i < 9; i++)
+            for(int j = 0; j < 9; j++)
+                row[i][j] = col[i][j] = block[i][j] = 0;
+
+        for(int i = 0; i < 9; i++){
+            for(int j = 0; j < 9; j++){
+                //Note k is the ID for 3*3 bloack, from 0 - 8 , top left to bottom right
+                int k = i/3 * 3 + j/3;
+                if(board[i][j] != '.'){
+                    int n = board[i][j] - '1';
+                    if(row[i][n]||col[j][n]||block[k][n])
+                        return false;
+                    row[i][n] = col[j][n] = block[k][n] = 1;
+                }
+            }
+        }
+        delete []row;
+        delete []col;
+        delete []block;
+        return true;
+    }
+};
+
+
+
+
+
