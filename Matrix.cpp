@@ -646,6 +646,57 @@ public:
 };
 
 
+//37. Sudoku Solver
+//https://leetcode.com/problems/sudoku-solver/
+/*
 
-
+*/
+class Solution {
+public:
+    void solveSudoku(vector<vector<char>>& board) {
+        solve(board, 0, 0);
+    }
+    //i means row, j means column
+    bool solve(vector<vector<char>>& B, int i, int j){
+        if(j == B.size()-1){
+            j = 0; 
+            if(i == B.size()-1)
+                return true;
+            //We need increase the row by 1
+            i++;
+        }
+        if(B[i][j] != '.')
+            return solve(B, i, j+1);
+        
+        for(int k = 1; k <= B.size(); k++){
+            char temp = B[i][j];
+            B[i][j] = k + '0';
+            if(isValid(B, i, j, B[i][j]) && solve(B, i, j+1)){
+                return true;
+            }
+            B[i][j] = temp;
+        }
+        return false;
+    }
+    bool isValid(vector<vector<char>>& B, i, j, char val){
+        if(any_of(B[i].begin(), B[i].end(), [val](int a){a == val;}))
+            return false;
+        
+        for(int p = 0; p < B.size(); i++){
+            if(p!= i && B[p][j] == val)
+                return false;
+        }
+        
+        int regionSize = sqrt(B.size());
+        int I = i / regionSize, J = j / regionSize;
+        for(int a = 0; a <= I; a++){
+            for(int b = 0; b <= J; b++){
+                
+            }
+        }
+        
+        
+    }
+    
+};
 
