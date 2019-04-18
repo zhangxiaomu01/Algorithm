@@ -669,17 +669,16 @@ public:
             return solve(B, i, j+1);
         
         for(int k = 1; k <= B.size(); k++){
-            char temp = B[i][j];
             B[i][j] = k + '0';
             if(isValid(B, i, j, B[i][j]) && solve(B, i, j+1)){
                 return true;
             }
-            B[i][j] = temp;
+            B[i][j] = '.';
         }
         return false;
     }
-    bool isValid(vector<vector<char>>& B, i, j, char val){
-        if(any_of(B[i].begin(), B[i].end(), [val](int a){a == val;}))
+    bool isValid(vector<vector<char>>& B, int i, int j, char val){
+        if(any_of(B[i].begin(), B[i].end(), [val](int a){return a == val;}))
             return false;
         
         for(int p = 0; p < B.size(); i++){
@@ -691,12 +690,11 @@ public:
         int I = i / regionSize, J = j / regionSize;
         for(int a = 0; a <= I; a++){
             for(int b = 0; b <= J; b++){
-                
+                if(a != i && b!=j && B[a*regionSize + a][b*regionSize + b])
+                    return false;
             }
         }
-        
-        
+        return true;
     }
-    
 };
 
