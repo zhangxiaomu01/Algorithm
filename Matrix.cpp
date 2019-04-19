@@ -649,7 +649,9 @@ public:
 //37. Sudoku Solver
 //https://leetcode.com/problems/sudoku-solver/
 /*
-
+A natural way to solve this problem is using recursion and backtracking. We check each grid
+and test whether fill in the 1-9 numbers will make the sudoku invalid, after that, if we fill
+in a number which is valid, we then check the next grid, until we finish all the check.
 */
 class Solution {
 public:
@@ -658,20 +660,22 @@ public:
     }
     //i means row, j means column
     bool solve(vector<vector<char>>& B, int i, int j){
-        if(j == B.size()-1){
-            j = 0; 
-            if(i == B.size()-1)
-                return true;
-            //We need increase the row by 1
+        if(j == B[0].size()){
+            j = 0;
+            //We need increase the row by 1, because j hits the end
             i++;
+            if(i == B.size())
+                return true;
         }
         if(B[i][j] != '.')
             return solve(B, i, j+1);
         
         for(int k = 1; k <= B.size(); k++){
-            B[i][j] = k + '0';
-            if(isValid(B, i, j, B[i][j]) && solve(B, i, j+1)){
-                return true;
+            //if(isValid(B, i, j, k+'0')){
+            if(isValid(B, i, j, k+'0')){
+                B[i][j] = k + '0';
+                if(solve(B, i, j+1))
+                    return true;
             }
             B[i][j] = '.';
         }
@@ -681,20 +685,59 @@ public:
         if(any_of(B[i].begin(), B[i].end(), [val](int a){return a == val;}))
             return false;
         
-        for(int p = 0; p < B.size(); i++){
-            if(p!= i && B[p][j] == val)
+        for(int p = 0; p < B.size(); p++){
+            if(B[p][j] == val)
                 return false;
         }
         
-        int regionSize = sqrt(B.size());
+        int regionSize = sqrt(B.size()); // 3
         int I = i / regionSize, J = j / regionSize;
-        for(int a = 0; a <= I; a++){
-            for(int b = 0; b <= J; b++){
-                if(a != i && b!=j && B[a*regionSize + a][b*regionSize + b])
+        for(int a = 0; a < regionSize; a++){
+            for(int b = 0; b < regionSize; b++){
+                if(B[I*regionSize + a][J*regionSize + b] == val)
                     return false;
             }
         }
         return true;
     }
+};
+
+/*
+A slightly more efficient implementation. Note the idea is exactly the same.
+*/
+class Solution {
+public:
+    bool checkSodoku(vector<vector<char>> &board, int i, int j, char c){
+        int x = i - i % 3, y = j - j % 3;
+        for(int k = 0; k < 9; k++) {
+            if(board[i][k] == c) return false; 
+            if(board[k][j] == c) return false;
+        }
+        for(int p = 0; p < 3; p++){
+            for(int q= 0; q < 3; q++){
+                if(board[p+x][q+y] == c) return false;
+            }
+        }
+        return true;
+    }
+    bool sudoku(vector<vector<char>> &board, int i, int j){
+        if(i == 9) return true;
+        if(j == 9) return sudoku(board, i+1, 0);
+        if(board[i][j] != '.') return sudoku(board, i, j+1);
+        
+        for(char c = '1'; c <= '9'; c++){
+            if(checkSodoku(board, i, j, c)){
+                board[i][j] = c;
+                if(sudoku(board, i, j + 1)) return true;
+                board[i][j] = '.';
+            }
+        }
+        return false;
+        
+    }
+    void solveSudoku(vector<vector<char>>& board) {
+        sudoku(board, 0, 0);
+    }
+
 };
 
