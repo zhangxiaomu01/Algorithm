@@ -94,17 +94,18 @@ public:
                 container.pop();
                 revContainer.push(temp);
             }
-            int res = revContainer.top();
+            
+        }
+        int res = revContainer.top();
             revContainer.pop();
             return res;
-        }
     }
     
     /** Get the front element. */
     int peek() {
         if(!container.empty() && revContainer.empty())
             return front;
-        if(container.empty() && !revContainer.empty())
+        else
             return revContainer.top();
     }
     
@@ -120,6 +121,67 @@ public:
  * obj->push(x);
  * int param_2 = obj->pop();
  * int param_3 = obj->peek();
+ * bool param_4 = obj->empty();
+ */
+
+
+//225. Implement Stack using Queues
+//https://leetcode.com/problems/implement-stack-using-queues/
+/*
+Using two queue. Either push will be O(n) or pop will be O(n)
+Understand one method, the other one will be trivial...
+*/
+class MyStack {
+private:
+    queue<int> Q;
+    queue<int> extraQ;
+    int topVal;
+public:
+    /** Initialize your data structure here. */
+    MyStack() {
+        
+    }
+    
+    /** Push element x onto stack. */
+    void push(int x) {
+        topVal = x;
+        Q.push(x);
+    }
+    
+    /** Removes the element on top of the stack and returns that element. */
+    int pop() {
+        int temp;
+        while(!Q.empty()){
+            temp = Q.front();
+            Q.pop();
+            if(!Q.empty()){
+                extraQ.push(temp);
+                if(Q.size() == 1){
+                    topVal = temp;
+                }
+            }
+        }
+        swap(Q, extraQ);
+        return temp;
+    }
+    
+    /** Get the top element. */
+    int top() {
+        return topVal;
+    }
+    
+    /** Returns whether the stack is empty. */
+    bool empty() {
+        return Q.empty();
+    }
+};
+
+/**
+ * Your MyStack object will be instantiated and called as such:
+ * MyStack* obj = new MyStack();
+ * obj->push(x);
+ * int param_2 = obj->pop();
+ * int param_3 = obj->top();
  * bool param_4 = obj->empty();
  */
 
