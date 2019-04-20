@@ -232,52 +232,45 @@ public:
     }
 };
 
+//Stack solution
 class Solution {
-private:
-    size_t maxLength = 0;
-    bool isFile(string file) {
-        if (file.find('.') != string::npos)
-            return true;
-        else
-            return false;
-    }
 public:
     int lengthLongestPath(string input) {
-        if (input.empty())
-            return 0;
-        vector< pair<string, int>> handler;
-        
-        int pre = 0;
-        size_t found = 0;
-        
-        while((found = input.find('\n', pre)) != string::npos) {
-            string raw = input.substr(pre, found - pre);
-            int level = raw.find_first_not_of('\t');
-            raw = raw.substr(level);
-            handler.push_back(make_pair(raw, level));
-            pre = found + 1;
-        }
-        string raw = input.substr(pre);
-        int level = raw.find_first_not_of('\t');
-        raw = raw.substr(level);
-        handler.push_back(make_pair(raw, level));
-        
-        stack<pair<string, int>> simulation;
-        size_t curSize = 0;
-        for (auto tmp : handler) {
-            while(!simulation.empty() && (simulation.top().second + 1) != tmp.second) {
-                curSize -= (simulation.top().first.length() + 1);
-                simulation.pop();
-            }
-            
-            if (isFile(tmp.first)) {
-                maxLength = max(maxLength, tmp.first.length() + curSize);
-            } else {
-                simulation.push(tmp);
-                curSize += (tmp.first.length() + 1);
-            }
+        if(input.size() == 0) return 0;
+        istringstream ss(input);
+        vector<pair<string, int>> container;
+        string s("");
+        int maxLen = 0;
+        //Extract each string segments and its corresponding level to container.
+        //Pay attention to how to using istringstream class
+        while(getline(ss, s)){
+            size_t p = s.find_last_of('\t');
+            string name = (p == string::npos) ? s : s.substr(p+1);
+            int level = s.size() - name.size();
+            container.emplace_back(make_pair(name, level));
         }
         
-        return maxLength;
+        //Keep track of current length we already have
+        int cur = 0;
+        stack<pair<string, int>> st;
+        //We use stack to keep track of each level (DFS), whenever we find leafs
+        //We traceback cur value, whenever we push one element, we increase cur
+        //by the string size. Whenever we find a file, we update maxLen.
+        for(auto element : container){
+            while(!st.empty() && st.top().second + 1 != element.second){
+                cur -= (st.top().first.size() + 1);
+                st.pop();
+                
+            }
+            if(element.first.find('.') != string::npos){
+                int l = cur + element.first.size();
+                maxLen = max(maxLen, l);
+            }
+            else{
+                st.push(element);
+                cur += element.first.size() + 1;
+            }
+        }
+        return maxLen;
     }
 };
