@@ -275,6 +275,19 @@ public:
     }
 };
 
+//394. Decode String
+//https://leetcode.com/problems/decode-string/
+/*
+Stack implementation: Note the tricky part is two stacks represents different level:
+"3[a2[c]]"
+We push 3 and "" in to level 1
+then we push 2 and "a" into level 2
+So when we meet first "]", we can get 2 from stack num (top), and complete the extension of "c", 
+and concatenate back to "a" in stack st. Then we pop 2 and "a" out of stack.
+Next we can pop 3 from num, and complete the extension of "acc", and apend the empty
+string with "accaccacc" to res, then we get the solution.
+Not so straight forward. May come back later.
+*/
 class Solution {
 public:
     string decodeString(string s) {
@@ -282,53 +295,75 @@ public:
         stack<string> st;
         int len = s.size();
         if(len == 0) return "";
-        int tempNum = -1;
+        int tempNum = 0;
         string res("");
-        string temp("");
+        //Iterate the string, and handle different situation accordingly
         for(int i = 0; i < len; i++){
             if(s[i] == '['){
                 num.push(tempNum);
-                st.push(temp);
-                tempNum = -1;
-                temp = "";
-                continue;
+                st.push(res);
+                tempNum = 0;
+                res = "";
             }
-            
-            if(s[i] >= '0' && s[i] <= '9'){
-                tempNum = (tempNum == -1) ? s[i] - '0' : tempNum*10 + (s[i] - '0');
-                //num.push(tempNum);
-                cout << tempNum << endl;
-                continue;
+            else if(s[i] >= '0' && s[i] <= '9'){
+                tempNum = tempNum*10 + (s[i] - '0');
             }
-            
-            if(isalpha(s[i])){
-                tempNum = -1;
-                temp += s[i];
-                while(++i < len && isalpha(s[i])){
-                    temp += s[i];
-                    
-                }
-                //st.push(temp);
-                continue;
+            else if(isalpha(s[i])){
+                tempNum = 0;
+                res.push_back(s[i]);
             }
-            
-            if(s[i] == ']'){
+            //The tricky part is we use res to store current repetitive string.
+            //Then we add st.top() to res, this gives us the complete string in one [] 
+            else if(s[i] == ']'){
                 int rep = num.top();
-                num.pop();
-                string tempS = st.top();
-                st.pop();
-                
-                string accS("");
-                for(int j = 0; j < rep; j++){
-                    accS += tempS;
+                string temp = res;
+                for(int j = 0; j < rep-1; j++){
+                    res += temp;
                 }
                 if(!st.empty()){
-                    st.top() += accS;
+                    res = st.top() + res;
                 }
-                else{
-                    res += accS;
-                }
+                num.pop();
+                st.pop();
             } 
+        }
+        return res;
+    }
+};
+
+/*
+Recursive version: More simple and elegant, however, hard to get to the right insight... Basically,
+the stack version is mimic the recursive calls 
+*/
+class Solution {
+public:
+    string decodeString(string s) {
+        int i = 0;
+        return doDecode(s, i);
+    }
+    //Note i passes by reference...
+    string doDecode(const string& s, int& i){
+        string res;
+        
+        while(i < s.size() && s[i] != ']'){
+            if(isalpha(s[i])){
+                res.push_back(s[i++]);
+            }
+            else if(isdigit(s[i])){
+                int num = 0;
+                //shouldn't put ++ to while isdigit[i++], we need to update i after we compute the num
+                while(i < s.size() && isdigit(s[i])){
+                    num = num*10 + (s[i++] - '0');
+                }
+                i++;//skip '['
+                string t = doDecode(s, i);
+                i++;//skip ']'
+                
+                for(int j = 0; j < num; j++)
+                    res += t;
+            }//All other symbols, we need to move forward
+            else
+                i++;
         }
         return res;
     }
