@@ -185,3 +185,99 @@ public:
  * bool param_4 = obj->empty();
  */
 
+//388. Longest Absolute File Path
+//https://leetcode.com/problems/longest-absolute-file-path/
+/*
+Hash table solution is fast, a little bit tricky to get to this solution. The general idea is easy to follow,
+we first define a map which records the depth and length associate with that depth, then we check whether we 
+find a file in a specific layer, if we find a file, then we update maxLen, else , we keep adding new layer.
+Imagine the hierarchy structure as a tree, we will always check one subtree before moving to other sub trees.
+
+We could also implement this using pair and stack. Just mimic the depth first search progress. We check each 
+path until we find a file, then we update maxLen, then we back to parent node, and search another pass...
+*/
+//C++ Hash map solution
+//Convert string to istringstream may make the problem easier.
+class Solution {
+public:
+    int lengthLongestPath(string input) {
+        istringstream ss(input);
+        int len = input.size();
+        //First int represents folder depth, second means current path length
+        unordered_map<int, int> dict;
+        int maxLen = 0;
+        string s("");
+        //We need to initialize the map to represent root directory
+        dict[0] = 0;
+        //getline will extract each string to s based on delimiter. 
+        //Default delimiter is '\n'
+        while(getline(ss, s)){
+            //find_last_of finds the last '\t' character, seems like 
+            //'\t' only counts as one character... Takes up 1 size
+            size_t sPos = s.find_last_of('\t');
+            string name = (sPos != string::npos) ? s.substr(sPos+1) : s;
+            int depth = s.size() - name.size();
+            //We calculate current length for each depth (folder hierarchy)
+            //If we find a file, we need to update maxLen
+            if(s.find('.') != string::npos){
+                int l = dict[depth] + name.size();
+                maxLen = max(maxLen, l);
+            }
+            else{
+                //Note we need to include '/' in each level
+                dict[depth+1] = dict[depth] + name.size() + 1;
+            }
+        }
+        return maxLen;
+    }
+};
+
+class Solution {
+private:
+    size_t maxLength = 0;
+    bool isFile(string file) {
+        if (file.find('.') != string::npos)
+            return true;
+        else
+            return false;
+    }
+public:
+    int lengthLongestPath(string input) {
+        if (input.empty())
+            return 0;
+        vector< pair<string, int>> handler;
+        
+        int pre = 0;
+        size_t found = 0;
+        
+        while((found = input.find('\n', pre)) != string::npos) {
+            string raw = input.substr(pre, found - pre);
+            int level = raw.find_first_not_of('\t');
+            raw = raw.substr(level);
+            handler.push_back(make_pair(raw, level));
+            pre = found + 1;
+        }
+        string raw = input.substr(pre);
+        int level = raw.find_first_not_of('\t');
+        raw = raw.substr(level);
+        handler.push_back(make_pair(raw, level));
+        
+        stack<pair<string, int>> simulation;
+        size_t curSize = 0;
+        for (auto tmp : handler) {
+            while(!simulation.empty() && (simulation.top().second + 1) != tmp.second) {
+                curSize -= (simulation.top().first.length() + 1);
+                simulation.pop();
+            }
+            
+            if (isFile(tmp.first)) {
+                maxLength = max(maxLength, tmp.first.length() + curSize);
+            } else {
+                simulation.push(tmp);
+                curSize += (tmp.first.length() + 1);
+            }
+        }
+        
+        return maxLength;
+    }
+};
