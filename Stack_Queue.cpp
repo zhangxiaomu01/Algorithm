@@ -274,3 +274,62 @@ public:
         return maxLen;
     }
 };
+
+class Solution {
+public:
+    string decodeString(string s) {
+        stack<int> num;
+        stack<string> st;
+        int len = s.size();
+        if(len == 0) return "";
+        int tempNum = -1;
+        string res("");
+        string temp("");
+        for(int i = 0; i < len; i++){
+            if(s[i] == '['){
+                num.push(tempNum);
+                st.push(temp);
+                tempNum = -1;
+                temp = "";
+                continue;
+            }
+            
+            if(s[i] >= '0' && s[i] <= '9'){
+                tempNum = (tempNum == -1) ? s[i] - '0' : tempNum*10 + (s[i] - '0');
+                //num.push(tempNum);
+                cout << tempNum << endl;
+                continue;
+            }
+            
+            if(isalpha(s[i])){
+                tempNum = -1;
+                temp += s[i];
+                while(++i < len && isalpha(s[i])){
+                    temp += s[i];
+                    
+                }
+                //st.push(temp);
+                continue;
+            }
+            
+            if(s[i] == ']'){
+                int rep = num.top();
+                num.pop();
+                string tempS = st.top();
+                st.pop();
+                
+                string accS("");
+                for(int j = 0; j < rep; j++){
+                    accS += tempS;
+                }
+                if(!st.empty()){
+                    st.top() += accS;
+                }
+                else{
+                    res += accS;
+                }
+            } 
+        }
+        return res;
+    }
+};
