@@ -368,3 +368,43 @@ public:
         return res;
     }
 };
+
+//224. Basic Calculator
+//https://leetcode.com/problems/basic-calculator/
+/*
+Not that hard. Using stack to mimic the parenthesis operation.
+*/
+class Solution {
+public:
+    int calculate(string s) {
+        int num = 0;
+        int sign = 1;
+        int res = 0;
+        stack<int> digits, signs;
+        for(char c:s){
+            if(isdigit(c)){
+                num = num * 10 + (c - '0');
+            }
+            else{
+                res = res + sign*num;
+                num = 0;
+                if(c == '+') sign = 1;
+                else if(c == '-') sign = -1;
+                else if(c == '('){
+                    digits.push(res);
+                    signs.push(sign);
+                    res = 0;
+                    sign = 1;
+                }
+                else if(c == ')'){
+                    res = signs.top() * res + digits.top();
+                    digits.pop();
+                    signs.pop();
+                }
+            }
+        }
+        //Note we need to add the final num to result
+        res = res + sign*num;
+        return res;
+    }
+};
