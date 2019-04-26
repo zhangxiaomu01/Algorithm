@@ -408,3 +408,56 @@ public:
         return res;
     }
 };
+
+//227. Basic Calculator II
+//https://leetcode.com/problems/basic-calculator-ii/
+/*
+A little bit tricky... 
+*/
+//The general idea is to calculate multiplication and division first,
+//then add all the results together...
+class Solution {
+private:
+    void doOperation(stack<int>& digit, char op, int num){
+        if(op == '+')
+            digit.push(num);
+        else if(op == '-')
+            digit.push(-num);
+        else if(op == '*'){
+            int temp = num * digit.top();
+            digit.top() = temp;
+        }
+        else if(op == '/'){
+            int temp = digit.top()/num;
+            digit.top() = temp;
+        }
+    }
+
+public:
+    int calculate(string s) {
+        char op = '+';
+        int num = 0;
+        int res = 0;
+        stack<int> digit;
+        for(char c:s){
+            if(isdigit(c)){
+                num = num*10 + (c - '0');
+            }
+            
+            if(!isdigit(c) && !isspace(c)){
+                doOperation(digit, op, num);
+                num = 0;
+                //We need to update op every iteration, note that op always 
+                //comes after the two operands 
+                op = c;
+            }
+        }
+        doOperation(digit, op, num);
+        //Add all the numbers together, since no * or / exists
+        while(!digit.empty()){
+            res += digit.top();
+            digit.pop();
+        }
+        return res;
+    }
+};
