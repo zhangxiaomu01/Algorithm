@@ -461,3 +461,86 @@ public:
         return res;
     }
 };
+
+//385. Mini Parser
+//https://leetcode.com/problems/mini-parser/
+/*
+A very weird question with vague definition. Please refer later...
+*/
+/**
+ * // This is the interface that allows for creating nested lists.
+ * // You should not implement it, or speculate about its implementation
+ * class NestedInteger {
+ *   public:
+ *     // Constructor initializes an empty nested list.
+ *     NestedInteger();
+ *
+ *     // Constructor initializes a single integer.
+ *     NestedInteger(int value);
+ *
+ *     // Return true if this NestedInteger holds a single integer, rather than a nested list.
+ *     bool isInteger() const;
+ *
+ *     // Return the single integer that this NestedInteger holds, if it holds a single integer
+ *     // The result is undefined if this NestedInteger holds a nested list
+ *     int getInteger() const;
+ *
+ *     // Set this NestedInteger to hold a single integer.
+ *     void setInteger(int value);
+ *
+ *     // Set this NestedInteger to hold a nested list and adds a nested integer to it.
+ *     void add(const NestedInteger &ni);
+ *
+ *     // Return the nested list that this NestedInteger holds, if it holds a nested list
+ *     // The result is undefined if this NestedInteger holds a single integer
+ *     const vector<NestedInteger> &getList() const;
+ * };
+ */
+/*
+No offense but this problem seriously needs some more explanation and grammar check. I want to add a few clarification as follows so it saves you some time:
+
+the add() method adds a NestedInteger object to the caller. e.g.:
+outer = NestedInteger() # []
+nested = NestedInteger(5)
+outer2 = nested
+outer.add(nested) # outer is now [5]
+outer2.add(outer) # outer2 is now [5, [5]]
+"Set this NestedInteger to hold a nested list and adds a nested integer elem to it." cannot be more vague.
+
+'-' means negative. It's not a delimiter.
+
+For test cases like "324" you need to return something like NestedInteger(324) not "[324]".
+
+A list cannot have multiple consecutive integers. e.g. "321, 231" is invalid. I guess it's for difficulty purposes.
+*/
+class Solution {
+public:
+    NestedInteger deserialize(string s) {
+        stack<NestedInteger> st;
+        st.push(NestedInteger());
+        
+        function<bool(char)> comp = [](char c){return c=='-'|| isdigit(c);};
+        
+        for(auto it = s.begin();it != s.end();){
+            char c = (*it);
+            if(comp(c)){
+                auto it2 = find_if_not(it, s.end(), comp);
+                int num = stoi(string(it, it2));
+                st.top().add(NestedInteger(num));
+                it = it2;
+            }
+            else{
+                if(c == '['){
+                    st.push(NestedInteger());
+                }
+                else if(c == ']'){
+                    NestedInteger temp = st.top();
+                    st.pop();
+                    st.top().add(temp);
+                }
+                it++;
+            }  
+        }
+        return st.top().getList().front();
+    }
+};
