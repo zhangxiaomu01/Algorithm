@@ -544,3 +544,43 @@ public:
         return st.top().getList().front();
     }
 };
+
+
+//215. Kth Largest Element in an Array
+//https://leetcode.com/problems/kth-largest-element-in-an-array/
+/*
+Two general ideas to approach this problem:
+1. Priority queue;
+2. Quicksort
+*/
+//Priority queue solution - we use the max heap 
+//O(nlogn)
+class Solution {
+public:
+    int findKthLargest(vector<int>& nums, int k) {
+        int len = nums.size();
+        priority_queue<int> pq(nums.begin(), nums.end());
+        for(int i = 0; i < k - 1; i++){
+            pq.pop();
+        }
+        return pq.top();
+    }
+};
+
+//Priority queue solution - we use the min heap
+//O(nlogk) 
+class Solution {
+public:
+    int findKthLargest(vector<int>& nums, int k) {
+        int len = nums.size();
+        priority_queue<int, vector<int>, greater<int>> pq;
+        for(int num : nums){
+            pq.push(num);
+            if(pq.size() > k)
+                pq.pop();
+        }
+        return pq.top();
+    }
+};
+
+
