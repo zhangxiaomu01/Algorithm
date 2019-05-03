@@ -583,4 +583,56 @@ public:
     }
 };
 
+//Quick select. The time complexity should be amortized O(n)
+class Solution {
+private:
+    //We could get rid of this.. However, implementing shuffle will 
+    //potentially make the code more efficient
+    void shuffle(vector<int>& nums){
+        int len = nums.size();
+        default_random_engine gen;
+        uniform_int_distribution<int> distribution(0, len-1);
+        for(int i = 0; i < len; i++){
+            int dice = distribution(gen);
+            swap(nums[i], nums[dice]);
+        }
+    }    
+    int partition(vector<int>& nums, int l, int r){
+        int len = nums.size();
+        int pivot = nums[l];
+        int piv_i = l;
+        l++;
+        while(l <= r){
+            if(nums[l] < pivot && nums[r] > pivot)
+                swap(nums[l++], nums[r--]);
+            if(nums[l] >= pivot)
+                l++;
+            if(nums[r] <= pivot)
+                r--;
+        }
+        swap(nums[r], nums[piv_i]);
+        return r;
+    }
+public:
+    int findKthLargest(vector<int>& nums, int k) {
+        int len = nums.size();
+        int l = 0, r = len -1;
+        int kth = 0;
+        while(l <= r){
+            int pivot = partition(nums, l, r);
+            if(pivot == k-1){
+                kth = nums[k-1];
+                return kth;
+            }
+            else if(pivot < k-1){
+                l = pivot + 1;
+            }
+            else
+                r = pivot - 1;
+        }
+        return kth;
+    }
+    
+};
+
 
