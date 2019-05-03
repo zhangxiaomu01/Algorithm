@@ -635,4 +635,74 @@ public:
     
 };
 
+//230. Kth Smallest Element in a BST
+//https://leetcode.com/problems/kth-smallest-element-in-a-bst/
+/*
+Not a hard problem... However,the recursive version is still tricky
+*/
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    void dfs(TreeNode* node, int &res, int &k){
+        if(node == nullptr) return;
+        dfs(node->left, res, k);
+        //How to check k == 0 is critical here
+        //The reason is we always record middle node
+        if(k == 0) return;
+        res = node->val;
+        //Note we only decrease k when searching right subtree..
+        dfs(node->right, res, --k);
+    }
+    int kthSmallest(TreeNode* root, int k) {
+        int res = 0;
+        dfs(root, res, k);
+        return res;
+    }
+};
+
+//Iterative version, we are actually mimic the call stack
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        stack<TreeNode*> st;
+        TreeNode* p = root;
+        while(p != nullptr){
+            st.push(p);
+            p = p->left;
+        }
+        
+        while(k--){
+            TreeNode *temp = st.top();
+            st.pop();
+            
+            if(k == 0)
+                return temp->val;
+            
+            TreeNode* node = temp->right;
+            while(node != nullptr){
+                st.push(node);
+                node = node->left;
+            }
+        }
+        return 0;
+    }
+};
+
 
