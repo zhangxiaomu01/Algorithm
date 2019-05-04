@@ -706,3 +706,33 @@ public:
 };
 
 
+//347. Top K Frequent Elements
+//https://leetcode.com/problems/top-k-frequent-elements/
+/*
+Hash table + priority queue can easily derive the solution.
+*/
+class Solution {
+public:
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        unordered_map<int, int> dict;
+        for(int n : nums){
+            dict[n]++;
+        }
+        //Note this is essentially minheap
+        priority_queue<int, vector<int>, greater<int>> pq;
+        vector<int> res;
+        for(auto it = dict.begin(); it != dict.end(); it++){
+            pq.push(it->second);
+            //We only leave k elements whose frenquency is highest 
+            //in our priority queue
+            if(pq.size() > k)
+                pq.pop();
+        }
+        for(auto it = dict.begin(); it!= dict.end(); it++){
+            if(it->second >= pq.top())
+                res.push_back(it->first);
+        }
+        return res;
+    }
+};
+
