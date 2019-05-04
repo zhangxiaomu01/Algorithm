@@ -736,3 +736,31 @@ public:
     }
 };
 
+//Bucket sort solution.
+//We will use more space than priority queue solution
+//However, the time complexity is better. O(n)
+class Solution {
+public:
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        int len = nums.size();
+        unordered_map<int, int> dict;
+        for(int n : nums){
+            dict[n]++;
+        }
+        vector<vector<int>> bucket(len+1);
+        for(auto p : dict){
+            bucket[p.second].push_back(p.first);
+        }
+        
+        vector<int> res;
+        for(int i = bucket.size()-1; i >= 0; i--){
+            for(int j = 0; j < bucket[i].size(); j++){
+                res.push_back(bucket[i][j]);
+                if(res.size() == k)
+                    return res;
+            }
+        }
+        return res;
+    }
+};
+
