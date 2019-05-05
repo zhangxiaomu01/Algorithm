@@ -896,5 +896,69 @@ public:
     }
 };
 
+//341. Flatten Nested List Iterator
+//https://leetcode.com/problems/flatten-nested-list-iterator/
+/*
+Tricky problem, be careful about the implementation problem like this...
+*/
 
+/**
+ * // This is the interface that allows for creating nested lists.
+ * // You should not implement it, or speculate about its implementation
+ * class NestedInteger {
+ *   public:
+ *     // Return true if this NestedInteger holds a single integer, rather than a nested list.
+ *     bool isInteger() const;
+ *
+ *     // Return the single integer that this NestedInteger holds, if it holds a single integer
+ *     // The result is undefined if this NestedInteger holds a nested list
+ *     int getInteger() const;
+ *
+ *     // Return the nested list that this NestedInteger holds, if it holds a nested list
+ *     // The result is undefined if this NestedInteger holds a single integer
+ *     const vector<NestedInteger> &getList() const;
+ * };
+ */
+//This is not the best optimum solution... We still need more space to store each element in nestedList
+//In general, the idea is simple
+//Actually,the optimum solution is to store only two iterators (pointers) of nestedList
+class NestedIterator {
+private:
+    stack<NestedInteger> nodes;
+    unsigned int m_size;
+public:
+    NestedIterator(vector<NestedInteger> &nestedList) {
+        m_size = nestedList.size();
+        for(int i = m_size-1; i >= 0; i--){
+            nodes.push(nestedList[i]);
+        }
+    }
+
+    int next() {
+        int res = nodes.top().getInteger();
+        nodes.pop();
+        return res;
+    }
+
+    bool hasNext() {
+        //if(nodes.empty()) return false;
+        while(!nodes.empty()){
+            if(nodes.top().isInteger())
+                return true;
+            NestedInteger it = nodes.top();
+            nodes.pop();
+            vector<NestedInteger> tempList = it.getList();
+            unsigned int listSize = tempList.size();
+            for(int i = listSize-1; i >= 0; i--){
+                nodes.push(tempList[i]);
+            }
+        }
+        return false;
+    }
+};
+/**
+ * Your NestedIterator object will be instantiated and called as such:
+ * NestedIterator i(nestedList);
+ * while (i.hasNext()) cout << i.next();
+ */
 
