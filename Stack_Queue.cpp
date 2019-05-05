@@ -709,7 +709,7 @@ public:
 //347. Top K Frequent Elements
 //https://leetcode.com/problems/top-k-frequent-elements/
 /*
-Hash table + priority queue can easily derive the solution.
+Hash table + priority queue can easily derive the solution. O(nlogk)
 */
 class Solution {
 public:
@@ -763,4 +763,138 @@ public:
         return res;
     }
 };
+
+//218. The Skyline Problem
+//https://leetcode.com/problems/the-skyline-problem/
+/*
+Hard. The implementation not intuitive, especially if you try to implement by yourself, please double check later.
+*/
+//A very hard problem, the solution is tricky!
+//The key idea is to keep track of each boundry, and record the highest height within at that point. For example:
+//[2 9 10][3 7 15][5 12 12][15 20 10][19, 24 8]
+//At each horizontal point, we are going to record the highest height and get a couple of pairs like below (we use multiset and multimap to do this):
+//[2 10][3, 15][5,15][7 12][9 12][12 0][15 10][19 10][20 8][24 0]
+//Then we remove all the consecutive pairs which have the same height (we only keep the first one). 
+class Solution {
+public:
+    vector<vector<int>> getSkyline(vector<vector<int>>& buildings) {
+        multimap<int, int> dict;
+        //Note since all the elements are inserted into multimap, they have
+        //been sorted
+        for(vector<int>& b:buildings){
+            dict.emplace(b[0], b[2]);
+            //Set the height of the end point to be negative, it's a flag
+            dict.emplace(b[1], -b[2]);
+        }
+        
+        //Note elements inserted to height are also sorted
+        multiset<int> heights{0};
+        map<int, int> maxHeightMap;
+        for(const pair<int, int>& p : dict){
+            //we meet the second boundry
+            if(p.second > 0){
+                heights.emplace(p.second);
+            }
+            else 
+                heights.erase(heights.find(-p.second));
+            //We update the max height for current position
+            int cmaxHeight = *heights.crbegin();
+            maxHeightMap[p.first] = cmaxHeight;
+        }
+        
+        //We calculate the final result by only keep the first repetitive height in
+        //our maxHeightMap.
+        vector<vector<int>> res;
+        vector<pair<int, int>> tempRes;
+        function<bool(pair<int, int> l, pair<int, int> r)> myComp = [](pair<int, int>l, pair<int, int> r){return l.second == r.second;};
+        //Tricky implementatiom, be more familiar with this
+        unique_copy(maxHeightMap.begin(), maxHeightMap.end(), back_insert_iterator<vector<pair<int, int>>>(tempRes), myComp);
+        
+        for(pair<int, int>& p : tempRes){
+            vector<int> t{p.first, p.second};
+            res.push_back(t);
+        }
+        
+        return res;
+    }
+};
+//Bad trial, does not work because of the sorting rule of multimap data structure
+class Solution {
+public:
+    vector<vector<int>> getSkyline(vector<vector<int>>& buildings) {
+        multimap<int, int> dict;
+        //Note since all the elements are inserted into multimap, they have
+        //been sorted
+        for(vector<int>& b:buildings){
+            dict.emplace(b[0], b[2]);
+            //Set the height of the end point to be negative, it's a flag
+            dict.emplace(b[1], -b[2]);
+        }
+        //Note elements inserted to height are also sorted
+        multiset<int> heights{0};
+        int preMaxHeight = 0;
+        vector<vector<int>> res;
+        for(const pair<int, int>& p : dict){
+            //we meet the second boundry
+            if(p.second > 0){
+                heights.emplace(p.second);
+            }
+            else 
+                heights.erase(heights.find(-p.second));
+            //We update the max height for current position
+            int cmaxHeight = *heights.crbegin();
+            //We keep track of the previous maxHeight, and get rid of the duplicate elments
+            if(cmaxHeight != preMaxHeight){
+                vector<int> t{p.first, cmaxHeight};
+                res.push_back(t);
+                preMaxHeight = cmaxHeight;
+            }
+        }
+        return res;
+    }
+};
+
+//This solution is more efficient, however it's a solution relies on sort rule...
+//In general, it's bad!!
+class Solution {
+public:
+    vector<vector<int>> getSkyline(vector<vector<int>>& buildings) {
+        
+        vector<pair<int, int>> dict;
+        for(vector<int>& b:buildings){
+            //We have to make the negative value go first, or the following if(cmaxHeight != preMaxHeight) will not work.
+            dict.push_back({b[0], -b[2]});
+            dict.push_back({b[1], b[2]});
+        }
+        //Sorting here is different compared with using multimap. For example, in multimap,
+        //We will have sorting like [0 -3][2 3][2 -3][5 3]
+        //Here, we will have [0 -3][2 -3][2 3][5 3]
+        //It's critical when we try to get rid of duplicates from the array
+        sort(dict.begin(), dict.end());
+        //Note elements inserted to height are also sorted
+        multiset<int> heights{0};
+        int preMaxHeight = 0, cmaxHeight;
+        vector<vector<int>> res;
+        for(const pair<int, int>& p : dict){
+            //we meet the first boundry
+            if(p.second < 0){
+                heights.insert(-p.second);
+            }
+            else 
+                heights.erase(heights.find(p.second));
+            //We update the max height for current position
+            cmaxHeight = *heights.crbegin();
+            //We keep track of the previous maxHeight, and get rid of the duplicate elments
+            //Note this only works when we implement dict using vector and put negative height to our left boundry... Very weird...
+            if(cmaxHeight != preMaxHeight){
+                vector<int> t{p.first, cmaxHeight};
+                res.push_back(t);
+                preMaxHeight = cmaxHeight;
+            }
+        }
+        return res;
+    }
+};
+
+
 
