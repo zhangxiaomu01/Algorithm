@@ -920,7 +920,8 @@ Tricky problem, be careful about the implementation problem like this...
  * };
  */
 //This is not the best optimum solution... We still need more space to store each element in nestedList
-//In general, the idea is simple
+//In general, the idea is simple, we can make the implementation more efficient by store pointers instead of
+//objects
 //Actually,the optimum solution is to store only two iterators (pointers) of nestedList
 class NestedIterator {
 private:
@@ -961,4 +962,40 @@ public:
  * NestedIterator i(nestedList);
  * while (i.hasNext()) cout << i.next();
  */
+
+//Iterator implementation. It's pretty efficient...
+class NestedIterator {
+private:
+    stack<vector<NestedInteger>::iterator> begins, ends;
+public:
+    NestedIterator(vector<NestedInteger> &nestedList) {
+        begins.push(nestedList.begin());
+        ends.push(nestedList.end());
+    }
+
+    int next() {
+        int res = begins.top()->getInteger();
+        begins.top()++;
+        return res;
+    }
+
+    bool hasNext() {
+        while(!begins.empty()){
+            if(begins.top() == ends.top()){
+                begins.pop();
+                ends.pop();
+                if(!begins.empty()) begins.top()++;
+            }
+            else if(begins.top()->isInteger()) return true;
+            else{
+                //We need to use reference to the list, or we will 
+                vector<NestedInteger>& vec = begins.top()->getList();
+                begins.push(vec.begin());
+                ends.push(vec.end());
+            }
+        }
+        return false;
+    }
+};
+
 
