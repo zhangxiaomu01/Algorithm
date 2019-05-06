@@ -998,4 +998,39 @@ public:
     }
 };
 
+//332. Reconstruct Itinerary
+//https://leetcode.com/problems/reconstruct-itinerary/
+/*
+A very good question which combines priority queue, DFS, and how to convert problem to graph representation.
+Refer later. Note we can also use multimap to replace priority_queue data structure;
+Note how we implement priority_queue.
+*/
+class Solution {
+private:
+    unordered_map<string, priority_queue<string, vector<string>, greater<string>>> dict;
+    vector<string> res;
+public:
+    void dfs(const string& s){
+        while(!dict[s].empty()){
+            auto& list = dict[s];
+            //we cannot use reference here, since when we pop up the top element,
+            //the reference will still refer to the top element, in this case, we will
+            //have toVist = 'SFO', we know it should be 'ATL'
+            const string toVisit = list.top();
+            list.pop();
+            cout << toVisit << endl;
+            dfs(toVisit);
+        }
+        res.push_back(s);
+    }
+    vector<string> findItinerary(vector<vector<string>>& tickets) {
+        //We build our graph from tickets
+        for(vector<string>& s : tickets){
+            dict[s[0]].push(s[1]);
+        }
+        dfs("JFK");
+        reverse(res.begin(), res.end());
+        return res;
+    }
+};
 
