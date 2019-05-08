@@ -8,6 +8,7 @@
 #include<unordered_map>
 #include<numeric>
 #include<iterator>
+#include<cctype>
 
 using namespace std;
 
@@ -1031,6 +1032,81 @@ public:
         dfs("JFK");
         reverse(res.begin(), res.end());
         return res;
+    }
+};
+
+//150. Evaluate Reverse Polish Notation
+//https://leetcode.com/problems/evaluate-reverse-polish-notation/
+/*
+Not a hard problem. The only trick is how to check whether a string is a digit number..
+*/
+class Solution {
+private:
+    bool isSNumber(string &s){
+        if(s.size() > 1 && s[0] == '-') return true;
+        bool res = !s.empty() && s.find_first_not_of(".0123456789") == std::string::npos;
+        return res;
+    }
+    int evaluate(int a, int b, string op){
+        switch(op[0]){
+            case '+':
+                return a + b;
+            case '-':
+                return a - b;
+            case '*':
+                return a * b;
+            case '/':
+                return a / b;
+            default:
+                return -1;
+        }
+        
+    }
+public:
+    int evalRPN(vector<string>& tokens) {
+        stack<int> st;
+        for(string c : tokens){
+            //if(s.size() > 1 || isdigit(s[0])) we can replace isSnumber with the left condition
+            if(isSNumber(c))
+                st.push(stoi(c));
+            else{
+                int b = st.top();
+                st.pop();
+                int a = st.top();
+                st.pop();
+                int temp = evaluate(a, b, c);
+                st.push(temp);
+            }
+        }
+        return st.empty()? 0 : st.top();
+    }
+};
+
+//A fancier approach using lambda expression and hash map
+class Solution {
+public:
+    int evalRPN(vector<string>& tokens) {
+        unordered_map <string, function <int (int, int)>> map = {
+            {"+", [](int a, int b){return a + b;}},
+            {"-", [](int a, int b){return a - b;}},
+            {"*", [](int a, int b){return a * b;}},
+            {"/", [](int a, int b){return a / b;}}
+        };
+
+        stack<int> stn;
+        for (auto &s: tokens){
+            if(map.find(s) == map.end()){
+                stn.push(stoi(s));
+            }else{
+                int b = stn.top();
+                stn.pop();
+                int a = stn.top();
+                stn.pop();
+                a = map[s](a, b);
+                stn.push(a);
+            }
+        }
+            return stn.top();
     }
 };
 

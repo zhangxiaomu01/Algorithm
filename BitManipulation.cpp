@@ -69,7 +69,7 @@ int calBits(string& s){
 }
 public:
     int maxProduct(vector<string>& words) {
-        int len = words.size();
+        const int len = words.size();
         if(len == 0) return 0;
         //bitMask stores which character is in a string w.
         //For each character, we will set a flag to be 1 if it presents in w.
