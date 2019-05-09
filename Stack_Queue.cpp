@@ -1110,3 +1110,35 @@ public:
     }
 };
 
+//71. Simplify Path
+//https://leetcode.com/problems/simplify-path/
+/*
+Using stack to keep track of the segments. Pop segements accordingly.
+Not hard, but be careful with corner cases.
+*/
+//Stack
+class Solution {
+public:
+    string simplifyPath(string path) {
+        //Note utilize string stream can greatly improve the efficiency,
+        //since we can extrack each segment by a specified delimiter
+        stringstream ss(path);
+        string res, temp;
+        vector<string> st;
+        //Note we will discard delimiter '/' when extract characters
+        //We continue when we encounter "." or "//"
+        while(getline(ss, temp, '/')){
+            if(temp == "" || temp == ".") continue;
+            else if(temp == ".." && !st.empty()) st.pop_back();
+            else if(temp != "..") st.push_back(temp);
+        }
+        for(string& s : st){
+            res.push_back('/');
+            for(char c : s)
+                res.push_back(c);
+        }
+        //Need to take care about the situation that res is empty.
+        if(res.empty()) res = "/";
+        return res;
+    }
+};
