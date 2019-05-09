@@ -1142,3 +1142,103 @@ public:
         return res;
     }
 };
+
+
+//84. Largest Rectangle in Histogram
+//https://leetcode.com/problems/largest-rectangle-in-histogram/
+/*
+A very hard problem, even know the idea, the implementation is tricky!
+The hard part of this problem is due to the corner cases...
+The main idea is to keep track of the index of each height, when ith height is greater than i-1th height,
+we can save the index to stack; else, we update the max area. 
+*/
+class Solution {
+public:
+    int largestRectangleArea(vector<int>& heights) {
+        int len = heights.size();
+        if(len == 0) return 0;
+        //Initialize the maxArea equals to the area of first bar
+        int maxArea = 0;
+        //We will use this stack to keep track of indices of each height
+        stack<int> hStack;
+        //In case that our stack is not empty, we need to force a final round when i == len
+        //Note the i++ is in if statement, we will pop up all the elements from stack before our loop terminates
+        for(int i = 0; i <= len;){
+            if(hStack.empty() || i < len && heights[i] >= heights[hStack.top()]){
+                hStack.push(i++);
+                continue;
+            }
+            int curHeightIndex = hStack.top();
+            hStack.pop();
+            //hStack.top() is critical here, we know that -1 here represents the element before heights[0]
+            maxArea = max(maxArea, heights[curHeightIndex] * (i - 1 - (hStack.empty()? -1: hStack.top()))); 
+            cout << maxArea <<endl;
+        }
+        return maxArea;
+    }
+};
+
+//My trial 
+class Solution {
+public:
+    int largestRectangleArea(vector<int>& heights) {
+        int len = heights.size();
+        if(len == 0) return 0;
+        //Initialize the maxArea equals to the area of first bar
+        int maxArea = heights[0];
+        //We will use this stack to keep track of indices of each height
+        stack<int> hStack;
+        hStack.push(0); 
+        for(int i = 1; i < len;){
+            if(hStack.empty() || heights[i] >= heights[hStack.top()]){
+                hStack.push(i);
+                i++;
+                continue;
+            }
+            int curHeightIndex = hStack.top();
+            hStack.pop();
+            //-1 is critical
+            maxArea = max(maxArea, heights[curHeightIndex] * (i-1 - (hStack.empty()? -1: hStack.top()))); 
+        }
+        //When we reach the end of the array, and our stack is not empty, we need to continue several loop until 
+        //stack is empty
+        while(!hStack.empty()){
+            int curHeightIndex = hStack.top();
+            hStack.pop();
+            //now i is actually len - 1
+            maxArea = max(maxArea, heights[curHeightIndex] * (len-1 - (hStack.empty()? -1: hStack.top()))); 
+        }
+        return maxArea;
+    }
+};
+
+//Elegant implementation
+//Sometimes, insert one more element to begining or/and end, just like add a dummy head to list, can significantly
+//simplify the code implementation
+class Solution {
+public:
+    //This is a very tricky solution... 
+    //When the later bar is larger than former, we push the index in the stack s.
+    //We need to insert 0 to the begining and the end of the heights in order to simplify code.
+    //https://leetcode.com/problems/largest-rectangle-in-histogram/discuss/28959/My-concise-code-(20ms-stack-based-O(n))-one-trick-used
+    int largestRectangleArea(vector<int>& heights) {
+        if(heights.empty()) return 0;
+        heights.insert(heights.begin(), 0);
+        heights.push_back(0);
+        stack<int> s;
+        //push 0 here to make sure the stack will not be empty.It also provide a chance to get access to the first element of heights.
+        s.push(0);
+        int len = heights.size();
+        int fIdx = 0;
+        int res = 0;
+        for(int i = 0; i < len; i++){
+            while(heights[i] < heights[fIdx = s.top()]){
+                s.pop();
+                res = max(res, heights[fIdx] * (i - s.top() - 1));
+            }
+            s.push(i);
+        }
+        return res;
+    }
+};
+
