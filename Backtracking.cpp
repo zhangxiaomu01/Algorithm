@@ -224,5 +224,119 @@ public:
     }
 };
 
+//39. Combination Sum
+//https://leetcode.com/problems/combination-sum/
+/*
+Backtracking problem: Note that in order to reuse elements, we need to start from the same position
+*/
+//Unoptimized version, actually we can terminate earlier.
+class Solution {
+private:
+    void dfs(vector<vector<int>>& res, vector<int>& temp, int pos, int t, vector<int> nums){
+        if(t < 0) return;
+        if(t == 0){
+            res.push_back(temp);
+            return;
+        }
+        for(int i = pos; i < nums.size(); i++){
+            temp.push_back(nums[i]);
+            //Since no duplicates in candidates array, and we can reuse elements, make pos == i
+            dfs(res, temp, i, t - nums[i], nums);
+            temp.pop_back();
+        }
+    }
+public:
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        vector<vector<int>> res;
+        vector<int> temp;
+        dfs(res, temp, 0, target, candidates);
+        return res;
+    }
+};
 
+//Optimized version
+class Solution {
+private:
+    void dfs(vector<vector<int>>& res, vector<int>& temp, int pos, int t, vector<int> nums){
+        if(t == 0){
+            res.push_back(temp);
+            return;
+        }
+        //We add t-nums[i]>= 0 here to terminate earlier... 
+        for(int i = pos; i < nums.size() && t - nums[i] >= 0; i++){
+            temp.push_back(nums[i]);
+            //In order to reuse the same value, pos should be the same as i, instead of i+1
+            dfs(res, temp, i, t - nums[i], nums);
+            temp.pop_back();
+        }
+    }
+public:
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        vector<vector<int>> res;
+        vector<int> temp;
+        //Sorting is required, since we add t - nums[i] >= 0, we need to always substract the smaller elements first
+        sort(candidates.begin(), candidates.end());
+        dfs(res, temp, 0, target, candidates);
+        return res;
+    }
+};
+
+//40. Combination Sum II
+//https://leetcode.com/problems/combination-sum-ii/
+/*
+In general, the code is exactly the same as before. 
+The tricky part is how we handle duplicate elements...
+*/
+class Solution {
+private:
+    void dfs(vector<vector<int>>& res, vector<int>& temp, int pos, int t, vector<int>& nums){
+        if(t == 0){
+            res.push_back(temp);
+            return;
+        }
+        for(int i = pos; i < nums.size() && t - nums[i] >= 0; i++){
+            /*Here we can handle duplicates... 
+            The reason behind it is when the first time we encounter a duplicate element, we include it in our solution. Since we already sort the array, then we know any duplicate set has already been covered by the first time we push nums[i] to our set. The only thing we need to check if we found any duplicate elements later(not the first time), we need to get rid of these sets. Note we cannot break here, or we will miss several sets.
+            */
+            if(i != pos && i > 0 && nums[i] == nums[i-1]) continue;
+            temp.push_back(nums[i]);
+            dfs(res, temp, i+1, t-nums[i], nums);
+            temp.pop_back();
+        }
+    }
+public:
+    vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+        vector<vector<int>> res;
+        vector<int> temp;
+        sort(candidates.begin(), candidates.end());
+        dfs(res, temp, 0, target, candidates);
+        return res;
+    }
+};
+
+//216. Combination Sum III
+//https://leetcode.com/problems/combination-sum-iii/
+//Exactly the same as Combination Sum problem
+class Solution {
+private:
+    void dfs(int k, int n, int pos, vector<vector<int>>& res, vector<int>& temp){
+        if(temp.size() == k && n == 0){
+            res.push_back(temp);
+            return;
+        } 
+        for(int i = pos; i <= 9 && n - i >= 0; i++){
+            temp.push_back(i);
+            dfs(k, n-i, i+1, res, temp);
+            temp.pop_back();
+        }
+        
+    }
+public:
+    vector<vector<int>> combinationSum3(int k, int n) {
+        vector<vector<int>> res;
+        vector<int> temp;
+        dfs(k, n, 1, res, temp);
+        return res;
+    }
+};
 
