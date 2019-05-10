@@ -151,4 +151,78 @@ public:
     }
 };
 
+//77. Combinations
+//https://leetcode.com/problems/combinations/
+/*
+Basic backtracking problem. The structure is similar to subset problem.
+*/
+//DFS + Backtracking
+class Solution {
+private:
+    void backtracking(vector<vector<int>>& res, vector<int>& temp, int start, int n, int k){
+        if(temp.size() == k){
+            res.push_back(temp);
+            return;
+        }
+        for(int i = start; i < n; i++){
+            temp.push_back(i+1);
+            backtracking(res, temp, i+1, n, k);
+            temp.pop_back();
+        }
+    }
+public:
+    vector<vector<int>> combine(int n, int k) {
+        vector<vector<int>> res;
+        vector<int> temp;
+        backtracking(res, temp, 0, n, k);
+        return res;
+    }
+};
+
+//This iterative version is elegant, however, hard to get the right insight during interview
+class Solution {
+public:
+    vector<vector<int>> combine(int n, int k) {
+        vector<vector<int>> res;
+        //Allocating an array of size k, which represents one possible combination
+        vector<int> container(k, 0);
+        int i = 0;
+        //The whole process is similar to dfs, it might be easier if we implement using stack.
+        while(i >= 0){
+            container[i]++;
+            //If the value exceed the maximum value, we need to increase the previous value 
+            if(container[i]>n) i--;
+            else if(i == k-1) res.push_back(container);
+            else{
+                i++;
+                container[i] = container[i-1];
+            }
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    vector<vector<int>> combine(int n, int k) {
+        vector<vector<int>> res;
+        vector<int> st;
+        int i = 0;
+        st.push_back(i);
+        //Using stack... However,it's slower than other solutions
+        //Push and pop operations may contribute to resizing array.
+        while(!st.empty()){
+            st.back()++;
+            if(st.back() > n) st.pop_back();
+            else if(st.size() == k) res.push_back(st);
+            else{
+                int val = st.back();
+                st.push_back(val);
+            }
+        }
+        return res;
+    }
+};
+
+
 
