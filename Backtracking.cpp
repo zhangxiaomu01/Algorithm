@@ -393,3 +393,66 @@ public:
     }
 };
 
+//46. Permutation
+//https://leetcode.com/problems/permutations/
+/*
+Similar to set problem. However, we swap elements in the original array...
+*/
+class Solution {
+private:
+    void dfs(vector<vector<int>>& res, int pos, vector<int>& nums){
+        if(pos >= nums.size()){
+            res.push_back(nums);
+            return;
+        }
+        for(int i = pos; i < nums.size(); i++){
+            //We swap two elements temporarily
+            swap(nums[pos], nums[i]);
+            //Note we need to update pos, instead of i+1;
+            //Remember that permutation, we fix one position and swap elements accordinglily
+            dfs(res, pos+1, nums);
+            swap(nums[pos], nums[i]);
+        }
+        
+    }
+public:
+    vector<vector<int>> permute(vector<int>& nums) {
+        vector<vector<int>> res;
+        dfs(res, 0, nums);
+        return res;
+    }
+};
+
+
+//47. Permutations II
+//https://leetcode.com/problems/permutations-ii/
+/*
+Permutations with duplicates...
+*/
+class Solution {
+private:
+    void dfs(vector<vector<int>>& res, vector<int>& nums, int pos){
+        if(pos >= nums.size()){
+            res.push_back(nums);
+            return;
+        }
+        //Note how we handle duplicates, we can only put set here because for each round, you need to keep track of which repetitive element has already been swapped
+        //For [1,1,2], when we meet second 1, we already calculate the permutation when we handle first 1
+        unordered_set<int> Dset;
+        for(int i = pos; i < nums.size(); i++){
+            if(Dset.find(nums[i]) == Dset.end()){
+                Dset.insert(nums[i]);
+                swap(nums[pos], nums[i]);
+                dfs(res, nums, pos+1);
+                swap(nums[pos], nums[i]);
+            }
+        }
+    }
+public:
+    vector<vector<int>> permuteUnique(vector<int>& nums) {
+        vector<vector<int>> res;
+        dfs(res, nums, 0);
+        return res;
+    }
+};
+
