@@ -340,3 +340,56 @@ public:
     }
 };
 
+//377. Combination Sum IV
+//https://leetcode.com/problems/combination-sum-iv/
+/*
+The general idea is totally different than Combination sum I/II/III. Instead of using backtracking, we are just using 
+dfs to count the maximum possible combinations. Since we only need how many possible valid combinations, we can easily
+convert the solution to iterative version. (It's actually DP) 
+*/
+//The recursive version is more intuitive, although it's not that efficient
+//We use Recuirsion + memorization to improve the efficiency
+//The reason why we can use memorization is because if we already know how many combinations can lead to some target value,
+//We do not need to do the same calculation again.
+class Solution {
+private:
+
+    int dfs(vector<int>& nums, int target, vector<int>& memo){
+        //Any invalid combination sum we return 0 to indicate it's invalid
+        //Else we find a new combination sum, we return 1
+        if(nums.empty() || target < 0) return 0;
+        if(target == 0) return 1;
+        if(memo[target]!= -1) return memo[target];
+        unsigned int count = 0;
+        for(int i = 0; i < nums.size(); i++){
+            //We are actually checking each possible combination, first we reduce nums[0], then nums[1]... and so on
+            count += dfs(nums, target - nums[i], memo);
+        }
+        return memo[target] = count;
+    }
+public:
+    int combinationSum4(vector<int>& nums, int target) {
+        vector<int> memo(target+1, -1);
+        return dfs(nums, target, memo);
+    }
+};
+
+//Iterative DP solution
+class Solution {
+public:
+    int combinationSum4(vector<int>& nums, int target) {
+        vector<unsigned int> dp(target+1, 0);
+        dp[0] = 1;
+        sort(nums.begin(), nums.end());
+        for(int i = 1; i <= target; i++){
+            for(int n : nums){
+                //We can break here is because we sort the array
+                if(i < n) break;
+                //dp[i] means how many combination sets which sum to value i
+                dp[i] += dp[i - n];
+            }
+        }
+        return dp.back();
+    }
+};
+
