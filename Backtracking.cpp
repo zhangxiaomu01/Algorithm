@@ -456,3 +456,33 @@ public:
     }
 };
 
+//31. Next Permutation
+//https://leetcode.com/problems/next-permutation/
+/*
+The problem is easy to understand, however, the code is hard to implement.
+*/
+//The problem is not hard, however, the code is hard to implement
+//Tried several times, still failed
+class Solution {
+public:
+    void nextPermutation(vector<int>& nums) {
+        int len = nums.size();
+        if(len <= 1) return;
+        int i = len-2;
+        //We find the first digit that is smaller than the digit following it
+        while(i >=0 && nums[i] >= nums[i+1])
+            i--;
+        //If we find one, note it can be the first element
+        if(i >= 0){
+            int j = len -1;
+            //Find the first element from i+1 to len-1, that is smaller than nums[i]
+            //Note here we need to have <=, instead of <
+            while(j >= i+1 && nums[j] <= nums[i])
+                j--;
+            swap(nums[i], nums[j]);
+        }
+        //If all the element are in descending order, than i = -1, we actually reverse the whole array
+        reverse(nums.begin() + 1 + i, nums.end());
+    }
+};
+
