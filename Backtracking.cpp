@@ -543,3 +543,40 @@ public:
 
 //518. Coin Change 2
 //https://leetcode.com/problems/coin-change-2/
+//Recursive version is tricky and slow in practice
+class Solution {
+private:
+    int dfs(vector<int>& C, int t, int pos, vector<vector<int>>& memo){
+        if(t == 0)
+            return 1;
+        if(t < 0 || pos >= C.size())
+            return 0;
+        if(memo[t][pos]!= -1) return memo[t][pos];
+        
+        int num = 0;
+        for(int i = pos; i < C.size(); i++){
+            //We already sort the array
+            if(C[i] > t) break;
+            //We have to start times = 1, because we already covered times = 0 situation (C[i] > t)
+            int times = 1;
+            //This loop is interesting, we actually calculate the multiple choices of the same coin, we need to pass i + 1 here instead of pos + 1, otherwise we will have repetitively computation
+            while(times* C[i] <= t){
+                num += dfs(C, t - times * C[i], i+1, memo);
+                times++;
+            }
+            
+        }
+        //Because one target value t can corresponding to several different positions, so we need two dimensional array. For example, if target is 10, we have [1, 2] as input, we know 8 can correspoding to 10-1-1 and 10 - 2.
+        return memo[t][pos] = num;
+    }
+public:
+    int change(int amount, vector<int>& coins) {
+        const int len = coins.size();
+        //Sort the array so we can prune earlier
+        sort(coins.begin(), coins.end());
+        //We initialize the array to -1 because we potentially have the situation dp[i][j] = 0
+        vector<vector<int>> memo(amount+1, vector<int>(len, -1));
+        return dfs(coins, amount, 0, memo);
+    }
+};
+
