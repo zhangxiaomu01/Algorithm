@@ -486,3 +486,60 @@ public:
     }
 };
 
+//322. Coin Change
+//https://leetcode.com/problems/coin-change/
+/*
+Typical DP solution. We can do it both recursively or iteratively... Similar to subset problem...
+*/
+//Recursive version is more intuitive
+class Solution {
+private:
+    int DFS(vector<int>& coins, int t, vector<int>& memo){
+        if(t < 0) return -1;
+        //When amount is 0, we need to return 0 to indicate that we do not need to add any new coins
+        if(t == 0) return 0;
+        if(memo[t] != 0) return memo[t];
+        
+        int minVal = numeric_limits<int>::max();
+        for(int i = 0; i < coins.size(); i++){
+            int res = DFS(coins, t- coins[i], memo);
+            if(res >= 0 && res < minVal){
+                //Note we need to update + 1 here to indicate that we need one more coin in order to get the total amount to t
+                minVal = res + 1;
+            }
+        }
+        //We need to update memo[t] here.
+        memo[t] = (minVal == numeric_limits<int>::max()) ? -1 : minVal;
+        return memo[t];
+    }
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        //We cannot initialize this to -1 because -1 is one of the potential value we need to return; when we cannot make the right change
+        vector<int> memo(amount + 1, 0);
+        return DFS(coins, amount, memo);
+    }
+};
+//Iterative version is not hard to get, however, corner case is still tricky
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        //We cannot fill in INT_MAX here, because we could potentially encounter signed int overflow
+        vector<int> dp(amount+1, amount + 1);
+        int len = coins.size();
+        //We need to set 0 here since in the following update, we have dp[j - coins[i]]+1. 
+        dp[0] = 0;
+        
+        for(int j = 1; j <= amount; j++){
+            for(int i = 0; i < len; i++){
+                if(j - coins[i] >= 0){
+                    dp[j] = min(dp[j], dp[j - coins[i]] + 1);
+                }
+            }
+        }
+        //Note if we have dp[amount] untouched, we will return -1, which means we never find a valid update for this amount
+        return dp[amount] > amount ? -1 : dp[amount];
+    }
+};
+
+//518. Coin Change 2
+//https://leetcode.com/problems/coin-change-2/
