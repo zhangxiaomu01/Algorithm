@@ -580,3 +580,22 @@ public:
     }
 };
 
+//Iterative version - unoptimized
+
+//Iterative version - Optimized!
+//A good explanation: https://www.youtube.com/watch?v=DJ4a7cmjZY0
+class Solution {
+public:
+    int change(int amount, vector<int>& coins) {
+        int len = coins.size();
+        vector<int> dp(amount+1, 0);
+        dp[0] = 1;
+        for(int i = 0; i < len; i++){
+            for(int j = coins[i]; j <= amount; j++){
+                //Actually it is dp[i][j] = dp[i-1][j] + dp[i][j-coins[i]], here dp[i-1][j] means we do not select coins[i], and how many ways we have to form a valid change. dp[i][j-coins[i]] means we select coins[i], how many ways we have to form a valid change
+                dp[j] += dp[j- coins[i]];
+            }
+        }
+        return dp[amount];
+    }
+};
