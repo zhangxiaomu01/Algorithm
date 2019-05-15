@@ -580,7 +580,32 @@ public:
     }
 };
 
-//Iterative version - unoptimized
+//Unoptimized iterative solution
+class Solution {
+public:
+    int change(int amount, vector<int>& coins) {
+        int len = coins.size();
+        //dp[i][j] means we have the target amount to be i, our total number of coins to be j
+        vector<vector<int>> dp(amount+1, vector<int>(len+1, 0));
+        dp[0][0] = 1;
+        for(int i = 1; i <= amount; i++){
+            //This means if we do not have any coins, then no matter which amount (>0), we will have 0 possible way to make the change
+            dp[i][0] = 0;
+        }
+        //We cannot swap two loops, the reason is because we can choose one coin multiple times... We denote dp[i][0] to be there is no coin in the array [], which in most case is 0.
+        for(int j = 1; j <= len; j++){
+            for(int i = 0; i <= amount; i++){
+                //If we cannot select this coin j, the total amount of ways to make the change equals to dp[i][j-1]
+                if(i - coins[j-1] < 0)
+                    dp[i][j] = dp[i][j-1];
+                else
+                    dp[i][j] = dp[i][j-1] + dp[i-coins[j-1]][j];
+            }
+        }
+        //We return amount of money we can make the change and all the coins included
+        return dp[amount][len];
+    }
+};
 
 
 
