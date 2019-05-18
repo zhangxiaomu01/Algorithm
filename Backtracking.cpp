@@ -627,3 +627,32 @@ public:
     }
 };
 
+
+//60. Permutation Sequence
+//https://leetcode.com/problems/permutation-sequence/
+//Tricky solution, great explanation:
+//https://leetcode.com/problems/permutation-sequence/discuss/22507/%22Explain-like-I'm-five%22-Java-Solution-in-O(n)
+class Solution {
+public:
+    string getPermutation(int n, int k) {
+        string res = "";
+        string number = "123456789";
+        vector<int> dict(10, 1);
+        //Calculate the (i-1)! and save it to the array
+        //We know that if we have n number in total, then we have n! permutations in total. In order to calculate which number to choose first, we need to calculate k/dict[i-1]. 
+        //If we have determined the first number of the kth element, then we will have (n-1)! permutations in total, then we can calculate which number will be the first number by k/dict[i-1] (Note the permutation sequence is sorted in order)
+        for(int i = 1; i < 10; i++){
+            dict[i] = i * dict[i-1];
+        }
+        k = k-1;
+        //Once we know the first number, we need to recalculate the next k. 
+        for(int i = n; i >=1; --i){
+            int j = k/dict[i-1];
+            //We can calculate k by k = k%dict[i-1]; the following might be more straightforward
+            k -= j*dict[i-1];
+            res.push_back(number[j]);
+            number.erase(number.begin()+j);
+        }
+        return res;
+    }
+};
