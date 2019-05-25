@@ -656,3 +656,127 @@ public:
         return res;
     }
 };
+
+//17. Letter Combinations of a Phone Number
+//https://leetcode.com/problems/letter-combinations-of-a-phone-number/
+/*
+A typical backtracking problem...
+*/
+class Solution {
+private:
+    vector<string> m_Dict{"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+    void dfs(const string& digits, vector<string>& res, string tempRes, int pos){
+        if(pos == digits.size()) {
+            res.push_back(tempRes);
+            return;
+        }
+        int index = digits[pos] - '0';
+        for(int i = 0; i < m_Dict[index].size(); i++){
+            tempRes.push_back(m_Dict[index][i]);
+            dfs(digits, res, tempRes, pos+1);
+            tempRes.pop_back();
+        }
+        
+    }
+public:
+    vector<string> letterCombinations(string digits) {
+        vector<string> res;
+        if(digits.empty()) return res;
+        dfs(digits, res, "", 0);
+        return res;
+    }
+};
+
+//140. Word Break II
+//https://leetcode.com/problems/word-break-ii/
+/*
+Not optimized solution, will have time limit exceed error... Note this is the origin backtracking solution.
+*/
+class Solution {
+private:
+    unordered_set<string> m_setDict;
+    void dfs(vector<string>& res, string& s, string processedStr, int pos){
+        if(pos == s.size()){
+            if(!processedStr.empty()) processedStr.pop_back();
+            res.push_back(processedStr);
+            return;
+        }
+        string temp = "";
+        for(int i = pos; i < s.size(); i++){
+             temp.push_back(s[i]);
+            if(m_setDict.find(temp) != m_setDict.end()){
+                processedStr.append(temp);
+                processedStr.push_back(' ');
+                dfs(res, s, processedStr, i+1);
+                processedStr.pop_back();
+                processedStr.erase(processedStr.size() - temp.size(), temp.size());
+            }
+        }
+    }
+public:
+    vector<string> wordBreak(string s, vector<string>& wordDict) {
+        for(string& w : wordDict){
+            m_setDict.insert(w);
+        }
+        vector<string> res;
+        if(s.empty() || wordDict.empty()) return res;
+        dfs(res, s, "", 0);
+        return res;
+    }
+};
+
+/*
+We can guide the search by eliminate impossible situation. By this, we first do a scan to get the longest and shortest length of the words, then we  build up a DP table to get the position that we can break the string validly. If in the end, we find that there is no valid partition from the dictionary, we can simply return null result. The implementation is straightforward, however, combining several techniques for this optimization is not an easy task.
+*/
+class Solution {
+private:
+    int minLen = INT_MAX, maxLen = INT_MIN;
+    int len_s = 0;
+public:
+    void buildPath(string &s, vector<string> &res, string cur, unordered_set<string> &dict, vector<int>& isBreakable, int pos){
+        //We use minLen and maxLen to shrink the searching range
+        for(int i = minLen; i <= min(maxLen, len_s - pos); i++){
+            //Instead doing the actual check using dfs, we can directly check our table here.
+            if(isBreakable[i + pos]==1 && dict.count(s.substr(pos, i))!=0){
+                if(i + pos == len_s) res.push_back(cur + s.substr(pos, i));
+                else buildPath(s, res, cur + s.substr(pos, i) + " ", dict, isBreakable, i+pos);
+            }
+        }
+    }
+    vector<string> wordBreak(string s, vector<string>& wordDict) {
+        vector<string> res;
+        if(wordDict.empty()) return res;
+        unordered_set<string> dict(wordDict.begin(), wordDict.end());
+        len_s = s.size();
+        vector<int> isBreakable(len_s+1, 0);
+        //Cut from the last of the string, which is comparing empty string, always be 1
+        isBreakable[len_s] = 1;
+        //Note the word.size() returns an usigned int
+        for(string word: wordDict){
+            minLen = minLen > static_cast<int>(word.size()) ? word.size() : minLen;
+            maxLen = maxLen < static_cast<int>(word.size()) ? word.size() : maxLen;
+        }
+        //Build our DP table
+        for(int i = len_s - minLen; i >= 0; i--){
+            for(int j = minLen; j <= min(maxLen, len_s - i); j++){
+                if(isBreakable[j+ i] == 1 && dict.count(s.substr(i, j))!=0){
+                    isBreakable[i] = 1;
+                    break;
+                }
+            }
+        }
+        //If we cannot find a valid partition, we can simply return res
+        if(isBreakable[0])
+            buildPath(s, res, "", dict, isBreakable, 0);
+        return res;
+    }
+};
+
+
+
+
+
+
+
+
+
