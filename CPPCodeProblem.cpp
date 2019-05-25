@@ -100,3 +100,58 @@ int main() {
   }
   return 0;
 }
+
+//////////////////////////////////////////////////////////
+   class Base
+    {
+    public:
+        Base()              { cout << "Base::Base()\n"; }
+        virtual ~Base()         { cout << "Base::~Base()\n"; }
+        void f()            { cout << "Base::f()\n"; }
+        virtual void v()        { cout << "Base::v()\n"; }
+    };
+
+    class Derived : public Base
+    {
+    public:
+        Derived()           { cout << "Derived::Derived()\n"; }
+        virtual ~Derived()      { cout << "Derived::~Derived()\n"; }
+        void f()            { cout << "Derived::f()\n"; }
+        virtual void v()        { cout << "Derived::v()\n"; }
+    };
+
+    void g(Base base)
+    {
+        base.v();
+    }
+
+    int main()
+    {
+        Base * d = new Derived();
+        /*
+        Base::Base()
+        Derived::Derived()
+        */
+        d->f();
+        /*
+        Base::f()
+        */
+        d->v();
+        /*
+        Derived::v()
+        */
+        g(*d);
+        /*
+        Base base = *d;
+        Base::v()
+        Base::~Base()
+        */
+        delete d;
+        /*
+        Base::Base()
+        Derived::~Derived()
+        Base::~Base()
+        
+        */
+        return 0;
+    }
