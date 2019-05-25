@@ -30,5 +30,44 @@ public:
     }
 };
 
+//130. Surrounded Regions
+//https://leetcode.com/problems/surrounded-regions/
+/*
+Wrong try
+*/
+class Solution {
+private:
+    bool dfs(vector<vector<char>>& B, int i, int j){
+        if(i < 0 || i >= B.size() || j < 0 || j >= B[0].size())
+            return false;
+        if(B[i][j] == 'X' ) return true;
+        if(B[i][j] == 'O'){
+            B[i][j] = '+';
+            if(dfs(B, i+1, j) && dfs(B, i-1, j) && dfs(B, i, j+1) && dfs(B, i, j-1))
+                return true;
+            B[i][j] = 'O';
+        } 
+        return false;
+    }
+public:
+    void solve(vector<vector<char>>& board) {
+        if(board.empty()) return;
+        int row = board.size();
+        int col = board[0].size();
+        for(int i = 0; i < row; ++i){
+            for(int j = 0; j < col; ++j){
+                if(board[i][j] == 'O'){
+                    dfs(board, i, j);
+                }
+            }
+        }
+        for(int i = 0; i < row; i++){
+            for(int j = 0; j < col; j++){
+                if(board[i][j] == '+')
+                    board[i][j] = 'X';
+            }
+        }
+    }
+};
 
 
