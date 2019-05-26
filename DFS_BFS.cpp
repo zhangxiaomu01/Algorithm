@@ -115,5 +115,66 @@ public:
     }
 };
 
+//127. Word Ladder
+//https://leetcode.com/problems/word-ladder/
+/*
+The concept is not hard, the problem is too much coding work.
+The bidirectional BFS needs more practice... Note how we build the level one by one and maintain the pointer points to some layer...
+*/
+class Solution {
+public:
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        if(wordList.empty()) return 0;
+        unordered_set<string> wl;
+        unordered_set<string> start, end;
+        unordered_set<string>* pStart, *pEnd;
+        for(string& s : wordList) wl.insert(s);
+        
+        //We return 0 immediately if we cannot find endList in wordList
+        if(wl.find(endWord) == wl.end()) return 0;
+        
+        start.insert(beginWord);
+        end.insert(endWord);
+        int ladderLength = 2;
+        
+        //Note we can guarantee in the end one of them will be empty through swap(*pStart, levelWL)
+        while(!start.empty() && !end.empty()){
+            //We implement bidirectional BFS here, we change the search direction for each iteration
+            if(start.size() > end.size()){
+                pStart = &end;
+                pEnd = &start;
+            }else{
+                pStart = &start;
+                pEnd = &end;
+            }
+            //Store the potential word for current level
+            unordered_set<string> levelWL;
+            for(unordered_set<string>::iterator it = pStart->begin(); it != pStart->end(); it++){
+                string currentWord = *it;
+                wl.erase(currentWord);
+                for(int i = 0; i < currentWord.size(); i++){
+                    char c = currentWord[i];
+                    for(int j = 0; j < 26; j++){
+                        currentWord[i] = 'a' + j;
+                        //Our search meets from both direction, return the length
+                        if(pEnd->find(currentWord) != pEnd->end()) return ladderLength;
+                        //We build a new level here, and delete the word from wl to indicate that we already visit this word
+                        if(wl.find(currentWord) != wl.end()){
+                            levelWL.insert(currentWord);
+                            wl.erase(currentWord);
+                        }
+                    }
+                    //Note we have to change back the character to prepare for the next round
+                    currentWord[i] = c;
+                }
+            }
+            ladderLength++;
+            //Here we mark swap the internal container of pStart and levelWL, which means we go to the current level for the next iteration
+            //We cannot simply do pStart = &levelWL, since levelWL is allocated in stack and will be destroyed after the iteration.
+            swap(*pStart, levelWL);
+        }
+        return 0;
+    }
+};
 
 
