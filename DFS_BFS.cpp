@@ -178,3 +178,74 @@ public:
 };
 
 
+//51. N-Queens
+//https://leetcode.com/problems/n-queens/
+/*
+Similar to backtracking, how to use flag to mark whether we have a queen in the block is triky...
+*/
+class Solution {
+public:
+/**    | | |                / / /             \ \ \
+  *    O O O               O O O               O O O
+  *    | | |              / / / /             \ \ \ \
+  *    O O O               O O O               O O O
+  *    | | |              / / / /             \ \ \ \ 
+  *    O O O               O O O               O O O
+  *    | | |              / / /                 \ \ \
+  *   3 columns        5 135° diagonals     5 45° diagonals    (when n is 3)
+  */
+    vector<vector<string>> solveNQueens(int n) {
+        vector<vector<string>> res;
+        vector<string> Q(n, string(n, '.'));
+        vector<int> flagCol(n, 1), flag45D(2*n-1, 1), flag135D(2*n-1,1);
+        solveNQueens(res, Q, flagCol, flag45D, flag135D, n, 0);
+        return res;
+        
+    }
+    
+    void solveNQueens(vector<vector<string>> & res, vector<string>& Q, vector<int>&f1, vector<int>& f2, vector<int> &f3, int n, int row){
+        if(row == n){
+            res.push_back(Q);
+            return;
+        }
+        for(int col = 0; col<n; col++){
+            if(f1[col]&& f2[col+row] && f3[n-1 + col - row]){
+                f1[col] = f2[col+row] = f3[n-1 + col-row] = 0;
+                Q[col][row] = 'Q';
+                solveNQueens(res, Q, f1, f2, f3, n, row+1);
+                Q[col][row] = '.';
+                //Need to reset these three vectors as well
+                f1[col] = f2[col+row] = f3[n-1 + col-row] = 1;
+            }
+        }
+    }
+};
+
+//52. N-Queens II
+//https://leetcode.com/problems/n-queens-ii/
+//Exactly the same thing as before
+class Solution {
+public:
+    int totalNQueens(int n) {
+        int res = 0;
+        vector<int> flagCol(n, 1), flag45D(2*n-1, 1), flag135D(2*n-1,1);
+        solveNQueens(res, flagCol, flag45D, flag135D, n, 0);
+        return res;
+        
+    }
+        void solveNQueens(int &count, vector<int>&f1, vector<int>& f2, vector<int> &f3, int n, int row){
+        if(row == n){
+            count++;
+            return;
+        }
+        for(int col = 0; col<n; col++){
+            if(f1[col]&& f2[col+row] && f3[n-1 + col - row]){
+                f1[col] = f2[col+row] = f3[n-1 + col-row] = 0;
+                solveNQueens(count, f1, f2, f3, n, row+1);
+                //Need to reset these three vectors as well
+                f1[col] = f2[col+row] = f3[n-1 + col-row] = 1;
+            }
+        }
+    }
+};
+
