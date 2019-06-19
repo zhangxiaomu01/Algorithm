@@ -316,7 +316,6 @@ public:
             
             //If we cannot find any connection from the above, we immediately return ladders
             if(next.empty()) {
-                //cout << "empty " << endl;
                 return ladders;
             }
             
