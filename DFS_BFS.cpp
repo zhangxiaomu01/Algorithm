@@ -249,3 +249,84 @@ public:
     }
 };
 
+//126. Word Ladder II
+//https://leetcode.com/problems/word-ladder-ii/
+/*
+We are actually doing BFS. Actually, we first build the graph based on the relationship between two words. 
+Then we retrieve the ancestor information and rebuild the ladder in the end.
+*/
+class Solution {
+private:
+    //Form a graph which records the ancestor for each node
+    unordered_map<string, vector<string>> ancestors;
+    vector<string> ladder;
+    vector<vector<string>> ladders;
+    
+    void getChildren(string& word, unordered_set<string>& next, unordered_set<string>& dict){
+        int len = word.size();
+        //Make a copy of the word, when we change word, we can easily build the ancestor relationship in genLadders function
+        string ancestor = word;
+        for(int i = 0; i < len; i++){
+            char tempC = word[i];
+            for(int j = 0; j < 26; j++){
+                char c = 'a' + j;
+                word[i] = c;
+                if(dict.find(word) != dict.end()){
+                    next.insert(word);
+                    ancestors[word].push_back(ancestor);
+                }
+            }
+            word[i] = tempC;
+        }
+    }
+    //Rebuild the word ladders based on the ancestor information
+    void genLadders(const string& s, const string& e){
+        if(s == e){
+            reverse(ladder.begin(), ladder.end());
+            ladders.push_back(ladder);
+            reverse(ladder.begin(), ladder.end());
+            return;
+        }
+        for(string ancestor : ancestors[e]){
+            ladder.push_back(ancestor);
+            genLadders(s, ancestor);
+            ladder.pop_back();
+        }
+        
+    }
+    
+public:
+    vector<vector<string>> findLadders(string beginWord, string endWord, vector<string>& wordList) {
+        unordered_set<string> dict(wordList.begin(), wordList.end());
+        if(dict.find(endWord) == dict.end()) return ladders;
+        dict.insert(beginWord);
+        dict.insert(endWord);
+        //We define our current level and next level, and will swap later
+        unordered_set<string> cur, next;
+        cur.insert(beginWord);
+        ladder.push_back(endWord);
+        
+        while(true){
+            //We first need to remove all the potential strings from our dictionary to prevent repetitive visit
+            for(string s : cur)
+                dict.erase(s);
+            //Find the elements in successive layer
+            for(string s: cur)
+                getChildren(s, next, dict);
+            
+            //If we cannot find any connection from the above, we immediately return ladders
+            if(next.empty()) {
+                //cout << "empty " << endl;
+                return ladders;
+            }
+            
+            if(next.find(endWord) != next.end()){
+                genLadders(beginWord, endWord);
+                return ladders;
+            }
+            cur.clear();
+            swap(cur, next);
+        }
+        return ladders;
+    }
+};
