@@ -207,5 +207,46 @@ public:
     }
 };
 
+//100. Same Tree
+//https://leetcode.com/problems/same-tree/
+/*
+Simple recursion problem.
+ */
+class Solution {
+public:
+    bool isSameTree(TreeNode* p, TreeNode* q) {
+        if(!p)
+            return !q;
+        if(!q)
+            return !p;
+        return p->val == q->val && isSameTree(p->left, q->left) && isSameTree(p->right, q->right);
+    }
+};
+
+//Iterative Version
+class Solution {
+public:
+    bool isSameTree(TreeNode* p, TreeNode* q) {
+        stack<TreeNode*> pStack, qStack;
+        if(p == NULL || q ==NULL) return p == q;
+        pStack.push(p);
+        qStack.push(q);
+        while(!pStack.empty() && !qStack.empty()){
+            TreeNode* pv = pStack.top();
+            TreeNode* qv = qStack.top();
+            pStack.pop();
+            qStack.pop();
+            if(pv->val != qv->val) return false;
+            if(pv->left != NULL) pStack.push(pv->left);
+            if(qv->left != NULL) qStack.push(qv->left);
+            if(pStack.size() != qStack.size()) return false;
+            if(pv->right != NULL) pStack.push(pv->right);
+            if(qv->right != NULL) qStack.push(qv->right);
+            if(pStack.size() != qStack.size()) return false;
+                      
+        }
+        return pStack.size() == qStack.size();
+    }
+};
 
 
