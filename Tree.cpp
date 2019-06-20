@@ -250,3 +250,49 @@ public:
 };
 
 
+//101. Symmetric Tree
+//https://leetcode.com/problems/symmetric-tree/
+/*
+Recursion + Iteration: Interesting problem
+ */
+class Solution {
+private:
+    bool isValid(TreeNode* l, TreeNode* r){
+        if(l == nullptr && r == nullptr) return true;
+        else if( l == nullptr || r == nullptr) return false;
+        else return l->val == r->val && isValid(l->left, r->right) && isValid(l->right, r->left);
+    }
+public:
+    bool isSymmetric(TreeNode* root) {
+        if(root == nullptr) return true;
+        return isValid(root->left, root->right);
+    }
+};
+
+//Iterative Version
+class Solution {
+public:
+    bool isSymmetric(TreeNode* root) {
+        if(!root) return true;
+        queue<TreeNode*> Q;
+        Q.push(root->left);
+        Q.push(root->right);
+        while(!Q.empty()){
+            TreeNode* l = Q.front();
+            Q.pop();
+            TreeNode* r = Q.front();
+            Q.pop();
+            if((!l && r) || (!r && l)) return false;
+            if(l != nullptr && r != nullptr){
+                if(l->val != r->val) return false;
+                Q.push(l->left);
+                Q.push(r->right);
+                Q.push(l->right);
+                Q.push(r->left);
+            }
+        }
+        return true;
+    }
+};
+
+
