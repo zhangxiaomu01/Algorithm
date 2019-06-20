@@ -155,5 +155,57 @@ public:
     }
 };
 
+//102. Binary Tree Level Order Traversal
+//https://leetcode.com/problems/binary-tree-level-order-traversal/
+/*
+BFS + DFS: DFS solution is tricky
+ */
+//BFS
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        vector<vector<int>> res;
+        if(!root) return res;
+        //We can use the length of the tree to indicate the elements in this level
+        //A common trick, remember
+        queue<TreeNode*> Q;
+        Q.push(root);
+        while(!Q.empty()){
+            int len = Q.size();
+            vector<int> tempStack;
+            for(int i = 0; i < len; i++){
+                TreeNode* cur = Q.front();
+                Q.pop();
+                tempStack.push_back(cur->val);
+                if(cur->left) Q.push(cur->left);
+                if(cur->right) Q.push(cur->right);
+            }
+            res.push_back(tempStack);
+        }
+        return res;
+    }
+};
+
+//DFS
+class Solution {
+private:
+    void dfs(vector<vector<int>>& res, TreeNode* node, int level){
+        int len = res.size();
+        //How to maintain the current layer list is critical here.
+        if(res.empty() || len < level + 1)
+            res.push_back(vector<int>());
+        res[level].push_back(node->val);
+        if(node->left) dfs(res, node->left, level+1);
+        if(node->right) dfs(res, node->right, level + 1);
+    }
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        vector<vector<int>> res;
+        if(!root) return res;
+        dfs(res, root, 0);
+        return res;
+    }
+};
+
 
 
