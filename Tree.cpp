@@ -295,4 +295,41 @@ public:
     }
 };
 
-
+//226. Invert Binary Tree
+//https://leetcode.com/problems/invert-binary-tree/
+/*
+Note we are actually swapping the left and right children level by level. This holds true for both recursive and iterative version.
+ */
+class Solution {
+public:
+    //Root 
+    TreeNode* invertTree(TreeNode* root) {
+        if(!root) return root;
+        TreeNode* tempNode = root->left;
+        root->left = invertTree(root->right);
+        root->right = invertTree(tempNode);
+        return root;
+    }
+};
+//Iterative Version
+class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        if(!root) return root;
+        
+        stack<TreeNode*> st;
+        st.push(root);
+        while(!st.empty()){
+            TreeNode* tempNode = st.top();
+            st.pop();
+            //Swap node
+            TreeNode* tempLeft = tempNode->left;
+            tempNode->left = tempNode->right;
+            tempNode->right = tempLeft;
+            //Push next level, we discard null node
+            if(tempNode->left) st.push(tempNode->left);
+            if(tempNode->right) st.push(tempNode->right);
+        }
+        return root;
+    }
+};
