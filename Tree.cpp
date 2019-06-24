@@ -335,3 +335,66 @@ public:
 };
 
 
+//257. Binary Tree Paths
+//https://leetcode.com/problems/binary-tree-paths/
+//DFS version
+class Solution {
+private:
+    void dfs(vector<string>& res, TreeNode* node, string s){
+        if(!node) return;
+        s += to_string(node->val);
+        if(!node->left && !node->right) {
+            res.push_back(s);
+            return;
+        }
+        if(node->left) {
+            dfs(res, node->left, s + "->");
+        }
+        if(node->right){
+            dfs(res, node->right, s + "->");
+        }
+    }
+public:
+    vector<string> binaryTreePaths(TreeNode* root) {
+        vector<string> res;
+        if(!root) return res;
+        dfs(res, root, "");
+        return res;
+    }
+};
+
+//Iterative Version
+class Solution {
+public:
+    vector<string> binaryTreePaths(TreeNode* root) {
+        vector<string> res;
+        if(!root) return res;
+        stack<string> path;
+        stack<TreeNode*> st;
+        st.push(root);
+        path.push(to_string(root->val));
+        while(!st.empty()){
+            TreeNode* node = st.top();
+            st.pop();
+            string s = path.top();
+            path.pop();
+            if(!node->left && !node->right) {
+                res.push_back(s);
+                continue;
+            }
+            if(node->right){
+                st.push(node->right);
+                path.push(s + "->" + to_string(node->right->val));
+            }
+            if(node->left){
+                st.push(node->left);
+                path.push(s + "->" + to_string(node->left->val));
+            }
+            
+        }
+        return res;
+    }
+};
+
+
+
