@@ -397,4 +397,60 @@ public:
 };
 
 
+//112. Path Sum
+//https://leetcode.com/problems/path-sum/
+//Iterative version
+class Solution {
+public:
+    bool hasPathSum(TreeNode* root, int sum) {
+        if(!root) return false;
+        stack<TreeNode*> st;
+        st.push(root);
+        stack<int> sumSt;
+        sumSt.push(root->val);
+        while(!st.empty()){
+            TreeNode* node = st.top();
+            st.pop();
+            int curSum = sumSt.top();
+            sumSt.pop();
+            if(!node->left && !node->right){
+                if(sum == curSum)
+                    return true;
+            }
+            if(node->left){
+                st.push(node->left);
+                sumSt.push(curSum + node->left->val);
+            }
+            if(node->right){
+                st.push(node->right);
+                sumSt.push(curSum + node->right->val);
+            }
+        }
+        return false;
+        
+    }
+};
+//Recursive version
+class Solution {
+private:
+    bool dfs(TreeNode* node, int sum, int cur){
+        if(sum == cur + node->val && !node->left && !node->right)
+            return true;
+        bool res = false;
+        if(node->left) res = res || dfs(node->left, sum, cur + node->val);
+        if(res) return true;
+        if(node->right) res = res || dfs(node->right, sum, cur + node->val);
+        return res;
+    }
+public:
+    bool hasPathSum(TreeNode* root, int sum) {
+        if(!root) return false;
+        return dfs(root, sum, 0);
+    }
+};
+
+
+
+
+
 
