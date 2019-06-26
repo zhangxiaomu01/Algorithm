@@ -449,6 +449,76 @@ public:
     }
 };
 
+//113. Path Sum II
+//https://leetcode.com/problems/path-sum-ii/
+/*
+Tree traversal problem: Iterative and recursive
+ */
+//Recursive version
+class Solution {
+private:
+    void dfs(vector<vector<int>>& res, vector<int> V, const TreeNode* node, int curSum, int sum){
+        curSum += node->val;
+        V.push_back(node->val);
+        if(!node->left && !node->right && sum == curSum){
+            res.push_back(V);
+            return;
+        }
+        if(!node->left && !node->right){
+            V.pop_back();
+            return;
+        }
+        if(node->left) dfs(res, V, node->left, curSum, sum);
+        if(node->right) dfs(res, V, node->right, curSum, sum);
+    }
+public:
+    vector<vector<int>> pathSum(TreeNode* root, int sum) {
+        vector<vector<int>> res;
+        if(!root) return res;
+        vector<int> tempSequence;
+        dfs(res, tempSequence, root, 0, sum);
+        return res;
+    }
+};
+
+//Iterative version: very effective
+class Solution {
+public:
+    vector<vector<int>> pathSum(TreeNode* root, int sum) {
+        vector<vector<int>> res;
+        if(!root) return res;
+        stack<TreeNode*> st;
+        vector<int> path;
+        //Using two flags to keep track of current node and previous node
+        TreeNode* cur = root;
+        TreeNode* pre = nullptr;
+        int curNum = 0;
+        while(cur!=nullptr || !st.empty()){
+            while(cur){
+                st.push(cur);
+                path.push_back(cur->val);
+                curNum += cur->val;
+                cur = cur->left;
+            }
+            cur = st.top(); //We step back to the previous node
+            if(cur->right != nullptr && cur->right != pre){
+                //if we haven't visited the right node, we need to visit it
+                cur = cur->right;
+                continue;
+            }
+            if(cur->right == nullptr && cur->left == nullptr && sum == curNum){
+                res.push_back(path);
+            }
+            
+            st.pop();
+            pre = cur;
+            curNum -= cur->val;
+            path.pop_back();
+            cur = nullptr;
+        }
+       return res; 
+    }
+};
 
 
 
