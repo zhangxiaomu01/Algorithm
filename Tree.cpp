@@ -520,6 +520,149 @@ public:
     }
 };
 
+//129. Sum Root to Leaf Numbers
+//https://leetcode.com/problems/sum-root-to-leaf-numbers/
+/*
+DFS or BFS
+ */
+//DFS
+class Solution {
+private:
+    void dfs(TreeNode* node, string s, int& sum){
+        s.push_back(node->val + '0');
+        if(!node->left && !node->right){
+            sum += stoi(s);
+        }
+        if(node->left) dfs(node->left, s, sum);
+        if(node->right) dfs(node->right, s, sum);
+    }
+public:
+    int sumNumbers(TreeNode* root) {
+        if(!root) return 0;
+        int totalSum = 0;
+        dfs(root, "", totalSum);
+        return totalSum;
+    }
+};
+//
+class Solution {
+public:
+    int sumNumbers(TreeNode* root) {
+        stack<TreeNode*> st;
+        if(!root) return 0;
+        string s = "";
+        int totalSum = 0;
+        TreeNode* cur = root;
+        TreeNode* pre = nullptr;
+        while(cur || !st.empty()){
+            while(cur){
+                st.push(cur);
+                s.push_back(cur->val + '0');
+                cur = cur->left;
+            }
+            cur = st.top();
+            if(cur->right && cur->right != pre){
+                cur = cur->right;
+                continue;
+            }
+            //We need to add !cur->left, because when we traceback, we still need to guarantee that cur is a leaf
+            if(!cur->right && !cur->left){
+                totalSum += stoi(s);
+            }
+            pre = cur;
+            //We must set cur to nullptr, or we will in a loop
+            cur = nullptr;
+            st.pop();
+            s.pop_back();
+        }
+        return totalSum;
+    }
+};
+
+//Memory Efficient DFS: We do not need to save the whole string and covert it to integer
+class Solution {
+public:
+    int sumNumbers(TreeNode* root) {
+        if(root == NULL) return 0;
+        return rec(root, 0);
+        
+    }
+    int rec(TreeNode* root, int currentSum){
+        if(root == NULL){
+            return 0;
+        }
+        //Save the result on the fly
+        int temp = currentSum*10+root->val;
+        if(root->left == NULL && root->right == NULL) return temp;
+        return rec(root->left, temp) + rec(root->right, temp);
+    }
+};
+
+//An interesting idea: save the result on each node...
+class Solution {
+public:
+    int sumNumbers(TreeNode* root) {
+        if(root == NULL) return 0;
+        stack<TreeNode*> st;
+        st.push(root);
+        int sum = 0;
+        while(!st.empty()){
+            TreeNode* node = st.top();
+            st.pop();
+            
+            if(node->right != NULL){
+                node->right->val = node->val*10 + node->right->val;                
+                st.push(node->right);
+            }
+            if(node->left != NULL){
+                node->left->val = node->val*10 + node->left->val;
+                st.push(node->left);
+            }
+            
+            if(node->left == NULL && node->right == NULL)
+                sum += node->val;
+        }        
+        return sum;        
+    }
+};
+
+//111. Minimum Depth of Binary Tree
+//https://leetcode.com/problems/minimum-depth-of-binary-tree/
+//DFS
+class Solution {
+public:
+    int minDepth(TreeNode* root) {
+        if(root == nullptr) return 0;
+        if(!root->left) return minDepth(root->right)+1;
+        if(!root->right) return minDepth(root->left) + 1;
+        return min(minDepth(root->left), minDepth(root->right))+1;
+    }
+};
+//BFS
+class Solution {
+public:
+    int minDepth(TreeNode* root) {
+        if(!root) return 0;
+        queue<TreeNode*> Q;
+        int level = 0;
+        Q.push(root);
+        while(!Q.empty()){
+            int len = Q.size();
+            level ++;
+            for(int i = 0; i < len; i++){
+                TreeNode* node = Q.front();
+                Q.pop();
+                if(node->left)
+                    Q.push(node->left);
+                if(node->right)
+                    Q.push(node->right);
+                if(!node->left && !node->right)
+                    return level;
+            }
+        }
+        return level;
+    }
+};
 
 
 
