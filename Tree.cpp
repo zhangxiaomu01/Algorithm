@@ -665,5 +665,65 @@ public:
 };
 
 
+//104. Maximum Depth of Binary Tree
+//https://leetcode.com/problems/maximum-depth-of-binary-tree/
+//DFS
+class Solution {
+private:
+    int dfs(TreeNode* node){
+        if(!node) return 0;
+        if(!node->left) return dfs(node->right) + 1;
+        if(!node->right) return dfs(node->left) + 1;
+        return max(dfs(node->left), dfs(node->right))+1;
+    }
+public:
+    int maxDepth(TreeNode* root) {
+        return dfs(root);
+    }
+};
+//BFS
+class Solution {
+public:
+    int maxDepth(TreeNode* root) {
+        if(!root) return 0;
+        queue<TreeNode*> Q;
+        Q.push(root);
+        int level = 0;
+        while(!Q.empty()){
+            int len = Q.size();
+            level++;
+            for(int i = 0; i < len; i++){
+                TreeNode* node = Q.front();
+                Q.pop();
+                if(node->left) Q.push(node->left);
+                if(node->right)Q.push(node->right);
+            }
+        }
+        return level;
+    }
+};
+
+//110. Balanced Binary Tree
+//https://leetcode.com/problems/balanced-binary-tree/
+/* DFS */
+class Solution {
+    int rec(TreeNode* node){
+        if(!node) return 1;
+        int l_height = rec(node->left);
+        if(l_height == -1) return -1;
+        int r_height = rec(node->right);
+        if(r_height == -1) return -1;
+        
+        if(abs(l_height - r_height) > 1) return -1;
+        else return max(l_height, r_height) + 1;
+    }
+public:
+    bool isBalanced(TreeNode* root) {
+        if(!root) return true;
+        return rec(root) != -1;        
+    }
+};
+
+
 
 
