@@ -725,5 +725,27 @@ public:
 };
 
 
+//124. Binary Tree Maximum Path Sum
+//https://leetcode.com/problems/binary-tree-maximum-path-sum/
+//A tricky problem. The insight how to form the recursion formula is critical.
+class Solution {
+private:
+    int maxVal = numeric_limits<int>::min();
+    int rec(TreeNode* node){
+        if(!node) return 0;
+        int left = max(0, rec(node->left));
+        int right = max(0, rec(node->right));
+        maxVal = max(maxVal, left + right + node->val);
+        //Note we only need to return the maximum path of the two, then we can from the valid path
+        return max(left, right) + node->val;
+    }
+public:
+    int maxPathSum(TreeNode* root) {
+        rec(root);
+        return maxVal;
+    }
+};
+
+
 
 
