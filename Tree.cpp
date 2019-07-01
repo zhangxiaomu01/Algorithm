@@ -724,6 +724,44 @@ public:
     }
 };
 
+//Iterative: Post order traversal. Not memory efficient, not easy to get the insight
+class Solution {
+private:
+    deque<TreeNode*>* buildTopology(TreeNode* node){
+        stack<TreeNode*> st;
+        st.push(node);
+        deque<TreeNode*>* Qptr = new deque<TreeNode*>();
+        while(!st.empty()){
+            TreeNode* tempNode = st.top();
+            st.pop();
+            Qptr->push_front(tempNode);
+            if(tempNode->left) st.push(tempNode->left);
+            if(tempNode->right) st.push(tempNode->right);
+        }
+        return Qptr;
+    }
+public:
+    int maxPathSum(TreeNode* root) {
+        if(!root) return 0;
+        //Save intermedia result, the leaft node will have 0 value
+        unordered_map<TreeNode*, int> dict;
+        dict.insert({nullptr, 0});
+        int maxValue = numeric_limits<int>::min();
+        deque<TreeNode*>* Qptr = buildTopology(root);
+        for(auto it = Qptr->begin(); it != Qptr->end(); it++){
+            //Since it's post order traversal, we always start with null node
+            int leftMax = max(dict[(*it)->left], 0);
+            int rightMax = max(dict[(*it)->right], 0);
+            //Note minimum possible value of leftMax and rightMax is 0
+            maxValue = max(maxValue, leftMax + rightMax + (*it)->val);
+            //Save the current maximum value when this node is included in the path
+            dict[(*it)] = max(leftMax, rightMax) + (*it)->val;
+            
+        }
+        return maxValue;
+    }
+};
+
 
 
 
