@@ -787,3 +787,68 @@ public:
 };
 
 
+//337. House Robber III
+//https://leetcode.com/problems/house-robber-iii/
+/*In general, this problem is DP + Tree Traversal. For each node, we need to consider two conditions, whether we rob this node, or we skip it. 
+We utilize a pair data structure to store the maximum profit we can get if we do not rob this house and the maximum profit if we rob this house. 
+We will consider the whole tree as our DP table and build this table from bottom (leaf -> root). 
+Then the general idea will be we do postorder traversal, and build the tree, and in the end, compare the maximum profit of robbing root and not
+robbing root.
+ */
+class Solution {
+private:
+    pair<int, int> doRob(TreeNode* node){
+        if(!node) return make_pair(0, 0);
+        auto l = doRob(node->left);
+        auto r = doRob(node->right);
+        int robNodeProfit = l.first + r.first + node->val;
+        int nRobNodeProfit = max(l.first, l.second) + max(r.first, r.second);
+        return make_pair(nRobNodeProfit, robNodeProfit);
+    }
+public:
+    int rob(TreeNode* root) {
+        if(!root) return 0;
+        auto robHouse = doRob(root);
+        return max(robHouse.first, robHouse.second);
+    }
+};
+
+//Itrative version, first build the post-order traversal queue. Then we can replicate the recursive process.
+class Solution {
+private:
+    deque<TreeNode*>* buildQueue(TreeNode* node){
+        deque<TreeNode*>* Qptr = new deque<TreeNode*>();
+        stack<TreeNode*> st;
+        st.push(node);
+        while(!st.empty()){
+            TreeNode* tempNode = st.top();
+            st.pop();
+            Qptr->push_front(tempNode);
+            if(tempNode->right) st.push(tempNode->right);
+            if(tempNode->left) st.push(tempNode->left);
+        }
+        return Qptr;
+    }
+    
+public:
+    int rob(TreeNode* root) {
+        if(!root) return 0;
+        deque<TreeNode*>* Qptr = buildQueue(root);
+        unordered_map<TreeNode*, pair<int, int>> dict;
+        //The first element of pair means without robbing the house, the potential maximum profit; second means we robber the house
+        dict.insert({nullptr, make_pair(0, 0)});
+        for(auto it = Qptr->begin(); it != Qptr->end(); it++){
+            //The max profit we can get if we rob the node
+            int robNode = dict[(*it)->left].first + dict[(*it)->right].first + (*it)->val;
+            //The max profit we can get if we do not rob the node
+            int robnNode = max(dict[(*it)->left].first, dict[(*it)->left].second) + max(dict[(*it)->right].first, dict[(*it)->right].second);
+            //Save the result to hash table
+            dict[(*it)] = make_pair(robnNode, robNode);
+        }
+        return max(dict[root].first, dict[root].second);
+    }
+};
+
+
+
+
