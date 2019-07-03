@@ -965,6 +965,54 @@ public:
     }
 };
 
+//199. Binary Tree Right Side View
+//https://leetcode.com/problems/binary-tree-right-side-view/
+/* Iterative BFS */
+class Solution {
+public:
+    vector<int> rightSideView(TreeNode* root) {
+        vector<int> res;
+        if(!root) return res;
+        queue<TreeNode*> Q;
+        Q.push(root);
+        while(!Q.empty()){
+            int len = Q.size();
+            for(int i = 0; i < len; i++){
+                TreeNode* node = Q.front();
+                Q.pop();
+                if(i == len-1){
+                    res.push_back(node->val);
+                }
+                if(node->left) Q.push(node->left);
+                if(node->right) Q.push(node->right);
+            }
+        }
+        return res;
+    }
+};
+/* Recursive version */
+class Solution {
+private:
+    void BFS(vector<int>& res, TreeNode* node, int level){
+        if(!node) return;
+        if(res.size() <= level){
+            res.push_back(node->val);
+        }else{
+            //We save the final element of this level to our result vector
+            res[level] = node->val;
+        }
+        BFS(res, node->left, level+1);
+        BFS(res, node->right, level+1);
+        
+    }
+public:
+    vector<int> rightSideView(TreeNode* root) {
+        vector<int> res;
+        if(!root) return res;
+        BFS(res, root, 0);
+        return res;
+    }
+};
 
 
 
