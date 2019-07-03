@@ -849,6 +849,124 @@ public:
     }
 };
 
+//107. Binary Tree Level Order Traversal II
+//https://leetcode.com/problems/binary-tree-level-order-traversal-ii/
+//Iterative BFS
+class Solution {
+public:
+    vector<vector<int>> levelOrderBottom(TreeNode* root) {
+        vector<vector<int>> res;
+        if(!root) return res;
+        queue<TreeNode*> Q;
+        Q.push(root);
+        while(!Q.empty()){
+            int len = Q.size();
+            vector<int> tempVec;
+            for(int i = 0; i < len; i++){
+                TreeNode* tempNode = Q.front();
+                Q.pop();
+                tempVec.push_back(tempNode->val);
+                if(tempNode->left) Q.push(tempNode->left);
+                if(tempNode->right) Q.push(tempNode->right);
+            }
+            res.push_back(tempVec);
+        }
+        reverse(res.begin(), res.end());
+        return res;
+    }
+};
+
+//DFS
+class Solution {
+private:
+    void dfs(vector<vector<int>>& res, TreeNode* node, int level){
+        if(!node) return;
+        if(res.size() <= level)
+            res.push_back(vector<int>());
+        res[level].push_back(node->val);
+        if(node->left) dfs(res, node->left, level+1);
+        if(node->right) dfs(res, node->right, level+1);
+    }
+public:
+    vector<vector<int>> levelOrderBottom(TreeNode* root) {
+        vector<vector<int>> res;
+        if(!root) return res;
+        dfs(res, root, 0);
+        reverse(res.begin(), res.end());
+        return res;
+    }
+};
+
+//103. Binary Tree Zigzag Level Order Traversal
+//https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/
+//Iterative BFS
+class Solution {
+public:
+    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+        vector<vector<int>> res;
+        if(root == NULL) return res;
+        queue<TreeNode*> tree;
+        tree.push(root);
+        bool flag = true;
+        
+        while(!tree.empty()){
+            int count = tree.size();
+            vector<int> level(count);
+            for(int i = 0; i < count; i++){
+                TreeNode* temp = tree.front();
+                tree.pop();
+                int index = flag? i: count - i - 1;
+                level[index] = temp->val;
+                
+                if(temp->left!=NULL){
+                    tree.push(temp->left);
+                }
+                if(temp->right!= NULL)
+                    tree.push(temp->right);
+            }
+            res.push_back(level);
+            flag = !flag;
+        }
+        return res;
+    }
+};
+
+//Recursive BFS
+class Solution {
+public:
+    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+        vector<list<int>> res;
+        vector<vector<int>> f_res;
+        rec(root, res, 0);
+        for(int i = 0; i < res.size(); i++)
+        {
+            f_res.push_back(vector<int>());
+            int list_s = res[i].size();
+            for(int j = 0; j < list_s; j++){
+                f_res[i].push_back(res[i].front());
+                res[i].pop_front();
+            }
+        }
+        return f_res;
+    }   
+    void rec(TreeNode* root, vector<list<int>> &res, int level){
+        if(root == NULL) return;
+        
+        if(res.empty() || level > res.size() - 1)
+            res.push_back(list<int>());
+        if(level%2 == 0){
+            res[level].push_back(root->val);  
+        }
+        else
+            res[level].push_front(root->val);
+        
+        rec(root->left, res, level+1);
+        rec(root->right, res, level+1);
+    }
+};
+
+
+
 
 
 
