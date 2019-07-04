@@ -1078,3 +1078,117 @@ public:
 };
 
 
+//235. Lowest Common Ancestor of a Binary Search Tree
+//https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/
+/* Recursive version */
+//General idea is to find the split point of the sub BST which includes both p and q
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if(!root) return root;
+        int rootVal = root->val;
+        int pVal = p->val;
+        int qVal = q->val;
+        if(pVal > rootVal && qVal > rootVal)
+            return lowestCommonAncestor(root->right, p, q);
+        else if(pVal < rootVal && qVal < rootVal)
+            return lowestCommonAncestor(root->left, p, q);
+        else
+            return root;
+    }
+};
+
+/* Iterative version, exactly the same */
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if(!root) return root;
+        TreeNode* node = root;
+        while(node){
+            if(p->val > node->val && q->val > node->val)
+                node = node->right;
+            else if(p->val < node->val && q->val < node->val)
+                node = node->left;
+            else return node;
+        }
+        return node;
+    }
+};
+
+//236. Lowest Common Ancestor of a Binary Tree
+//https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/
+/* A more generalized approach, can also be used to solve problem 235 */
+//It's postorder traversal. During the traversal, we add flag to notify whether p and q are in the sub tree
+//It's elegant!!!
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if(!root) return root;
+        
+        if(root == p || root == q)
+            return root;
+        
+        root->left = lowestCommonAncestor(root->left, p, q);
+        root->right = lowestCommonAncestor(root->right, p, q);
+        
+        if(root->left && root->right)
+            return root;
+        if(root->left)
+            return root->left;
+        if(root->right) 
+            return root->right;
+        return nullptr;
+    }
+};
+
+/*
+Iterative version: still post order traversal. We first need to find the ancestors of all chilren.
+Then we find the ancestor of p, after that, we find the common ancestor of p and q.
+It's not memory efficiency...
+*/
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if(!root) return root;
+        //We allocate a map to store the ancestor of all child nodes
+        unordered_map<TreeNode*, TreeNode*> ancestor;
+        stack<TreeNode*> st;
+        ancestor.insert({root, nullptr});
+        st.push(root);
+        while(!ancestor.count(p) || !ancestor.count(q)){
+            TreeNode* node = st.top();
+            st.pop();
+            if(node->right){
+                ancestor[node->right] = node;
+                st.push(node->right);
+            }
+            if(node->left){
+                ancestor[node->left] = node;
+                st.push(node->left);
+            }
+        }
+        unordered_set<TreeNode*> ancestorP;
+        TreeNode* pCopy = p;
+        //Build the path from root to node p
+        while(pCopy){
+            ancestorP.insert(pCopy);
+            pCopy = ancestor[pCopy];
+        }
+        //Find the first common ancestor for both nodes p and q
+        TreeNode* qCopy = q;
+        while(!ancestorP.count(qCopy)){
+            ancestorP.insert(qCopy);
+            qCopy = ancestor[qCopy];
+        }
+        return qCopy;
+    }
+};
+
+
+
+
+
+
+
+
+
