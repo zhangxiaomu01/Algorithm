@@ -1014,7 +1014,67 @@ public:
     }
 };
 
-
-
+//98. Validate Binary Search Tree
+//https://leetcode.com/problems/validate-binary-search-tree/
+/* In order traversal */
+class Solution {
+public:
+    bool isValidBST(TreeNode* root) {
+        if(!root) return true;
+        TreeNode* cur = root;
+        TreeNode* pre = nullptr;
+        stack<TreeNode*> st;
+        while(cur || !st.empty()){
+            while(cur){
+                st.push(cur);
+                cur = cur->left;
+            }
+            cur = st.top();
+            st.pop();
+            //Note pre always points to the left child, we will check each pair from leaf to root
+            if(pre != nullptr && pre->val >= cur->val) return false;
+            pre = cur;
+            cur = cur->right;
+        }
+        return true;
+        
+    }
+};
+/* In order traversal */
+class Solution {
+private:
+    bool inOrder(TreeNode* node, TreeNode* &pre){
+        if(!node) return true;
+        bool lVal = inOrder(node->left, pre);
+        if(pre != nullptr && pre->val >= node->val)
+            return false;
+        pre = node;
+        bool rVal = inOrder(node->right, pre);
+        return lVal && rVal;
+        
+    }
+public:
+    bool isValidBST(TreeNode* root) {
+        TreeNode* pre = nullptr;
+        return inOrder(root, pre);
+    }
+};
+/* Beautiful recursive implementation */
+class Solution {
+private:
+    bool CheckValid(TreeNode* root, TreeNode* minVal, TreeNode* maxVal){
+        if(!root) return true;
+        if(minVal && minVal->val >= root->val || maxVal && maxVal->val <= root->val){
+            return false;
+        }
+        //Using minVal and maxVal to set the range...
+        return CheckValid(root->left, minVal, root) && CheckValid(root->right, root, maxVal);
+    }
+public:
+    bool isValidBST(TreeNode* root) {
+        if(!root) return true;
+        return CheckValid(root, nullptr, nullptr);
+    }
+};
 
 
