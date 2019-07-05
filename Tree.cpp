@@ -1184,6 +1184,28 @@ public:
     }
 };
 
+//108. Convert Sorted Array to Binary Search Tree
+//https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/
+//Recursive version: we need to build the left child tree and right child tree respectively.
+//The recursive solution is not complex. A little bit hard to get to the right direction
+class Solution {
+private:
+    TreeNode* buildTree(vector<int>& nums, int start, int end){
+        if(start >= end) return nullptr;
+        int mid = start + (end - start) /2;
+        TreeNode* root = new TreeNode(nums[mid]);
+        root->left = buildTree(nums, start, mid);
+        root->right = buildTree(nums, mid+1, end);
+        return root;
+    }
+public:
+    TreeNode* sortedArrayToBST(vector<int>& nums) {
+        if(nums.empty()) return nullptr;
+        int len = nums.size();
+        return buildTree(nums, 0, len);
+    }
+};
+
 
 
 
