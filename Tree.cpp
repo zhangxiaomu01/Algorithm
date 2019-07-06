@@ -1206,6 +1206,60 @@ public:
     }
 };
 
+//Iterative version
+//Iterative version is not easy... Be careful about the binary search
+class Solution {
+public:
+    TreeNode* sortedArrayToBST(vector<int>& nums) {
+        if(nums.empty()) return nullptr;
+        queue<TreeNode*> Q;
+        queue<pair<int, int>> nodeBoundryQ;
+        //Note we need to make right to be nums.size() in order to make the code work
+        int right = nums.size(), left = 0;
+        int mid = left + (right - left) / 2;
+        
+        TreeNode* root = new TreeNode(nums[mid]);
+        Q.push(root);
+        nodeBoundryQ.push(make_pair(left, mid));
+        nodeBoundryQ.push(make_pair(mid+1, right));
+        
+        while(!Q.empty()){
+            TreeNode* node = Q.front();
+            Q.pop();
+            
+            //Create left sub tree
+            pair<int, int> lrNode = nodeBoundryQ.front();
+            nodeBoundryQ.pop();
+            if(lrNode.first >= lrNode.second)
+                node->left = nullptr;
+            else{
+                mid = lrNode.first + (lrNode.second - lrNode.first) / 2;
+                TreeNode* lNode = new TreeNode(nums[mid]);
+                node->left = lNode;
+                Q.push(lNode);
+                nodeBoundryQ.push(make_pair(lrNode.first, mid));
+                nodeBoundryQ.push(make_pair(mid+1, lrNode.second));
+            }
+            
+            //Create right sub tree
+            lrNode = nodeBoundryQ.front();
+            nodeBoundryQ.pop();
+            if(lrNode.first >= lrNode.second)
+                node->right = nullptr;
+            else{
+                mid = lrNode.first + (lrNode.second - lrNode.first) / 2;
+                TreeNode* rNode = new TreeNode(nums[mid]);
+                node->right = rNode;
+                Q.push(rNode);
+                nodeBoundryQ.push(make_pair(lrNode.first, mid));
+                nodeBoundryQ.push(make_pair(mid+1, lrNode.second));
+            }
+            
+        }
+        return root;
+    }
+};
+
 
 
 
