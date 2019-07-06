@@ -1260,7 +1260,41 @@ public:
     }
 };
 
-
+//109. Convert Sorted List to Binary Search Tree
+//https://leetcode.com/problems/convert-sorted-list-to-binary-search-tree/
+/* In order traversal. How to move forward the list node is tricky!! */
+//Convert list to array, make the problem easier.
+class Solution {
+private:
+    int FindLength(ListNode* node){
+        int len = 0;
+        while(node){
+            len++;
+            node = node->next;
+        }
+        return len;
+    }
+    //Note we need to pass the node as reference
+    TreeNode* buildTree(ListNode* &node, int l, int r){
+        if(l >= r) return nullptr;
+        int mid = l + (r - l) / 2;
+        TreeNode* left = buildTree(node, l, mid);
+        
+        //Create new tree node
+        TreeNode* root = new TreeNode(node->val);
+        root->left = left;
+        node = node->next;
+        
+        root->right = buildTree(node, mid+1, r);
+        return root;
+    }
+    
+public:
+    TreeNode* sortedListToBST(ListNode* head) {
+        int len = FindLength(head);
+        return buildTree(head, 0, len);
+    }
+};
 
 
 
