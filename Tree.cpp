@@ -1263,7 +1263,7 @@ public:
 //109. Convert Sorted List to Binary Search Tree
 //https://leetcode.com/problems/convert-sorted-list-to-binary-search-tree/
 /* In order traversal. How to move forward the list node is tricky!! */
-//Convert list to array, make the problem easier.
+//Convert list to array, then we can use the same technique to implement iterative version just like problem 108
 class Solution {
 private:
     int FindLength(ListNode* node){
@@ -1296,6 +1296,44 @@ public:
     }
 };
 
+
+//173. Binary Search Tree Iterator
+//https://leetcode.com/problems/binary-search-tree-iterator/
+/* In order traversal, not that hard! */
+class BSTIterator {
+private:
+    TreeNode* m_nextNodePtr;
+    stack<TreeNode*> m_st;
+public:
+    BSTIterator(TreeNode* root) {
+        m_nextNodePtr = root;
+        while(m_nextNodePtr){
+            m_st.push(m_nextNodePtr);
+            m_nextNodePtr = m_nextNodePtr->left;
+        }
+        
+    }
+    
+    /** @return the next smallest number */
+    int next() {
+        m_nextNodePtr = m_st.top();
+        m_st.pop();
+        int val = m_nextNodePtr->val;
+        m_nextNodePtr = m_nextNodePtr->right;
+        while(m_nextNodePtr){
+            m_st.push(m_nextNodePtr);
+            m_nextNodePtr = m_nextNodePtr->left;
+        }
+        //m_nextNodePtr = m_st.top();
+        //m_st.pop();
+        return val;
+    }
+    
+    /** @return whether we have a next smallest number */
+    bool hasNext() {
+        return !m_st.empty();
+    }
+};
 
 
 
