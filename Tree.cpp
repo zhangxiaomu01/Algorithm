@@ -1335,6 +1335,51 @@ public:
     }
 };
 
+//230. Kth Smallest Element in a BST
+//https://leetcode.com/problems/kth-smallest-element-in-a-bst/
+/* Iterative in order traversal */
+class Solution {
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        TreeNode* ptr = root;
+        stack<TreeNode*> st;
+        int count = 0;
+        while(ptr || !st.empty()){
+            if(ptr){
+                st.push(ptr);
+                ptr = ptr->left;
+            }else{
+                ptr = st.top();
+                st.pop();
+                count ++;
+                if(count == k) return ptr->val;
+                if(ptr->right)
+                    ptr = ptr->right;
+                else ptr = nullptr;
+            }
+        }
+        return -1;
+    }
+};
+
+/* Recursive implementation */
+class Solution {
+private:
+    void inOrder(TreeNode* node, int &k, int &res){
+        if(!node) return;
+        inOrder(node->left, k, res);
+        //We find the right answer.
+        if(k == 0) return;
+        res = node->val;
+        inOrder(node->right, --k, res);
+    }
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        int res = 0;
+        inOrder(root, k, res);
+        return res;
+    }
+};
 
 
 
