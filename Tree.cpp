@@ -1382,6 +1382,90 @@ public:
 };
 
 
+//297. Serialize and Deserialize Binary Tree
+//https://leetcode.com/problems/serialize-and-deserialize-binary-tree/
+class Codec {
+public:
+    // Encodes a tree to a single string.
+    string serialize(TreeNode* root) {
+        string res;
+        if(!root) return res;
+        queue<TreeNode*> Q;
+        Q.push(root);
+        while(!Q.empty()){
+            int len = Q.size();
+            for(int i = 0; i < len; i++){
+                TreeNode* node = Q.front();
+                Q.pop();
+                if(!node){
+                    res.push_back('n');
+                    res.push_back(',');
+                }
+                else{
+                    res.append(to_string(node->val));
+                    res.push_back(',');
+                    Q.push(node->left);
+                    Q.push(node->right);
+                }
+            }
+        }
+        return res;
+    }
+    
+    void buildStrVector(const string& s, vector<string>& res){
+        //vector<string> res;
+        string tempS;
+        for(int i = 0; i < s.size(); ++i){
+            if(s[i] != ','){
+                tempS.push_back(s[i]);
+            }else{
+                res.push_back(tempS);
+                tempS.clear();
+            }
+        }
+    }
+    
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+        if(data.empty()) return nullptr;
+        
+        vector<string> res;
+        buildStrVector(data, res);
+        
+        queue<string> nodeQ;
+        queue<TreeNode*> Q;
+        TreeNode* root = new TreeNode(stoi(res[0]));
+        Q.push(root);
+        nodeQ.push(res[0]);
+        int k = 0;
+        int len = res.size();
+        
+        while(!Q.empty()){
+            int level = Q.size();
+            for(int i = 0; i < level; i++){
+                TreeNode* node = Q.front();
+                Q.pop();
+                //left node
+                k++;
+                if(res[k] != "n"){
+                    TreeNode* tempNode = new TreeNode(stoi(res[k]));
+                    node->left = tempNode;
+                    Q.push(tempNode);
+                }
+                //right node
+                k++;
+                if(res[k] != "n"){
+                    TreeNode* tempNode = new TreeNode(stoi(res[k]));
+                    node->right = tempNode;
+                    Q.push(tempNode);
+                }
+            }
+        }
+        
+        return root;
+    }
+};
+
 
 
 
