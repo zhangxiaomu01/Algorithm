@@ -1466,6 +1466,68 @@ public:
     }
 };
 
+//99. Recover Binary Search Tree
+//https://leetcode.com/problems/recover-binary-search-tree/
+/* In order traversal, we have a pre pointer to indicate the previous node, 
+and we compare this node with our current node to find out which node is swapped.
+This version is O(log n) space
+*/
+class Solution {
+private:
+    TreeNode* f = nullptr, *s = nullptr;
+    TreeNode* pre = new TreeNode(numeric_limits<int>::min());
+    void dfs(TreeNode* node){
+        if(!node) return;
+        dfs(node->left);
+        
+        if(f == nullptr && pre->val > node->val)
+            f = pre;
+        //Here we must finish the traversal, to find the smallest element from the rest of the node, 
+        //this node should be swapped with f node 
+        if(f != nullptr && pre->val > node->val)
+            s = node;
+        pre = node; //update pre to be the node we have examed!
+        dfs(node->right);
+    }
+public:
+    void recoverTree(TreeNode* root) {
+        TreeNode* tempPre = pre;
+        dfs(root);
+        if(f && s)
+            swap(s->val, f->val);
+        delete tempPre;
+    }
+};
 
-
+//Iterative version
+class Solution {
+public:
+    void recoverTree(TreeNode* root) {
+        if(!root) return;
+        TreeNode* pre = new TreeNode(numeric_limits<int>::min());
+        TreeNode* tempPre = pre;
+        TreeNode *f = nullptr, *s = nullptr;
+        stack<TreeNode*> st;
+        TreeNode* cur = root;
+        while(cur || !st.empty()){
+            if(cur){
+                st.push(cur);
+                cur = cur->left;
+            }else{
+                cur = st.top();
+                st.pop();
+                if(f == nullptr && pre->val > cur->val)
+                    f = pre;
+                if(f != nullptr && pre->val > cur->val)
+                    s = cur;
+                pre = cur;
+                if(cur->right) cur = cur->right;
+                else cur = nullptr;
+            }
+        }
+        if(s && f)
+            swap(f->val, s->val);
+        delete tempPre;
+    }
+};
 
