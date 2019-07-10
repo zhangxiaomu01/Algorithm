@@ -1531,3 +1531,60 @@ public:
     }
 };
 
+
+//96. Unique Binary Search Trees
+//https://leetcode.com/problems/unique-binary-search-trees/
+/*
+It's a DP problem. We need to check every possible combination of left sub tree and right tree, and sum them together to get the total number. Recursive and iterative versions are available!
+ */
+//A dp problem. Note we need to recursively calculate how many possible BSTs for both left and right sub tree.
+class Solution {
+private:
+    int rec(int n, vector<int>& memo){
+        if(memo[n] != -1) return memo[n];
+        //Base case
+        if(n == 0) return 1;
+        if(n == 1) return 1;
+        
+        int totalSum = 0;
+        //We need to start from i = 1, or we will go to infinity loop
+        //i defines the number of nodes in sub tree, it also represents the root of current tree
+        for(int i = 1; i <= n; i++){
+            //Left part
+            int leftNum = rec(i-1, memo);
+            //Right part
+            int rightNum = rec(n-i, memo);
+            
+            if(leftNum == 0)
+                totalSum += rightNum;
+            else if(rightNum == 0)
+                totalSum += leftNum;
+            else totalSum += leftNum* rightNum;
+        }
+        memo[n] = totalSum;
+        return memo[n];
+    }
+public:
+    int numTrees(int n) {
+        vector<int> memo(n+1, -1);
+        return rec(n, memo);
+    }
+};
+
+//Iterative dp. Very tricky! Note by default each entry is 0, and dp[0] is 1
+//Note that j in this case, represents the root node, so j-1 means the total node in the left, and i - j means the total node in the right
+class Solution {
+public:
+    int numTrees(int n) {
+        vector<int> dp(n+1, 0);
+        dp[0] = 1;
+        for(int i = 1; i <= n; i++){
+            for(int j = 1; j <= i; j++)
+                dp[i] += dp[j-1] * dp[i - j];
+        }
+        return dp[n];
+    }
+};
+
+
+
