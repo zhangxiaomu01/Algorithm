@@ -1714,5 +1714,30 @@ public:
 };
 
 //A more general approach using BFS
-
+class Solution {
+public:
+    Node* connect(Node* root) {
+        if(!root) return root;
+        Node* node = root;
+        Node* pre = nullptr, *head = nullptr;
+        while(node){
+            while(node){
+                if(node->left) {
+                    if(pre != nullptr) pre->next = node->left;
+                    else head = node->left; //Update the first node in next level
+                    pre = node->left;
+                }
+                if(node->right){
+                    if(pre!=nullptr) pre->next = node->right;
+                    else head = node->right; //Update the first node in next level 
+                    pre = node->right;
+                }
+                node = node->next; //node will be one level upper compared with pre and head
+            }
+            node = head;
+            pre = head = nullptr; //set the auxiliary pointers to nullptr
+        }
+        return root;
+    }
+};
 
