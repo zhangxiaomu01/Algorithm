@@ -1636,6 +1636,27 @@ public:
     }
 };
 
+class Solution {
+private:
+    void buildConnect(Node* lNode, Node* rNode){
+        if(!lNode && !rNode) return;
+        lNode->next = rNode;
+        buildConnect(lNode->left, lNode->right);
+        buildConnect(lNode->right, rNode == nullptr ? nullptr : rNode->left);
+
+    }
+public:
+    Node* connect(Node* root) {
+        if(!root) return root;
+        if(!root->left && !root->right)
+            return root;
+        
+        buildConnect(root->left, root->right);
+        buildConnect(root->right, nullptr);
+        return root;
+    }
+};
+
 
 
 
