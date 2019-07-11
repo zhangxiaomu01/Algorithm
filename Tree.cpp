@@ -1587,4 +1587,55 @@ public:
 };
 
 
+//116. Populating Next Right Pointers in Each Node
+//https://leetcode.com/problems/populating-next-right-pointers-in-each-node/
+//We can do level order traversal, but this problem requires us to use constant space. Iterative version is a little bit tricky. Be careful!
+/* Recursive version is trivial. Not efficient!!*/
+class Solution {
+    void dfs(Node* lNode, Node* rNode){
+        if(!lNode && !rNode) return;
+        if(lNode && !rNode){
+            dfs(lNode->left, lNode->right);
+        }
+        if(!lNode && rNode){
+            dfs(rNode->left, rNode->right);
+        }
+        if(lNode && rNode){
+            lNode->next = rNode;
+            dfs(lNode->left, lNode->right);
+            dfs(lNode->right, rNode->left);
+            dfs(rNode->left, rNode->right);
+        }
+        
+    }
+public:
+    Node* connect(Node* root) {
+        if(!root) return root;
+        dfs(root->left, root->right);
+        return root;
+    }
+};
+
+//Level order traversal!
+class Solution {
+public:
+    Node* connect(Node* root) {
+        if(!root) return root;
+        Node* cur = root;
+        while(cur != nullptr){
+            Node* tempNode = cur;
+            while(cur!=nullptr){
+                if(cur->left) cur->left->next = cur->right;
+                if(cur->next && cur->right) cur->right->next = cur->next->left;
+                cur = cur->next;
+            }
+            cur = tempNode;
+            cur = cur->left;
+        }
+        return root;
+    }
+};
+
+
+
 
