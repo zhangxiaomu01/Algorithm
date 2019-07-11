@@ -1535,6 +1535,25 @@ public:
 //96. Unique Binary Search Trees
 //https://leetcode.com/problems/unique-binary-search-trees/
 /*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* left;
+    Node* right;
+    Node* next;
+
+    Node() {}
+
+    Node(int _val, Node* _left, Node* _right, Node* _next) {
+        val = _val;
+        left = _left;
+        right = _right;
+        next = _next;
+    }
+};
+*/
+/*
 It's a DP problem. We need to check every possible combination of left sub tree and right tree, and sum them together to get the total number. Recursive and iterative versions are available!
  */
 //A dp problem. Note we need to recursively calculate how many possible BSTs for both left and right sub tree.
@@ -1657,6 +1676,43 @@ public:
     }
 };
 
+//117. Populating Next Right Pointers in Each Node II
+//https://leetcode.com/problems/populating-next-right-pointers-in-each-node-ii/
+/* 
+A very tricky and elegant approach by using an extra node as a ladder. 
+By attaching the ladder to each level, we traverse from left to right,
+and connect each node one by one. Then we move the root node from left
+to right, until reaches the most right node. Then we set the root to be 
+the first node in next level!
+*/
+class Solution {
+public:
+    Node* connect(Node* root) {
+        if(!root) return root;
+        Node* aNode = new Node(0, nullptr, nullptr, nullptr);
+        Node* ladderNode = aNode;
+        Node* node = root;
+        while(node!=nullptr){
+            ladderNode = aNode;
+            while(node){
+                if(node->left){
+                    ladderNode->next = node->left;
+                    ladderNode = ladderNode->next;
+                }
+                if(node->right){
+                    ladderNode->next = node->right;
+                    ladderNode = ladderNode->next;
+                }
+                node = node->next;
+            }
+            node = aNode->next; // point to the first node in the next level!
+            aNode->next = nullptr;
+        }
+        delete aNode;
+        return root;
+    }
+};
 
+//A more general approach using BFS
 
 
