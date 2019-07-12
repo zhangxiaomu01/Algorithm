@@ -75,7 +75,32 @@ public:
     }
 };
 
-//
-
+//63. Unique Paths II
+//https://leetcode.com/problems/unique-paths-ii/
+class Solution {
+public:
+    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+        int m = obstacleGrid.size(), n = (m ? obstacleGrid[0].size() : 0);
+        vector<vector<long>> dp(m+1, vector<long>(n+1, 0));
+        /*
+        //The following code is wrong, we can no longer assume that the first row and colunm to be 1
+        for(int i = 0; i <= m; i++){
+            dp[i][0] = 1;
+        }
+        for(int j = 0; j <= n; j++){
+            dp[0][j] = 1;
+        }
+        */
+        dp[0][1] = 1;
+        
+        for(int i = 1; i <= m; i++){
+            for(int j = 1; j <= n; j++){
+                if(!obstacleGrid[i-1][j-1])
+                    dp[i][j] = dp[i-1][j] + dp[i][j-1];
+            }
+        }
+        return dp[m][n];
+    }
+};
 
 
