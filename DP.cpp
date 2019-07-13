@@ -155,3 +155,32 @@ public:
     }
 };
 
+//139. Word Break
+//https://leetcode.com/problems/word-break/
+/* A classic DP problem. Double check later. The solution is easy to 
+understand and easy to come up with. Pay attention to BFS solution instead
+of DP.
+ */
+//Recursive solution
+class Solution {
+private:
+    bool helper(const string& s, unordered_set<string>& dict, vector<int>& memo, int index){
+        if(index >= s.size()) return true;
+        if(memo[index] != -1) return memo[index];
+        string tempS = "";
+        for(int i = index; i < s.size(); i++){
+            tempS.push_back(s[i]);
+            if(dict.find(tempS) != dict.end() && helper(s, dict, memo, i+1)){
+                return memo[i] = 1;
+            }
+        }
+        return memo[index] = 0;
+    }
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        if(wordDict.empty()) return false;
+        unordered_set<string> dict(wordDict.begin(), wordDict.end());
+        vector<int> memo(s.size() + 1, -1);
+        return helper(s, dict, memo, 0);
+    }
+};
