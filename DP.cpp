@@ -104,3 +104,54 @@ public:
 };
 
 
+//63. Unique Paths II
+//https://leetcode.com/problems/unique-paths-ii/
+//Iterative solution:
+/*
+The tricky part is how to set dp[1][1] to be 1. Note we allocate one more row and column to 
+handle the situation i-1 and j-1. We need to gurantee when we reach dp[1][1] (destination),
+we we have 1 possible solution.
+We use long instead of int to prevent integer overflow.
+*/
+class Solution {
+public:
+    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+        int m = obstacleGrid.size(), n = (m ? obstacleGrid[0].size() : 0);
+        vector<vector<long>> dp(m+1, vector<long>(n+1, 0));
+        if(obstacleGrid[0][0] == 1) return 0;
+        dp[1][1] = 1;
+        for(int i = 1; i <= m; i++){
+            for(int j = 1; j <= n; j++){
+                if(i == 1 && j == 1) continue;
+                if(!obstacleGrid[i-1][j-1])
+                    dp[i][j] = dp[i-1][j] + dp[i][j-1];
+            }
+        }
+        return dp[m][n];
+    }
+};
+
+//Recursive solution
+class Solution {
+private:
+    int helper(vector<vector<int>>& grid, vector<vector<int>>& memo, int mi, int ni){
+        if(mi < 0 || ni < 0) return 0;
+        else if(mi == 0 && ni == 0) return 1;
+        else if(memo[mi][ni] != -1) return memo[mi][ni];
+        else{
+            if(!grid[mi][ni])
+                memo[mi][ni] = helper(grid, memo, mi-1, ni) + helper(grid, memo, mi, ni-1);
+            else
+                memo[mi][ni] = 0;
+        }
+        return memo[mi][ni];
+    }
+public:
+    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+        int m = obstacleGrid.size(), n = m ? obstacleGrid[0].size() : 0;
+        if(obstacleGrid[0][0] == 1) return 0;
+        vector<vector<int>> memo(m, vector<int>(n, -1));
+        return helper(obstacleGrid, memo, m-1, n-1);
+    }
+};
+
