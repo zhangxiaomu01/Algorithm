@@ -184,3 +184,29 @@ public:
         return helper(s, dict, memo, 0);
     }
 };
+
+//Iteravte version
+class Solution {
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        if(wordDict.empty()) return false;
+        int len = s.size();
+        vector<int> dp(len+1, 0);
+        dp[len] = 1;
+        
+        unordered_set<string> dict(wordDict.begin(), wordDict.end());
+        for(int i = len-1; i >=0 ; --i){
+            string tempS = "";
+            for(int j = i; j < len; ++j){
+                //We should not use s.substr(i, j - i + 1) here, more expensive 
+                tempS.push_back(s[j]);
+                if(dict.find(tempS) != dict.end())
+                    dp[i] = dp[j+1];
+                if(dp[i])
+                    break;
+            }
+        }
+        return dp[0];
+    }
+};
+
