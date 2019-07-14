@@ -240,3 +240,92 @@ public:
     }
 };
 
+//279. Perfect Squares
+//https://leetcode.com/problems/perfect-squares/
+//DP solution: it's slow!
+class Solution {
+public:
+    int numSquares(int n) {
+        if(n <= 0) return 0;
+        vector<int> dp(n+1, INT_MAX);
+        dp[0] = 0;
+        dp[1] = 1;
+        for(int i = 1; i <= n; ++i){
+            for(int j = 1; j*j <= i; ++j){
+                dp[i] = min(dp[i - j*j] + 1, dp[i]);
+            }
+        }
+        return dp[n];
+    }
+};
+
+//using the static vector member
+//We can reuse the dp table when testing multiple test case!
+//This can only boost performance for multiple test case.
+class Solution {
+public:
+    int numSquares(int n) {
+        if(n <= 0) return 0;
+        static vector<int> dp({0});
+        int len = dp.size();
+        for(int i = len; i <= n; ++i){
+            dp.push_back(INT_MAX);
+            for(int j = 1; j*j <= i; ++j){
+                dp[i] = min(dp[i - j*j] + 1, dp[i]);
+            }
+        }
+        return dp[n];
+    }
+};
+
+//BFS solution. Very interesting!
+class Solution {
+public:
+    int numSquares(int n) {
+        if(n < 0) return 0;
+        
+        vector<int> possibleSquareNum;
+        // record the minimum number of square numbers
+        vector<int> graph(n+1, 0);
+        for(int i = 1; i*i <= n; i++){
+            possibleSquareNum.push_back(i * i);
+            // if n == i*i, 1 will be the least number of square numbers
+            graph[i*i] = 1; 
+        }
+        
+        if(possibleSquareNum.back() == n)
+            return 1;
+        
+        int currentLeast = 1;
+        queue<int> Q;
+        for(int i = possibleSquareNum.size() - 1; i >= 0; --i){
+            Q.push(possibleSquareNum[i]);
+        }
+        
+        while(!Q.empty()){
+            int lenQ = Q.size();
+            currentLeast++;
+            
+            for(int i = 0; i < lenQ; ++i){
+                int tempSum = Q.front();
+                Q.pop();
+                for(int j = 0; j < possibleSquareNum.size(); ++j){
+                    int num = tempSum + possibleSquareNum[j];
+                    if(num == n)
+                        return currentLeast;
+                    else if(num < n && graph[num] == 0){ //graph[tempSum]== 0 indicates that we haven't explored this node
+                        graph[num] = currentLeast;
+                        Q.push(num);
+                    }
+                    else if(num > n)
+                        break;
+                }
+            }
+                
+        }
+        return 0;
+        
+    }
+};
+
+
