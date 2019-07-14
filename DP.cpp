@@ -210,3 +210,33 @@ public:
     }
 };
 
+//BFS version, very interesting!! Take a look later
+class Solution {
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        if(wordDict.empty()) return false;
+        //We use this Q to store the substring index that we are going to explore
+        //Note we only explore the s.substr(0, index+1) which appears in wordDict,
+        //and ignore other substrings
+        queue<int> Q({0});
+        unordered_set<int> visited; //store the visited nodes
+        unordered_set<string> dict(wordDict.begin(), wordDict.end());
+        //A general BFS approach
+        while(!Q.empty()){
+            int index = Q.front();
+            Q.pop();
+            if(visited.find(index) != visited.end()) continue;
+            visited.insert(index);
+            string tempS = "";
+            for(int i = index; i < s.size(); i++){
+                tempS.push_back(s[i]);
+                if(dict.find(tempS) != dict.end()){
+                    if(i + 1 == s.size()) return true;
+                    Q.push(i+1);
+                }
+            }
+        }
+        return false;
+    }
+};
+
