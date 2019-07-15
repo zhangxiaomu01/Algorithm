@@ -327,5 +327,30 @@ public:
     }
 };
 
+//322. Coin Change
+//https://leetcode.com/problems/coin-change/
+//Iterative version: Note how we handle initial case
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        int len = coins.size();
+        vector<int> dp(amount+1, -1);
+        dp[0] = 0;
+        int rem = amount;
+        for(int i = 1; i <= amount; ++i){
+            //We cannot use INT_MAX here, because in the dp[i-coins[j]]+1 will cause overflow
+            int tempValue = amount+1;
+            for(int j = 0; j < len; ++j){
+                if(i - coins[j] >= 0)
+                    tempValue = min(tempValue, dp[i-coins[j]]+1);
+            }
+            dp[i] = tempValue;
+        }
+        //If dp[amount] > amount, since tempValue is initialized with amount+1,
+        //which means we did not do any calculation
+        return dp[amount] > amount ? -1 : dp[amount];
+    }
+};
+
 
 
