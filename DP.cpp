@@ -352,5 +352,64 @@ public:
     }
 };
 
+//recursive version
+class Solution {
+private:
+    //helper() function will return the minimum number of coins we could have
+    //in the given amount
+    int helper(vector<int>& C, vector<int>& memo, int amount){
+        if(amount < 0) return -1;
+        if(amount == 0) return 0;
+        if(memo[amount] != -2) return memo[amount];
+        int minVal = numeric_limits<int>::max();
+        for(int i = 0; i < C.size(); ++i){
+            // here + 1 indicates that we need to add one more coin
+            int res = helper(C, memo, amount - C[i])+1;
+            //res could be -1 or positive value, should be > 0
+            if(res > 0 && res < minVal)
+                minVal = res; 
+        }
+        memo[amount] = (minVal == numeric_limits<int>::max()) ? -1 : minVal;
+        return memo[amount];
+    }
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        if(coins.size() == 0) return -1;
+        //We cannot initilize the memo to be -1, since -1 could potentially be 
+        //valid value from intermediate result.
+        vector<int> memo(amount+1, -2);
+        return helper(coins, memo, amount);
+    }
+};
+
+
+//375. Guess Number Higher or Lower II
+//https://leetcode.com/problems/guess-number-higher-or-lower-ii/
+//Very tricky solution
+//The idea is not complex, however, make it work needs some adjustment
+//we always identify the range (i, j) incusively, and calculate the maximum
+//local cost we can get in order to guarantee we have sufficient money for the game,
+//then we minimize each possible local cost to find the optimal solution.
+class Solution {
+public:
+    int getMoneyAmount(int n) {
+        //dp[i][j] means that the minimum money that I should have 
+        //to cover the potential worst strategy cost from range (i, j)
+        //Inclusive
+        vector<vector<int>> dp(n+1, vector<int>(n+1, 0));
+        for(int j = 2; j <= n; ++j){
+            for(int i = j-1; i >= 1; --i){
+                int globalMin = numeric_limits<int>::max();
+                for(int k = i+1; k < j; ++k){
+                    int localMax = k + max(dp[i][k-1], dp[k+1][j]);
+                    globalMin = min(globalMin, localMax);
+                }
+                dp[i][j] = (i+1 == j) ? i : globalMin;
+            }
+        }
+        
+        return dp[1][n];
+    }
+};
 
 
