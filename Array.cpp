@@ -379,3 +379,23 @@ int nonuniformRandomNumberGenerator(std::vector<int> nums, std::vector<double> p
 
 	return nums[index];
 }
+
+//217. Contains Duplicate
+//https://leetcode.com/problems/contains-duplicate/
+/* Sorting plus linear scan! */
+class Solution {
+public:
+    bool containsDuplicate(vector<int>& nums) {
+        if(nums.size() <= 1) return false; 
+        sort(nums.begin(), nums.end());
+        int len = nums.size();
+        for(int i = 0; i < len - 1; ++i){
+            if(nums[i] == nums[i+1])
+                return true;
+        }
+        return false;
+    }
+};
+
+
+
