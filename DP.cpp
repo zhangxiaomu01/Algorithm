@@ -412,6 +412,30 @@ public:
     }
 };
 
-
+//Recursive version
+class Solution {
+private:
+    //Note l should always be less than r
+    //Almost the same idea as the iterative version
+    int helper(vector<vector<int>>& memo, int l, int r){
+        if(l >= r) return 0;
+        if(memo[l][r] != 0) return memo[l][r];
+        if(l+1 == r) return memo[l][r] = l;
+        int localMax = 0;
+        int globalMin = INT_MAX;
+        for(int i = l+1; i < r; ++i){
+            localMax = i + max(helper(memo, l, i-1), helper(memo, i+1, r));
+            globalMin = min(globalMin, localMax);
+        }
+        memo[l][r] = globalMin;
+        return memo[l][r];
+    }
+public:
+    int getMoneyAmount(int n) {
+        if(n <= 1) return 0;
+        vector<vector<int>> memo(n+1, vector<int>(n+1, 0));
+        return helper(memo, 1, n);
+    }
+};
 
 
