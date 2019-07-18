@@ -437,3 +437,64 @@ public:
     }
 };
 
+
+//220. Contains Duplicate III
+//https://leetcode.com/problems/contains-duplicate-iii/
+//Unordered set using sliding window! insert() method will return a pair.
+//The second argument will be a boolean which indicates whether we have a
+//repetitive element or not
+class Solution {
+public:
+    bool containsNearbyDuplicate(vector<int>& nums, int k) {
+        int w = 0;
+        int len = nums.size();
+        unordered_set<int> uset;
+        for(int i = 0; i < len; ++i){
+            if(i - w > k){
+                //Note we need to increase w when we erase the element
+                uset.erase(nums[w++]);
+            }
+            auto r = uset.insert(nums[i]);
+            if(!r.second) return true;
+        }
+        return false;
+    }
+};
+
+//The general idea is that we maintain a set of size k, then we slide the set
+//from left to right. Since we have a set, we can easily find the lowerbound 
+//of the set. 
+class Solution {
+public:
+    bool containsNearbyAlmostDuplicate(vector<int>& nums, int k, int t) {
+        int len = nums.size();
+        if(len == 0) return false;
+        int w = 0;
+        //Using a set instead of an unordered_set, because we need to get
+        //the range of the sliding window
+        set<long> dict;
+        for(int i = 0; i < len; ++i){
+            if(i - w > k){
+                dict.erase(nums[w++]);
+            }
+            //If the new value - any value from the window is less than or equal to t, then
+            // |x - nums[i]| <= t  ==> -t <= x - nums[i] <= t;
+            // x-nums[i] >= -t ==> x >= nums[i]-t, Calculate the lower bound from the current window
+            auto it = dict.lower_bound(static_cast<long>(nums[i]) - t);
+            //Since we already know the potential minimum valid x from the window, then if we want to
+            //calclucate the upper side. (it is possible that x is at the end of the window, which is 
+            //dict.end())
+            // x - nums[i] <= t ==> |x - nums[i]| <= t
+            if(it != dict.end() && *it - nums[i] <= t){
+                return true;
+            }
+            dict.insert(nums[i]);
+        }
+        return false;
+    }
+};
+
+
+
+
+
