@@ -415,3 +415,25 @@ and each bit in the integer represents one number from [0, INT_MAX].
 Whenever we want to examine the number, we calculate the corresponding
 entry by nums[i]/32, then for this entry, we have nums[i]%32 to get the
 actual bit. Too fancy to implment! Ignore here*/
+
+
+//219. Contains Duplicate II
+//https://leetcode.com/problems/contains-duplicate-ii/
+//The problem definition is a little bit vague! Note we are trying to find one 
+//of the potential pairs that meets the demand. If there exists one, we should
+//return true!
+class Solution {
+public:
+    bool containsNearbyDuplicate(vector<int>& nums, int k) {
+        unordered_map<int, int> dict;
+        int len = nums.size();
+        for(int i = 0; i < len; ++i){
+            if(dict.find(nums[i]) != dict.end() && i - dict[nums[i]] <= k){
+                return true;
+            }
+            dict[nums[i]] = i;
+        }
+        return false;
+    }
+};
+
