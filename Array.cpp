@@ -396,6 +396,22 @@ public:
         return false;
     }
 };
+/* Unordered set, keep track of explored elements */
+class Solution {
+public:
+    bool containsDuplicate(vector<int>& nums) {
+        unordered_set<int> dict;
+        for(int i = 0; i < nums.size(); ++i){
+            if(dict.count(nums[i])!=0)
+                return true;
+            dict.insert(nums[i]);
+        }
+        return false;
+    }
+};
 
-
-
+/* We have one bit mask solution. Allocate an array of integers, 
+and each bit in the integer represents one number from [0, INT_MAX].
+Whenever we want to examine the number, we calculate the corresponding
+entry by nums[i]/32, then for this entry, we have nums[i]%32 to get the
+actual bit. Too fancy to implment! Ignore here*/
