@@ -495,6 +495,28 @@ public:
 };
 
 
-
+//56. Merge Intervals
+//https://leetcode.com/problems/merge-intervals/
+//The key insight is to sort the array based on the first element.
+//Then we maintain a vector and if we find that res.back()[1] < intervals[i][0],
+//we push back the intervals[i][0]
+class Solution {
+public:
+    vector<vector<int>> merge(vector<vector<int>>& intervals) {
+        vector<vector<int>> res;
+        int len = intervals.size();
+        if(len == 0) return res;
+        sort(intervals.begin(), intervals.end(), [](vector<int>& a, vector<int>& b){ return a[0] < b[0]; });
+        res.push_back(intervals[0]);
+        for(int i = 1; i < len; ++i){
+            if(res.back()[1] < intervals[i][0]) 
+                res.push_back(intervals[i]);
+            else{
+                res.back()[1] = max(res.back()[1], intervals[i][1]);
+            }
+        }
+        return res;
+    }
+};
 
 
