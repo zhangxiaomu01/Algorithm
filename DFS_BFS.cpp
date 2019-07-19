@@ -235,7 +235,7 @@ public:
         return res;
         
     }
-        void solveNQueens(int &count, vector<int>&f1, vector<int>& f2, vector<int> &f3, int n, int row){
+    void solveNQueens(int &count, vector<int>&f1, vector<int>& f2, vector<int> &f3, int n, int row){
         if(row == n){
             count++;
             return;
