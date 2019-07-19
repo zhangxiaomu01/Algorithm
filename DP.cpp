@@ -438,4 +438,40 @@ public:
     }
 };
 
+/* O(n^2) solution is possible:  
+https://leetcode.com/problems/guess-number-higher-or-lower-ii/discuss/84826/An-O(n2)-DP-Solution-Quite-Hard.*/
 
+
+//312. Burst Balloons
+//https://leetcode.com/problems/burst-balloons/
+//Interesting DP problem. Record the last burst balloon is the key to solve the problem.
+//Once get the idea, it's not hard. Try recursive version!
+class Solution {
+public:
+    int maxCoins(vector<int>& nums) {
+        int len = nums.size();
+        //add 1 to both ends, so our valid range will be from 1 to len, inclusive
+        nums.insert(nums.begin(), 1);
+        nums.push_back(1);
+        
+        //dp[i][j] means the maximum coins we can get from index i to j, inclusive
+        //Note the size should be corresponding to nums, which will be len + 2
+        vector<vector<int>> dp(len+2, vector<int>(len+2, 0));
+        //We build the table from the length 1 to len
+        for(int cLen = 1; cLen <= len; ++cLen){
+            //Define the left boundry, should start from 1 
+            for(int l = 1; l <= len - cLen + 1; ++l){
+                int r = l + cLen - 1; //maximum right boundry
+                for(int i = l; i <= r; ++i){
+                    //balloon i is the *last* balloon which is bursted. We save the maximum potential
+                    //coins we can get if we choose i as the last balloon to burst in range [l, r]
+                    //Note if r < l, dp[l][r] is 0
+                    dp[l][r] = max(dp[l][r], nums[l-1]*nums[i]*nums[r+1] + dp[l][i-1] + dp[i+1][r]);
+                }
+            }
+            
+        }     
+        //the range [1, len] in our new array
+        return dp[1][len];
+    }
+};
