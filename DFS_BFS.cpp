@@ -95,7 +95,7 @@ public:
         for(int i = 0; i < row; ++i){
             if(board[i][0] == 'O')
                 dfs(board, i, 0);
-            if(board[i][col-1])
+            if(board[i][col-1] == 'O')
                 dfs(board, i, col-1);
         }
         for(int j = 0; j < col; ++j){
@@ -193,6 +193,8 @@ public:
   *    O O O               O O O               O O O
   *    | | |              / / /                 \ \ \
   *   3 columns        5 135° diagonals     5 45° diagonals    (when n is 3)
+  * 
+  *   Searching direction is important!
   */
     vector<vector<string>> solveNQueens(int n) {
         vector<vector<string>> res;
