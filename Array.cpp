@@ -594,5 +594,19 @@ public:
     }
 };
 
+//189. Rotate Array
+//https://leetcode.com/problems/rotate-array/
+class Solution {
+public:
+    void rotate(vector<int>& nums, int k) {
+        int len = nums.size();
+        reverse(nums.begin(), nums.end());
+        //Note the reverse is [i,j)
+        int m = k%len;
+        reverse(nums.begin(), nums.begin()+m);
+        reverse(nums.begin()+m, nums.end());
+    }
+};
+
 
 
