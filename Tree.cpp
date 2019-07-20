@@ -114,11 +114,10 @@ public:
                 cur = cur->left;
             }
             else{
-                cur = st.top();//We need to update cur. because currentlt it's nullptr
+                //We need to update cur. because currentlt it's nullptr
+                cur = st.top();
                 res.push_back(cur->val);
-                //We need to pop the node here because we already added this value to the final array
                 st.pop();
-                //We do not need to push cur to stack now, we will push it in if statement
                 cur = cur->right;
             }
         }
