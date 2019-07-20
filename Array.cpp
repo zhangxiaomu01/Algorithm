@@ -519,4 +519,44 @@ public:
     }
 };
 
+//27. Remove Element
+//https://leetcode.com/problems/remove-element/
+//Not hard
+class Solution {
+public:
+    int removeElement(vector<int>& nums, int val) {
+        int len_l = nums.size();
+        int k = 0;
+        for(int i = 0; i<len_l; i++){
+            if(nums[i] != val){
+                nums[k] = nums[i];
+                k++;
+            }      
+        }
+        return k;
+    }
+};
+//Different Implementation
+class Solution {
+public:
+    int removeElement(vector<int>& nums, int val) {
+        int len = nums.size();
+        for(int i = 0; i < len; ++i){
+            while(nums[len-1] == val){
+                len--;
+                
+                if(len == 0)
+                    return 0;
+                if(len == i){
+                    return len;
+                }  
+            }
+            if(nums[i] == val){
+                swap(nums[i], nums[len-1]);
+            }
+        }
+        return len;
+    }
+};
+
 
