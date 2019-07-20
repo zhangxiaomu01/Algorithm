@@ -608,5 +608,38 @@ public:
     }
 };
 
+//41. First Missing Positive
+//https://leetcode.com/problems/first-missing-positive/
+/* A very tricky problem. The general idea is that we swap the nums[i] to the 
+corresponding index nums[i]-1 (if nums[i] is greater than 0 and less than the array length). 
+For example, 1 will finally be swapped to index 0, so on and so forth.
+Since each element will only be potentially swapped once, and we need to iterate the array
+from left to right, which means that we will visit each element at most twice.
+Note:negative numbers will be handled correctly because potentially they will be swapped to 
+some index that cannot have the correspoding nums[i] in it.
+*/
+class Solution {
+public:
+    int firstMissingPositive(vector<int>& nums) {
+        int len = nums.size();
+        for(int i = 0; i < len; ++i){
+            //We swap nums[i] to the potential index, we need to have nums[nums[i]-1] != nums[i]
+            //to prevent a loop
+            while(nums[i] > 0 && nums[i] <= len && nums[nums[i]-1] != nums[i])
+                swap(nums[nums[i]-1], nums[i]);
+        }
+        
+        //Once we swapped the potential element to right index, we know if nums[i] == i+1, then
+        //we know the i+1 exists here, and we move forward, until we find the first nums[i], that
+        //nums[i] != i+1, then i+1 must be the first positive gap
+        for(int i = 0; i < len; ++i){
+            if(nums[i] != i+1)
+                return i+1;
+        }
+        //if we do not terminate earlier, we know the positive number should be len+1
+        return len+1;
+    }
+};
+
 
 
