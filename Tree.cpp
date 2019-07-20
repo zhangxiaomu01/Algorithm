@@ -49,6 +49,35 @@ public:
     }
 };
 
+//Another version
+class Solution {
+public:
+    vector<int> preorderTraversal(TreeNode* root) {
+        vector<int> res;
+        if(!root) return res;
+        stack<TreeNode*> st;
+        TreeNode* pre = nullptr, *cur = root;
+        while(cur || !st.empty()){
+            while(cur){
+                st.push(cur);
+                res.push_back(cur->val);
+                cur = cur->left;
+            }
+            cur = st.top();
+            if(cur->right && cur->right != pre){
+                cur = cur->right;
+                //We need to continue for the next loop in order
+                //to get the most left nodes to stack
+                continue;
+            }
+            st.pop(); 
+            pre = cur;
+            cur = nullptr;
+        }
+        return res;
+    }
+};
+
 //94. Binary Tree Inorder Traversal
 //https://leetcode.com/problems/binary-tree-inorder-traversal/
 //Recursive Version
@@ -76,8 +105,8 @@ public:
         vector<int> res;
         stack<TreeNode*> st;
         if(root == nullptr) return res;
-        //st.push(root);
-        //Maintain a variable for current value. For inorder traversal, we need to push left nodes to our stack, then add the value to res.
+        //Maintain a variable for current value. For inorder traversal, 
+        //we need to push left nodes to our stack, then add the value to res.
         TreeNode* cur = root;
         while(cur || !st.empty()){
             if(cur!= nullptr){
@@ -124,6 +153,36 @@ public:
         //Pop_back the element we choose to be the placeholder.
         res.pop_back();
 
+        return res;
+    }
+};
+
+//A generalized in order traversal
+class Solution {
+public:
+    vector<int> inorderTraversal(TreeNode* root) {
+        vector<int> res;
+        if(!root) return res;
+        stack<TreeNode*> st;
+        TreeNode* pre = nullptr, *cur = root;
+        while(cur || !st.empty()){
+            while(cur){
+                st.push(cur);
+                cur = cur->left;
+            }
+            cur = st.top();
+            // pop immediately to avoid repetitively visit
+            st.pop(); 
+            res.push_back(cur->val);
+            if(cur->right && cur->right != pre){
+                cur = cur->right;
+                //We need to continue for the next loop in order
+                //to get the most left nodes to stack
+                continue;
+            }
+            pre = cur;
+            cur = nullptr;
+        }
         return res;
     }
 };
