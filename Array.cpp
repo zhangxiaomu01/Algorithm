@@ -642,4 +642,66 @@ public:
 };
 
 
+//299. Bulls and Cows
+//https://leetcode.com/problems/bulls-and-cows/
+//Hash implementation, too costy
+class Solution {
+public:
+    string getHint(string secret, string guess) {
+        unordered_map<char, int> umap;
+        int len = secret.size();
+        string res = "";
+        int countA = 0, countB = 0;
+        for(int i = 0; i < len; ++i){
+            if(secret[i] == guess[i]){
+                countA++;
+            }
+            else{
+                if(umap.find(secret[i]) == umap.end()){
+                    umap[secret[i]] = 1;
+                }else{
+                    ++umap[secret[i]];
+                }
+            } 
+        }
+        for(int i = 0; i < len; ++i){
+            if(secret[i] != guess[i]){
+                if(umap.find(guess[i]) != umap.end()){
+                    umap[guess[i]]--;
+                    countB++;
+                    if(umap[guess[i]] == 0)
+                        umap.erase(guess[i]);
+                }
+            }
+        }
+        res = to_string(countA) + 'A' + to_string(countB) + 'B';
+        return res;
+    }
+};
+
+//Optimized version
+class Solution {
+public:
+    string getHint(string secret, string guess) {
+        int len = secret.size();
+        int countA = 0, countB = 0;
+        vector<int> dict(10, 0); // store '0' - '9'
+        for(int i = 0; i < len; ++i){
+            if(secret[i] == guess[i])
+                countA++;
+            else{
+                //Note if(i++), then i = i+1 will only happens at the end of the if statement
+                //even if we have if((i++)>1), we still have the check if(i > 1), then at the 
+                //end, we have i++. Tricky here.
+                if(dict[secret[i] - '0'] ++ < 0){
+                    countB++;
+                }
+                    
+                if(dict[guess[i] - '0'] -- > 0)
+                    countB++;
+            }
+        }
+        return to_string(countA) + 'A' + to_string(countB) + 'B';;
+    }
+};
 
