@@ -730,7 +730,34 @@ public:
     }
 };
 
-
-
+//274. H-Index
+//https://leetcode.com/problems/h-index/
+/* The general idea is we first allocate an array to record how many papers have
+ciatation i. i represents the entry for this array. Then we iterate through the 
+array in descending order and calculate the total number of papers which has 
+citation above i, whenever we find that papers >= i, this must be the maximum boundary 
+of h-index.*/
+class Solution {
+public:
+    int hIndex(vector<int>& citations) {
+        int len = citations.size();
+        //dict records how many papers have citation i
+        //i is the index of the entry
+        vector<int> dict(len+1, 0);
+        for(int i = 0; i < len; ++i){
+            if(citations[i] >=len)
+                dict[len]++;
+            else
+                dict[citations[i]]++;
+        }
+        int papers = 0;
+        for(int i = len; i >= 0; --i){
+            papers += dict[i];
+            if(papers >= i)
+                return i;
+        }
+        return 1;
+    }
+};
 
 
