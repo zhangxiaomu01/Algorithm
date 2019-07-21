@@ -736,7 +736,7 @@ public:
 ciatation i. i represents the entry for this array. Then we iterate through the 
 array in descending order and calculate the total number of papers which has 
 citation above i, whenever we find that papers >= i, this must be the maximum boundary 
-of h-index.*/
+of h-index. O(n)*/
 class Solution {
 public:
     int hIndex(vector<int>& citations) {
@@ -759,5 +759,79 @@ public:
         return 1;
     }
 };
+
+//275. H-Index II
+//https://leetcode.com/problems/h-index-ii/
+/*The key insight here is to find the minimum index that satisfy 
+citations[index] >= citations.size() - index. Then our result will
+be citations.size() - index. The general binary search does not work
+here, pay attention to how to handle corner case.*/
+class Solution {
+public:
+    int hIndex(vector<int>& citations) {
+        int len = citations.size();
+        int l = 0, count = citations.size();
+        int step = 0;
+        while(count > 0){
+            step = count / 2;
+            //We initialize mid every time, so it will be either larger than
+            //the previous mid or smaller than previous mid depends on l
+            int mid = l + step;
+            if(citations[mid] < len - mid){
+                //note l will be in the second half if we first go here
+                l = mid + 1;
+                count = count - (step + 1);
+            }
+            else
+                count = step;
+        }
+        return len - l;
+    }
+};
+
+//55. Jump Game
+//https://leetcode.com/problems/jump-game/
+/* A general approach is to use dynamic programming, and keep track of each entry
+i with dp[i] to avoid repetitive calculation. However, using greedy algorithm and 
+always keep track of the furthest potential position we can get for each entry, and
+we can terminate eralier if we can not proceed further. If the furthest position we 
+can reach is beyond the length, then we know we can get there. */
+//Greedy
+class Solution {
+public:
+    bool canJump(vector<int>& nums) {
+        int furthestPos = 0;
+        int len = nums.size();
+        for(int i = 0; i < len && i <= furthestPos; ++i){
+            furthestPos = max(furthestPos, i + nums[i]);
+            if(furthestPos >= len-1)
+                return true;
+        }
+        return false;
+    }
+};
+
+//DP: not efficient O(n^2)
+class Solution {
+public:
+    bool canJump(vector<int>& nums) {
+        int len = nums.size();
+        vector<int> dp(len+1, 0);
+        dp[len] = 1;
+        //we need to handle the situation nums.back() == 0
+        dp[len - 1] = 1;
+        //We start from i = len - 2
+        for(int i = len-2; i >= 0; --i){
+            int localMax = nums[i];
+            for(int j = 1; j <= localMax && j < len; ++j){
+                dp[i] = dp[i] || dp[i+j];
+            }
+        }
+        return dp[0];
+    }
+};
+
+
+
 
 
