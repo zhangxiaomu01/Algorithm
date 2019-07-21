@@ -705,3 +705,32 @@ public:
     }
 };
 
+
+//134. Gas Station
+//https://leetcode.com/problems/gas-station/
+/* An interesting problem, the key insight is that if the total gas - total cost is negative,
+we will never have a solution. At the same time, if we are able to drive from i to i+1, then 
+our local tank cannot be negative. If the last station fails, we have to try the next station (i+1)*/
+class Solution {
+public:
+    int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
+        int remaining = 0, total = 0, tank = 0;
+        int start = 0;
+        int len = gas.size();
+        for(int i = 0; i < len; i++){
+            remaining = gas[i] - cost[i];
+            tank += remaining;
+            total += remaining;
+            if(tank < 0){
+                start = i+1;
+                tank = 0;
+            }
+        }
+        return total < 0 ? -1:start;
+    }
+};
+
+
+
+
+
