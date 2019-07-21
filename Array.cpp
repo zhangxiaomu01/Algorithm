@@ -832,6 +832,38 @@ public:
 };
 
 
+//45. Jump Game II
+//https://leetcode.com/problems/jump-game-ii/
+/* In general, we can still use the techniques from Jump Game. 
+Still do greedy plus dp. We can use greedy to check whether 
+this is a valid sequence, and use dp to get the minimum steps.
+However, for this question, we can do better, by optimizing the 
+previous dp solution, we can get the minimum jumps in linear time.
+*/
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+        int len = nums.size();
+        if(len == 1) return 0;
+        int localFurthestIndex = 0, steps = 0;
+        int rightBoundry = 0;
+        for(int i = 0; i < len; ++i){
+            localFurthestIndex = max(localFurthestIndex, nums[i] + i);
+            //We know we reach the end
+            if(localFurthestIndex >= len-1) return steps+1;
+            //No way to reach the end
+            if(i > localFurthestIndex) return 0;
+            //Note we do the jump only when we need to. Which means when
+            //we reach an index that reaches the right boundry.
+            if(i >= rightBoundry){
+                rightBoundry = localFurthestIndex;
+                steps++;
+            }
+        }
+        return steps;
+    }
+}; 
+
 
 
 
