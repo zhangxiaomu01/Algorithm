@@ -865,5 +865,27 @@ public:
 }; 
 
 
+//11. Container With Most Water
+//https://leetcode.com/problems/container-with-most-water/
+/* O(n^2) solution is trivial. Two pointers work perfectly. */
+class Solution {
+public:
+    int maxArea(vector<int>& height) {
+        int len = height.size();
+        int l = 0, r = len - 1;
+        int maxArea = 0;
+        while(l < r){
+            if(height[l] <= height[r]){
+                maxArea = max(maxArea, height[l] * (r - l));
+                l++;
+            }else{
+                maxArea = max(maxArea, height[r] * (r - l));
+                r--;
+            }
+        }
+        return maxArea;
+    }
+};
+
 
 
