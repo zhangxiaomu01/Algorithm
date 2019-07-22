@@ -916,7 +916,46 @@ public:
     }
 };
 
-/* Another way: DFS */
+/* Another DP, efficient */
+//Another DP approach, very efficient
+class Solution {
+private:
+    unordered_map<int, bool> dict;
+    //pos is the index of the previous stone
+    //gap is the maximum potential step from previous two stones
+    bool Cross(vector<int>& stones, int pos, int gap){
+        //We want to calculate a unique key for a pair of pos and gap
+        //The reason why we left shift gap 11 bits is because the pos is between 2 and 1100
+        //which means ths range is [2, 2^11], we can safely move step 11 bits left and 
+        //leave enough room for pos. Another observation is that gap will not be too large,
+        //The maximum valid gap should be 1100 . 
+        //Any value larger than 1100 will be discarded.
+        //Since each int will have 32 bits, it will be enough for store both the values.
+        int key = (gap << 11) | pos;
+        
+        if(dict.find(key) != dict.end()) return dict[key];
+        
+        for(int i = pos+1; i < stones.size(); ++i){
+            int localGap = stones[i] - stones[pos];
+            //our gap is too narrow, that we cannot land on stones i
+            if(localGap < gap - 1) continue;
+            //If the gap is too large, we cannot move forward any more
+            if(localGap > gap + 1) return dict[key] = false;
+            //Since we can sucessfully land on i, then check the whether we can land on the 
+            //last stone
+            if(Cross(stones, i, localGap)) return dict[key] = true;
+        }
+        
+        return pos == stones.size()-1 ? dict[key] = true : dict[key] = false;
+    }
+public:
+    bool canCross(vector<int>& stones) {
+        int len = stones.size();
+        if(len <= 1) return true;
+        return Cross(stones, 0, 0);
+    }
+};
+
 
 
 
