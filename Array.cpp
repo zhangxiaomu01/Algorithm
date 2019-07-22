@@ -976,6 +976,31 @@ public:
 };
 
 
+//309. Best Time to Buy and Sell Stock with Cooldown
+//https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/
+//The best explanation: 
+//https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/discuss/240097/Come-on-in-you-will-not-regret-most-general-java-code-like-all-other-DP-solutions
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int len = prices.size();
+        if(len <= 1) return 0;
+        //dp[i] means the maximum profit in day i
+        //dp[0] means the first day
+        vector<int> dp(len+1, 0);
+        dp[1] = max(prices[1] - prices[0], 0);
+        for(int i = 2; i < len; ++i){
+            //represents the rest day (no buy or sell)
+            dp[i] = max(dp[i], dp[i-1]);
+            for(int j = 0; j < i; ++j){
+                int pre = j >= 2 ? dp[j-2] : 0;
+                //find the maximum of pre + prices[i] - prices[j]
+                dp[i] = max(dp[i], pre + prices[i] - prices[j]);
+            }
+        }
+        return dp[len-1];
+    }
+};
 
 
 
