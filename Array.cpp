@@ -888,4 +888,31 @@ public:
 };
 
 
+//403. Frog Jump
+//https://leetcode.com/problems/frog-jump/
+/* Interesting problem */
+/* Similar to DP. The general idea is that we store the potential previous jumps to
+stone i. Then when we update the previous steps in stone (i + step - 1) with step -1, stone 
+(i + step) with step and stone (i + step + 1) with step +1.
+In the end, we only need to check whether umap[stones[len-1]] is empty. If it's empty, then we know
+we cannot reach the end. It's not efficient!*/
+class Solution {
+public:
+    bool canCross(vector<int>& stones) {
+        int len = stones.size();
+        unordered_map<int, unordered_set<int>> uDict;
+        //Note for initial stone 0, we only need 0 steps
+        uDict.insert({0, {0}});
+        int step = 0;
+        for(int i = 0; i < len; ++i){
+            for(int step : uDict[stones[i]]){
+                if(step - 1 > 0) uDict[stones[i] + step - 1].insert(step - 1);
+                uDict[stones[i] + step].insert(step);
+                uDict[stones[i] + step + 1].insert(step + 1);
+            }
+        }
+        
+        return !uDict[stones[len-1]].empty();
+    }
+};
 
