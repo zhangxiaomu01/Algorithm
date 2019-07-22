@@ -1002,6 +1002,28 @@ public:
     }
 };
 
+//optimized version, note how we get rid of the inner loop
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int len = prices.size();
+        if(len <= 1) return 0;
+        //dp[i] means the maximum profit in day i
+        //dp[0] means the first day
+        vector<int> dp(len+1, 0);
+        dp[1] = max(prices[1] - prices[0], 0);
+        int maxDiff = INT_MIN; //dp[j-2] - prices[j]
+        maxDiff = max(maxDiff, -prices[0]);
+        maxDiff = max(maxDiff, -prices[1]);
+        for(int i = 2; i < len; ++i){
+            maxDiff = max(maxDiff, dp[i-2] - prices[i]);
+            //Equivalent to dp[i] = max(dp[i-1], dp[j-2] + prices[i] - prices[j]);
+            dp[i] = max(dp[i-1], maxDiff + prices[i]);
+        }
+        return dp[len-1];
+    }
+};
+
 
 
 
