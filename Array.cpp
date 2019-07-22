@@ -957,7 +957,23 @@ public:
 };
 
 
-
+//53. Maximum Subarray
+//https://leetcode.com/problems/maximum-subarray/
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int len = nums.size();
+        if(len == 0) return 0;
+        int sum = nums[0], ans = nums[0];
+        for(int i = 1; i < len; ++i){
+            //This is the tricky part! if sum is below 0, we can start
+            //with the new index
+            sum = max(sum + nums[i], nums[i]);
+            ans = max(ans, sum);
+        }
+        return ans;
+    }
+};
 
 
 
