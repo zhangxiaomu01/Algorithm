@@ -1025,6 +1025,86 @@ public:
 };
 
 
+//4. Median of Two Sorted Arrays
+//https://leetcode.com/problems/median-of-two-sorted-arrays/
+//The idea is based on the algorithm of getting the kth smallest element for two sorted list
+//A detailed explanation can be found: 
+//https://windliang.cc/2018/07/18/leetCode-4-Median-of-Two-Sorted-Arrays/
+//A very very tricky problem! Hate it!
+class Solution {
+private:
+    //note kth elment represents nums[k-1]
+    int getKth(vector<int>& n1, int s1, vector<int>& n2, int s2, int k){
+        int len1 = n1.size() - s1, len2 = n2.size() - s2;
+        //When k is greater than the length of the two arrays, the array will always be n1
+        if(len1 > len2) return getKth(n2, s2, n1, s1, k);
+        //If n1 reaches the end, n1 will always be shorter
+        if(len1 == 0) return n2[s2 + k - 1];
+        //base case, that we reaches the kth element
+        if(k == 1) return min(n1[s1], n2[s2]);
+        
+        //Potential kth element
+        int i = s1 + min(len1, k/2) - 1;
+        int j = s2 + min(len2, k/2) - 1;
+
+        //Discard 
+        if(n1[i] > n2[j])
+            return getKth(n1, s1, n2, j+1, k - min(len2, k/2));
+        else
+            return getKth(n1, i+1, n2, s2, k - min(len1, k/2));
+        
+    }
+public:
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        int m = nums1.size(), n = nums2.size();
+        //We eliminate the difference between odd and even length array by the following code
+        //For odd length array, the left and right will get the same value
+        int left = (m + n + 1) / 2, right = (m + n + 2) / 2;
+        //Check corner case
+        if(m == 0) return (nums2[left-1] + nums2[right-1])/2.0;
+        else if(n == 0) return (nums1[left-1] + nums1[right-1])/2.0;
+        
+        return (getKth(nums1, 0, nums2, 0, left) + getKth(nums1, 0, nums2, 0, right))/2.0;
+    }
+};
+
+
+//42. Trapping Rain Water
+//https://leetcode.com/problems/trapping-rain-water/
+//The general idea is to use a linear scan. For each entry,
+//we compare it with the maximum height from both sides. If
+//nums[i] <= maxHeight, we know it can potentially hold 
+//maxHeight - nums[i] water for that entry. We scan the array
+//and add these potential water together. Note how we handle 
+//when we can really add the water to final result/
+//two pointers - interesting problem
+class Solution {
+public:
+    int trap(vector<int>& nums) {
+        int l = 0, r = nums.size()-1;
+        int maxL = 0, maxR = 0;
+        int res = 0;
+        while(l < r){
+            if(nums[l] <= nums[r]){
+                if(nums[l] >= maxL){
+                    //We update maxL here and move forward
+                    maxL = nums[l];
+                }else{
+                    res+= maxL - nums[l];
+                }
+                l++;
+            }else{
+                if(nums[r] >= maxR){
+                    maxR = nums[r];
+                }else{
+                    res += maxR - nums[r];
+                }
+                r--;
+            }
+        }
+        return res;
+    }
+};
 
 
 
