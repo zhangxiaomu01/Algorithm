@@ -68,3 +68,86 @@ public:
  * int param_1 = obj->get(key);
  * obj->put(key,value);
  */
+
+
+//284. Peeking Iterator
+//https://leetcode.com/problems/peeking-iterator/
+/* Solution 1 use the copy constructor. Solution 2 is more generic! */
+//Solution 1
+// Below is the interface for Iterator, which is already defined for you.
+// **DO NOT** modify the interface for Iterator.
+
+class Iterator {
+    struct Data;
+	Data* data;
+public:
+	Iterator(const vector<int>& nums);
+	Iterator(const Iterator& iter);
+	virtual ~Iterator();
+	// Returns the next element in the iteration.
+	int next();
+	// Returns true if the iteration has more elements.
+	bool hasNext() const;
+};
+
+
+class PeekingIterator : public Iterator {
+public:
+	PeekingIterator(const vector<int>& nums) : Iterator(nums) {
+	    // Initialize  any member here.
+	    // **DO NOT** save a copy of nums and manipulate it directly.
+	    // You should only use the Iterator interface methods.
+	    
+	}
+
+    // Returns the next element in the iteration without advancing the iterator.
+	int peek() {
+        //Copy the iterator object and return the next
+        return Iterator(*this).next();
+	}
+
+	// hasNext() and next() should behave the same as in the Iterator interface.
+	// Override them if needed.
+	int next() {
+	    return Iterator::next();
+	}
+
+	bool hasNext() const {
+	    return Iterator::hasNext();
+	}
+};
+
+//Solution 2
+class PeekingIterator : public Iterator {
+private:
+    int m_next;
+    int m_hasNext;
+public:
+	PeekingIterator(const vector<int>& nums) : Iterator(nums) {
+	    // Initialize  any member here.
+	    // **DO NOT** save a copy of nums and manipulate it directly.
+	    // You should only use the Iterator interface methods.
+	    m_hasNext = Iterator::hasNext();
+        if(m_hasNext) m_next = Iterator::next();
+	}
+
+    // Returns the next element in the iteration without advancing the iterator.
+	int peek() {
+        //Copy the iterator object and return the next
+        return m_next;
+	}
+
+	// hasNext() and next() should behave the same as in the Iterator interface.
+	// Override them if needed.
+	int next() {
+        int t = m_next;
+        m_hasNext = Iterator::hasNext();
+        if(m_hasNext) m_next = Iterator::next();
+	    return t;
+	}
+
+	bool hasNext() const {
+	    return m_hasNext;
+	}
+};
+
