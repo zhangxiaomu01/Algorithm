@@ -794,3 +794,78 @@ public:
         
     }
 };
+
+//311. Sparse Matrix Multiplication (Locked)
+/* Description:
+Given two sparse matrices A and B, return the result of AB.
+You may assume that A's column number is equal to B's row number.
+Example:
+Input:
+
+A = [
+  [ 1, 0, 0],
+  [-1, 0, 3]
+]
+
+B = [
+  [ 7, 0, 0 ],
+  [ 0, 0, 0 ],
+  [ 0, 0, 1 ]
+]
+
+Output:
+
+     |  1 0 0 |   | 7 0 0 |   |  7 0 0 |
+AB = | -1 0 3 | x | 0 0 0 | = | -7 0 3 |
+                  | 0 0 1 |
+
+ */
+/* The general idea is that we first store the index with non-zero element to
+a set. Then when we actually do the multiplication, we can skip the elements 
+from each row (B) or column (A). */
+class Solution {
+public:
+    vector<vector<int>> multiply(vector<vector<int>>& A, vector<vector<int>>& B) {
+        int M = A.size(), N = B.size(), K = B[0].size();
+        vector<unordered_set<int>> m_vs(M, unordered_set<int>()), k_vs(K, unordered_set<int>());
+        
+        // A: M x N
+        for (int i = 0; i < M; ++i) {
+            for (int j = 0; j < N; ++j) {
+                if (A[i][j]) m_vs[i].insert(j);
+            }
+        }
+        
+        // B: N x K
+        for (int i = 0; i < K; ++i) {
+            for (int j = 0; j < N; ++j) {
+                if (B[j][i]) k_vs[i].insert(j);
+            }
+        }
+        
+        vector<vector<int>> result(M, vector<int>(K, 0));
+        
+        for (int i = 0; i < M; ++i) {   // M
+            for (int j = 0; j < K; ++j) {   // K
+                // Pick the one with less non-zero to iterate
+                if (m_vs[i].size() <= k_vs[j].size()) {
+                    for (auto const index:m_vs[i]) {    // N
+                        if (k_vs[j].find(index) != k_vs[j].end()) {
+                            result[i][j] += A[i][index] * B[index][j];
+                        }   
+                    }
+                }
+                else {
+                    for (auto const index:k_vs[j]) {    //  N
+                        if (m_vs[i].find(index) != m_vs[i].end()) {
+                            result[i][j] += A[i][index] * B[index][j];
+                        }   
+                    }
+                }
+            }
+        }
+        
+        return result;
+    }
+};
+
