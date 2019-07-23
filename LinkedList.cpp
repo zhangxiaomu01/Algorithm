@@ -28,3 +28,35 @@ public:
     }
 };
 
+//206. Reverse Linked List
+//https://leetcode.com/problems/reverse-linked-list/
+//Both versions are tricky!
+//Note *p always points to the last node of the original array
+//At that time, current head still points to the last element 
+//of reverse(head->naxt)
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        if(!head || !head->next) return head;
+        ListNode* p = reverseList(head->next);
+        head->next->next = head;
+        head->next = nullptr;
+        return p;
+    }
+};
+
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        ListNode* pre = nullptr, *cur = head;
+        while(cur){
+            ListNode* temp = cur->next;
+            cur->next = pre;
+            pre = cur;
+            cur = temp;
+        }
+        return pre;
+    }
+};
+
+
