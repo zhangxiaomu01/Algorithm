@@ -742,3 +742,55 @@ public:
 
 };
 
+//289. Game of Life
+//https://leetcode.com/problems/game-of-life/
+//For this problem, we need to find a way ro keep track of the changes without
+//duplicating the original 2D board.
+//We do not need to make any change for rule 2
+//In this algorithm, if a cell dies, than we set it to -1
+//Then we know it changes from 1 (live) to dead(0).
+//If a cell becomes alive, we set to 2, then we know
+//that it changes from -1(dead) to 2(live). We can use these
+//two states to keep track of the potential changes. (e.g. if 
+//the state is -1, we know that originally, it should be alive)
+class Solution {
+public:
+    void gameOfLife(vector<vector<int>>& board) {
+        int m = board.size(), n = m ? board[0].size() : 0;
+        //Shift the row and column to calculate the neighbours of board[row][col]
+        int neighbours[3] = {-1, 0, 1};
+        
+        for(int row = 0; row < m; ++row){
+            for(int col = 0; col < n; ++col){
+                int liveNeighbours = 0;
+                //Check the neighbours of board[row][col]
+                for(int i = 0; i < 3; ++i){
+                    for(int j = 0; j < 3; ++j){
+                        int r = row + neighbours[i];
+                        int c = col + neighbours[j];
+                        if(r == row && c == col) continue;
+                        //abs(board[r][c]) == 1 will give us the exact live neighbours
+                        if(r >=0 && r < m && c >=0 && c < n && abs(board[r][c]) == 1)
+                            liveNeighbours++;
+                    }
+                }
+                
+                //Apply rule 1 and rule 3. Basically change 1 to -1 when necessary
+                if(board[row][col] == 1 && (liveNeighbours > 3 || liveNeighbours < 2))
+                    board[row][col] = -1;
+                //Apply rule 4
+                if(board[row][col] == 0 && liveNeighbours == 3)
+                    board[row][col] = 2;
+                
+            }
+        }
+        
+        for(int row = 0; row < m; ++row){
+            for(int col = 0; col < n; ++col){
+                if(board[row][col] == -1) board[row][col] = 0;
+                else if (board[row][col] == 2) board[row][col] = 1;
+            }
+        }
+        
+    }
+};
