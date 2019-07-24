@@ -1122,3 +1122,53 @@ public:
     }
 };
 
+//15. 3Sum
+//https://leetcode.com/problems/3sum/
+//Sorting and optimization is critical here
+//Another tricky part is how we avoid duplicate results
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        vector<vector<int>> res;
+        int len = nums.size();
+        if(len <= 2) return res;
+        sort(nums.begin(), nums.end());
+        for(int i = 0; i < len; ++i){
+            int a = nums[i];
+            if(a > 0) break;
+            //a == nums[i+1] won't work here, we will
+            //miss the case like [-1, -1, 2]
+            if(i - 1 >= 0 && a == nums[i-1]) continue;
+            int k = len - 1;
+            //Check the rest of the pair
+            for(int j = i + 1; j < k;){
+                int b = nums[j], c = nums[k];
+                int localSum = a + b + c;
+                if(localSum == 0){
+                    res.push_back(vector<int>{a, b, c});
+                    while(j < k && b == nums[++j]);
+                    while(k > j && c == nums[--k]);
+                }
+                else if (localSum > 0)
+                    --k;
+                else
+                    ++j;
+            }
+        }
+        return res;
+    }
+};
+
+
+//18. 4Sum
+//https://leetcode.com/problems/4sum/
+/* Very tricky problem. Got stuck for the corner cases for quite a long time!
+Double check tomorrow. Pay attention to the generalized k sum approach.*/
+
+
+
+
+
+
+
+
