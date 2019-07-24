@@ -219,3 +219,127 @@ public:
  */
 
 
+//295. Find Median from Data Stream
+//https://leetcode.com/problems/find-median-from-data-stream/
+/* Insertion sort Solution (O(n)) */
+class MedianFinder {
+private:
+    vector<int> Con;
+public:
+    /** initialize your data structure here. */
+    MedianFinder() {
+        
+    }
+    
+    void addNum(int num) {
+        auto it = lower_bound(Con.begin(), Con.end(), num);
+        Con.insert(it, num);
+    }
+    
+    double findMedian() {
+        int len = Con.size();
+        if(len == 0) return 0;
+        else return len % 1 ? Con[len/2] : (Con[(len-1)/2] + Con[len/2]) * 0.5;
+    }
+};
+
+/**
+ * Your MedianFinder object will be instantiated and called as such:
+ * MedianFinder* obj = new MedianFinder();
+ * obj->addNum(num);
+ * double param_2 = obj->findMedian();
+ */
+
+/* Priority queue solution O(log n) */
+class MedianFinder {
+private:
+    //The top element will be the largest of the queue
+    priority_queue<int> maxQ;
+    //The top element will be the smallest. We save larger half 
+    //numbers in this queue, so the top will be close to median
+    priority_queue<int, vector<int>, greater<int>> minQ;
+public:
+    /** initialize your data structure here. */
+    MedianFinder() {
+        
+    }
+    
+    void addNum(int num) {
+        maxQ.push(num);
+        //Balancing value, this step is critical!
+        minQ.push(maxQ.top());
+        maxQ.pop();
+        //We always make maxQ have equal or more number of elements than minQ
+        if(maxQ.size() < minQ.size()){
+            maxQ.push(minQ.top());
+            minQ.pop();
+        }
+        
+    }
+    
+    double findMedian() {
+        int len = maxQ.size() + minQ.size();
+        if(len == 0) return 0;
+        if(len & 1)
+            return maxQ.top();
+        else 
+            return (minQ.top() + maxQ.top()) * 0.5;
+    }
+};
+
+//Multiset solution. Easy to get the idea. 
+//Very tricky when we handle the repetitive elements in the array.
+//Pay attention to when length is even, how to handle the case.
+//Still not very efficient
+class MedianFinder {
+private:
+    multiset<int> mSet;
+    multiset<int>::iterator loIt, hiIt;
+public:
+    /** initialize your data structure here. */
+    MedianFinder() : loIt(mSet.end()), hiIt(mSet.end()) {
+        
+    }
+    
+    void addNum(int num) {
+        //Get the length before inserting element
+        int len = mSet.size();
+        //When len is odd, after insert one element, the len will
+        //be even.
+        mSet.insert(num);
+        
+        if(len == 0){
+            loIt = mSet.begin();
+            hiIt = mSet.begin();
+            return;
+        }
+        
+        if(len & 1){
+            if(num < *loIt)
+                loIt--;
+            else
+                hiIt++;
+        }else{
+            //Note C++ will insert the new repetitive element in the 
+            //end of all repetitive elements
+            if(num > *loIt && num < *hiIt){
+                loIt++;
+                hiIt--;
+            }
+            else if(num >= *hiIt)
+                loIt ++;
+            else // num <= *loIt < *hiIt
+                loIt = --hiIt; //insertion at the end of equal range spoils loIt
+            //so we need loIt = --hiIt, instead of just hiIt--
+                
+        }
+    }
+    
+    double findMedian() {
+        if(loIt == mSet.end() && hiIt == mSet.end())
+            return -1;
+        return (*loIt + *hiIt) / 2.0;
+    }
+};
+
+
