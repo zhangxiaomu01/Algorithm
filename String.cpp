@@ -57,6 +57,28 @@ public:
     }
 };
 
+//The same idea. However, we use int[256] to map the all possible
+//characters to potential entry, and can quiaky retrieve the starting
+// index
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        vector<int> dict(256, -1);
+        int len = s.size();
+        int start = -1, maxLen = 0;
+        for(int i = 0; i < len; ++i){
+            //We find a duplicate element which has already
+            //saved in the dict
+            if(dict[s[i]] > start){
+                start = dict[s[i]];
+            }
+            maxLen = max(maxLen, i - start);
+            dict[s[i]] = i;
+        }
+        return maxLen;
+    }
+};
+
 
 
 
