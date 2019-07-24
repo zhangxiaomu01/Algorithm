@@ -30,6 +30,53 @@ public:
     }
 };
 
+//BFS version
+class Solution {
+public:
+    int numIslands(vector<vector<char>>& nums) {
+        int m = nums.size();
+        int n = m ? nums[0].size() : 0;
+        queue<pair<int, int>> Q;
+        int count = 0;
+        for(int i = 0; i < m; ++i){
+            for(int j = 0; j < n; ++j){
+                if(nums[i][j] == '1'){
+                    Q.push(make_pair(i, j));
+                    nums[i][j] = '0';
+                    count++;
+                    while(!Q.empty()){
+                        pair<int, int> p = Q.front();
+                        int pi = p.first, pj = p.second;
+                        Q.pop();
+                        //Npte we need to set the next entry to '0'
+                        //In order to avoid the repetitive visit to 
+                        //the some entries. At first, you just update 
+                        //nums[pi][pj] in the while loop once, that's
+                        // the problem
+                        if(pi + 1 < m && nums[pi+1][pj] == '1'){
+                            Q.push(make_pair(pi+1, pj));
+                            nums[pi+1][pj] = '0';
+                        }    
+                        if(pi - 1 >=0 && nums[pi-1][pj] == '1'){
+                            Q.push(make_pair(pi-1, pj));
+                            nums[pi-1][pj] = '0';
+                        }
+                        if(pj + 1 < n && nums[pi][pj + 1] == '1'){
+                            Q.push(make_pair(pi, pj+1));
+                            nums[pi][pj+1] = '0';
+                        }   
+                        if(pj - 1 >=0 && nums[pi][pj-1] == '1'){
+                            Q.push(make_pair(pi, pj-1));
+                            nums[pi][pj-1] = '0';
+                        }    
+                    }
+                }
+            }
+        }
+        return count;
+    }
+};
+
 //130. Surrounded Regions
 //https://leetcode.com/problems/surrounded-regions/
 /*
