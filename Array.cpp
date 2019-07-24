@@ -1106,4 +1106,19 @@ public:
     }
 };
 
+//724. Find Pivot Index
+//https://leetcode.com/problems/find-pivot-index/
+/* Prefix sum, nothing fancy */
+class Solution {
+public:
+    int pivotIndex(vector<int>& nums) {
+        int sum = 0, leftSum = 0;
+        for(int n : nums) sum += n;
+        for(int i = 0; i < nums.size(); ++i){
+            if(leftSum == sum - nums[i] - leftSum) return i;
+            leftSum += nums[i];
+        }
+        return -1;
+    }
+};
 
