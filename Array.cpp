@@ -1168,7 +1168,27 @@ Double check tomorrow. Pay attention to the generalized k sum approach.*/
 
 
 
-
+//412. Fizz Buzz
+//https://leetcode.com/problems/fizz-buzz/
+/* Do not really understand why this question exists... */
+class Solution {
+public:
+    vector<string> fizzBuzz(int n) {
+        string fizz = "Fizz", buzz = "Buzz", fizzbuzz = "FizzBuzz";
+        vector<string> res;
+        for(int i = 1; i <= n; ++i){
+            if(i%3 == 0 && i%5 == 0)
+                res.push_back(fizzbuzz);
+            else if(i%5 == 0)
+                res.push_back(buzz);
+            else if(i%3 == 0)
+                res.push_back(fizz);
+            else
+                res.push_back(to_string(i));
+        }
+        return res;
+    }
+};
 
 
 
