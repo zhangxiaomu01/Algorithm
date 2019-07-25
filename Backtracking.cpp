@@ -733,6 +733,7 @@ private:
     int minLen = INT_MAX, maxLen = INT_MIN;
     int len_s = 0;
 public:
+//This function is very tricky. Pay attention to the actual length.
     void buildPath(string &s, vector<string> &res, string cur, unordered_set<string> &dict, vector<int>& isBreakable, int pos){
         //We use minLen and maxLen to shrink the searching range
         for(int i = minLen; i <= min(maxLen, len_s - pos); i++){
