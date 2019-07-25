@@ -1164,6 +1164,44 @@ public:
 //https://leetcode.com/problems/4sum/
 /* Very tricky problem. Got stuck for the corner cases for quite a long time!
 Double check tomorrow. Pay attention to the generalized k sum approach.*/
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        int len = nums.size();
+        vector<vector<int>> res;
+        if(len <= 3) return res;
+        sort(nums.begin(), nums.end());
+        for(int i = 0; i < len - 3;){
+            int a = nums[i];
+            for(int j = i + 1; j < len - 2;){
+                int b = nums[j];
+                int q = len - 1;
+                for(int p = j+1; p < q;){
+                    int c = nums[p], d = nums[q];
+                    int localSum = a + b + c + d;
+                    if(localSum == target){
+                        res.push_back({a, b, c, d});
+                        p++;
+                        q--;
+                        while(p < q && nums[p] == c) p++;
+                        while(p < q && nums[q] == d) q--;
+                    }
+                    else if(localSum > target)
+                        q--;
+                    else
+                        p++;
+                }
+                ++j;
+                //Note current we are at j
+                while(j < len - 2 && nums[j-1] == nums[j]) ++j;
+            }
+            ++i;
+            while(i < len-3 && nums[i-1] == nums[i]) ++i;
+        }
+        return res;
+    }
+};
+
 
 
 
