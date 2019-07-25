@@ -1190,5 +1190,69 @@ public:
     }
 };
 
+//242. Valid Anagram
+//https://leetcode.com/problems/valid-anagram/
+class Solution {
+public:
+    bool isAnagram(string s, string t) {
+        int res = 0;
+        if(s.size() != t.size()) return false;
+        vector<int> dict(256, 0);
+        for(int i = 0; i < s.size(); ++i){
+            dict[s[i] - '0'] ++;
+            dict[t[i] - '0'] --;
+        }
+        for(int i = 0; i < 256; ++i){
+            if(dict[i] != 0)
+                return false;
+        }
+        return true;
+    }
+};
 
+
+//238. Product of Array Except Self
+//https://leetcode.com/problems/product-of-array-except-self/
+//Using two extra array... No division included
+class Solution {
+public:
+    vector<int> productExceptSelf(vector<int>& nums) {
+        vector<int> res(nums.size(), 1);
+        int len = nums.size();
+        vector<int> fA(len+1, 1), bA(len+1, 1);
+        int i = 0, j = len - 1;
+        while(i <= len - 1){
+            fA[i+1] = fA[i] * nums[i];
+            bA[j] = bA[j+1] * nums[j];
+            i++;
+            j--;
+        }
+        for(int k = 1; k <= len; ++k){
+            res[k-1] = fA[k-1] * bA[k];
+        }
+        return res;
+    }
+};
+
+//O(1) space solution
+class Solution {
+public:
+    vector<int> productExceptSelf(vector<int>& nums) {
+        int len = nums.size();
+        //Using the array to store left product, build the 
+        //right product on the fly!
+        vector<int> res(len, 1);
+        int rProduct = 1;
+        for(int i = 1; i < len; ++i){
+            res[i] = res[i-1] * nums[i-1];
+        }
+        
+        for(int i = len-1; i >= 0; --i){
+            res[i] = res[i] * rProduct;
+            //update rProduct on the fly
+            rProduct *= nums[i];
+        }
+        return res;
+    }
+};
 
