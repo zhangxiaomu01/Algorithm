@@ -1202,7 +1202,71 @@ public:
     }
 };
 
-
+//Generalized ksum solution, tricky to implement. 
+//Too many corner cases.
+class Solution {
+    void kSum(vector<int>& nums, vector<vector<int>>& res, vector<int>& tempRes, int t, int pos, int k){
+        if(k == 2){
+            int p = pos, q = nums.size() - 1;
+            while(p < q){
+                int localSum = nums[p] + nums[q];
+                if(localSum > t){
+                    q--;
+                }else if(localSum < t)
+                    p++;
+                else{
+                    tempRes.push_back(nums[p++]);
+                    tempRes.push_back(nums[q--]);
+                    res.push_back(tempRes);
+                    tempRes.pop_back();
+                    tempRes.pop_back();
+                    while(p < q && nums[p] == nums[p-1])p++;
+                    while(p < q && nums[q] == nums[q+1])q--;
+                }
+            }
+        }
+        else{
+            //Note j <= nums.size() - k, instead of <
+            for(int j = pos; j <= nums.size() - k; ){
+                int sum = 0;
+                //prone the result, if sum of nums[j]....nums[j+k-1] is smaller than
+                //t, we can terminate here.
+                for(int i = 0; i < k; ++i) sum += nums[j+i];
+                if(sum > t) break;
+                //reset sum
+                sum = nums[j];
+                //prone the result, if sum of nums[j] + nums[len-k+1] + ..nums[len-1] 
+                //is smaller than t, we need to move forward j
+                for(int i = nums.size() - 1; i >= nums.size() - k + 1; --i) sum += nums[i];
+                if(sum < t) {
+                    j++;//Critical, or we potentially go to infinity loop
+                    continue;
+                }
+                
+                tempRes.push_back(nums[j]);
+                kSum(nums, res, tempRes, t - nums[j], j+1, k-1);
+                tempRes.pop_back();
+                ++j; //an alternative way is to define ++j in the for() loop body
+                //then remove j++ in the if(sum < t), and change nums[j] == nums[j+1]
+                //and remove j-1 >= 0 (or we will have duplicates)
+                while(j - 1 >= 0 && j <= nums.size() - k && nums[j] == nums[j-1]) j++;
+            }
+            
+        }
+    }
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        int len = nums.size();
+        vector<vector<int>> res;
+        vector<int> tempRes;
+        int k = 4;
+        if(len <= k-1) return res;
+        sort(nums.begin(), nums.end());
+        
+        kSum(nums, res, tempRes, target, 0, k);
+        return res;
+    }
+};
 
 
 
