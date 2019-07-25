@@ -334,12 +334,60 @@ public:
                 
         }
     }
-    
     double findMedian() {
         if(loIt == mSet.end() && hiIt == mSet.end())
             return -1;
         return (*loIt + *hiIt) / 2.0;
     }
 };
+
+
+//352. Data Stream as Disjoint Intervals
+//https://leetcode.com/problems/data-stream-as-disjoint-intervals/
+/* The general idea is to use a set to efficiently remove and insert element.
+This code is not the most efficient one, but it's easy to understand. O(nlogn)
+Note the iterator to the set container follows the sorting order, which means 
+the smallest element will be visited first. Then we can change the linear iteration
+to binary search.*/
+class SummaryRanges {
+private:
+    //Save all the potential intervals
+    set<vector<int>> Intervals;
+public:
+    /** Initialize your data structure here. */
+    SummaryRanges() {
+        
+    }
+    
+    void addNum(int val) {
+        vector<int> newInterval = {val, val};
+        for(auto it = Intervals.begin(); it != Intervals.end();){
+            if(newInterval.back() + 1 < (it -> front()) || newInterval.front() - 1 > (it->back()))
+                it++;
+            else{
+                //update newIntervals and erase the it object
+                newInterval.front() = min(newInterval.front(), it->front());
+                newInterval.back() = max(newInterval.back(), it->back());
+                //We need to update it to the next element after the erased element
+                it = Intervals.erase(it);
+            }
+        }
+        Intervals.insert(newInterval);
+    }
+    
+    vector<vector<int>> getIntervals() {
+        return vector<vector<int>>(Intervals.begin(), Intervals.end());
+    }
+};
+
+/**
+ * Your SummaryRanges object will be instantiated and called as such:
+ * SummaryRanges* obj = new SummaryRanges();
+ * obj->addNum(val);
+ * vector<vector<int>> param_2 = obj->getIntervals();
+ */
+
+
+
 
 
