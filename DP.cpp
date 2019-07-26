@@ -34,6 +34,20 @@ public:
     }
 };
 
+class Solution {
+public:
+    int climbStairs(int n) {
+        //Initially, cur == dp[1], pre == dp[0]
+        int cur = 1, pre = 0;
+        for(int i = 1; i <= n; ++i){
+            int temp = cur;
+            cur = cur + pre;
+            pre = temp;
+        }
+        return cur;
+    }
+};
+
 //62. Unique Paths
 //https://leetcode.com/problems/unique-paths/
 /* Pretty standard! */
@@ -134,24 +148,20 @@ public:
 //Recursive solution
 class Solution {
 private:
-    int helper(vector<vector<int>>& grid, vector<vector<int>>& memo, int mi, int ni){
-        if(mi < 0 || ni < 0) return 0;
-        else if(mi == 0 && ni == 0) return 1;
-        else if(memo[mi][ni] != -1) return memo[mi][ni];
-        else{
-            if(!grid[mi][ni])
-                memo[mi][ni] = helper(grid, memo, mi-1, ni) + helper(grid, memo, mi, ni-1);
-            else
-                memo[mi][ni] = 0;
-        }
-        return memo[mi][ni];
+    int helper(vector<vector<int>>& G, int i, int j, vector<vector<int>>& memo){
+        //Need to add G[0][0] != 1 here
+        if(i == 0 && j == 0 && G[0][0] == 0) return 1;
+        if(i < 0 || j < 0 || G[i][j] == 1) return 0;
+        if(memo[i][j] != -1) return memo[i][j];
+        memo[i][j] = helper(G, i-1, j, memo) + helper(G, i, j-1, memo);
+        return memo[i][j];
     }
 public:
     int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
-        int m = obstacleGrid.size(), n = m ? obstacleGrid[0].size() : 0;
-        if(obstacleGrid[0][0] == 1) return 0;
-        vector<vector<int>> memo(m, vector<int>(n, -1));
-        return helper(obstacleGrid, memo, m-1, n-1);
+        int m = obstacleGrid.size();
+        int n = m ? obstacleGrid[0].size() : 0;
+        vector<vector<int>> memo(m, vector<int>(n,-1));
+        return helper(obstacleGrid, m-1, n-1, memo);
     }
 };
 
