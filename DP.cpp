@@ -510,4 +510,35 @@ public:
     }
 };
 
-//
+//Optimized version
+//using one dimensional array
+class Solution {
+public:
+    int minPathSum(vector<vector<int>>& grid) {
+        int m = grid.size();
+        int n = m ? grid[0].size() : 0;
+        vector<int> pre(n, 0);
+        vector<int> cur(n, 0);
+        pre[n-1] = grid[m-1][n-1];
+        
+        for(int i = n-2; i >= 0; --i){
+            pre[i] = pre[i+1] + grid[m-1][i];
+            
+        }
+        
+        for(int i = m-2; i >= 0; --i){
+            for(int j = n-1; j >= 0; --j){
+                if(i == m-1 && j == n-1) continue;
+                if(j == n-1){
+                    cur[j] = pre[j] + grid[i][j];
+                }  
+                else
+                    cur[j] = min(pre[j], cur[j+1]) + grid[i][j];
+            }
+            swap(cur, pre);
+        }
+        //Note in the end, we swap the pre and cur one more time
+        return pre[0];
+    }
+};
+
