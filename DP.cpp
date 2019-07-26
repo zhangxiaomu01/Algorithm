@@ -542,3 +542,40 @@ public:
     }
 };
 
+
+//72. Edit Distance
+//https://leetcode.com/problems/edit-distance/
+/* Classical distance problem */
+class Solution {
+public:
+    int minDistance(string word1, string word2) {
+        int m = word1.size(), n = word2.size();
+        if(n == 0 || m == 0) return m ? m : n;
+        
+        vector<vector<int>> dp(m+1, vector<int>(n+1, 0));
+        for(int i = 1; i <= m; ++i)
+            dp[i][0] = i;
+        for(int j = 1; j <= n; ++j)
+            dp[0][j] = j;
+        
+        for(int i = 1; i <= m; ++i){
+            for(int j = 1; j <= n; ++j){
+                //Handle 4 situations:
+                /*
+                1. insert a character in word 1
+                2. delete a character in word 2
+                3. replace one character if word[i-1] != word[j-1]
+                4. skip this character if word[i-1] == word[j-1]
+                */
+                dp[i][j] = min(min(dp[i-1][j], dp[i][j-1]) + 1, 
+                               dp[i-1][j-1] + (word1[i-1] == word2[j-1] ? 0 : 1));
+            }
+        }
+        
+        return dp[m][n];
+    }
+};
+
+
+
+
