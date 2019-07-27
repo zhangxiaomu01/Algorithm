@@ -674,3 +674,34 @@ public:
     }
 };
 
+
+//174. Dungeon Game
+//https://leetcode.com/problems/dungeon-game/
+/* The tricky part is we start from the Princess room, and calculate the minimum
+HP we should have in order to reach room[i][j]. Once we find dp[i][j] > 0, then we
+know we need at least dp[i][j] HP in order to pass room[i][j], if dp[i][j] <= 0,
+then we know we have more HP than needed, we can set the minimum HP for dp[i][j],
+which is 1. */
+class Solution {
+public:
+    int calculateMinimumHP(vector<vector<int>>& dungeon) {
+        if(dungeon.empty()) return 1;
+        int m = dungeon.size(), n = m ? dungeon[0].size() : 0;
+        vector<vector<int>> dp(m, vector<int>(n, 0));
+        dp[m-1][n-1] = 1;
+        for(int i = m-1; i >= 0; --i){
+            for(int j = n-1; j >= 0; --j){
+                if(i == m-1 && j == n-1) dp[i][j] = 1 - dungeon[i][j];
+                else if(i == m-1) dp[i][j] = dp[i][j+1] - dungeon[i][j];
+                else if(j == n-1) dp[i][j] = dp[i+1][j] - dungeon[i][j];
+                else{
+                    dp[i][j] = min(dp[i][j+1], dp[i+1][j]) - dungeon[i][j];
+                }
+                dp[i][j] = dp[i][j] <= 0 ? 1 : dp[i][j];
+            }
+        }
+        //cout << dp[0][0] << endl;
+        return dp[0][0] <= 0 ? 1 : dp[0][0];
+    }
+};
+
