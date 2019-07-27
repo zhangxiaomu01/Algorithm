@@ -630,7 +630,7 @@ public:
         
         for(int i = 1; i <= len1; ++i){
             for(int j = 1; j <= len2; ++j){
-                if(i == 0 && j == 0) continue;
+                //if(i == 0 && j == 0) continue;
                 dp[i][j] = (dp[i-1][j] && s1[i-1] == s3[i+j-1]) || 
                                 (dp[i][j-1] && s2[j-1] == s3[i+j-1]);
             }
@@ -639,3 +639,38 @@ public:
         
     }
 };
+
+
+/* Optimized DP, 1D array */
+class Solution {
+public:
+    bool isInterleave(string s1, string s2, string s3) {
+        int len1 = s1.size(), len2 = s2.size(), len3 = s3.size();
+        if(len1 + len2 != len3) return false;
+        if((len1 == 0 && s2 != s3) || (len2 == 0 && s1 != s3)) return false;
+        
+        if(len1 > len2) return isInterleave(s2, s1, s3);
+        
+        vector<int> cur(len2+1, 0);
+        vector<int> pre(len2+1, 0);
+        //vector<vector<short>> dp(len1+1, vector<short>(len2+1, 0));
+        pre[0] = 1;
+        
+        //Check the base case that when one of the string is empty
+        for(int i = 1; i <= len2; ++i){
+            pre[i] = (pre[i-1] && s2[i-1] == s3[i-1]);
+        }
+        for(int i = 1; i <= len1; ++i){
+            for(int j = 0; j <= len2; ++j){
+                //dp[i][j] = (dp[i-1][j] && s1[i-1] == s3[i+j-1]) || (dp[i][j-1] && s2[j-1] == s3[i+j-1]);
+                if(j == 0)
+                    cur[j] = (pre[j] && s1[i-1] == s3[i + j - 1]);
+                else
+                    cur[j] = (pre[j] && s1[i-1] == s3[i+j-1]) || (cur[j-1] && s2[j-1] == s3[i+j-1]);
+            }
+            swap(cur, pre);
+        }
+        return pre[len2];
+    }
+};
+
