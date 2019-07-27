@@ -606,4 +606,36 @@ public:
 };
 
 
-//
+//97. Interleaving String
+//https://leetcode.com/problems/interleaving-string/
+/* Not that hard. Basically, we need to check whether the specific entry of dp can
+be true or false based on whether which character form str1 or str2 maps to this 
+entry in s3 */
+class Solution {
+public:
+    bool isInterleave(string s1, string s2, string s3) {
+        int len1 = s1.size(), len2 = s2.size(), len3 = s3.size();
+        if(len1 + len2 != len3) return false;
+        if((len1 == 0 && s2 != s3) || (len2 == 0 && s1 != s3)) return false;
+        vector<vector<short>> dp(len1+1, vector<short>(len2+1, 0));
+        dp[0][0] = 1;
+        
+        //Check the base case that when one of the string is empty
+        for(int i = 1; i <= len1; ++i){
+            dp[i][0] = (dp[i-1][0] && s1[i-1] == s3[i-1]);
+        }
+        for(int j = 1; j <= len2; ++j){
+            dp[0][j] = (dp[0][j-1] && s2[j-1] == s3[j-1]);
+        }
+        
+        for(int i = 1; i <= len1; ++i){
+            for(int j = 1; j <= len2; ++j){
+                if(i == 0 && j == 0) continue;
+                dp[i][j] = (dp[i-1][j] && s1[i-1] == s3[i+j-1]) || 
+                                (dp[i][j-1] && s2[j-1] == s3[i+j-1]);
+            }
+        }
+        return dp[len1][len2];
+        
+    }
+};
