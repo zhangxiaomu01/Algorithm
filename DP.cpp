@@ -735,4 +735,95 @@ public:
 };
 
 
+//221. Maximal Square
+//https://leetcode.com/problems/maximal-square/
+/* The key insight here is we use dp[i][j] record the maximum square from matrix[0][0] to matrix[i][j]. Inclusive.
+Once we find a new '1' in the matrix, we know that dp[i][j] only depends on dp[i-1][j-1], dp[i-1][j] and dp[i][j-1].
+Since the area is square, we can easily compute the potential minimum length for dp[i][j].*/
+class Solution {
+public:
+    int maximalSquare(vector<vector<char>>& matrix) {
+        if(matrix.empty()) return 0;
+        int m = matrix.size(), n = m ? matrix[0].size() : 0;
+        vector<vector<int>> dp(m, vector<int>(n, 0));
+        int maxLength = 0;
+        for(int i = 0; i < m; ++i){
+            if(matrix[i][0] == '1'){
+                dp[i][0] = 1;
+                maxLength = max(maxLength, dp[i][0]);
+            }   
+        }
+        for(int j = 0; j < n; ++j){
+            if(matrix[0][j] == '1'){
+                dp[0][j] = 1;
+                maxLength = max(maxLength, dp[0][j]);
+            }   
+        }
+        for(int i = 1; i < m; ++i){
+            for(int j = 1; j < n; ++j){
+                if(matrix[i][j] == '1'){
+                    /*//The following code is correct, however, we can just save the length
+                    int len1 = sqrt(dp[i-1][j-1]);
+                    int len2 = sqrt(dp[i-1][j]);
+                    int len3 = sqrt(dp[i][j-1]);
+                    int len = min(min(len1, len2), min(len1, len3)) + 1;
+                    dp[i][j] = len * len;
+                    maxArea = max(maxArea, dp[i][j]);
+                    */
+                    int len1 = dp[i-1][j-1], len2 = dp[i-1][j], len3 = dp[i][j-1];
+                    int len = min(min(len1, len2), min(len1, len3)) + 1;
+                    dp[i][j] = len;
+                    maxLength = max(maxLength, dp[i][j]);                    
+                }
+            }
+        }
+        return maxLength * maxLength;
+    }
+};
+
+class Solution {
+public:
+    int maximalSquare(vector<vector<char>>& matrix) {
+        if(matrix.empty()) return 0;
+        int m = matrix.size(), n = m ? matrix[0].size() : 0;
+        
+        //vector<vector<int>> dp(m, vector<int>(n, 0));
+        vector<int> cur(n, 0);
+        vector<int> pre(n, 0);
+        
+        int maxLength = 0;
+        
+        for(int j = 0; j < n; ++j){
+            if(matrix[0][j] == '1'){
+                pre[j] = 1;
+                maxLength = max(maxLength, pre[j]);
+            }   
+        }
+        for(int i = 1; i < m; ++i){
+            for(int j = 0; j < n; ++j){ 
+                //Handle the corner case
+                if(j == 0 && matrix[i][j] == '1'){
+                    cur[0] = 1;
+                    maxLength = max(maxLength, cur[0]);
+                } 
+                else if(j == 0 && matrix[i][j] == '0') cur[0] = 0;
+                else if(matrix[i][j] == '1'){
+                    int len1 = pre[j-1], len2 = pre[j], len3 = cur[j-1];
+                    int len = min(min(len1, len2), min(len1, len3)) + 1;
+                    cur[j] = len;
+                    maxLength = max(maxLength, cur[j]);                    
+                }
+                else{
+                    //Note using two 1 d array we need to reset cur[j] to 0
+                    //if matrix[i][j] == '0'
+                    cur[j] = 0;
+                }
+            }
+            swap(cur, pre);
+        }
+        return maxLength * maxLength;
+    }
+};
+
+
 
