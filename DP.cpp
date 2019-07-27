@@ -551,7 +551,7 @@ public:
     int minDistance(string word1, string word2) {
         int m = word1.size(), n = word2.size();
         if(n == 0 || m == 0) return m ? m : n;
-        
+
         vector<vector<int>> dp(m+1, vector<int>(n+1, 0));
         for(int i = 1; i <= m; ++i)
             dp[i][0] = i;
@@ -576,6 +576,34 @@ public:
     }
 };
 
+/* Optimized version, O(n) space */
+class Solution {
+public:
+    int minDistance(string word1, string word2) {
+        int m = word1.size(), n = word2.size();
+        if(n == 0 || m == 0) return m ? m : n;
+              
+        vector<int> cur(n+1, 0);
+        vector<int> pre(n+1, 0);
+        
+        //Initialize the first row
+        for(int i = 1; i <= n; ++i)
+            pre[i] = i;
+        
+        for(int i = 1; i <= m; ++i){
+            //Initialize cur[0] to be i, which means when word2 is empty,
+            //we need i steps to transfer word 1 to word 2
+            cur[0] = i;
+            for(int j = 1; j <= n; ++j){
+            //dp[i][j] = min(min(dp[i-1][j], dp[i][j-1]) + 1, dp[i-1][j-1] + (word1[i-1] == word2[j-1] ? 0 : 1));
+                cur[j] = min(min(cur[j-1], pre[j]) + 1, pre[j-1] + (word1[i-1] == word2[j-1] ? 0 : 1));
+            }
+            swap(cur, pre);
+        }
+        
+        return pre[n];
+    }
+};
 
 
-
+//
