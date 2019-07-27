@@ -700,8 +700,39 @@ public:
                 dp[i][j] = dp[i][j] <= 0 ? 1 : dp[i][j];
             }
         }
-        //cout << dp[0][0] << endl;
-        return dp[0][0] <= 0 ? 1 : dp[0][0];
+        return dp[0][0];
     }
 };
+
+/* Optimized version */
+class Solution {
+public:
+    int calculateMinimumHP(vector<vector<int>>& dungeon) {
+        if(dungeon.empty()) return 1;
+        int m = dungeon.size(), n = m ? dungeon[0].size() : 0;
+        vector<int> cur(n, 0);
+        vector<int> pre(n, 0);
+        
+        pre[n-1] = 1;
+
+        for(int i = m-1; i >= 0; --i){
+            for(int j = n-1; j >= 0; --j){
+                if(i == m-1 && j == n-1) cur[j] = 1 - dungeon[i][j];
+                else if(i == m-1) cur[j] = cur[j+1] - dungeon[i][j];
+                else if(j == n-1) cur[j] = pre[j] - dungeon[i][j];
+                else{
+                    //dp[i][j] = min(dp[i][j+1], dp[i+1][j]) - dungeon[i][j];
+                    cur[j] = min(cur[j+1], pre[j]) - dungeon[i][j];
+                }
+                //dp[i][j] = dp[i][j] <= 0 ? 1 : dp[i][j];
+                cur[j] = cur[j] <= 0 ? 1 : cur[j];
+            }
+            swap(pre, cur);
+        }
+        //We have already checked pre[0] <= 0 before
+        return pre[0];
+    }
+};
+
+
 
