@@ -732,18 +732,21 @@ class Solution {
 private:
     int minLen = INT_MAX, maxLen = INT_MIN;
     int len_s = 0;
-public:
-//This function is very tricky. Pay attention to the actual length.
-    void buildPath(string &s, vector<string> &res, string cur, unordered_set<string> &dict, vector<int>& isBreakable, int pos){
-        //We use minLen and maxLen to shrink the searching range
-        for(int i = minLen; i <= min(maxLen, len_s - pos); i++){
-            //Instead doing the actual check using dfs, we can directly check our table here.
-            if(isBreakable[i + pos]==1 && dict.count(s.substr(pos, i))!=0){
-                if(i + pos == len_s) res.push_back(cur + s.substr(pos, i));
-                else buildPath(s, res, cur + s.substr(pos, i) + " ", dict, isBreakable, i+pos);
+    //The build path function is tricky. note how we handle the index specifically
+    void buildPath(string& s, vector<int>& dp, unordered_set<string>& uSet, string tempS, int pos){
+        int len = s.size();
+        for(int i = minLen; i <= min(maxLen, len - pos); ++i){
+            if(dp[pos + i] && uSet.count(s.substr(pos, i))){
+                if(pos + i == len){
+                    res.push_back(tempS + s.substr(pos, i));
+                }else
+                    //Here we should pass in i+pos, because the new pos must be old pos + i
+                    buildPath(s, dp, uSet, tempS + s.substr(pos, i) + " ", pos + i);
+                
             }
         }
     }
+public:
     vector<string> wordBreak(string s, vector<string>& wordDict) {
         vector<string> res;
         if(wordDict.empty()) return res;
