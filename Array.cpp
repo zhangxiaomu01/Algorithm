@@ -1359,3 +1359,91 @@ public:
 };
 
 
+//84. Largest Rectangle in Histogram
+//https://leetcode.com/problems/largest-rectangle-in-histogram/
+//Very tricky problem, the corner case is not easy to catch.
+class Solution {
+public:
+    int largestRectangleArea(vector<int>& heights) {
+        if(heights.empty()) return 0;
+        int len = heights.size();
+        
+        //In order to handle the case like [4, 3]
+        //We need to make sure that the last element gets properly handled
+        heights.push_back(0);
+        //heights.insert(heights.begin(), numeric_limits<int>::max());
+        stack<int> hSt;
+        
+        int maxArea = 0;
+        // set the left boundry to be infinite
+        for(int i = 0; i <= len;){
+            if(hSt.empty() || heights[i] >= heights[hSt.top()]){
+                //Only update i here
+                hSt.push(i++);
+            }else{
+                while(!hSt.empty() && heights[i] < heights[hSt.top()]){
+                    int index = hSt.top();
+                    hSt.pop();
+                    //Note how we can update this width. When heights[i] < heights[hSt.top()]
+                    //We first pop up hSt.top(). And calculate the area based on the former element's index
+                    //In the case of [2,1,5,6,2,3], imagine that 
+                    //we are at the end of the array,we first pop 3 out of stack, the index will be 5, then we can
+                    //do heights[index] * (6 (we push 0 in the end) - 1 - 4 (which is the 5th element)). 
+                    //The last thing is if the stack is empty, we know we can include all the elements from
+                    //index 0 to index i-1, which means current valid length should be i. then we need to return 
+                    //-1 here to counter the effect of i-1. Very tricky statement
+                    maxArea = max(maxArea, (i - 1 - (hSt.empty()? -1 : hSt.top())) * heights[index]);
+                }
+            }
+        }
+        return maxArea;
+    }
+};
+
+/* Second Solution */
+//This solution is based on the solution of problem 84. The general idea is that we will
+//first calculate the height of each entry row by row. Then for each row, we call the 
+//algorthm to calculate the largest triangle in our defined histogram. We maintain a 
+//maxArea variable to keep track of the maximum area we could potentially have.
+class Solution {
+private:
+    int calMaxArea(vector<int>& V){
+        stack<int> hSt;
+        int len = V.size() - 1;
+        int maxArea = 0;
+        for(int i = 0; i <= len;){
+            if(hSt.empty() || V[hSt.top()] <= V[i])
+                hSt.push(i++);
+            else{
+                while(!hSt.empty() && V[hSt.top()] > V[i]){
+                    int index = hSt.top();
+                    hSt.pop();
+                    maxArea = max(maxArea, (i - 1 - (hSt.empty() ? -1 : hSt.top())) * V[index]);
+                }
+            }
+        }
+        return maxArea;
+    }
+public:
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        if(matrix.empty()) return 0;
+        int m = matrix.size(), n = m ? matrix[0].size() : 0;
+        vector<int> height(n+1, 0);
+        int maxArea = 0;
+        for(int i = 0; i < m; ++i){
+            for(int j = 0; j < n; ++j){
+                if(matrix[i][j] == '1'){
+                    height[j]++;
+                }            
+                else{
+                    height[j] = 0;
+                }
+            }
+            int localMax = calMaxArea(height);
+
+            maxArea = max(maxArea, localMax);
+        }
+        return maxArea;
+    }
+};
+
