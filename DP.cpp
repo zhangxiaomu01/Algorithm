@@ -984,4 +984,63 @@ public:
 };
 
 
+//213. House Robber II
+//https://leetcode.com/problems/house-robber-ii/
+/* The general idea is similar to House Robber I. 
+We break the circle and consider the two situations separately.
+1. We rob the first house, and ignore the last house
+2. We start from the second house, and iterate to the last one
+We can merge the code together, however, it will be hard to read*/
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        int len = nums.size();
+        if(len == 0) return 0;
+        //Handle the special case
+        if(len == 1) return nums[0];
+        
+        vector<int> dp1(len+1, 0);
+        vector<int> dp2(len+1, 0);
+        dp1[0] = 0;
+        dp2[0] = 0;
+        //Rob the first house
+        for(int i = 1; i <= len; ++i){
+            if(i < 2) dp1[i] = nums[i-1];
+            else
+                dp1[i] = max(dp1[i-1], dp1[i-2] + nums[i-1]);
+        }
+        
+        //Ignore the first house
+        for(int i = 2; i <= len; ++i){
+            if(i == 2) dp2[i] = nums[i-1];
+            else 
+                dp2[i] = max(dp2[i-1], dp2[i-2] + nums[i-1]);
+        }
+        return max(dp1[len-1], dp2[len]);
+    }
+};
+
+//Two passes, remember in House Rober I:
+//We have 0 - n-1 houses to robber, now, we have two cases:
+//case 1: 0 - n-2; case 2: 1 - n-1
+class Solution {
+private:
+    int doRob(const vector<int>& n, int start, int end){
+        int len = n.size();
+        int preNo = 0; int cur = n[start];
+        for(int i = start + 2; i <= end; i++){
+            int temp = max(preNo + n[i-1], cur);
+            preNo = cur;
+            cur = temp;
+        }
+        return cur;
+    }
+public:
+    int rob(vector<int>& nums) {
+        int len = nums.size();
+        if(len < 2) return len ? nums[0] : 0;
+        return max(doRob(nums, 0, len-1), doRob(nums, 1, len));
+    }
+};
+
 
