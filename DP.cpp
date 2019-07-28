@@ -944,6 +944,44 @@ public:
 };
 
 
+//198. House Robber
+//https://leetcode.com/problems/house-robber/
+/* Not that hard. */
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        if(nums.empty()) return 0;
+        int len = nums.size();
+        vector<int> dp(len+1, 0);
+        dp[0] = 0;
+        for(int i = 1; i <= len; ++i){
+            if(i >= 2)
+                dp[i] = max(dp[i-1], dp[i-2] + nums[i-1]);
+            else dp[i] = nums[i-1];
+        }
+        return dp[len];
+    }
+};
+
+//Great Explanation:
+//https://leetcode.com/problems/house-robber/discuss/156523/From-good-to-great.-How-to-approach-most-of-DP-problems.
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        int len = nums.size();
+        vector<int> memo(len, -1);
+        return rec(len-1, nums, memo);
+    }
+    int rec(int i, vector<int>& nums, vector<int>&memo){
+        if(i < 0)
+            return 0;
+        if(memo[i] >= 0){
+            return memo[i];
+        }
+        memo[i] = max(rec(i-1, nums, memo), rec(i-2, nums, memo) + nums[i]); 
+        return memo[i];
+    }
+};
 
 
 
