@@ -826,4 +826,124 @@ public:
 };
 
 
+//85. Maximal Rectangle
+//https://leetcode.com/problems/maximal-rectangle/
+/* The following algorithm is your first try. It's Wrong!!! Note we cannot get the 
+right boundry and check the area if we only record the maximum width and height! */
+class Solution {
+public:
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        if(matrix.empty()) return 0;
+        int m = matrix.size(), n = m ? matrix[0].size() : 0;
+        vector<vector<pair<int, int>>> dp(m, vector<pair<int,int>>(n, {0, 0}));
+        
+        int maxArea = 0;
+        if(matrix[0][0] == '1') {
+            dp[0][0] = make_pair(1, 1);
+            maxArea = 1;
+        }
+        for(int i = 1; i < m; ++i){
+            if(matrix[i][0] == '1'){
+                //int h = max(dp[i-1][0].second, 1);
+                dp[i][0].first = 1;
+                dp[i][0].second += dp[i-1][0].second + 1;
+                maxArea = max(maxArea, dp[i][0].second);
+            }
+        }
+        for(int j = 1; j < n; ++j){
+            //int w = max(dp[0][j-1].first, 1);
+            if(matrix[0][j] == '1'){
+                dp[0][j].first += dp[0][j-1].first + 1;
+                dp[0][j].second = 1;
+                maxArea = max(maxArea, dp[0][j].first);                
+            }
+        }
+        //cout << maxArea <<endl;
+        
+        for(int i = 1; i < m; ++i){
+            for(int j = 1; j < n; ++j){
+                if(matrix[i][j] == '1'){
+                    int localMWidth = min(dp[i-1][j-1].first, dp[i][j-1].first)+1;
+                    int localMHeight = min(dp[i-1][j-1].second, dp[i-1][j].second)+1;
+                    int localMaxW = max(dp[i-1][j-1].first, dp[i][j-1].first) + 1;
+                    int localMaxH = max(dp[i-1][j-1].second, dp[i-1][j].second)+1;
+                    cout << localMWidth << " " << localMHeight << endl;
+                    maxArea = max(maxArea, localMWidth * localMHeight);
+                    maxArea = max(maxArea, localMaxW * localMHeight);
+                    dp[i][j] = make_pair(localMWidth, localMHeight);
+                }
+                else{
+                    dp[i][j] = make_pair(0, 0);
+                }
+            }
+        }
+        
+        return maxArea;
+    }
+};
+
+/* We propose the following algorithms to solve the problems. Their ideas are similar.
+However, it's critical to come up with the idea that we need to record the height
+first. */
+/* DP solution. We need to record the potential minimum right and maximum left
+boundry, and check the valid maximum area for each entry. At first, we also
+need to record the maximum height for each entry. Then we calculate the maximum 
+area row by row.*/
+class Solution {
+public:
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        if(matrix.size() == 0) return 0;
+        int m = matrix.size(), n = m ? matrix[0].size() : 0;
+        
+        //Note left[i] represents entry i, right[j] represents entry j+1
+        vector<int> height(n, 0), left(n, 0), right(n, n);
+        int maxArea = 0;
+        
+        for(int i = 0; i < m; ++i){
+            //update height and left boundry
+            int curL = 0;
+            for(int j = 0; j < n; ++j){
+                if(matrix[i][j] == '1'){
+                    height[j]++;
+                    
+                    left[j] = max(left[j], curL);
+                }else{
+                    height[j] = 0;
+                    //if matrix[i][j] == '0', then curL should be next potential
+                    //'1', which is j+1
+                    left[j] = 0;
+                    curL = j+1;
+                }
+            }
+            
+            int curR = n;
+            for(int j = n-1; j >=0; --j){
+                if(matrix[i][j] == '1')
+                    right[j] = min(right[j], curR);
+                else{
+                    //when matrix[i][j] == '0', curR should be j
+                    //Note right[j] is pointing to a '0' which strictly follows a '1'
+                    right[j] = n;
+                    curR = j;
+                }
+            }
+            //Now for each entry i, we already have the potantial maximum left boundry and 
+            //minimum right boundry and maximum height, we can compute the area one by one
+            //Note we compute the area from top to bottom, the situation like below:
+            /*
+                0 0 0 1 1 1 0 0 0
+                0 1 1 1 1 1 1 1 0
+            */
+            //will be handled correctly!
+            for(int i = 0; i < n; ++i){
+                maxArea = max(maxArea, (right[i] - left[i]) * height[i]);
+            }
+        }
+        return maxArea;
+    }
+};
+
+
+
+
 
