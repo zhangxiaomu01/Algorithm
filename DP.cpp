@@ -457,6 +457,85 @@ public:
     }
 };
 
+//518. Coin Change 2
+//https://leetcode.com/problems/coin-change-2/
+/* For such problems, we need to always start from the most
+natural way to solve it. let dp[i][j] represents the ways 
+if we have i types of coins in order to make up the amount j.
+The dp formula is a little bit hard to get, which is 
+dp[i][j] = dp[i-1][j] + dp[i][j-coins[j]].
+We either give up coins[j] or select coins[j]. Note we build
+the table from beginning to end, then we already consider the 
+situation if amount j can include multiple coins[j]s when it
+comes to j.*/
+class Solution {
+public:
+    int change(int amount, vector<int>& coins) {
+        if(amount == 0) return 1;
+        if(coins.empty()) return 0;
+        int len = coins.size();
+        vector<vector<int>> dp(len+1, vector<int>(amount+1, 0));
+        dp[0][0] = 1;
+        //dp[i][0] should always be 0 unless j == 0
+        for(int j = 1; j <= amount; ++j){
+            //If we have no coins, then we have no way to make up amount
+            dp[0][j] = 0; 
+        }
+        //Note the outer loop will be coins, or it will make the
+        //solution become complex. The meaning is that if we have 
+        //coins[i] included, how many ways for us to get total amount
+        for(int i = 1; i <= len; ++i){
+            for(int j = 0; j <= amount; ++j){
+                if(j == 0) {
+                    dp[i][j] = 1;
+                    continue;
+                }
+                //coins[i-1] corresponding to dp[i]
+                if(j < coins[i-1]) dp[i][j] = dp[i-1][j];
+                else
+                    //Basically, we can either pickup coins[i-1] or not
+                    //Imagine that if we pick up coins[i-1], then we will
+                    //have dp[i][j-coins[i-1]] ways to make up the amount j;
+                    //we also need to include the another possible way that
+                    //we do not include coins[i-1]
+                    dp[i][j] = dp[i][j - coins[i-1]] + dp[i-1][j]; 
+            }
+        }
+        return dp[len][amount];
+    }
+};
+
+/* Optimized version */
+class Solution {
+public:
+    int change(int amount, vector<int>& coins) {
+        if(amount == 0) return 1;
+        if(coins.empty()) return 0;
+        int len = coins.size();
+        //vector<vector<int>> dp(len+1, vector<int>(amount+1, 0));
+        vector<int> cur(amount+1, 0);
+        vector<int> pre(amount+1, 0);
+        
+        for(int i = 1; i <= len; ++i){
+            for(int j = 0; j <= amount; ++j){
+                //When j is 0, we have 1 way to pick up the coins
+                if(j == 0) {
+                    cur[j] = 1;
+                    continue;
+                }
+                //coins[i-1] corresponding to cur[i]
+                if(j < coins[i-1]) cur[j] = pre[j];
+                else
+                    cur[j] = cur[j - coins[i-1]] + pre[j];
+                    //dp[i][j] = dp[i][j - coins[i-1]] + dp[i-1][j]; 
+            }
+            swap(cur, pre);
+        }
+        return pre[amount];
+    }
+};
+
+
 //375. Guess Number Higher or Lower II
 //https://leetcode.com/problems/guess-number-higher-or-lower-ii/
 //Very tricky solution
