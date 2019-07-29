@@ -414,7 +414,48 @@ public:
     }
 };
 
-
+/* BFS solution, too slow if coins are small and amount are large */
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        if(amount == 0) return 0;
+        if(coins.empty()) return -1;
+        queue<int> Q;
+        vector<int> visited(amount+1, -1);
+        
+        sort(coins.begin(), coins.end());
+        int len = coins.size();
+        
+        for(int i = len-1; i >= 0; --i){
+            if(amount - coins[i] > 0){
+                Q.push(amount - coins[i]);
+                visited[amount - coins[i]] = 1;
+            }else if (amount - coins[i] == 0) return 1;
+        }
+        //We already pushed 1
+        int count = 1;
+        while(!Q.empty()){
+            int Qlen = Q.size();
+            count++;
+            for(int j = 0; j < Qlen; ++j){
+                int newAmount = Q.front();
+                Q.pop();
+                for(int i = len-1; i >= 0; --i){
+                    if(newAmount - coins[i] == 0) {
+                        return count;
+                    }
+                    else if (newAmount - coins[i] > 0 ){
+                        if(visited[newAmount - coins[i]] == -1)
+                            Q.push(newAmount - coins[i]);
+                        visited[newAmount - coins[i]] = min(visited[newAmount - coins[i]], count);
+                    }else
+                        break;
+                }
+            }
+        }
+        return -1;
+    }
+};
 
 //375. Guess Number Higher or Lower II
 //https://leetcode.com/problems/guess-number-higher-or-lower-ii/
