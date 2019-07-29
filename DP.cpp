@@ -1226,3 +1226,34 @@ public:
 };
 
 
+//300. Longest Increasing Subsequence
+//https://leetcode.com/problems/longest-increasing-subsequence/
+/* The general idea is to use dp[i] to keep track of the 
+longest increasing subsequence from 0 to i, inclusive. Then
+we check j from [0, i), if A[i] > A[j], we can know now 
+A[i] = max(A[i], A[j+1]). DP[j] represents nums[j-1]*/
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        if(nums.empty()) return 0;
+        int len = nums.size();
+        //Note as long as we have 1 element, it should
+        //be at least 1
+        vector<int> dp(len+1, 1);
+        dp[0] = 0;
+        int maxLen = 0;
+        for(int i = 1; i <= len; ++i){
+            for(int j = 0; j < i; ++j){
+                //note dp[j+1] represents to nums[j]
+                if(nums[i-1] > nums[j])
+                    dp[i] = max(dp[i], dp[j+1] + 1);
+                maxLen = max(maxLen, dp[i]);
+            }
+        }
+        return maxLen;
+    }
+};
+
+
+
+
