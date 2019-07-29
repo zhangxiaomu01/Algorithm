@@ -359,7 +359,8 @@ public:
     }
 };
 
-//recursive version
+//recursive version: hard to get it right
+//I do not like the structure of current code, try it later
 class Solution {
 private:
     //helper() function will return the minimum number of coins we could have
@@ -388,6 +389,31 @@ public:
         return helper(coins, memo, amount);
     }
 };
+
+/* Slightly optimized version */
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        if(coins.empty()) return -1;
+        if(amount == 0) return 0;
+        
+        int len = coins.size();
+        //We start from the largest coin
+        sort(coins.begin(), coins.end());
+        
+        vector<int> dp(amount+1, amount+1);
+        dp[0] = 0;
+        for(int j = len-1; j >= 0; --j){
+            for(int i = coins[j]; i <= amount; ++i){
+                //Only update those have already been checked 
+                if(dp[i - coins[j]] != amount+1) 
+                    dp[i] = min(dp[i-coins[j]] + 1, dp[i]);
+            }
+        }
+        return dp[amount] == amount+1 ? -1 : dp[amount];
+    }
+};
+
 
 
 //375. Guess Number Higher or Lower II
