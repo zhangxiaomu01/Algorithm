@@ -536,6 +536,41 @@ public:
 };
 
 
+/* Recursive version, very inefficient */
+class Solution {
+private:
+    int helper(int pos, int t, vector<int>& C, vector<vector<int>>& memo){
+        if(t == 0) return 1;
+        if(t < 0 || pos > C.size()) return 0;
+        if(memo[pos][t] != -1) return memo[pos][t];
+        
+        int len = C.size();
+        int res = 0;
+        for(int i = pos; i <= len; ++i){
+            if(t < C[i-1]) break;
+            //We calculate how many coins i we can pick up for amount t
+            int times = 1;
+            while(times* C[i-1] <= t){
+                //Calculate the next coins, so we pass i+1 here
+                res += helper(i+1, t - times* C[i-1], C, memo);
+                times++;
+            }     
+        }
+        memo[pos][t] = res;
+        return memo[pos][t];
+    }
+public:
+    int change(int amount, vector<int>& coins) {
+        if(amount == 0) return 1;
+        if(coins.empty()) return 0;
+        sort(coins.begin(), coins.end());
+        int len = coins.size();
+        vector<vector<int>> memo(len+1, vector<int>(amount+1, -1));
+        return helper(1, amount, coins, memo);
+    }
+};
+
+
 //375. Guess Number Higher or Lower II
 //https://leetcode.com/problems/guess-number-higher-or-lower-ii/
 //Very tricky solution
