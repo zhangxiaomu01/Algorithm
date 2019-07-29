@@ -536,7 +536,8 @@ public:
 };
 
 
-/* Recursive version, very inefficient */
+/* Recursive version, very inefficient, hard to get it right - Try iterative 
+version*/
 class Solution {
 private:
     int helper(int pos, int t, vector<int>& C, vector<vector<int>>& memo){
