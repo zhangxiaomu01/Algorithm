@@ -92,3 +92,29 @@ public:
 };
 
 
+
+//142. Linked List Cycle II
+//https://leetcode.com/problems/linked-list-cycle-ii/
+//Cycle detection. Same as problem 287
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        if(!head) return head;
+        ListNode* fast = head, *slow = head;
+        do{
+            fast = fast ? fast->next : nullptr;
+            fast = fast ? fast->next : nullptr;
+            slow = slow->next;
+        }while(fast != slow);
+        if(!fast) return nullptr;
+        
+        slow = head;
+        while(slow != fast){
+            slow = slow->next;
+            fast = fast->next;
+        }
+        return fast;      
+    }
+};
+
+
