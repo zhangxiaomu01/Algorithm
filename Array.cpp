@@ -1529,4 +1529,28 @@ public:
     }
 };
 
+//Cycle detection! Similar to problem 142
+//Since the length of the array is n+1, our pointer will never
+//exceed the boundry!
+class Solution {
+public:
+    int findDuplicate(vector<int>& nums) {
+        int fastPtr = 0, slowPtr = 0;
+        do{
+            fastPtr = nums[nums[fastPtr]];
+            slowPtr = nums[slowPtr];
+        }while(fastPtr != slowPtr);
+        
+        //Once the pointer meet with each other, we need to
+        //iterate through the begining of the array, and find
+        //the duplicate element!
+        int ptr = 0;
+        while(ptr != fastPtr){
+            ptr = nums[ptr];
+            fastPtr = nums[fastPtr];
+        }
+        return ptr;
+    }
+};
+
 
