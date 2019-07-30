@@ -1447,3 +1447,32 @@ public:
     }
 };
 
+
+//334. Increasing Triplet Subsequence
+//https://leetcode.com/problems/increasing-triplet-subsequence/
+class Solution {
+public:
+    bool increasingTriplet(vector<int>& nums) {
+        int len = nums.size();
+        if(len == 0) return false;
+        vector<int> dict;
+        for(int i = 0; i < len; ++i){
+            if(i == 0 || nums[i] > dict.back()){
+                dict.push_back(nums[i]);
+                if(dict.size() == 3) return true;
+            }
+            else if(nums[i] <= dict.back()){
+                for(int j = 0; j < dict.size(); ++j){
+                    if(dict[j] >= nums[i]) {
+                        dict[j] = nums[i];
+                        //Once we update the value, we need to 
+                        //terminate the loop
+                        break;
+                    }
+                }
+            }   
+        }
+        return false;
+    }
+};
+
