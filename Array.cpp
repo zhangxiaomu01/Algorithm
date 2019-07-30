@@ -1476,3 +1476,57 @@ public:
     }
 };
 
+//128. Longest Consecutive Sequence
+//https://leetcode.com/problems/longest-consecutive-sequence/
+class Solution {
+public:
+    int longestConsecutive(vector<int>& nums) {
+        unordered_set<int> dict(nums.begin(), nums.end());
+        int maxLen = 0;
+        for(int n : nums){
+            //We always search from the smallest consecutive element
+            if(dict.find(n-1) == dict.end()){
+                int curLen = 1;
+                int temp = n;
+                //We need to erase element in order to prevent repetitive
+                //check
+                while(dict.count(temp+1) != 0){
+                    dict.erase(temp);
+                    temp++;
+                    curLen++;
+                }
+                maxLen = max(maxLen, curLen);
+            }
+        }
+        return maxLen;
+    }
+};
+
+
+//287. Find the Duplicate Number
+//https://leetcode.com/problems/find-the-duplicate-number/
+/* This solution sort the array, we try to put each number i to the corresponding
+entry i-1. In the end, if we find some element who is not equal to i+1 and 
+nums[nums[i]-1] entry (the correct entry for this element) has the element equal 
+to nums[i]. Then we know this must be the extra duplicate element! */
+class Solution {
+public:
+    int findDuplicate(vector<int>& nums) {
+        int len = nums.size();
+        for(int i = 0; i < len; ++i){
+            //If nums[nums[i]] is already 
+            if(i+1 != nums[i]){
+                while(i + 1 != nums[i]  && nums[nums[i]-1] != nums[i]) {
+                    swap(nums[nums[i]-1], nums[i]);
+                }
+                //if num i+1 is in index i, then skip it
+                if(nums[nums[i]-1] != i+1 && nums[nums[i]-1] == nums[i]){
+                    return nums[i]; 
+                }                   
+            }
+        }
+        return -1;
+    }
+};
+
+
