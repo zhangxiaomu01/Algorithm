@@ -1556,6 +1556,7 @@ public:
 
 //239. Sliding Window Maximum
 //https://leetcode.com/problems/sliding-window-maximum/
+/* multiset */
 class Solution {
 public:
     vector<int> maxSlidingWindow(vector<int>& nums, int k) {
@@ -1578,5 +1579,6 @@ public:
     }
 };
 
+/* priority queue */
 
-
+/* O(n) */
