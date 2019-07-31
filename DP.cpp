@@ -664,7 +664,8 @@ public:
         vector<vector<int>> dp(len+2, vector<int>(len+2, 0));
         //We build the table from the length 1 to len
         for(int cLen = 1; cLen <= len; ++cLen){
-            //Define the left boundry, should start from 1 
+            //Define the left boundry, should start from 1
+            //l will become smaller and smaller when cLen increases 
             for(int l = 1; l <= len - cLen + 1; ++l){
                 int r = l + cLen - 1; //maximum right boundry
                 for(int i = l; i <= r; ++i){
@@ -1270,6 +1271,37 @@ public:
     }
 };
 
+
+/* Recursive solution : Inefficient. Avoid. Convert the problem to be whether 
+we select nums[i], based on whether nums[i] > nums[preHigher]. */
+class Solution {
+private:
+    //lower represents the previous higher number, initially should be INT_MIN
+    int helper(vector<int>& nums, int curPos, int preHigher, vector<vector<int>>& memo){
+        if(curPos >= nums.size()) return 0;
+        if(memo[curPos][preHigher] != -1) return memo[curPos][preHigher];
+        
+        //Chosen nums[pos]
+        int chosenNumI = 0;
+        if(nums[curPos] > nums[preHigher])
+            chosenNumI = 1 + helper(nums, curPos+1, curPos, memo);
+        
+        //Not chosen nums[pos]
+        int nChosenNumI = helper(nums, curPos+1, preHigher, memo);
+        
+        memo[curPos][preHigher] = max(chosenNumI, nChosenNumI);
+        return memo[curPos][preHigher];
+        
+    }
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        if(nums.empty()) return 0;
+        nums.insert(nums.begin(), INT_MIN);
+        int len = nums.size();
+        vector<vector<int>> memo(len+1, vector<int>(len+1, -1));
+        return helper(nums, 1, 0, memo);
+    }
+};
 
 
 
