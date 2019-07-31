@@ -1314,6 +1314,24 @@ public:
     }
 };
 
+/* Same idea, most beautiful idea! No need to maintain the queue or set */
+class Solution {
+private:
+    pair<int, int> doRob(TreeNode* node){
+        if(!node) return make_pair(0, 0);
+        auto l = doRob(node->left);
+        auto r = doRob(node->right);
+        int robNodeProfit = l.first + r.first + node->val;
+        int nRobNodeProfit = max(l.first, l.second) + max(r.first, r.second);
+        return make_pair(nRobNodeProfit, robNodeProfit);
+    }
+public:
+    int rob(TreeNode* root) {
+        if(!root) return 0;
+        auto robHouse = doRob(root);
+        return max(robHouse.first, robHouse.second);
+    }
+};
 
 //300. Longest Increasing Subsequence
 //https://leetcode.com/problems/longest-increasing-subsequence/
@@ -1392,6 +1410,7 @@ public:
         return res.size();
     }
 };
+
 
 
 

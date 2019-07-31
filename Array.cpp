@@ -1582,3 +1582,25 @@ public:
 /* priority queue */
 
 /* O(n) */
+
+
+//53. Maximum Subarray
+//https://leetcode.com/problems/maximum-subarray/
+/* Kadane's algorithm */
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        if(nums.empty()) return 0;
+        int len = nums.size();
+        int localMax = 0, res = INT_MIN;
+        for(int i = 0; i < len; ++i){
+            localMax = max(nums[i], localMax + nums[i]);
+            res = max(res, localMax);
+        }
+        return res;
+    }
+};
+
+
+
+
