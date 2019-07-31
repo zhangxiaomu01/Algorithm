@@ -1554,5 +1554,29 @@ public:
 };
 
 
+//239. Sliding Window Maximum
+//https://leetcode.com/problems/sliding-window-maximum/
+class Solution {
+public:
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        multiset<int> mSet;
+        int len = nums.size();
+        vector<int> res;
+        
+        for(int i = 0; i < len; ++i){
+            mSet.insert(nums[i]);
+            if(i >= k-1){
+                res.push_back(*mSet.rbegin());
+                //Remove the left element
+                //We cannot use mSet.erase(nums[i-k+1])
+                //It will remove all the duplicate elements
+                mSet.erase(mSet.find(nums[i-k+1]));
+            }
+               
+        }
+        return res;
+    }
+};
+
 
 
