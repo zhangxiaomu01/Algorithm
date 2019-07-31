@@ -581,19 +581,32 @@ public:
 //then we minimize each possible local cost to find the optimal solution.
 class Solution {
 public:
+    //dp[i][j] means that the minimum money that I should have 
+    //to cover the potential worst strategy cost from range (i, j)
+    //Inclusive
     int getMoneyAmount(int n) {
-        //dp[i][j] means that the minimum money that I should have 
-        //to cover the potential worst strategy cost from range (i, j)
-        //Inclusive
+        if(n < 2) return 0;
         vector<vector<int>> dp(n+1, vector<int>(n+1, 0));
-        for(int j = 2; j <= n; ++j){
+        //i is the starting index and j is the ending index
+        for(int j = 1; j <= n; ++j){
+            //The inner loop, we must start from right to left
+            //dp[i][j] depends on dp[i][k-1] and dp[k+1][j]
+            //if we start from i = 1 to j-1, there is no way
+            //for us to know the information about dp[k+1][j]
+            //when we explore dp[i][j]
             for(int i = j-1; i >= 1; --i){
-                int globalMin = numeric_limits<int>::max();
+                if(i+1 == j){
+                    dp[i][j] = i;
+                    continue;
+                }
+                int globalMin = INT_MAX;
+                int localMax = 0;
                 for(int k = i+1; k < j; ++k){
-                    int localMax = k + max(dp[i][k-1], dp[k+1][j]);
+                    localMax = k + max(dp[i][k-1], dp[k+1][j]);
                     globalMin = min(globalMin, localMax);
                 }
-                dp[i][j] = (i+1 == j) ? i : globalMin;
+                
+                dp[i][j] = globalMin;
             }
         }
         
@@ -607,8 +620,11 @@ private:
     //Note l should always be less than r
     //Almost the same idea as the iterative version
     int helper(vector<vector<int>>& memo, int l, int r){
+        //We only have 1 element
         if(l >= r) return 0;
         if(memo[l][r] != 0) return memo[l][r];
+        //Handle we only have two elements, we will always guess the 
+        //smaller one
         if(l+1 == r) return memo[l][r] = l;
         int localMax = 0;
         int globalMin = INT_MAX;
