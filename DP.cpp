@@ -1243,6 +1243,78 @@ public:
 };
 
 
+//337. House Robber III
+//https://leetcode.com/problems/house-robber-iii/
+/* Post order traversal + DP */
+class Solution {
+private:
+    void treeTraversal(TreeNode* node, unordered_map<TreeNode*, pair<int, int>>& dict){
+        if(node == nullptr) return;
+        treeTraversal(node->left, dict);
+        treeTraversal(node->right, dict);
+        
+        if(!node->left && !node->right){
+            dict[node] = make_pair(node->val, 0);
+        }else{
+            int chosenNode = node->val + (node->right ? dict[node->right].second : 0) + (node->left ? dict[node->left].second : 0);
+            
+            int chosenLeftNode = node->left ? max(dict[node->left].first, dict[node->left].second) : 0;
+            int chosenRightNode = node->right ? max(dict[node->right].first, dict[node->right].second) : 0;
+            dict[node] = make_pair(chosenNode, chosenLeftNode + chosenRightNode);
+        }
+    }
+public:
+    int rob(TreeNode* root) {
+        //The first value in the pair indicates that select this node, what 
+        //will be the maximum profit, second indicates that not select this
+        //node, what will be the maximum profit
+        unordered_map<TreeNode*, pair<int, int>> dict;
+        treeTraversal(root, dict);
+        return max(dict[root].first, dict[root].second);
+        
+    }
+};
+
+/* Another implementation, same idea. */
+class Solution {
+private:
+    deque<TreeNode*>* buildQueue(TreeNode* node){
+        deque<TreeNode*>* Qptr = new deque<TreeNode*>();
+        stack<TreeNode*> st;
+        st.push(node);
+        while(!st.empty()){
+            TreeNode* tempNode = st.top();
+            st.pop();
+            Qptr->push_front(tempNode);
+            if(tempNode->right) st.push(tempNode->right);
+            if(tempNode->left) st.push(tempNode->left);
+        }
+        return Qptr;
+    }
+    
+public:
+    int rob(TreeNode* root) {
+        if(!root) return 0;
+        deque<TreeNode*>* Qptr = buildQueue(root);
+        //cout << Qptr->size() << endl;
+        unordered_map<TreeNode*, pair<int, int>> dict;
+        //The first element of pair means without robbing the house, the potential maximum profit; second means we robber the house
+        dict.insert({nullptr, make_pair(0, 0)});
+        for(auto it = Qptr->begin(); it != Qptr->end(); it++){
+            //The max profit we can get if we rob the node
+            int robNode = dict[(*it)->left].first + dict[(*it)->right].first + (*it)->val;
+            //The max profit we can get if we do not rob the node
+            int robnNode = max(dict[(*it)->left].first, dict[(*it)->left].second) + max(dict[(*it)->right].first, dict[(*it)->right].second);
+            //Save the result to hash table
+            dict[(*it)] = make_pair(robnNode, robNode);
+            //cout <<"node is" << (*it)->val <<" The maximum rob it: " << robNode << " The maximum not rob it: " << robnNode <<endl; 
+        }
+        
+        return max(dict[root].first, dict[root].second);
+    }
+};
+
+
 //300. Longest Increasing Subsequence
 //https://leetcode.com/problems/longest-increasing-subsequence/
 /* The general idea is to use dp[i] to keep track of the 
