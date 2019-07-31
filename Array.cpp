@@ -1580,8 +1580,54 @@ public:
 };
 
 /* priority queue */
+class Solution {
+public:
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        int len = nums.size();
+        if(len == 0) return vector<int>();
+        vector<int> res;
+        //must use pair, in order to sort the pq based on value
+        priority_queue<pair<int,int>> pq;
+        for(int i = 0; i < len; ++i){
+            while(!pq.empty() && pq.top().second <= i - k)
+                pq.pop();
+            pq.push(make_pair(nums[i], i));
+            //imagine k == 3, then when we visit the second element
+            //we need to push it to result
+            if(i >= k-1){
+                res.push_back(pq.top().first);
+            }
+        }
+        return res;
+    }
+};
 
 /* O(n) */
+class Solution {
+public:
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        vector<int> res;
+        if(nums.empty()) return res;
+        int len = nums.size();
+        //in this dq, we only save the largest element's index 
+        //within the given range. We pop out all the other elements
+        deque<int> dq;
+        for(int i = 0; i < len; ++i){
+            //if the front elements are out of range, delete it
+            while(!dq.empty() && dq.front() <= i - k)
+                dq.pop_front();
+            //Make sure we only save the largest element's index
+            while(!dq.empty() && nums[dq.back()] < nums[i])
+                dq.pop_back();
+            
+            dq.push_back(i);
+            
+            if(i >= k-1)
+                res.push_back(nums[dq.front()]);
+        }
+        return res;
+    }
+};
 
 
 //53. Maximum Subarray
