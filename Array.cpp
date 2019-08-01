@@ -1648,5 +1648,30 @@ public:
 };
 
 
+//209. Minimum Size Subarray Sum
+//https://leetcode.com/problems/minimum-size-subarray-sum/
+class Solution {
+public:
+    int minSubArrayLen(int s, vector<int>& nums) {
+        int len = nums.size();
+        if(len == 0) return 0;
+        int count = 0;
+        int minC = INT_MAX;
+        int sum = 0;
+        int j = 0;
+        for(int i = 0; i < len; ++i){
+            sum += nums[i];
+            count++;
+            while(sum >= s){
+                minC = min(minC, count);
+                sum -= nums[j++];
+                count --;
+            }
+        }
+        return minC == INT_MAX ? 0 : minC;
+    }
+};
+
+
 
 
