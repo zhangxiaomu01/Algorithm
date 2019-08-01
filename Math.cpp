@@ -44,3 +44,51 @@ public:
 };
 
 
+//263. Ugly Number
+//https://leetcode.com/problems/ugly-number/
+class Solution {
+public:
+    bool isUgly(int num) {
+        if(num <= 0) return false;
+        if(num == 1) return true;
+        while(num%2 == 0)
+            num /= 2;
+        while(num%3 == 0)
+            num /=3;
+        while(num%5 == 0)
+            num /= 5;
+        
+        return num == 1 ? true : false;
+    }
+};
+
+
+//264. Ugly Number II
+//https://leetcode.com/problems/ugly-number-ii/
+/* The general idea is to use the counter to build the list from smallest element 
+to the largest */
+class Solution {
+public:
+    int nthUglyNumber(int n) {
+        if(n <= 0) return 0;
+        if(n == 1) return 1;
+        //initialize 3 pointers to be all 0
+        int t2 = 0, t3 = 0, t5 = 0;
+        //Record the num from 1 ... n
+        vector<int> nums(n, 0);        
+        nums[0] = 1;
+        for(int i = 1; i < n; ++i){
+            nums[i] = min(nums[t2]* 2, min(nums[t3]*3, nums[t5]*5));
+            if(nums[i] == nums[t2]*2) t2++;
+            if(nums[i] == nums[t3]*3) t3++;
+            if(nums[i] == nums[t5]*5) t5++;
+        }
+        return nums[n-1];
+    }
+};
+
+
+
+
+
+
