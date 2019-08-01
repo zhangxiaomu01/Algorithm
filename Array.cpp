@@ -1673,5 +1673,53 @@ public:
 };
 
 
+//228. Summary Ranges
+//https://leetcode.com/problems/summary-ranges/
+class Solution {
+public:
+    vector<string> summaryRanges(vector<int>& nums) {
+        int len = nums.size();
+        vector<string> res;
+        if(len == 0) return res;
+        if(len == 1) {
+            res.push_back(to_string(nums[0]));
+            return res;
+        }
+        
+        int j = 0;
+        int count = 0;
+        string s = to_string(nums[0]);
+        for(int i = 1; i < len; ++i){
+            if(nums[j] + 1 == nums[i]){
+                count++;
+            }
+            else{
+                if(count > 0){
+                    s.push_back('-');
+                    s.push_back('>');
+                    s.append(to_string(nums[j]));
+                }
+                count = 0;
+                res.push_back(s);
+                s = to_string(nums[i]);
+                if(i == len-1){
+                    res.push_back(s);
+                    break;
+                }
+            }
+            j++; 
+        }
+        if(count > 0){
+            s.push_back('-');
+            s.push_back('>');
+            //we have advanced one more time
+            s.append(to_string(nums[j]));
+            res.push_back(s);
+        }
+        
+        return res;
+    }
+};
+
 
 
