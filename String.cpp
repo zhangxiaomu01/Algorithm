@@ -106,6 +106,22 @@ public:
 };
 
 
+//392. Is Subsequence
+//https://leetcode.com/problems/is-subsequence/
+class Solution {
+public:
+    bool isSubsequence(string s, string t) {
+        int len = t.size();
+        int lenS = s.size();
+        int j = 0;
+        for(int i = 0; i < len && j < lenS; ++i){
+            j += static_cast<int>(s[j] == t[i]);
+            if(j == lenS) return true;
+        }
+        //case: s == ""
+        return j==lenS;
+    }
+};
 
 
 
