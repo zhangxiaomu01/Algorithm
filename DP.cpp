@@ -1460,8 +1460,117 @@ public:
 };
 
 
+//363. Max Sum of Rectangle No Larger Than K
+//https://leetcode.com/problems/max-sum-of-rectangle-no-larger-than-k/
+//A very good explanation:
+//https://leetcode.com/problems/max-sum-of-rectangle-no-larger-than-k/discuss/83599/Accepted-C%2B%2B-codes-with-explanation-and-references
+//https://www.youtube.com/watch?v=yCQN096CwWM
+//In general, it's exhaustive search
+class Solution {
+public:
+    int maxSumSubmatrix(vector<vector<int>>& matrix, int k) {
+        if(matrix.empty()) return 0;
+        int m = matrix.size(), n = m ? matrix[0].size() : 0;
+        //curL and curR point to the specific column
+        //Initialization curL == curR
+        int curL = 0, curR = 0;
+        //res should be the smallest number, we will potentially
+        //have k <= 0
+        int res = INT_MIN;
+        
+        for(curL = 0; curL < n; ++curL){
+            //represents one column of elements
+            vector<int> A(m, 0);
+            //curR start from curL
+            for(curR = curL; curR < n; ++curR){
+                for(int i = 0; i < m; ++i){
+                    //calculate the sum row by row
+                    //Note A[i] also represents the cumulative sum
+                    //from curL to curR
+                    A[i] += matrix[i][curR];
+                }
+                
+                set<int> dict;
+                //represents the empty array, which has 0 elements 
+                //to sum
+                dict.insert(0);
+                //for sum of sub array (i, j], we have curSum[j] - curSum[i]
+                //Each time for the loop, we insert curSum[i] to our set,
+                //then when we find the closest curSum[i] close to k, it's
+                //equivalent to curSum[j] - curSum[i] >= k, then we need to 
+                //find a previous sum, which is lower_bounded by curSum[j] - k
+                int maxSum = INT_MIN;
+                int curSum = 0;
+                for(int i = 0; i < m; ++i){
+                    curSum += A[i];
+                    auto it = dict.lower_bound(curSum - k);
+                    if(it != dict.end()) maxSum = max(maxSum, curSum - *it);
+                    dict.insert(curSum);
+                }
+                res = max(res, maxSum);
+                
+                if(res == k) return res;
+            }
+        }
+        return res;
+    }
+};
 
+/* Optimize version. Exact the same idea like the previous one. Exception that we
+add some acceleration code */
+class Solution {
+public:
+    int maxSumSubmatrix(vector<vector<int>>& matrix, int k) {
+        if(matrix.empty()) return 0;
+        int m = matrix.size(), n = m ? matrix[0].size() : 0;
+        int curL = 0, curR = 0;
 
+        int res = INT_MIN;
+        
+        for(curL = 0; curL < n; ++curL){
+            //represents one column of elements
+            vector<int> A(m, 0);
+            //curR start from curL
+            for(curR = curL; curR < n; ++curR){
+                for(int i = 0; i < m; ++i){
+                    A[i] += matrix[i][curR];
+                }
+                int curSum = 0;
+                
+                //Acceleration
+                for(int n : A){
+                    curSum += n;
+                    if(curSum == k || n == k) return k;
+                    if(curSum < k && curSum > res) res = curSum;
+                    //make sure that our curSum will always represents 
+                    //value greater than or equal to 0
+                    //Nee this line, cannot understand it
+                    //without it, the following test case will fail
+                    /*
+                    [[5,-4,-3,4],[-3,-4,4,5],[5,1,5,-4]] 8
+                    */
+                    if(curSum < 0) curSum = 0;
+                }
+                if(curSum < k) continue;
+                
+                curSum = 0;
+                set<int> dict;
+                dict.insert(0);
+                int maxSum = INT_MIN;
+                
+                for(int i = 0; i < m; ++i){
+                    curSum += A[i];
+                    auto it = dict.lower_bound(curSum - k);
+                    if(it != dict.end()) maxSum = max(maxSum, curSum - *it);
+                    if(maxSum == k) return k;
+                    dict.insert(curSum);
+                }
+                res = max(res, maxSum);
+            }
+        }
+        return res;
+    }
+};
 
 
 
