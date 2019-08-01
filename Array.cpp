@@ -1722,4 +1722,28 @@ public:
 };
 
 
+//283. Move Zeroes
+//https://leetcode.com/problems/move-zeroes/
+class Solution {
+public:
+    void moveZeroes(vector<int>& nums) {
+        int len = nums.size();
+        int j = 0;
+        for(int i = 0; i < len && j < len;){
+            if(nums[i] != 0){
+                j++;
+                i++;
+            }else{
+                j++;
+                while(j < len && nums[j] == 0)
+                    j++;
+                if(j == len) return;
+                swap(nums[i], nums[j]);
+                i++;
+            }
+        }
+    }
+};
+
+
 
