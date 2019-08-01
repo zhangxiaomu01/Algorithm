@@ -1412,6 +1412,63 @@ public:
 };
 
 
+//673. Number of Longest Increasing Subsequence
+//https://leetcode.com/problems/number-of-longest-increasing-subsequence/
+/* The general idea is to use two arrays. The idea how to calculate the maximum 
+increasing sequence is exactly as the problem 300. The tricky part is how we 
+count the number of ways for each length. Note we only care about the longest
+potential ways, and 1 element smaller than longest potential ways.*/
+class Solution {
+public:
+    int findNumberOfLIS(vector<int>& nums) {
+        if(nums.empty()) return 0;
+        int len  = nums.size();
+        //dp[i] represents the maximum potential length 
+        //ending with length i
+        vector<int> dp(len+1, 1);
+        dp[0] = 0;
+        //count should be at least one
+        vector<int> count(len+1, 1);
+        count[0] = 1;
+        
+        int maxLen = 0;
+        for(int i = 1; i <= len; ++i){
+            for(int j = 0; j < i; ++j){
+                if(nums[i-1] > nums[j]){
+                    //dp[i] = max(dp[i], dp[j+1] + 1);
+                    if(dp[i] < dp[j+1] + 1){
+                        dp[i] = dp[j+1] + 1;
+                        count[i] = count[j+1];
+                    }else if (dp[i] == dp[j+1] + 1){
+                        //We need to add all the potential count
+                        //with the same length. since nums[i-1] > nums[j]
+                        //we only need to take dp[j+1] + 1 into account
+                        count[i] += count[j+1];
+                    }
+                    maxLen = max(maxLen, dp[i]);
+                }
+            }
+        }
+        
+        int res = 0;
+        for(int i = 0; i <= len; ++i){
+            if(dp[i] == maxLen)
+                res +=  count[i];
+        }   
+        return res;
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
 
 
 
