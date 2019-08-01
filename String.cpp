@@ -80,5 +80,34 @@ public:
 };
 
 
+//387. First Unique Character in a String
+//https://leetcode.com/problems/first-unique-character-in-a-string/
+/* Test it case by case, nothing special */
+class Solution {
+public:
+    int firstUniqChar(string s) {
+        int dict[256];
+        fill_n(dict, 256, 0);
+        int len = s.size();
+        int j = 0;
+        for(int i = 0; i < len; ++i){
+            int id = s[i];
+            dict[id] += 1;
+            
+            if(i!= j && s[i] == s[j]){
+                j++;
+                while(j < len && dict[s[j]] > 1)
+                    j++;
+            }
+        }
+        
+        return j == len ? -1 : j;
+    }
+};
+
+
+
+
+
 
 
