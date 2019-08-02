@@ -159,8 +159,58 @@ public:
 };
 
 
+//540. Single Element in a Sorted Array
+//https://leetcode.com/problems/single-element-in-a-sorted-array/
+/* Bit manipulation */
+class Solution {
+public:
+    int singleNonDuplicate(vector<int>& nums) {
+        int res = 0;
+        int len = nums.size();
+        for(int n : nums){
+            res ^= n;
+        }
+        return res;
+    }
+};
 
-
+/* Binary search */
+/* The binary search solution hard to get right. Note we will
+have two pairs of conditions, the first one is the mid pointer
+(even / odd), the second one is whether nums[mid] == nums[mid-1]
+or nums[mid] == nums[mid+1]
+The problem is when we need to use nums[mid] == nums[mid-1] or
+nums[mid] == nums[mid+1] given that we already know that mid pointer
+is even or odd.
+Note by further observation, that if mid is located in an even index 
+entry, which means the lower half has odd number of elements. We need
+to compare with the nums[mid+1], we know if nums[mid] == nums[mid+1],
+the unique number must be in the left since the left half contains 
+odd number of elements. Else, we know unique number must be in the 
+right half. The same reason for the odd mid pointer.*/
+class Solution {
+public:
+    int singleNonDuplicate(vector<int>& nums) {
+        int l = 0, r = nums.size()-1;
+        int len = nums.size();
+        if(len == 1) return nums[0];
+        while(l < r){
+            int mid = l + (r - l)/2;
+            if(mid % 2 == 0){
+                if(nums[mid] == nums[mid+1])
+                    l = mid+1;
+                else
+                    r = mid;
+            }else{
+                if(nums[mid] == nums[mid-1])
+                    l = mid+1;
+                else
+                    r = mid;
+            }
+        }
+        return nums[r];
+    }
+};
 
 
 
