@@ -1573,9 +1573,73 @@ public:
 };
 
 
+//91. Decode Ways
+//https://leetcode.com/problems/decode-ways/
+/* Unoptimized version, most natural way. This problem is not hard, the only thing
+is that you need to figure out all the corner cases. */
+class Solution {
+public:
+    int numDecodings(string s) {
+        int len = s.size();
+        if(s[0] == '0') return 0;
+        vector<int> dp(len+1, 0);
+        dp[0] = 1;
+        dp[1] = 1;
+        for(int i = 2; i <= len; ++i){
+            //dp[i] represents s[i-1], in order to get the element before s[i-1]
+            //we need i-2
+            if(s[i-1] == '0' && stoi(s.substr(i-2, 2)) > 26)
+                return 0;
+            
+            if(s[i-1] == '0' && s[i-2] == '0')
+                return 0;
+            
+            if(s[i-1] == '0' && stoi(s.substr(i-2, 2)) <= 26)
+                dp[i] = dp[i-2];
+            else if(s[i-2] != '0' && stoi(s.substr(i-2, 2)) <= 26){
+                dp[i] = dp[i-2] + dp[i-1];
+            }else
+                dp[i] = dp[i-1];
+        }
+        return dp[len];
+    }
+};
 
+/* Optimized version. O(1) space */
+class Solution {
+public:
+    int numDecodings(string s) {
+        int len = s.size();
+        if(s[0] == '0') return 0;
+        
+        int pre = 1, cur = 1;
+        for(int i = 2; i <= len; ++i){
+            //cout << stoi(s.substr(i-2, 2)) << endl;
+            //dp[i] represents s[i-1]
+            if(s[i-1] == '0' && stoi(s.substr(i-2, 2)) > 26)
+                return 0;
+            
+            if(s[i-1] == '0' && s[i-2] == '0')
+                return 0;
+            
+            if(s[i-1] == '0' && stoi(s.substr(i-2, 2)) <= 26){
+                swap(cur, pre);
+                //dp[i] = dp[i-2];
+            }
+                
+            else if(s[i-2] != '0' && stoi(s.substr(i-2, 2)) <= 26){
+                int temp = cur;
+                cur = cur + pre;
+                pre = temp;
+                //dp[i] = dp[i-2] + dp[i-1];
+            }else
+                pre = cur;
+                //dp[i] = dp[i-1];
 
-
+        }
+        return cur;
+    }
+};
 
 
 
