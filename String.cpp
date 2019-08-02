@@ -123,6 +123,47 @@ public:
     }
 };
 
+/* Binary search */
+class Solution {
+public:
+    bool isSubsequence(string s, string t) {
+        int lenT = t.size();
+        //Define a dictionary to save all the corresponding
+        //characters in t
+        vector<int>* dict[256];
+        fill_n(dict, 256, nullptr);
+        
+        for(int i = 0; i < lenT; ++i){
+            if(dict[t[i]] == nullptr)
+                dict[t[i]] = new vector<int>();
+            dict[t[i]]->push_back(i);
+        }
+        int lenS = s.size();
+        //Record the last index we have been searched
+        int preIndex = 0;
+        for(int i = 0; i < lenS; ++i){
+            if(dict[s[i]] == nullptr) return false;
+            auto it = lower_bound(dict[s[i]]->begin(), dict[s[i]]->end(), preIndex);
+            if(it == dict[s[i]]->end() || *it < preIndex) return false;
+            //Note we need to add the index by 1 in order to prevent the repetitive
+            //search for the same element (handle duplicate characters in the string)
+            preIndex = *it + 1;
+        }
+        
+        for(auto& i: dict){
+            delete i;
+        }
+        return true;
+        
+    }
+};
+
+
+
+
+
+
+
 
 
 
