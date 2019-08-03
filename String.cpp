@@ -244,3 +244,29 @@ public:
     }
 };
 
+
+
+//345. Reverse Vowels of a String
+//https://leetcode.com/problems/reverse-vowels-of-a-string/
+class Solution {
+private:
+    bool isVowel(char c){
+        return (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u');
+    }
+public:
+    string reverseVowels(string s) {
+        int len = s.size();
+        int i = 0, j = len-1;
+        while(i < j){
+            if(isVowel(s[i]) && isVowel(s[j])){
+                swap(s[i], s[j]);
+                i++;
+                j--;
+            }
+            
+            if(!isVowel(s[i])) i++;
+            if(!isVowel(s[j])) j--;
+        }
+        return s;
+    }
+};
