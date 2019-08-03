@@ -213,6 +213,22 @@ public:
 };
 
 
+//383. Ransom Note
+//https://leetcode.com/problems/ransom-note/
+class Solution {
+public:
+    bool canConstruct(string ransomNote, string magazine) {
+        vector<int> dict(256, 0);
+        for(char c: magazine){
+            dict[c]++;
+        }
+        for(char c : ransomNote){
+            dict[c]--;
+            if(dict[c] < 0) return false;
+        }
+        return true;
+    }
+};
 
 
 
