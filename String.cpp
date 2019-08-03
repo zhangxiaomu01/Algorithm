@@ -231,6 +231,16 @@ public:
 };
 
 
-
-
+//344. Reverse String
+//https://leetcode.com/problems/reverse-string/
+class Solution {
+public:
+    void reverseString(vector<char>& s) {
+        int len = s.size();
+        int i = 0, j = len - 1;
+        while(i < j){
+            swap(s[i++], s[j--]);
+        }
+    }
+};
 
