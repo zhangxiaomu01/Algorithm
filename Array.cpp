@@ -1787,4 +1787,50 @@ public:
 };
 
 
+/* Optimized priority queue solution. Tricky!
+Note for the first pass, we push the {nums1[i], nums2[0], 0} to our min queue.
+Then in the second pass, we pop the smallest element {nums1[i], nums2[j], j} and push it to result.
+We also update the next smallest element from the two lists by pushing {nums1[i], nums2[j+1], j+1}
+to the min queue (j+1 < min(len2, k)). This does not mean this is the smallest element in the queue,
+but this must be the next smallest element after {nums1[i], nums2[j], j}
+*/
+class myComp{
+public:
+    bool operator()(const vector<int>& A, const vector<int>& B) const
+    {
+        return A[0] + A[1] > B[0] + B[1];
+    }
+};
+
+class Solution {
+public:
+    vector<vector<int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
+        vector<vector<int>> res;
+        int len1 = nums1.size(), len2 = nums2.size();
+        if(len1 == 0 || len2 == 0 || k == 0) return res;
+        priority_queue<vector<int>, vector<vector<int>>, myComp> minPQ;
+
+        for(int i = 0; i < min(len1, k); ++i){
+            //the last element is the index of element from nums2
+            minPQ.push(vector<int>({nums1[i], nums2[0], 0}));
+        }
+        
+        while(res.size() < k && !minPQ.empty()){
+            auto& v = minPQ.top();
+            res.push_back({v[0], v[1]});
+            //Be careful with corner case!
+            if(v[2] < min(len2, k)-1){
+                int index = v[2] + 1;
+                minPQ.push(vector<int>({v[0], nums2[index], index}));
+            }
+            minPQ.pop();   
+        }
+        
+        return res;
+    }
+};
+
+
+
+
 
