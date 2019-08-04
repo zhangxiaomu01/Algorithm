@@ -270,3 +270,38 @@ public:
         return s;
     }
 };
+
+
+
+//290. Word Pattern
+//https://leetcode.com/problems/word-pattern/
+/* Naive check solution */
+class Solution {
+public:
+    bool wordPattern(string pattern, string str) {
+        stringstream ss(str);
+        unordered_map<char, string> dictC;
+        unordered_map<string, char> dictS;
+        int i = 0;
+        while(ss){
+            string t;
+            ss >> t;
+            if((i == pattern.size() && t != "") || (i < pattern.size() && t == "")) return false;
+            //reach the end of the str
+            if(t == "")
+                break;
+            if(dictC.count(pattern[i]) == 0 && dictS.count(t) == 0){
+                dictC[pattern[i]] = t;
+                dictS[t] = pattern[i];
+            }else if(dictC.count(pattern[i]) > 0 && dictS.count(t) > 0){
+                if(dictC[pattern[i]] != t || dictS[t] != pattern[i])
+                    return false;
+            }else return false;
+            
+            i++;
+        }
+        return true;
+    }
+};
+
+
