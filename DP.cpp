@@ -1643,6 +1643,124 @@ public:
 
 
 
+//44. Wildcard Matching
+//https://leetcode.com/problems/wildcard-matching/
+/* Original DP */
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        int lenS = s.size(), lenP = p.size();
+        vector<vector<int>> dp(lenS+1, vector<int>(lenP+1, 0));
+        dp[lenS][lenP] = 1;
+        for(int j = lenP-1; j >= 0; --j){
+            //s is empty and p[j] == '*'
+            if(p[j] == '*')
+                dp[lenS][j] = dp[lenS][j+1];
+        }
+        for(int i = lenS-1; i >= 0; --i){
+            for(int j = lenP-1; j >= 0; --j){
+                //if(i == lenS && j == lenP) continue;
+                if(p[j] == '?' || s[i] == p[j])
+                    dp[i][j] = dp[i+1][j+1];
+                else if(p[j] == '*'){
+                    //dp[i+1][j] - means that we skip one character of s
+                    //dp[i][j+1] - '*' maps to empty
+                    //At first, I used a third loop here, it's not necessary
+                    //dp[i+1][j] has included the situation that 
+                    //'*' maps to arbitrary characters
+                    dp[i][j] = dp[i+1][j] || dp[i][j+1]; 
+                    
+                }else if(s[i] != p[j]){
+                    dp[i][j] = 0;
+                }
+            }
+        }
+        return dp[0][0];
+    }
+};
+
+/* Optimized DP solution */
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        int lenS = s.size(), lenP = p.size();
+        //vector<vector<int>> dp(lenS+1, vector<int>(lenP+1, 0));
+        //dp[lenS][lenP] = 1;
+        vector<int> cur(lenS+1, 0);
+        vector<int> pre(lenS+1, 0);
+        //if(p.back() == '*')
+        pre[lenS] = 1; 
+        //We need to put the j for loop out side in order to
+        //update cur[lenS] everytime before i loop
+        for(int j = lenP-1; j >= 0; --j){
+            //Update the last element, we need to do this
+            cur[lenS] = pre[lenS] && p[j] == '*'; 
+            for(int i = lenS-1; i >= 0; --i){
+                if(p[j] == '?' || s[i] == p[j])
+                    cur[i] = pre[i+1];
+                else if(p[j] == '*'){
+                    //this part I did not get by myself
+                    cur[i] = cur[i+1] || pre[i]; 
+                }else if(s[i] != p[j]){
+                    cur[i] = 0;
+                }
+            }
+            swap(cur, pre);
+        }
+        return pre[0];
+    }
+};
 
 
+/* Two pointers */
+/* Two pointer approach: The general idea is to maintain 
+two pointers. pointer j will move forward and detect asterisk.
+When we find the asterisk, we can set posStar to that position,
+and move i pointer accordingly. Not easy to get it right 
+in the interview!!!*/
+
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        int lenS = s.size(), lenP = p.size();
+        int i = 0, j = 0;
+        //posStar will record the last asterisk we have
+        //encountered. pos_sStart will record the position
+        //of the pointer i in s when we encounter an asterisk
+        int posStar = -1, pos_sStart = 0;
+        
+        while(i < lenS){
+            if(j < lenP && (s[i] == p[j] || p[j] == '?')){
+                i++;
+                j++;
+            }else if (j < lenP && p[j] == '*'){
+                //We move to the next element of p
+                //Note "****" is equivalent to '*'
+                posStar = j;
+                j++;
+                pos_sStart = i;
+            }else if(posStar != -1){
+                //If s[i] != s[j] some rounds after we encounter 
+                //the asterisk. We start from posStar + 1 again
+                //because '*' need to represent more elements
+                j = posStar + 1;
+                //We need to increment pos_sStart, means '*' represents
+                //more elements
+                pos_sStart ++;
+                i = pos_sStart;
+            }
+            else
+                return false;
+        }
+        
+        //When i reaches the end, if j has some element other than '*'
+        //return false
+        for(; j < lenP; ++j){
+            if(p[j] != '*')
+                return false;
+        }
+        
+        return true;
+    }
+};
 
