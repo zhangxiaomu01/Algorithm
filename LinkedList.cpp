@@ -118,3 +118,64 @@ public:
 };
 
 
+//234. Palindrome Linked List
+//https://leetcode.com/problems/palindrome-linked-list/
+class Solution {
+public:
+    bool isPalindrome(ListNode* head) {
+        vector<int> dict;
+        ListNode* ptr = head;
+        while(ptr){
+            dict.push_back(ptr->val);
+            ptr = ptr->next;
+        }
+        int i = 0, j = dict.size() - 1;
+        while(i < j){
+            if(dict[i] != dict[j]) return false;
+            i++;
+            j--;
+        }
+        return true;
+    }
+};
+
+/* Optimized version O(n) time, O(1) space */
+
+
+
+//328. Odd Even Linked List
+//https://leetcode.com/problems/odd-even-linked-list/
+/* General idea: split the list based on even and odd number. Merge them together */
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* oddEvenList(ListNode* head) {
+        if(!head || !head->next) return head;
+        ListNode oNode(1), eNode(2);
+        oNode.next = head, eNode.next = head->next;
+        ListNode* oddPtr = head, *evenPtr = head->next;
+        while(oddPtr && evenPtr){
+            oddPtr->next = evenPtr->next;
+            oddPtr = oddPtr->next;
+            swap(oddPtr, evenPtr);
+        }
+        oddPtr = &oNode, evenPtr = &eNode;
+        while(oddPtr->next){
+            oddPtr = oddPtr->next;
+        }
+        
+        oddPtr->next = evenPtr->next;
+        return oNode.next;
+    }
+};
+
+
+
+
