@@ -1746,4 +1746,45 @@ public:
 };
 
 
+//373. Find K Pairs with Smallest Sums
+//https://leetcode.com/problems/find-k-pairs-with-smallest-sums/
+/* Priority queue solution: O(MNlogK)*/
+class myComp{
+public:
+    bool operator()(const vector<int>& A, const vector<int>& B) const
+    {
+        return A[0] + A[1] < B[0] + B[1];
+    }
+};
+
+class Solution {
+public:
+    vector<vector<int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
+        vector<vector<int>> res;
+        int len1 = nums1.size(), len2 = nums2.size();
+        if(len1 == 0 || len2 == 0 || k == 0) return res;
+        priority_queue<vector<int>, vector<vector<int>>, myComp> maxPQ;
+        //small optimization, if len >= k, then k+1th element will not in the final result
+        //maxPQ will always has size of no more than k
+        for(int i = 0; i < min(len1, k); ++i){
+            for(int j = 0; j < min(len2, k); ++j){
+                if(maxPQ.size() < k)
+                    maxPQ.push(vector<int>({nums1[i], nums2[j]}));
+                else if (nums1[i] + nums2[j] < maxPQ.top()[0] + maxPQ.top()[1]){
+                    maxPQ.push(vector<int>({nums1[i], nums2[j]}));
+                    maxPQ.pop();
+                }
+            }
+        }
+        
+        while(!maxPQ.empty()){
+            auto& v = maxPQ.top();
+            res.push_back(v);
+            maxPQ.pop();
+        }
+        return res;
+    }
+};
+
+
 
