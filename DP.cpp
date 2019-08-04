@@ -1764,3 +1764,65 @@ public:
     }
 };
 
+
+//10. Regular Expression Matching
+//https://leetcode.com/problems/regular-expression-matching/
+/* Recursive solution, pretty straightforward. 
+I am having trouble to understand why we match s[i+1] to p[j],
+then that can represent '*' can match to the preceding 
+character multiple times. */
+class Solution {
+    bool checkMatch(string s, string p){
+        if(p.empty()) return s.empty();
+        
+        bool firstMatch = !s.empty() && (s[0] == p[0] || p[0] == '.');
+        
+        if(p.size() >= 2 && p[1] == '*')
+            //if p[j] followed by '*', we could either match ith element 
+            //in s to j+2 th element in p (remove p[j]); or we matched 
+            //s[i] and p[j],and we now need to match s[i+1] to p[j] 
+            //(duplicate p[j]) 
+            return checkMatch(s, p.substr(2)) || (firstMatch && checkMatch(s.substr(1), p));
+        else
+            return firstMatch && checkMatch(s.substr(1), p.substr(1));
+        
+    }
+public:
+    bool isMatch(string s, string p) {
+        return checkMatch(s, p);
+    }
+};
+
+/* DP solution, contains tricky part, I do not really like it. */
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        int lenS = s.size(), lenP = p.size();
+        bool dp[lenS+1][lenP+1];
+        memset(dp, false, sizeof(dp));
+        //represent the matching of two empty string
+        dp[lenS][lenP] = true;
+        
+        for(int i = lenS; i >= 0; --i){
+            for(int j = lenP; j >= 0; --j){
+                //Ignore base case
+                if(i == lenS && j == lenP) continue;
+                //check character s[i], p[j]
+                bool firstMatch = i < lenS && j < lenP && ((s[i] == p[j]) || (p[j] == '.'));
+                //We cannot add i < lenS here, the dp[i+1][j] will not be able to 
+                //go out of bounds because in firstMatch, if i >= lenS, firstMatch 
+                //will be false
+                if(j + 1 < lenP && p[j+1] == '*'){
+                    //dp[i+1][j] means '*' represent preceding character
+                    //once
+                    dp[i][j] = dp[i][j+2] || (firstMatch && dp[i+1][j]);
+                }else
+                    dp[i][j] = firstMatch && dp[i+1][j+1];
+            }
+        }
+        return dp[0][0];
+        
+    }
+};
+
+
