@@ -1847,6 +1847,54 @@ public:
 };
 
 
+/* Bucket sort solution. Interesting */
+//Good explanation:
+//https://leetcode.com/problems/maximum-gap/discuss/50694/12ms-C%2B%2B-Suggested-Solution
+class Solution {
+public:
+    int maximumGap(vector<int>& nums) {
+        int len = nums.size();
+        if(len <= 1) return 0;
+        auto minMax = minmax_element(nums.begin(), nums.end());
+        //std::pair<ForwardIt,ForwardIt> 
+        int lo = *minMax.first, hi = *minMax.second;
+        //We need to gurantee that gap should be at least 1
+        int gap = max((hi - lo) / (len - 1), 1);
+        //m represents the num of buckets
+        int m = (hi - lo) / gap + 1;
+        
+        //record the min and max element for each bucket
+        //The max potential gap is from difference between the 
+        //min element from i+1 bucket - max element from i bucket
+        vector<int> bucketMin(m, INT_MAX);
+        vector<int> bucketMax(m, INT_MIN);
+        
+        for(int i = 0; i < len; ++i){
+            //map each element to corresponding bucket
+            int k = (nums[i] - lo) / gap;
+            bucketMax[k] = (bucketMax[k] < nums[i]) ? nums[i] : bucketMax[k];
+            bucketMin[k] = (bucketMin[k] > nums[i]) ? nums[i] : bucketMin[k];
+        }
+        
+        int maxGap = 0;
+        int i = 0, j = 0;
+        while(j < m){
+            while(j < m && bucketMax[j] == INT_MIN && bucketMin[j] == INT_MAX)
+                j++;
+            if(j == m) break;
+            
+            int localGap = bucketMax[j] - bucketMin[j];
+            maxGap = max(maxGap, localGap);
+            maxGap = max(maxGap, bucketMin[j] - bucketMax[i]);
+            //Move the i points to current j
+            i = j;
+            j++;
+        }
+        return maxGap;
+    }
+};
+
+
 //268. Missing Number
 //https://leetcode.com/problems/missing-number/
 /* Using sorting or unordered_set is trivial, ignore here.
