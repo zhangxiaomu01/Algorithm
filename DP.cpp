@@ -1825,6 +1825,33 @@ public:
     }
 };
 
-/* Optimized DP */
+/* DP Solution, more intuitive for me */
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        int len_s = s.size(), len_p = p.size();
+        bool dp[len_s+1][len_p+1];
+        memset(dp, false, sizeof(dp));
+        dp[len_s][len_p] = true;
+        for(int j = len_p-1; j >= 0; --j){
+            if(j + 1 < len_p && p[j+1] == '*')
+                dp[len_s][j] = dp[len_s][j+2];
+        }
+        //We can start from len_s - 1 now for we have handled
+        //the last row and last column
+        for(int i = len_s-1; i >= 0; --i){
+            for(int j = len_p-1; j >= 0; --j){
+                bool firstMatch = (s[i] == p[j]) || (p[j] == '.');
+                
+                if(j+1 < len_p && p[j+1] == '*'){
+                    dp[i][j] = dp[i][j+2] || (firstMatch && dp[i+1][j]);
+                }else
+                    dp[i][j] = firstMatch && dp[i+1][j+1];
+            }
+        }
+        return dp[0][0];
+    }
+};
+
 
 
