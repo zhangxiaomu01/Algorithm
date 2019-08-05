@@ -140,7 +140,55 @@ public:
 };
 
 /* Optimized version O(n) time, O(1) space */
-
+class Solution {
+public:
+    bool isPalindrome(ListNode* head) {
+        ListNode* fast = head, *slow = head;
+        if(!head || !head->next) return true;
+        //find the midpoint of the list
+        /*
+        For list with even elements
+        1 2 2 1
+          ^
+        For list with odd elements
+        1 2 3 2 1
+            ^
+        */
+        while(fast && fast->next){
+            if(!fast->next->next)
+                break;
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        ListNode* nHead = slow->next;
+        //Reverse the right half of the list
+        ListNode* pre = nHead;
+        ListNode* cur = nHead ? nHead->next : nullptr;
+        //break the first node to prevent loops
+        if(cur) pre->next = nullptr;
+        while(cur){
+            ListNode* temp = cur->next;
+            cur->next = pre;
+            //pre->next = nullptr;
+            pre = cur;
+            cur = temp;
+        }
+        
+        //Now pre becomes the head of the reversed list
+        //Link the list now
+        nHead = pre;
+        cur = head;
+        while(pre){
+            if(pre->val != cur->val)
+                return false;
+            pre = pre->next;
+            cur = cur->next;
+        }
+        //You can reverse the array back if you want
+        return true;
+        
+    }
+};
 
 
 //328. Odd Even Linked List
