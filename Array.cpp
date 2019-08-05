@@ -1831,6 +1831,58 @@ public:
 };
 
 
+//164. Maximum Gap
+//https://leetcode.com/problems/maximum-gap/
+/* sorting is trivial */
+class Solution {
+public:
+    int maximumGap(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        int gap = 0;
+        for(int i = 1; i < nums.size(); ++i){
+            gap = max(gap,nums[i] - nums[i-1]);
+        }
+        return gap;
+    }
+};
+
+
+//268. Missing Number
+//https://leetcode.com/problems/missing-number/
+/* Using sorting or unordered_set is trivial, ignore here.
+Unordered_set solution: put all elements in the unordered set,
+query each entry element n whether exists n-1 or n+1, if not
+exists, we find it. */
+class Solution {
+public:
+    int missingNumber(vector<int>& nums) {
+        int res = 0;
+        //we have n element in total and all distinctive
+        //from 0, 1, 2, ... , n. Then the total sum of 
+        //will be (n+1)*n /2, then we can substract each 
+        //element from the array, and get the final result.
+        for(int i = 0; i < nums.size(); ++i){
+            //we substract nums[i] here to avoid overflow
+            res += (i+1 - nums[i]);
+        }
+        return res;
+    }
+};
+
+
+class Solution {
+public:
+    int missingNumber(vector<int>& nums) {
+        int res = 0;
+        for(int i = 0; i < nums.size(); ++i){
+            //We xor each number with the corresponding index,
+            //in the end, since we have n element, we can eliminate
+            //thouse we have the number and corresponding index one
+            res ^= (i+1) ^ nums[i];
+        }
+        return res;
+    }
+};
 
 
 
