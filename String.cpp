@@ -329,3 +329,55 @@ public:
 };
 
 
+//22. Generate Parentheses
+//https://leetcode.com/problems/generate-parentheses/
+/* Recursion, the key insight is that when we want to insert r parenthesis,
+we need to make sure that num of l < num of r */
+class Solution {
+private:
+    void helper(int l, int r, int n, string s, vector<string>& res){
+        if(l > n || r > n) return;
+        if(l == n && r == n) res.push_back(s);
+        
+        if(l == 0 || l < n)
+            helper(l+1, r, n, s + '(', res);
+        
+        if(l > r && r < n)
+            helper(l, r+1, n, s + ')', res);
+    }
+public:
+    vector<string> generateParenthesis(int n) {
+        vector<string> res;
+        helper(0, 0, n, "", res);
+        return res;
+    }
+};
+
+//Interesting implementation! The tricky part is how to define the string
+class Solution {
+public:
+    vector<string> generateParenthesis(int n) {
+        vector<string> res;
+        if(n == 0)
+            res.push_back("");
+        else{
+            for(int left = 0; left < n; left++){
+                vector<string> tempL = generateParenthesis(left);
+                for(int i = 0; i< tempL.size(); i++){
+                     string l = tempL[i];
+                    vector<string> tempR = generateParenthesis(n - left -1);
+                    for(int j = 0; j < tempR.size(); j++){
+                        string r = tempR[j];
+                        //Here is how we formulate the final string
+                        res.push_back("(" + l + ")" + r);
+                    }   
+                }
+            }
+        }
+        return res;
+    }
+};
+
+
+
+
