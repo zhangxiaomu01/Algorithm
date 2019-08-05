@@ -117,4 +117,35 @@ public:
 };
 
 
+//367. Valid Perfect Square
+//https://leetcode.com/problems/valid-perfect-square/
+/* O(n) is trivial */
+class Solution {
+public:
+    bool isPerfectSquare(int num) {
+        if(num == 1) return true;
+        for(long i = 1; i <= num/2; ++i){
+            if(i * i == num)
+                return true;
+        }
+        return false;
+    }
+};
+
+/* Binary search is powerful */
+class Solution {
+public:
+    bool isPerfectSquare(int num) {
+        long l = 1, r = num;
+        while(l < r){
+            long mid = l + (r - l) / 2;
+            long res = mid * mid;
+            if(res == num) return true;
+            else if(res > num) r = mid;
+            else l = mid+1;
+        }
+        return (l*l == num);
+    }
+};
+
 
