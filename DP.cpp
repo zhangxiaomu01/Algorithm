@@ -1657,6 +1657,7 @@ public:
             if(p[j] == '*')
                 dp[lenS][j] = dp[lenS][j+1];
         }
+        //Swap these two loops does not affect the correctness
         for(int i = lenS-1; i >= 0; --i){
             for(int j = lenP-1; j >= 0; --j){
                 //if(i == lenS && j == lenP) continue;
@@ -1893,5 +1894,7 @@ public:
         return cur[(count+1)%2][0];
     }
 };
+
+
 
 
