@@ -1943,3 +1943,27 @@ public:
     }
 };
 
+
+//75. Sort Colors
+//https://leetcode.com/problems/sort-colors/
+/* 3 pointers solution */
+class Solution {
+public:
+    void sortColors(vector<int>& nums) {
+        //j represents the end of the red (0)
+        //k represents the start of the begin (2)
+        int j = 0, k = nums.size() - 1;
+        for(int i = 0; i <= k; ++i){
+            //Increment j when we swap 0 to the start
+            //of the array
+            if(nums[i] == 0)
+                swap(nums[i], nums[j++]);
+            //We need to decrease i because we need to 
+            //double check kth element
+            else if (nums[i] == 2)
+                swap(nums[i--], nums[k--]);
+        }
+    }
+};
+
+
