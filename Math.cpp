@@ -163,4 +163,35 @@ public:
 };
 
 
+//365. Water and Jug Problem
+//https://leetcode.com/problems/water-and-jug-problem/
+/* Very tricky solution. The intuition is that we add y
+liters water to current volume if current volume is samller
+than x. Or we remove x volume of waters from it.*/
+class Solution {
+public:
+    bool canMeasureWater(int x, int y, int z) {
+        if(x+y == z || x == z || y == z) return true;
+        if(z > x + y) return false;
+        //Let's always consider x to be the smaller jug
+        if(x > y)
+            swap(x, y);
+        
+        int curVolume = 0; //current water we have
+        while(1){
+            //since current water is smaller than x, then
+            //we can safely add y liters water to it
+            if(curVolume < x)
+                curVolume += y;
+            //we can safely remove x liters water from it
+            else
+                curVolume -= x;
+            if(curVolume == z) return true;
+            if(curVolume == 0) return false;
+        }
+        return false;
+    }
+};
+
+
 
