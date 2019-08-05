@@ -1853,5 +1853,45 @@ public:
     }
 };
 
+/* Optimized DP */
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        int len_s = s.size(), len_p = p.size();
+        //bool dp[len_s+1][len_p+1];
+        bool cur[2][len_p+1];
+        memset(cur, false, sizeof(cur));
+        cur[1][len_p] = true;
+        //dp[len_s][len_p] = true;
+        for(int j = len_p-1; j >= 0; --j){
+            if(j + 1 < len_p && p[j+1] == '*')
+                cur[1][j] = cur[1][j+2];
+        }
+        int count = 0;
+        //We cannot swap the two loops here, since we chose
+        //len_p to be the array
+        for(int i = len_s-1; i >= 0; --i){
+            for(int j = len_p-1; j >= 0; --j){
+                bool firstMatch = (s[i] == p[j]) || (p[j] == '.');
+                
+                if(j+1 < len_p && p[j+1] == '*'){
+                    cur[count%2][j] = cur[count%2][j+2] || (firstMatch && cur[(count+1)%2][j]);
+                }else
+                    cur[count%2][j] = firstMatch && cur[(count+1)%2][j+1];
+                //cout << cur[count%2][j] << " ";
+            }
+            //cout << endl;
+            //swap previous and current array
+            count++;
+            //Initialize cur to be false. This is important here. Since
+            //it is not counting dp, we have to eliminate the influence
+            //from the previous array
+            for(int j = 0; j <= len_p; ++j)
+                cur[count%2][j] = false;
+            
+        }
+        return cur[(count+1)%2][0];
+    }
+};
 
 
