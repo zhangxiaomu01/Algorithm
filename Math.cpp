@@ -88,7 +88,33 @@ public:
 };
 
 
+//258. Add Digits
+//https://leetcode.com/problems/add-digits/
+//O(n) is trivial, slow
+class Solution {
+public:
+    int addDigits(int num) {
+        int digit = 0;
+        if(num < 10) return num;
+        while(num != 0 || digit >= 10){
+            digit += num % 10;
+            num /= 10;
+            if(num == 0 && digit >= 10){
+                num = digit;
+                digit = 0;
+            }
+        }
+        return digit;
+    }
+};
 
+//https://en.wikipedia.org/wiki/Digital_root#Congruence_formula
+class Solution {
+public:
+    int addDigits(int num) {
+        return 1 + (num - 1) % 9;
+    }
+};
 
 
 
