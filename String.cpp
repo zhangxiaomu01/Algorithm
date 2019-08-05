@@ -305,3 +305,27 @@ public:
 };
 
 
+//20. Valid Parentheses
+//https://leetcode.com/problems/valid-parentheses/
+class Solution {
+public:
+    bool isValid(string s) {
+        unordered_map<char,char> hash = {{')','('},{'}','{'},{']','['}};
+        vector<char> pStack;
+        int len = s.size();
+        for(int i = 0; i< len; i++)
+        {
+            if(s[i] == '(' || s[i] == '{'||s[i] == '[')
+                pStack.push_back(s[i]);
+            if(s[i] == ')' || s[i] == '}'||s[i] == ']'){
+                if(pStack.empty() || pStack.back() != hash[s[i]])
+                    return false;
+                else
+                    pStack.pop_back();
+            }                     
+        }
+        return pStack.empty();
+    }
+};
+
+
