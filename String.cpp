@@ -380,4 +380,54 @@ public:
 
 
 
+//241. Different Ways to Add Parentheses
+//https://leetcode.com/problems/different-ways-to-add-parentheses/
+/* Recursive Solution: 
+The general idea for this approach is to recursively calculate each 
+possible calculation result from [0, i] and [i+1, n]. Then we do the
+final operation based on current operator. 
+Not easy to form the intuition.
+*/
+class Solution {
+public:
+    vector<int> diffWaysToCompute(string input) {
+        //compute the final result
+        vector<int> res;
+        int len = input.size();
+        for(int i = 0; i < len; ++i){
+            char c = input[i];
+            //if not 0, 1, ..., 9
+            if(!isdigit(c)){
+                vector<int> resL, resR;
+                resL = diffWaysToCompute(input.substr(0, i));
+                resR = diffWaysToCompute(input.substr(i+1));
+                
+                for(int n1 : resL){
+                    for(int n2 : resR){
+                        switch(c){
+                            case '+':
+                                res.push_back(n1 + n2);
+                                break;
+                            case '-':
+                                res.push_back(n1 - n2);
+                                break;
+                            case '*':
+                                res.push_back(n1 * n2);
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+        //We do not push any value in res, which means res
+        //contains only digits. We push back the pure integer
+        //to res
+        if(res.empty()){
+            res.push_back(stoi(input));
+        }
+        return res;
+    }
+};
+
+
 
