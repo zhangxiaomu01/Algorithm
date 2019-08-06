@@ -388,6 +388,74 @@ public:
  */
 
 
+//303. Range Sum Query - Immutable
+//https://leetcode.com/problems/range-sum-query-immutable/
+class NumArray {
+    vector<int> prefixSum;
+public:
+    NumArray(vector<int>& nums) {
+        if(nums.empty()) return;
+        prefixSum.push_back(0);
+        for(int i = 0; i < nums.size(); ++i){
+            prefixSum.push_back(nums[i] + prefixSum.back());
+        }
+    }
+    
+    int sumRange(int i, int j) {
+        return prefixSum[j+1] - prefixSum[i];
+    }
+};
+
+/**
+ * Your NumArray object will be instantiated and called as such:
+ * NumArray* obj = new NumArray(nums);
+ * int param_1 = obj->sumRange(i,j);
+ */
+
+
+//307. Range Sum Query - Mutable
+//https://leetcode.com/problems/range-sum-query-mutable/
+class NumArray {
+private:
+    unordered_map<int, int> updateDict;
+    vector<int> prefixSum;
+    vector<int*> updateNums;
+public:
+    NumArray(vector<int>& nums) {
+        prefixSum.push_back(0);
+        if(nums.empty()) return;
+        int len = nums.size();
+        for(int i = 0; i < len; ++i){
+            prefixSum.push_back(nums[i] + prefixSum.back());
+            updateNums.push_back(&nums[i]);
+        }
+    }
+    
+    void update(int i, int val) {
+        updateDict[i] = val;
+    }
+    
+    int sumRange(int i, int j) {
+        int cumulativeSum = 0;
+        for(int k = 0; k < updateNums.size(); ++k){
+            if(updateDict.count(k) > 0){
+                cumulativeSum += updateDict[k] - (*updateNums[k]); 
+                *updateNums[k] = updateDict[k];
+                updateDict.erase(k);
+            }
+            prefixSum[k+1] += cumulativeSum;
+        }
+        return prefixSum[j+1] - prefixSum[i];
+    }
+};
+
+/**
+ * Your NumArray object will be instantiated and called as such:
+ * NumArray* obj = new NumArray(nums);
+ * obj->update(i,val);
+ * int param_2 = obj->sumRange(i,j);
+ */
+
 
 
 
