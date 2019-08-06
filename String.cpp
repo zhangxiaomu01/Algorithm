@@ -429,5 +429,43 @@ public:
     }
 };
 
+/* Optimized DP solution */
 
 
+//32. Longest Valid Parentheses
+//https://leetcode.com/problems/longest-valid-parentheses/
+/* DP solution! */
+class Solution {
+public:
+    int longestValidParentheses(string s) {
+        int len = s.size();
+        if(len == 0) return 0;
+        
+        int dp[len];
+        //third parameter - number of bytes
+        memset(dp, 0, sizeof(dp));
+        int maxLen = 0;
+        //count how many '(' we have
+        int count = 0;
+        for(int i = 0; i < s.size(); ++i){
+            if(s[i] == '(')
+                count++;
+            if(count > 0 && s[i] == ')'){
+                //if first element is ')', count
+                //is equal to 0, no need to worry
+                //about the boundry
+                //dp[i-1] is 0 if s[i-1] is '('
+                //dp[i-1] is the local max number of
+                //valid parentheses if s[i-1] is ')'
+                dp[i] = 2 + dp[i-1];
+                if(i - dp[i] >= 0)
+                    dp[i] += dp[i-dp[i]];
+                //Count will never be less than 0
+                //do not put it out side the else
+                count --;
+            }
+            maxLen = max(maxLen, dp[i]);
+        }
+        return maxLen;
+    }
+};
