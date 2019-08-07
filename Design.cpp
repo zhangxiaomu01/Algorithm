@@ -415,6 +415,7 @@ public:
 
 //307. Range Sum Query - Mutable
 //https://leetcode.com/problems/range-sum-query-mutable/
+/* deferred update approach, too slow. O(n) */
 class NumArray {
 private:
     unordered_map<int, int> updateDict;
@@ -455,6 +456,12 @@ public:
  * obj->update(i,val);
  * int param_2 = obj->sumRange(i,j);
  */
+
+
+/* Segment tree implementation */
+
+
+
 
 
 

@@ -471,4 +471,57 @@ public:
 };
 
 
+//301. Remove Invalid Parentheses
+//https://leetcode.com/problems/remove-invalid-parentheses/
+/* BFS version, we need a set to do early prune, or TLE*/
+class Solution {
+private:
+    bool isValid(string &s){
+        int len = s.size();
+        int countL = 0;
+        for(int i = 0; i < len; ++i){
+            if(s[i] == '(')
+                countL++;
+            else if(s[i] == ')'){
+                if(countL > 0)
+                    countL--;
+                else return false;
+            }
+        }
+        return !countL;
+    }
+public:
+    vector<string> removeInvalidParentheses(string s) {
+        vector<string> res;
+        unordered_set<string>set;
+        queue<string> Q;
+        int count = 0;
+        Q.push(s);
+        
+        while(!Q.empty()){
+            int lenQ = Q.size();
+            count++;
+            for(int i = 0; i < lenQ; i++){
+                string tempS = Q.front();
+                Q.pop();
+                if(set.count(tempS) != 0) continue;
+                set.insert(tempS);
+                if(isValid(tempS)) {
+                    res.push_back(tempS);
+                    continue;
+                }
+                if(!isValid(tempS) && !res.empty()) continue;
+                
+                for(int j = 0; j < tempS.size(); ++j){
+                    if(tempS[j] == '(' || tempS[j] == ')'){
+                        Q.push(tempS.substr(0, j) + tempS.substr(j+1));
+                    }    
+                }
+            }
+            if(!res.empty()) break;
+        }
+        return res;
+    }
+};
+
 
