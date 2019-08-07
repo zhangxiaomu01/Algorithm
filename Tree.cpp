@@ -1876,3 +1876,30 @@ int main() {
 	return 0;
 }
 //***********************************************************************//
+
+
+//1022. Sum of Root To Leaf Binary Numbers
+//https://leetcode.com/problems/sum-of-root-to-leaf-binary-numbers/
+/* Recursive version, not very intuitive. Try another implementation */
+class Solution {
+private:
+    int postOrder(TreeNode* node, int preVal){
+        if(!node) return 0;
+        preVal = 2 * preVal + node->val;
+        if(!node->left && !node->right) return preVal;
+        
+        int leftSum = postOrder(node->left, preVal);
+        int rightSum = postOrder(node->right, preVal);
+        
+        return leftSum + rightSum;
+    }
+public:
+    int sumRootToLeaf(TreeNode* root) {
+        return postOrder(root, 0);
+    }
+};
+
+
+
+
+
