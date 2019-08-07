@@ -1799,3 +1799,80 @@ public:
     }
 };
 
+
+//Interview: Find the maximum sum from root to leaf in a binary tree
+//You also need to print the path of the maximum sum
+//***********************************************************************//
+struct Node {
+	int val;
+	Node* left;
+	Node* right;
+	Node(int x) : val(x), left(nullptr), right(nullptr) {}
+};
+
+//Now the time complexity should be O(n) - post order traversal
+//Space complexity should be O(h) - h is the height of the tree
+int TreeSum(Node* node, int& maxSum, vector<int>& res) {
+	if (!node) return 0;
+
+	vector<int> pathL, pathR;
+	int leftSum = TreeSum(node->left, maxSum, pathL);
+	int rightSum = TreeSum(node->right, maxSum, pathR);
+
+	if (leftSum > rightSum) {
+		maxSum = leftSum + node->val;
+		pathL.push_back(node->val);
+		res.swap(pathL);
+	}
+	else if (leftSum <= rightSum) {
+		maxSum = rightSum + node->val;
+		pathR.push_back(node->val);
+		res.swap(pathR);
+	}
+	return maxSum;
+}
+
+// Function to insert nodes in level order 
+Node* insertLevelOrder(vector<int>& arr, Node* root,
+	int i)
+{ 
+	if (i < arr.size())
+	{
+		Node* temp = new Node(arr[i]);
+		root = temp;
+
+		// insert left child 
+		root->left = insertLevelOrder(arr,
+			root->left, 2 * i + 1);
+
+		// insert right child 
+		root->right = insertLevelOrder(arr,
+			root->right, 2 * i + 2);
+	}
+	return root;
+}
+
+int main() {
+	//Define the tree value
+	vector<int> TreeVal = {1, 8, -98, -34, 23};
+	Node* root = nullptr;
+	//Build tree in level order 
+	root = insertLevelOrder(TreeVal, root, 0);
+
+	//Calculate the maximum path sum
+	int maxSum = 0;
+	vector<int> res;
+	TreeSum(root, maxSum, res);
+
+	//print the path from leaf to root
+	for (int n : res)
+		cout << n << " " ;
+	cout << maxSum << endl;
+
+	//We need to destroy tree here, omit now
+	//destroyTree(root);
+
+	system("pause");
+	return 0;
+}
+//***********************************************************************//

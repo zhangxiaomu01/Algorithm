@@ -21,7 +21,8 @@ private:
                 if(to_string(v).size() != t.size()) break;
                 dfs(s + '+' + t, num, d, j, cv + v, v, res, '+');
                 dfs(s + '-' + t, num, d, j, cv - v, v, res, '-');
-                //Note we need to pass op to dfs function below, since we already calculate the multiplication, and we only care about the sum and deduction now.
+                //Note we need to pass op to dfs function below, since we already calculate 
+                //the multiplication, and we only care about the sum and deduction now.
                 if(op == '+')
                     dfs(s + '*' + t, num, d, j, cv - pv + pv*v, pv*v, res, op);
                 else if(op == '-')
