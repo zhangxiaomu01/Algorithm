@@ -2037,4 +2037,83 @@ public:
 };
 
 
+//376. Wiggle Subsequence
+//https://leetcode.com/problems/wiggle-subsequence/
+/* Actually, we can start from Brute force algorithm. We keep track of whether
+current nums[i] forms an ascending order sequence or descending order sequence.
+Then we recursively check the maximum length from the rest of sequence. The time
+complexity is O(n!) */
+
+
+/* DP solution. We maintain two sequences up[i], down[i]. When we reach the index i,
+if(nums[i] > nums[j]) then up[i] should be max(up[i], down[j] + 1). The code is 
+pretty straightforward. O(n^2)*/
+class Solution {
+public:
+    int wiggleMaxLength(vector<int>& nums) {
+        int len = nums.size();
+        if(len < 2) return len;
+        vector<int> up(len, 0), down(len, 0);
+        //The base case: when we have only 1 element
+        up[0] = down[0] = 1;
+        for(int i = 1; i < len; ++i){
+            for(int j = 0; j < i; ++j){
+                if(nums[i] > nums[j]){
+                    //Since the last index i is in ascending order,
+                    //we need to find the previous descending sequence
+                    //and update up[i]
+                    up[i] = max(up[i], down[j] + 1);
+                }else if(nums[i] < nums[j]){
+                    //The same idea here. 
+                    down[i] = max(down[i], up[j] + 1);
+                }else{
+                    //since nums[i] == nums[j], feel free to move to 
+                    //skip this index
+                    up[i] = max(up[i], up[j]);
+                    down[i] = max(down[i], down[j]);
+                }
+            }
+        }
+        return max(up[len-1], down[len-1]);
+    }
+};
+
+/* Optimized DP. Get rid of the inner loop. The reason */
+class Solution {
+public:
+    int wiggleMaxLength(vector<int>& nums) {
+        int len = nums.size();
+        if(len < 2) return len;
+        vector<int> up(len, 0), down(len, 0);
+        //The base case: when we have only 1 element
+        up[0] = down[0] = 1;
+        for(int i = 1; i < len; ++i){
+            if(nums[i] > nums[i-1]){
+                up[i] = max(up[i], down[i-1] + 1);
+                //update down[i] here to be down[i-1]
+                down[i] = down[i-1];
+            }else if(nums[i] < nums[i-1]){
+                //The same idea here. 
+                down[i] = max(down[i], up[i-1] + 1);
+                up[i] = up[i-1];
+            }else{
+                //since nums[i] == nums[j], feel free to move to 
+                //skip this index
+                up[i] = up[i-1];
+                down[i] = down[i-1];
+            }
+        }
+        return max(up[len-1], down[len-1]);
+    }
+};
+
+
+/* Optimized DP. Note that when we update up[i] or down[i], we only need down[i-1]
+or up[i-1]. So we do not need an array for this problem, we can just maintain two
+variables. */
+
+
+
+
+
 
