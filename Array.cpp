@@ -1966,5 +1966,75 @@ public:
     }
 };
 
+//324. Wiggle Sort II
+//https://leetcode.com/problems/wiggle-sort-ii/
+/* Sorting and rearrange elements. The key insight is to put the smallest 
+elements to even index, while put the other half to odd index */
+class Solution {
+public:
+    void wiggleSort(vector<int>& nums) {
+        vector<int> sorted(nums);
+        sort(sorted.begin(), sorted.end());
+        for(int i = nums.size()-1, j = 0, k = i/2 + 1; i >= 0; --i){
+            nums[i] = sorted[(i&1) ? k++ : j++];
+        }
+    }
+};
+
+/* This sorting implementation is too tricky, almost useless */
+class Solution {
+public:
+    void wiggleSort(vector<int>& nums) {
+        vector<int> sorted(nums);
+        //sort the array from large to small number
+        sort(sorted.rbegin(), sorted.rend());
+        int len = nums.size();
+        // if len is even, change it to odd
+        int mod = len | 1; 
+        for(int i = 0; i < len; ++i){
+            nums[(2 * i + 1) % mod] = sorted[i];
+        }
+    }
+};
+
+/* O(n), O(1) solution */
+/* O(n) time, O(1) space solution.
+Impossible to get, I cannot even prove it is right.
+I cannot really understand it.
+https://leetcode.com/problems/wiggle-sort-ii/discuss/77681/O(n)-time-O(1)-space-solution-with-detail-explanations
+*/
+class Solution {
+public:
+    void wiggleSort(vector<int>& nums) {
+        int len = nums.size();
+        
+        //find the median of the array - O(n)
+        auto midIt = nums.begin() + len/2;
+        nth_element(nums.begin(), midIt, nums.end());
+        int median = *midIt;
+        
+        //Remap the original index to target index
+        auto m = [len](int index){ return (index*2 + 1) % (len | 1);};
+        
+        //Three partition method for array.We will put the 
+        //elements larger than median at the even index start from
+        //the front of the array. Those smaller than median at the
+        //odd index start from the end of the array. Elements equal 
+        //to median put in the remaining slots.
+        int i = 0, mid = 0, j = len - 1;
+        while(mid <= j){
+            if(nums[m(mid)] > median){
+                swap(nums[m(i)], nums[m(mid)]);
+                i++;
+                mid++;
+            }else if(nums[m(mid)] < median){
+                swap(nums[m(j)], nums[m(mid)]);
+                j--;
+            }else
+                mid++;
+        }
+    }
+};
+
 
 
