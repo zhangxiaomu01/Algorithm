@@ -2111,6 +2111,68 @@ public:
 /* Optimized DP. Note that when we update up[i] or down[i], we only need down[i-1]
 or up[i-1]. So we do not need an array for this problem, we can just maintain two
 variables. */
+class Solution {
+public:
+    int wiggleMaxLength(vector<int>& nums) {
+        int len = nums.size();
+        if(len < 2) return len;
+        //vector<int> up(len, 0), down(len, 0);
+        //The base case: when we have only 1 element
+        int preUp = 1, preDown = 1;
+        int curUp = 0, curDown = 0;
+        //up[0] = down[0] = 1;
+        for(int i = 1; i < len; ++i){
+            if(nums[i] > nums[i-1]){
+                //up[i] = max(up[i], down[i-1] + 1);
+                //down[i] = down[i-1];
+                curUp = preDown + 1;
+                curDown = preDown;
+            }else if(nums[i] < nums[i-1]){
+                //down[i] = max(down[i], up[i-1] + 1);
+                //up[i] = up[i-1];
+                curDown = preUp + 1;
+                curUp = preUp;
+            }else{
+                //up[i] = up[i-1];
+                //down[i] = down[i-1];
+                curUp = preUp;
+                curDown = preDown;
+            }
+            swap(curUp, preUp);
+            swap(curDown, preDown);
+            curUp = curDown = 0;
+        }
+        return max(preUp, preDown);
+    }
+};
+
+/* Greedy. */
+class Solution {
+public:
+    int wiggleMaxLength(vector<int>& nums) {
+        int len = nums.size();
+        if(len < 2) return len;
+        //We maintain a preDiff variable to check whether
+        //we are at a descending list or ascending list.
+        int preDiff = 0;
+        //at least one
+        int maxCount = 1;
+        //We only update maxCount when preDiff changes the sign
+        for(int i = 1; i < len; ++i){
+            if(preDiff == 0 && (nums[i] - nums[i-1] != 0)){
+                preDiff = nums[i] - nums[i-1];
+                maxCount += 1;
+            }else if(preDiff > 0 && nums[i] - nums[i-1] < 0){
+                maxCount += 1;
+                preDiff = nums[i] - nums[i-1];
+            }else if(preDiff < 0 && nums[i] - nums[i-1] > 0){
+                maxCount += 1;
+                preDiff = nums[i] - nums[i-1];
+            }
+        }
+        return maxCount;
+    }
+};
 
 
 
