@@ -194,5 +194,33 @@ public:
 };
 
 
+//326. Power of Three
+//https://leetcode.com/problems/power-of-three/
+/* Loop version is trivial */
+class Solution {
+public:
+    bool isPowerOfThree(int n) {
+        if(n == 1) return true;
+        long sum = 1;
+        for(int i = 1; i <= n/3; ++i){
+            sum *= 3;
+            if(sum > n) return false;
+            if(sum == n) return true;
+        }
+        return false;
+    }
+};
+
+/* This solution utilize the upper bound of the integer.
+In general, 3^19 is the maximum number which bounded by INT_MAX.
+Then we can check whenther n is divisible by 3^19 */
+class Solution {
+public:
+    bool isPowerOfThree(int n) {
+        int x = 1162261467; // 3^19
+        return n > 0 && x % n == 0;
+    }
+};
+
 
 
