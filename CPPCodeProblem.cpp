@@ -157,4 +157,244 @@ int main() {
     }
 
 
+/////////////////////////////////////////////////////////////////////////
+//Read code problem
+#include <exception>
+
+class container_base
+{
+protected:
+	float * pData;
+	size_t size;
+	size_t count;
+	
+	void grow()
+	{
+		if (size == 0)
+			throw std::exception();
+
+		size *= 2;
+		float * newBuffer = new float[size];
+
+		for (size_t i = 0; i < count; ++i)
+			newBuffer[i] = pData[i];
+
+		delete[] pData;
+		pData = newBuffer;
+	}
+
+public:
+	container_base()
+	{
+		size = 100;
+		pData = new float[size]; // Start with an arbitrary size
+		count = 0;
+	}
+
+	~container_base()
+	{
+		delete[] pData;
+	}
+
+	bool empty() const
+	{
+		return count == 0;
+	}
+
+	void clear()
+	{
+		count = 0;
+	}
+
+	container_base(const container_base & source)
+	{
+		if (source.size > this->size)
+		{
+			delete[] this->pData;
+			this->pData = new float[source.size];
+		}
+		for (size_t i = 0; i < source.size; ++i)
+			this->pData[i] = source.pData[i];
+		this->size = source.size;
+		this->count = source.count;
+	}
+
+	container_base(container_base && source)
+	{
+		delete[] this->pData;
+		this->pData = source.pData;
+		this->size = source.size;
+		this->count = source.count;
+
+		source.pData = nullptr;
+		source.size = 0;
+		source.count = 0;
+	}
+
+	void add(float value)
+	{
+		if (count >= size)
+			grow();
+
+		pData[count++] = value;
+	}
+
+};
+
+
+class container1 : public container_base
+{
+public:
+	float get()
+	{
+		if (empty())
+			throw std::exception();
+		--count;
+		return pData[count];
+	}
+};
+
+class container2 : public container_base
+{
+public:
+	float get(size_t index) const
+	{
+		if (empty() || index >= count)
+			throw std::exception();
+		return pData[index];
+	}
+};
+
+class container3
+{
+	float * pData;
+	size_t size;
+	size_t index_first;
+	size_t index_last;
+
+	static size_t copy_to_buffer(float * pDest, const container3 & source)
+	{
+		const size_t len = source.length();
+		size_t end;
+		if (source.index_first < source.index_last)
+			end = source.index_last;
+		else
+			end = source.size;
+		size_t rx_index, tx_index = 0;
+		for (rx_index = source.index_first; rx_index < end; ++rx_index)
+			pDest[tx_index++] = source.pData[rx_index];
+		if (source.index_last < source.index_first)
+		{
+			// There is wrap-around			
+			for (rx_index = 0; rx_index < source.index_last; ++rx_index)
+				pDest[tx_index++] = source.pData[rx_index];
+		}
+		return len;
+	}
+
+	void grow()
+	{
+		if (size == 0)
+			throw std::exception();
+
+		size_t newSize = size * 2;
+		float * newBuffer = new float[newSize];
+
+		size_t len = copy_to_buffer(newBuffer, *this);
+
+		delete[] pData;
+		pData = newBuffer;
+		size = newSize;
+		index_first = 0;
+		index_last = len;
+	}
+
+	// Need to leave one space vacant, otherwise the full and empty states are the same. 
+	inline size_t capacity() const { return size - 1; }
+
+public:
+	container3()
+	{
+		size = 100;
+		pData = new float[size]; // Start with an arbitrary size
+		index_first = 0;
+		index_last = 0;
+	}
+
+	~container3()
+	{
+		delete[] pData;
+	}
+
+	bool empty() const
+	{
+		return length() == 0;
+	}
+
+	void clear()
+	{
+		index_first = 0;
+		index_last = 0;
+	}
+
+	size_t length() const
+	{
+		if (index_last >= index_first)
+			return index_last - index_first;
+		else
+		{
+			size_t len = (size - index_first) + index_last;
+			if (len >= size)
+				throw std::exception();
+			return len;
+		}
+	}
+
+	container3(container3 const & source)
+	{
+		if (source.size > this->size)
+		{
+			delete[] this->pData;
+			this->pData = new float[source.size];
+		}
+		size_t len = copy_to_buffer(this->pData, source);
+		this->index_first = 0;
+		this->index_last = len;
+	}
+
+	container3(container3 && source)
+	{
+		delete[] this->pData;
+		this->pData = source.pData;
+		this->size = source.size;
+		this->index_first = source.index_first;
+		this->index_last = source.index_last;
+
+		source.pData = nullptr;
+		source.size = 0;
+		source.index_first = 0;
+		source.index_last = 0;
+	}
+
+	void add(float value)
+	{
+		if (length() >= capacity())
+			grow();
+		if (index_last == size)
+			index_last = 0; // wrap around
+		pData[index_last++] = value;
+	}
+
+	float get()
+	{
+		if (empty())
+			throw std::exception();
+		size_t current_index = index_first++;
+		index_first %= size;					// Handle wrap-around case.
+		return pData[current_index];
+	}
+};
+
+
+
 

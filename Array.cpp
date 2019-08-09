@@ -2175,7 +2175,39 @@ public:
 };
 
 
-
-
+//327. Count of Range Sum
+//https://leetcode.com/problems/count-of-range-sum/
+/* Binary search solution! Hard to get it right! Take a close look at later! */
+class Solution {
+private:
+    int calRangeSum(vector<long>& preSum, int lo, int up, int l, int r){
+        //since r is exclusive, when r - l < 1, we only have 0 element
+        if(r - l <= 1) return 0;
+        int mid = l + (r-l)/2;
+        int count = 0;
+        count = calRangeSum(preSum, lo, up, l, mid) + calRangeSum(preSum, lo, up, mid, r);
+        for(int i = l; i < mid; ++i){
+            auto loIt = lower_bound(preSum.begin() + mid, preSum.begin() + r, preSum[i] + lo);
+            auto upIt = upper_bound(preSum.begin() + mid, preSum.begin() + r, preSum[i] + up);
+            count += upIt - loIt;
+            //cout << count << endl;
+        }
+        //merge the two sub arrays in place, sort in progress
+        inplace_merge(preSum.begin()+l, preSum.begin() + mid, preSum.begin() + r);
+        return count;
+    }
+public:
+    int countRangeSum(vector<int>& nums, int lower, int upper) {
+        int len = nums.size();
+        if(len == 0) return 0;
+        vector<long> sum(len + 1, 0);
+        for(int i = 0; i < len; ++i){
+            sum[i+1] += sum[i] + nums[i];
+        }
+        //Note the r value is exclusive
+        return calRangeSum(sum, lower, upper, 0, len+1);
+        //return 0;
+    }
+};
 
 
