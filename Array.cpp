@@ -2211,4 +2211,63 @@ public:
 };
 
 
+//306. Additive Number
+//https://leetcode.com/problems/additive-number/
+/* Tricky problem. The idea is simple. Handle the test case related to '0'
+is not easy! Another thing is we need to handle the sum correctly in order
+to avoid overflow. */
+class Solution {
+    bool checkString(string& s, int pos, long preSum, bool& toEnd){
+        unsigned long sum = 0;
+        int len = s.size();
+        for(int i = pos; i < len; ++i){
+            if(i > pos && s[pos] == '0')
+                break;
+            sum = sum * 10 + (s[i] - '0');
+            if(i == len-1) toEnd = true;
+            if(sum > preSum) return false;
+            if(sum == preSum) return true;
+        }
+        return false;
+    }
+    bool helper(string& s, int pos, long preNum){
+        int len = s.size();
+        //Cannot put the following statement here. Or we will always return true
+        //if(pos == len) return true;
+        unsigned long tempSum = 0;
+        for(int i = pos; i < len; ++i){
+            bool reachEnd = false;
+            tempSum = tempSum * 10 + (s[i] - '0');
+            if(i > pos && s[pos] == '0')
+                break;
+            bool isMatch = checkString(s, i+1, tempSum + preNum, reachEnd);
+            //cout << tempSum + preNum << " " << isMatch << endl;
+            if(isMatch && reachEnd)
+                return true;
+            else if(isMatch && helper(s, i+1, tempSum))
+                return true;
+
+        }
+        return false;
+    }
+public:
+    bool isAdditiveNumber(string num) {
+        int len = num.size();
+        //We need to use unsigned long to handle overflow! not good.
+        //We can calculate the sum in terms of string
+        unsigned long sum = 0;
+        for(int i = 0; i < num.size(); ++i){
+            sum = sum * 10 + (num[i] - '0');
+            //cout << sum << " " << endl;
+            if(helper(num, i+1, sum))
+                return true;
+            //Handle the case '0235'. Should be false
+            if(num[0] == '0')
+                return false;
+        }
+        return false;
+    }
+};
+
+
 
