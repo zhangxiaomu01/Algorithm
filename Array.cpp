@@ -2270,4 +2270,57 @@ public:
 };
 
 
+/* Optimized version: beautiful! */
+class Solution {
+private:
+    /* The addString function calculates the result digit by digit, so it will have no overflow.
+    Powerful techniques, please use it in the future*/
+    string addString(string& s1, string& s2){
+        int sum = 0;
+        int carry = 0;
+        string res;
+        int i = s1.size() - 1, j = s2.size() - 1;
+        //save the result to res string
+        while(i >= 0 || j >= 0){
+            sum = carry + (i >= 0 ? (s1[i--] - '0') : 0) + (j >= 0 ? (s2[j--] - '0') : 0);
+            carry = sum / 10;
+            sum = sum % 10;
+            res.push_back(sum + '0');
+        }
+        if(carry) res.push_back(carry + '0');
+        reverse(res.begin(), res.end());
+        return res;
+    }
+    bool checkAdditive(string s1, string s2, string sum){
+        int len1 = s1.size(), len2 = s2.size();
+        //Handle the case when leading character is 0
+        if((len1 > 1 && s1[0] == '0') || (len2 > 1 && s2[0] == '0')) return false;
+        string localSum = addString(s1, s2);
+        if(localSum == sum) return true;
+        else if(localSum.size() >= sum.size() || localSum.compare(sum.substr(0, localSum.size()))!= 0)
+            return false;
+        else //check from s2 recursively. Note we have to start from localSum.size() for the third parameter
+            return checkAdditive(s2, localSum, sum.substr(localSum.size()));
+    }
+public:
+    bool isAdditiveNumber(string num) {
+        int len = num.size();
+        //the length of the first number cannot exceed
+        //len / 2
+        for(int i = 1; i <= len/2; ++i){
+            //The length of the second number can not exceed (len-i)/2
+            for(int j = 1; j <= (len - i) / 2; ++j){
+                //num.substr(i+j), potential sum from position i+j to the end
+                if(checkAdditive(num.substr(0, i), num.substr(i, j), num.substr(i+j))) 
+                    return true;
+            }
+        }
+        return false;
+    }
+};
+
+
+
+
+
 
