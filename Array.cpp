@@ -2416,6 +2416,34 @@ public:
     }
 };
 
+//350. Intersection of Two Arrays II
+//https://leetcode.com/problems/intersection-of-two-arrays-ii/
+class Solution {
+public:
+    vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {
+        unordered_map<int, int> map;
+        int len1 = nums1.size(), len2 = nums2.size();
+        //Make sure that len1 will always be the shorter one
+        if(len2 < len1) return intersect(nums2, nums1);
+        for(int n : nums1){
+            if(map.find(n) != map.end())
+                map[n]++;
+            else
+                map[n] = 1;
+        }
+        vector<int> res;
+        for(int i = 0; i < len2; ++i){
+            if(map.count(nums2[i]) > 0) {
+                res.push_back(nums2[i]);
+                map[nums2[i]] --;
+                if(map[nums2[i]] == 0)
+                    map.erase(nums2[i]);
+            }
+        }
+        return res;
+    }
+};
+
 
 
 
