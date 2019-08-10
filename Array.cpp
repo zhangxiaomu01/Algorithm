@@ -2391,4 +2391,32 @@ public:
     }
 };
 
+//349. Intersection of Two Arrays
+//https://leetcode.com/problems/intersection-of-two-arrays/
+/* O(m+n) */
+class Solution {
+public:
+    vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
+        unordered_set<int> set1;
+        int len1 = nums1.size(), len2 = nums2.size();
+        //Make sure that len1 will always be the shorter one
+        if(len2 < len1) return intersection(nums2, nums1);
+        for(int n : nums1)
+            set1.insert(n);
+        
+        vector<int> res;
+        
+        for(int i = 0; i < len2; ++i){
+            if(set1.count(nums2[i]) > 0) {
+                res.push_back(nums2[i]);
+                set1.erase(nums2[i]);
+            }
+        }
+        return res;
+    }
+};
+
+
+
+
 
