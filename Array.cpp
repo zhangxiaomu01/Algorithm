@@ -2320,7 +2320,75 @@ public:
 };
 
 
-
-
+//321. Create Maximum Number
+//https://leetcode.com/problems/create-maximum-number/
+/* A very tricky problem! Took me some time to finish it. This implementation is 
+elegant. Take a look at it later.
+The general idea for this problem is we pick k elements total from both arrays. So
+we can first check if we pick all the min(len1, k) elements from array 1, and check
+what will be the maximum value from array 1. Then we pick up k - min(len1, k) 
+elements from array 2 and check the maximum value from array 2. Then we merge the
+two results together we will get a tempRes, which will be the maximum value for
+this round. We then iterate through all the potential pickup from array 1 and 2,
+and calculate the maximum value in the end.
+ */
+class Solution {
+private:
+    vector<int> mergeVector(vector<int>&& nums1, vector<int>&& nums2){
+        int k = nums1.size() + nums2.size();
+        vector<int> res(k, 0);
+        for(int i = 0, j = 0, r = 0; r < k; ++r){
+            if(compareGreaterRes(nums1, i, nums2, j)) res[r] = nums1[i++];
+            else res[r] = nums2[j++];
+        }
+        return res; 
+    }
+    vector<int> calMaxVector(vector<int>& nums, int k){
+        if(k == 0) return vector<int>();
+        vector<int> vec;
+        int len = nums.size();
+        vec.push_back(nums[0]);
+        //need to guarantee that vec.size() <= k
+        for(int i = 1; i < len; ++i){
+            while(!vec.empty() && vec.size() + len - i > k && nums[i] > vec.back()){
+                vec.pop_back();
+            }
+            if(vec.size() < k)
+                vec.push_back(nums[i]);
+            else if(vec.size() == k && vec.back() < nums[i])
+                vec.back() = nums[i];
+        }
+        return vec;
+    }
+    /* This compareGreaterRes function is tricky. Note it does not return true if nums is 
+    literally greater than res. It will return true if it finds the first character from
+    nums[i] which is greater than res[i]. For example:
+    nums = [6,7], res = [6,0,7] It will return true, and we always get the greater numbers
+    out first.*/
+    bool compareGreaterRes(vector<int>& nums, int pos1, vector<int>& res, int pos2){
+        int len = nums.size(), lenR = res.size();
+        while(pos1 < len && pos2 < lenR && nums[pos1] == res[pos2]){
+            pos1++;
+            pos2++;
+        }
+        //either pos2 reaches the end of the string
+        return pos2 == lenR || (pos1 < len && nums[pos1] > res[pos2]);
+    }
+    
+public:
+    vector<int> maxNumber(vector<int>& nums1, vector<int>& nums2, int k) {
+        vector<int> res(k, 0);
+        int len1 = nums1.size(), len2 = nums2.size();
+        //In the first round, we start from adding potential maximum elements from nums2 to res,
+        //then we add element from nums1 and remove element from nums2. Whenever we add or remove
+        //element, we always calculate the maximum result for the selected elements
+        for(int i = max(0, k - len2); i <= min(k, len1); ++i){
+            vector<int> tempVector = mergeVector(calMaxVector(nums1, i), calMaxVector(nums2, k-i));
+            //tempVector and res now have the same length k
+            if(compareGreaterRes(tempVector, 0, res, 0)) res.swap(tempVector);
+        }
+        return res;
+    }
+};
 
 
