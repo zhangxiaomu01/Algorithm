@@ -47,6 +47,7 @@ public:
 calculate the longest path. We find a potential end node in this longest path, 
 and then do BFS again and search for the entire path. The potential root node
 is either path[len/2] (odd) or {path[len/2 - 1], path[len/2]} (even)*/
+//The following implementation has a bug.
 class Solution {
 private:
     void BFS(vector<unordered_set<int>>& G, vector<int>& pre, vector<int>& depth, int index){
