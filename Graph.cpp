@@ -43,11 +43,13 @@ public:
     }
 };
 
+/*Very good explanation:
+https://leetcode.com/problems/minimum-height-trees/discuss/76052/Two-O(n)-solutions*/
 /* Another implementation. The general idea is first pick up a random node and 
 calculate the longest path. We find a potential end node in this longest path, 
 and then do BFS again and search for the entire path. The potential root node
 is either path[len/2] (odd) or {path[len/2 - 1], path[len/2]} (even)*/
-//The following implementation has a bug.
+//The following implementation has a bug. //Double check later
 class Solution {
 private:
     void BFS(vector<unordered_set<int>>& G, vector<int>& pre, vector<int>& depth, int index){
