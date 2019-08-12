@@ -459,9 +459,6 @@ public:
 
 //31. Next Permutation
 //https://leetcode.com/problems/next-permutation/
-/*
-The problem is easy to understand, however, the code is hard to implement.
-*/
 //The problem is not hard, however, the code is hard to implement
 //Tried several times, still failed
 class Solution {
@@ -727,7 +724,12 @@ public:
 };
 
 /*
-We can guide the search by eliminate impossible situation. By this, we first do a scan to get the longest and shortest length of the words, then we  build up a DP table to get the position that we can break the string validly. If in the end, we find that there is no valid partition from the dictionary, we can simply return null result. The implementation is straightforward, however, combining several techniques for this optimization is not an easy task.
+We can guide the search by eliminate impossible situation. By this, we first do a 
+scan to get the longest and shortest length of the words, then we  build up a DP 
+table to get the position that we can break the string validly. If in the end, 
+we find that there is no valid partition from the dictionary, we can simply return 
+null result. The implementation is straightforward, however, combining several 
+techniques for this optimization is not an easy task.
 */
 class Solution {
 private:
