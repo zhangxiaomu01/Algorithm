@@ -189,7 +189,9 @@ public:
 //145. Binary Tree Postorder Traversal
 //https://leetcode.com/problems/binary-tree-postorder-traversal/
 /*
-Basically, we juest reverse the order of preorder traversal. Note in preorder, we have root->left->right. It's easy to calculate. However, we can first calculate root->right->left. Then reverse the order of the output.
+Basically, we juest reverse the order of preorder traversal. Note in preorder, 
+we have root->left->right. It's easy to calculate. However, we can first calculate 
+root->right->left. Then reverse the order of the output.
  */
 class Solution {
 public:
@@ -210,6 +212,31 @@ public:
         }
         reverse(res.begin(), res.end());
         return res;
+    }
+};
+
+class Solution {
+public:
+    vector<int> postorderTraversal(TreeNode* root) {
+        vector<int> nodes;
+        stack<TreeNode*> todo;
+        TreeNode* last = NULL;
+        while (root || !todo.empty()) {
+            if (root) {
+                todo.push(root);
+                root = root -> left;
+            } else {
+                TreeNode* node = todo.top();
+                if (node -> right && last != node -> right) {
+                    root = node -> right;
+                } else {
+                    nodes.push_back(node -> val);
+                    last = node;
+                    todo.pop();
+                }
+            }
+        }
+        return nodes;
     }
 };
 
