@@ -383,7 +383,8 @@ public:
 //226. Invert Binary Tree
 //https://leetcode.com/problems/invert-binary-tree/
 /*
-Note we are actually swapping the left and right children level by level. This holds true for both recursive and iterative version.
+Note we are actually swapping the left and right children level by level. 
+This holds true for both recursive and iterative version.
  */
 class Solution {
 public:
@@ -823,7 +824,8 @@ private:
         int left = max(0, rec(node->left));
         int right = max(0, rec(node->right));
         maxVal = max(maxVal, left + right + node->val);
-        //Note we only need to return the maximum path of the two, then we can from the valid path
+        //Note we only need to return the maximum path of the two, 
+        //then we can from the valid path
         return max(left, right) + node->val;
     }
 public:
@@ -1166,7 +1168,8 @@ public:
 //235. Lowest Common Ancestor of a Binary Search Tree
 //https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/
 /* Recursive version */
-//General idea is to find the split point of the sub BST which includes both p and q
+//General idea is to find the split point of the sub BST which includes both p 
+//and q
 class Solution {
 public:
     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
@@ -1639,7 +1642,9 @@ public:
 };
 */
 /*
-It's a DP problem. We need to check every possible combination of left sub tree and right tree, and sum them together to get the total number. Recursive and iterative versions are available!
+It's a DP problem. We need to check every possible combination of left sub tree 
+and right tree, and sum them together to get the total number. Recursive and 
+iterative versions are available!
  */
 //A dp problem. Note we need to recursively calculate how many possible BSTs for both left and right sub tree.
 class Solution {
@@ -1676,7 +1681,8 @@ public:
 };
 
 //Iterative dp. Very tricky! Note by default each entry is 0, and dp[0] is 1
-//Note that j in this case, represents the root node, so j-1 means the total node in the left, and i - j means the total node in the right
+//Note that j in this case, represents the root node, so j-1 means the total node 
+//in the left, and i - j means the total node in the right
 class Solution {
 public:
     int numTrees(int n) {
@@ -1693,7 +1699,8 @@ public:
 
 //116. Populating Next Right Pointers in Each Node
 //https://leetcode.com/problems/populating-next-right-pointers-in-each-node/
-//We can do level order traversal, but this problem requires us to use constant space. Iterative version is a little bit tricky. Be careful!
+//We can do level order traversal, but this problem requires us to use constant 
+//space. Iterative version is a little bit tricky. Be careful!
 /* Recursive version is trivial. Not efficient!!*/
 class Solution {
     void dfs(Node* lNode, Node* rNode){
