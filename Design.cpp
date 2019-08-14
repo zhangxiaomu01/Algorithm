@@ -533,8 +533,9 @@ public:
     }
 };
 
-/* Binary Indexed Tree Solution */
-
+/* Binary Indexed Tree Solution: Good explanation */
+//https://cs.stackexchange.com/questions/10538/bit-what-is-the-intuition-behind-a-binary-indexed-tree-and-how-was-it-thought-a
+//https://leetcode.com/problems/range-sum-query-mutable/discuss/75753/Java-using-Binary-Indexed-Tree-with-clear-explanation
 
 
 
