@@ -90,3 +90,29 @@ public:
         return res;
     }
 };
+
+
+//371. Sum of Two Integers
+//https://leetcode.com/problems/sum-of-two-integers/
+/* A very good question! have a great overview about bit manipulation */
+class Solution {
+public:
+    int getSum(int a, int b) {
+        long carry = 0; // 64 bit integer
+        // 64 bit mask with first 32 bits to be 0, second 32 bits to be 1
+        long mask = 0xFFFFFFFF; 
+        int sum = a;
+        while(b != 0){
+            sum = a ^ b;
+            carry = (a & b);
+            //We cannot directly use the following code because for 32 bit
+            //integers, when the first bit is 1 (negative value), we will 
+            //have bit overflow 
+            //b = (a & b) << 1;
+            b =  ((carry & mask) << 1);
+            a = sum;
+        }
+        return sum;
+    }
+};
+
