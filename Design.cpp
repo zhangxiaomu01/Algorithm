@@ -458,7 +458,83 @@ public:
  */
 
 
-/* Segment tree implementation */
+/* Segment tree implementation: Very intresting!
+A detailed explanation: 
+https://leetcode.com/articles/a-recursive-approach-to-segment-trees-range-sum-queries-lazy-propagation/ */
+class NumArray {
+private:
+    int* m_segTree;
+    int m_len;
+    void buildTree(vector<int>& nums){
+        //Calculate leaves
+        for(int i = m_len, j = 0; i < 2 * m_len; ++i, ++j){
+            m_segTree[i] = nums[j];
+        }
+        for(int i = m_len-1; i >= 0; --i){
+            m_segTree[i] = m_segTree[2*i] + m_segTree[2*i+1];
+        }
+    }
+public:
+    NumArray(vector<int>& nums) {
+        m_len = nums.size();
+        if(m_len > 0){
+            m_segTree = new int[2 * m_len];
+            buildTree(nums);
+        }
+    }
+    
+    //We will start updating leaf node and then go up until the 
+    //root
+    void update(int i, int val) {
+        int pos = i + m_len;
+        m_segTree[pos] = val;
+        while(pos > 0){
+            int left = pos;
+            int right = pos;
+            //Not easy to get this part right!
+            if(pos % 2 == 0){
+                right = pos + 1;
+            }else
+                left = pos - 1;
+            m_segTree[pos/2] = m_segTree[left] + m_segTree[right];
+            pos = pos/2;
+        }
+        
+    }
+    
+    int sumRange(int i, int j) {
+        //Get the leaf nodes of the range
+        int posL = i + m_len;
+        int posR = j + m_len;
+        
+        int sum = 0;
+        while(posL <= posR){
+            //left range is located in the right sub tree.
+            //We need to include node posL to the sum instead
+            //of its parent node
+            if(posL % 2 == 1){
+                sum += m_segTree[posL];
+                posL ++;
+            }
+            //right range is located in the left sub tree
+            //We need to include node posR to the sum instead
+            //of its parent node
+            if(posR % 2 == 0){
+                sum += m_segTree[posR];
+                posR --;
+            }
+            //When L == R, one of the above condition will meet
+            //So we are guaranteed to break the loop
+            posL /= 2;
+            posR /= 2;
+        }
+        
+        return sum;
+    }
+};
+
+/* Binary Indexed Tree Solution */
+
 
 
 
