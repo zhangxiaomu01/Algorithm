@@ -2483,4 +2483,36 @@ public:
 };
 
 
+//396. Rotate Function
+//https://leetcode.com/problems/rotate-function/
+/* A very naive approach will be reverse the array and
+calculate all the sums. However, we can get the correct
+result by two loops. The first loop we will calculate
+the total sum of all elements in Array A. We also calculate
+the F(0) in the first loop. For the second loop, we will
+calculate the F(1) ... F(n-1) respectively. And keep track
+of the maximum result.*/
+class Solution {
+public:
+    int maxRotateFunction(vector<int>& A) {
+        int len = A.size();
+        long totalSum = 0, FSum = 0;
+        for(int i = 0; i < len; ++i){
+            totalSum += A[i];
+            FSum += i * A[i];
+        }
+        int res = FSum;
+        //We should start from 0, in the first round,
+        //we calculate F(1)
+        for(int i = 0; i < len; ++i){
+            FSum -= totalSum;
+            FSum += A[i];
+            FSum += (len - 1) * A[i];
+            res = max(long(res), FSum);
+        }
+        return res;
+    }
+};
+
+
 
