@@ -318,7 +318,10 @@ std::vector<int> randomSamplingStream(std::istringstream *s, int k)
 
 //Compute a random subset
 /*
-Write a program that takes as input a positive integer n and a size k <= n, and returns a size k subset of [0, n-1]. The subset should be represented as an array, all subsets should be equally likely and, in addition, all permutations of elements of the array should be equally likely.
+Write a program that takes as input a positive integer n and a size k <= n, and 
+returns a size k subset of [0, n-1]. The subset should be represented as an array,
+all subsets should be equally likely and, in addition, all permutations of 
+elements of the array should be equally likely.
 */
 //n is the total range, k is the subset of the range
 std::vector<int> randomSubset(int n, int k)
@@ -362,7 +365,10 @@ std::vector<int> randomSubset(int n, int k)
 
 //Generate nonuniform random numbers
 /*
-Given a random number generator which produces values in [0,1] uniformly (floating number), how could you generate one of the n numers according to the specific probability? say [3, 5, 7, 11], we have coresponding probability [9/18, 6/18, 2/18, 1/18].
+Given a random number generator which produces values in [0,1] uniformly 
+(floating number), how could you generate one of the n numers according 
+to the specific probability? say [3, 5, 7, 11], we have coresponding probability 
+[9/18, 6/18, 2/18, 1/18].
 */
 int nonuniformRandomNumberGenerator(std::vector<int> nums, std::vector<double> p)
 {
