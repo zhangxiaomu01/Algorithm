@@ -50,7 +50,7 @@ public:
                         Q.pop();
                         //Npte we need to set the next entry to '0'
                         //In order to avoid the repetitive visit to 
-                        //the some entries. At first, you just update 
+                        //the same entries. At first, you just update 
                         //nums[pi][pj] in the while loop once, that's
                         // the problem
                         if(pi + 1 < m && nums[pi+1][pj] == '1'){

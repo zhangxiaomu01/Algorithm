@@ -222,5 +222,30 @@ public:
     }
 };
 
-
-
+//313. Super Ugly Number
+//https://leetcode.com/problems/super-ugly-number/
+/*Every ugly number is constructed from multiply a previous ugly number by one of the 
+primes in the list. If current ugly number is ugly[i] , Index[j] is the index of the 
+smallest of all ugly numbers that we already constructed , such that 
+prime[j]*ugly[index[j]] is not found yet.
+Very tricky Problem!!*/
+class Solution {
+public:
+    int nthSuperUglyNumber(int n, vector<int>& primes) {
+        int k = primes.size();
+        //ugly records all the potential ugly numbers
+        //index record the index for the minimum previous ugly number which can
+        //be used to construct ugly[j]
+        vector<int> index(k, 0), ugly(n, INT_MAX);
+        ugly[0] = 1;
+        for(int i = 1; i < n; ++i){
+            for(int j = 0; j < k; ++j){
+                ugly[i] = min(ugly[i], ugly[index[j]] * primes[j]);
+            }
+            for(int j = 0; j < k; ++j){
+                index[j] += (ugly[i] == ugly[index[j]] * primes[j]);
+            }
+        }
+        return ugly[n-1];
+    }
+};
