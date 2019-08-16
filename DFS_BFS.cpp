@@ -399,6 +399,29 @@ public:
     }
 };
 
+//Memorization, we cannot use array here for it will exceed
+//memory limitation
+class Solution {
+private:
+    unordered_map<int, int> uMap;
+    int helper(long n){
+        if(n == 1) return 0;
+        if(n == 2) return 1;
+        if(uMap.count(n) > 0) return uMap[n];
+        if(n % 2 == 0) {
+            uMap[n] = helper(n/2) + 1;
+        }
+        else {
+            uMap[n] = min(helper(n-1), helper(n+1)) + 1;
+        }
+        return uMap[n];
+    }
+public:
+    int integerReplacement(int n) {
+        return helper(n);
+    }
+};
+
 //DP solution
 //Cannot pass test case, because it exceeds the maximum memory limitation
 class Solution {
@@ -418,4 +441,5 @@ public:
         return res;
     }
 };
+
 
