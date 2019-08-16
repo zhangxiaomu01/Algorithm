@@ -382,7 +382,9 @@ public:
 
 //397. Integer Replacement
 //https://leetcode.com/problems/integer-replacement/
-/* Not Efficient */
+/* Not Efficient 
+We can allocate an array to store the result, and do memorization.
+It's not that good since the intermediate result will barely be used again.*/
 class Solution {
 private:
     int helper(long n){
@@ -397,4 +399,23 @@ public:
     }
 };
 
+//DP solution
+//Cannot pass test case, because it exceeds the maximum memory limitation
+class Solution {
+public:
+    int integerReplacement(int n) {
+        int* dp = new int[n+1];
+        memset(dp, 0x3F3F3F3F, sizeof(dp));
+        dp[1] = 0;
+        for(int i = 2; i <= n; ++i){
+            //dp[i/2 + 1] + 1 == dp[i+1] when i is odd
+            //If we use int dp[n], will have stack overflow, because n could be large
+            dp[i] = (i%2 == 0) ? (dp[i/2]) + 1 : min(dp[i-1], dp[(i+1)/2] + 1) + 1;
+            
+        }
+        int res = dp[n];
+        delete[] dp;
+        return res;
+    }
+};
 
