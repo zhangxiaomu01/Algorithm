@@ -2538,3 +2538,91 @@ public:
     }
 };
 
+
+//57. Insert Interval
+//https://leetcode.com/problems/insert-interval/
+/* Needs sometime to get it right! I do not really like it */
+class Solution {
+public:
+    vector<vector<int>> insert(vector<vector<int>>& intervals, vector<int>& newInterval) {
+        if(intervals.empty()){
+            intervals.push_back(newInterval);
+            return intervals;
+        }
+        int nS = newInterval[0], nE = newInterval[1];
+        int len = intervals.size();
+        int startIndex = 0;
+        int deleteLen = 0;
+        for(int i = 0; i < len; ++i){
+            if(nS <= intervals[i][1]){
+                if(nE >= intervals[i][0])
+                    intervals[i][0] = min(nS, intervals[i][0]);
+                if(nE < intervals[i][0]){
+                    intervals.insert(intervals.begin() + i, newInterval);
+                    return intervals;
+                }
+                else if(nE <= intervals[i][1])
+                    break;
+                else if(nE > intervals[i][1]){
+                    startIndex = i;
+                    intervals[i][1] = nE;
+                    i++;
+                    while(i < len && intervals[i][0] <= nE){
+                        intervals[startIndex][1] = max(nE, intervals[i][1]);
+                        deleteLen ++;
+                        i++;
+                    }
+                    break;
+                }
+            }else if(nS > intervals[i][1]){
+                if(i + 1 == len || (i+1 < len && nE < intervals[i+1][0])){
+                    intervals.insert(intervals.begin() + i + 1, newInterval);
+                    return intervals;
+                }
+            }
+        }
+        int j = startIndex+1;
+        for(; j < len && (j+deleteLen) < len; ++j){
+            intervals[j] = intervals[j + deleteLen];
+        }
+        while(j < len){
+            intervals.pop_back();
+            j++;
+        }
+        return intervals;
+    }
+};
+
+/**
+ * Definition for an interval.
+ * struct Interval {
+ *     int start;
+ *     int end;
+ *     Interval() : start(0), end(0) {}
+ *     Interval(int s, int e) : start(s), end(e) {}
+ * };
+ */
+class Solution {
+public:
+    vector<Interval> insert(vector<Interval>& intervals, Interval newInterval) {
+        vector<Interval> finalRes;       
+        int len = intervals.size();
+        int i = 0;
+        while(i < len && newInterval.start > intervals[i].end)
+            finalRes.push_back(intervals[i++]);
+        
+        while(i < len && intervals[i].start <= newInterval.end){
+            newInterval.start = min(intervals[i].start, newInterval.start);
+            newInterval.end = max(intervals[i].end, newInterval.end);
+            i++;
+        }
+        finalRes.push_back(newInterval);
+        
+        while(i<len)
+            finalRes.push_back(intervals[i++]);
+        
+        return finalRes;
+        
+    }
+};
+
