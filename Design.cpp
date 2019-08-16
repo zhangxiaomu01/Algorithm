@@ -626,6 +626,48 @@ public:
  */
 
 
+//398. Random Pick Index
+//https://leetcode.com/problems/random-pick-index/
+//Essentially the same idea as using 
+//Reservoir sampling algorithm!!
+//https://www.youtube.com/watch?time_continue=1&v=A1iwzSew5QY
+//We cannot sort the array or the index will be wrong!
+class Solution {
+private:
+    vector<int>* A;
+public:
+    Solution(vector<int>& nums) {
+        A = &nums;
+    }
+    
+    int pick(int target) {
+        //We need to count how mant target value we have
+        int countDuplicate = 0;
+        int len = A->size();
+        int res = -1;
+        for(int i = 0; i < len; ++i){
+            if((*A)[i] == target){
+                // with prob 1/(n+1) to replace the previous index
+                countDuplicate++; 
+                //when countDuplicate == 1, we always pick the first one
+                if(rand() % countDuplicate == 0)
+                    res = i;
+            }
+        }
+        return res;
+    }
+};
+
+/**
+ * Your Solution object will be instantiated and called as such:
+ * Solution* obj = new Solution(nums);
+ * int param_1 = obj->pick(target);
+ */
+
+
+
+
+
 
 
 
