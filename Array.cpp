@@ -2515,4 +2515,26 @@ public:
 };
 
 
+//357. Count Numbers with Unique Digits
+//https://leetcode.com/problems/count-numbers-with-unique-digits/
+class Solution {
+public:
+    int countNumbersWithUniqueDigits(int n) {
+        //We have only 1 valid result
+        if(n == 0) return 1;
+        //when n == 1, then sum = 10
+        int sum = 10;
+        int base = 9;
+        //note when n > 10, we actually go to a situation that
+        //we cannot have any valid possible result with 11 digits
+        //because we only have 0-9 10 digits in total. so when 
+        //n == 10, the sum will be maximum
+        for(int i = 1; i < n && i < 10; ++i){
+            base = base * (10 - i);
+            sum += base;
+        }
+        
+        return sum;
+    }
+};
 
