@@ -251,3 +251,45 @@ public:
 };
 
 
+
+//400. Nth Digit
+//https://leetcode.com/problems/nth-digit/
+/* Not that hard, however, tricky to implement it */
+class Solution {
+private:
+    //Use long to handle integer overflow
+    long dict[10] = {1, 9, 90, 900, 9000, 90000, 900000, 9000000, 90000000, 900000000};
+    long dictNum[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+public:
+    int findNthDigit(int n) {
+        if(n < 10) return n;
+        long count = n;
+        int i = 1;
+        while(count > 0){
+            if(count >= dict[i] * dictNum[i]){
+                count -= dict[i] * dictNum[i];
+                i++;
+            }
+            else
+                break;
+        }
+        int nDigits = dictNum[i-1];
+        int startNum = 1;
+        while(nDigits > 0){
+            startNum *= 10;
+            nDigits--;
+        }
+        count --;
+        //cout << i << endl;
+        int increNum = count / dictNum[i];
+        int index = count % dictNum[i];
+        int res = 0;
+        startNum += increNum;
+        //cout << startNum << endl;
+        string temp = to_string(startNum);
+        res = temp[index] - '0';
+        
+        return res;
+    }
+};
+
