@@ -2788,3 +2788,47 @@ public:
     }
 };
 
+
+//765. Couples Holding Hands
+//https://leetcode.com/problems/couples-holding-hands/
+//Greedy: https://leetcode.com/problems/couples-holding-hands/discuss/113358/Easy-to-understand-C%2B%2B-O(n)-hashmap-solution-with-explanation
+/*
+A key observation is, a couple must occupies the seats 2 * i and 2 * i + 1 
+(e.g. seats 0 & 1), they must not take seats 2 * i - 1 and 2 * i (e.g. seats 1 
+and 2), or the fisrt and last seat will be left empty and the last one couple
+cannot sit together.
+Then we can scan from the begining of the array, and check whether each spouse of
+that person is sitting beside him/her. In order to quickly check the relationship
+with people and the seats, we can build a table to store the relationship.
+*/
+class Solution {
+public:
+    int minSwapsCouples(vector<int>& row){
+        int len = row.size();
+        if(len <= 2) return 0;
+        vector<int> dict(len);
+        for(int i = 0; i < len; ++i){
+            //person row[i] sits in seat i
+            dict[row[i]] = i;
+        }
+        int count = 0;
+        //then we can greedy swap one couple and make the local optimal greedily
+        for(int i = 0; i < len; i = i+2){
+            int me = row[i];
+            int spouse = (me&1) ? me - 1 : me + 1;
+            int neighbour = row[i+1];
+            if(spouse != neighbour){
+                int seatSpouse = dict[spouse];
+                swap(row[i+1], row[seatSpouse]);
+                count ++;
+                //update the swapped person's seat
+                dict[neighbour] = seatSpouse;
+            }
+        }
+        return count;
+    }
+};
+
+
+
+
