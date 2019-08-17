@@ -1934,6 +1934,24 @@ public:
 };
 
 
+//404. Sum of Left Leaves
+//https://leetcode.com/problems/sum-of-left-leaves/
+class Solution {
+    int sumLeft(TreeNode* node, bool isLeft){
+        if(!node) return 0;
+        if(!node->left && !node->right && isLeft) return node->val;
+        int res = 0;
+        res = sumLeft(node->left, true) + sumLeft(node->right, false);
+        return res;
+    }
+public:
+    int sumOfLeftLeaves(TreeNode* root) {
+        if(!root) return 0;
+        return sumLeft(root->left, true) + sumLeft(root->right, false);
+    }
+};
+
+
 
 
 
