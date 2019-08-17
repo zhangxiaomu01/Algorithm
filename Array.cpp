@@ -2705,3 +2705,30 @@ public:
     }
 };
 
+//We only need to consider 3 situations:
+/*
+There is no 0 in the array:
+1. if we contains even number of negative numbers, basically, the max product will be the product of all elements;
+2. If we have odd number of negative numbers, we need to consider whether we 
+drop the first negative number or the last.
+3.With 0, we only need to update the result to be 1 after comparison
+Then the general idea is to product from both end and handle 0 separately!
+*/
+class Solution {
+public:
+    int maxProduct(vector<int>& nums) {
+        int forwardProduct = 1, backwardProduct = 1;
+        int res = INT_MIN;
+        int len = nums.size();
+        for(int i = 0; i < len; ++i){
+            forwardProduct *= nums[i];
+            backwardProduct *= nums[len- 1 - i];
+            res = max(res, max(forwardProduct, backwardProduct));
+            forwardProduct = forwardProduct ? forwardProduct : 1;
+            backwardProduct = backwardProduct ? backwardProduct : 1;
+        }
+        return res;
+    }
+};
+
+
