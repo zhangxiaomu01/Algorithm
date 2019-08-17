@@ -431,7 +431,52 @@ public:
 };
 
 /* Optimized DP solution */
-
+/* Recursive solution + memorization : Actually, become even slower */
+class Solution {
+    vector<int> helper(string& input, unordered_map<string, vector<int>>& memo){
+        int len = input.size();
+        vector<int> res;
+        for(int i = 1; i < len; ++i){
+            char c = input[i];
+            if(!isdigit(c)){
+                vector<int> resL, resR;
+                string sLeft = input.substr(0, i);
+                //cout << sLeft << endl;
+                if(memo.find(sLeft)!= memo.end()){
+                    resL = memo[sLeft];
+                }else
+                    resL = move(helper(sLeft, memo));
+                
+                string sRight = input.substr(i+1);
+                if(memo.find(sRight) != memo.end())
+                    resR = memo[sRight];
+                else
+                    resR = move(helper(sRight, memo));
+                
+                for(int j = 0; j < resL.size(); ++j){
+                    for(int k = 0; k < resR.size(); ++k){
+                        if(c == '+')
+                            res.push_back(resL[j] + resR[k]);
+                        else if (c == '-')
+                            res.push_back(resL[j] - resR[k]);
+                        else if (c == '*')
+                            res.push_back(resL[j] * resR[k]);
+                    }
+                }
+            }
+        }
+        if(res.empty())
+            res.push_back(stoi(input));
+        
+        memo[input] = move(res);
+        return memo[input];
+    }
+public:
+    vector<int> diffWaysToCompute(string input) {
+        unordered_map<string, vector<int>> memo;
+        return helper(input, memo);
+    }
+};
 
 //32. Longest Valid Parentheses
 //https://leetcode.com/problems/longest-valid-parentheses/
