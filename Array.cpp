@@ -2675,3 +2675,30 @@ public:
     }
 };
 
+//152. Maximum Product Subarray
+//https://leetcode.com/problems/maximum-product-subarray/
+//Actually a dp solution, we record the previous multiplication result
+//Note maximum positive and negative value can swap by multiplying negative value
+//Very tricky implementation!
+class Solution {
+public:
+    int maxProduct(vector<int>& nums) {
+        int len = nums.size();
+        if(len == 0) return 0;
+        int pos = nums[0], neg = nums[0];
+        //Set res to nums[0], handles the array which contains only 1 element
+        int res = nums[0];
+        for(int i = 1; i < len; ++i){
+            int p = pos * nums[i];
+            int q = neg * nums[i];
+            //Note when neg multiply by negative value, q will be positive and 
+            //potentially the largest value. For index i, we need to always 
+            //save the potential minimum value in neg.
+            pos = max(nums[i], max(p, q));
+            neg = min(nums[i], min(p, q));
+            res = max(res, pos);
+        }
+        return res;
+    }
+};
+
