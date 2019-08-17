@@ -2593,6 +2593,8 @@ public:
     }
 };
 
+
+//Another implementation
 /**
  * Definition for an interval.
  * struct Interval {
@@ -2623,6 +2625,53 @@ public:
         
         return finalRes;
         
+    }
+};
+
+
+//414. Third Maximum Number
+//https://leetcode.com/problems/third-maximum-number/
+/* Set solution: get rid of duplicate */
+class Solution {
+public:
+    int thirdMax(vector<int>& nums) {
+        //Cannot use priority queue here because pq allows duplicate elements
+        //[2, 2, 3, 1] will fail
+        set<int> maxThird;
+        for(int num : nums){
+            maxThird.insert(num);
+            if(maxThird.size() > 3)
+                maxThird.erase(maxThird.begin());
+        }
+        //How to use iterator is critical!!!
+        return maxThird.size() == 3 ? (*maxThird.begin()) : (*maxThird.rbegin());
+    }
+};
+
+
+/* Three pointers solution. I like it! */
+class Solution {
+public:
+    int thirdMax(vector<int>& nums) {
+        //one - largest element, three - third largest element
+        //handle [1,2,-2147483648]
+        long three = LONG_MIN, two = LONG_MIN, one = LONG_MIN;
+        //Note when we have duplicates, we ignore it in our loop
+        for(int n : nums){
+            if(n > one){
+                three = two;
+                two = one;
+                one = n;
+            }
+            else if(n < one && n > two){
+                three = two;
+                two = n;
+            }else if(n < two && n > three){
+                three = n;
+            }
+        }
+        //if we have less than 3 elements
+        return three == LONG_MIN ? one : three;
     }
 };
 
