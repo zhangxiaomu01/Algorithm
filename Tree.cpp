@@ -1951,7 +1951,42 @@ public:
     }
 };
 
-
+/* I  come up with this strange implementation. Post-order traversal
+will be better. Iterative version.*/
+class Solution {
+public:
+    int sumOfLeftLeaves(TreeNode* root) {
+        if(!root || (!root->left && !root->right)) return 0;
+        stack<TreeNode*> St;
+        stack<int> bSt;
+        TreeNode* cur = root;
+        int sum = 0;
+        int bFlag = 1;
+        while(cur || !St.empty()){
+            if(cur){
+                St.push(cur);
+                bSt.push(bFlag);
+                cur = cur->left;
+                bFlag = 1;
+            }else{
+                cur = St.top();
+                St.pop();
+                bFlag = bSt.top();
+                bSt.pop();
+                if(!cur->right && ! cur->left && bFlag)
+                    sum += cur->val;
+                
+                if(cur->right){
+                    cur = cur->right;
+                    bFlag = 0;
+                }
+                else if(!cur->right) 
+                    cur = nullptr;    
+            }
+        }
+        return sum;
+    }
+};
 
 
 
