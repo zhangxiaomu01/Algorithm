@@ -2732,3 +2732,28 @@ public:
 };
 
 
+//456. 132 pattern
+//https://leetcode.com/problems/132-pattern/
+/* Brueforce algorithm */
+class Solution {
+public:
+    bool find132pattern(vector<int>& nums) {
+        int len = nums.size();
+        if(len < 3) return false;
+        vector<int> minLeft(len, INT_MAX);
+        for(int i = 1; i < len; ++i){
+            minLeft[i] = min(minLeft[i-1], nums[i-1]);
+        }
+        
+        for(int j = 1; j < len - 1; ++j){
+            if(nums[j] < minLeft[j]) continue;
+            int k = j + 1;
+            for(; k< len; ++k){
+                if(nums[k] < nums[j] && nums[k] > minLeft[j])
+                    return true;
+            }
+        }
+        return false;
+    }
+};
+
