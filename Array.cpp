@@ -1062,6 +1062,22 @@ public:
     }
 };
 
+/* Optimized DP*/
+class Solution {
+public:
+    int maxProfit(vector<int>& prices, int fee) {
+        int len = prices.size();
+        if(len == 0) return 0;
+        int cash = 0, hold = -prices[0];
+        for(int i = 1; i < len; ++i){
+            int prevCash = max(cash, hold + prices[i] - fee);
+            hold = max(hold, cash - prices[i]);
+            cash = prevCash;
+        }
+        return cash;
+    }
+};
+
 
 
 
