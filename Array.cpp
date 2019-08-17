@@ -2677,9 +2677,12 @@ public:
 
 //152. Maximum Product Subarray
 //https://leetcode.com/problems/maximum-product-subarray/
-//Actually a dp solution, we record the previous multiplication result
 //Note maximum positive and negative value can swap by multiplying negative value
-//Very tricky implementation!
+//Very tricky implementation! Similar to Kadane's algorithm
+//We will keep track of the potential maximum and minimum production for each entry
+//i. Actually, pos and neg can be an arra, so the formula will be
+//pos[i] = max(nums[i], max(pos[i-1]*nums[i], neg[i-1]*nums[i]));
+//neg[i] = min(nums[i], min(pos[i-1]*nums[i], neg[i-1]*nums[i]));
 class Solution {
 public:
     int maxProduct(vector<int>& nums) {
