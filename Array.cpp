@@ -1031,6 +1031,40 @@ public:
 };
 
 
+//714. Best Time to Buy and Sell Stock with Transaction Fee
+//https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/
+/* DP problem: We maintain two vectors. cash[i] means that at the end of day[i],
+we do not hold a share of stock in hand. hold[i] means that at the end of day[i],
+we hold a share of stock in hand. 
+Then for cash[i], we have:
+1. do not buy or sell, cash[i] = cash[i-1];
+2. sell a stock at day i, cash[i] = hold[i-1] + prices[i] - fee
+we will get the maximum of the two.
+For hold[i], we have:
+1. do not sell or buy, hold[i] = hold[i-1]
+2. buy one share in day[i], hold[i] = cash[i-1] - prices[i]
+3. sell one share in day[i] and buy it again. (does not make sense): 
+hold[i] = hold[i-1] + prices[i] - fee - prices[i]
+we will get the maximum of the three*/
+class Solution {
+public:
+    int maxProfit(vector<int>& prices, int fee) {
+        int len = prices.size();
+        if(len == 0) return 0;
+        vector<int> cash(len, 0), hold(len, 0);
+        cash[0] = 0;
+        hold[0] = -prices[0];
+        for(int i = 1; i < len; ++i){
+            cash[i] = max(cash[i-1], hold[i-1] + prices[i] - fee);
+            hold[i] = max(hold[i-1], cash[i-1] - prices[i]);
+        }
+        return cash[len-1];
+    }
+};
+
+
+
+
 //4. Median of Two Sorted Arrays
 //https://leetcode.com/problems/median-of-two-sorted-arrays/
 //The idea is based on the algorithm of getting the kth smallest element for two sorted list
