@@ -526,3 +526,32 @@ public:
 };
 
 
+//28. Implement strStr()
+//https://leetcode.com/problems/implement-strstr/
+//The general idea is to use two pointers, one for the starting
+//position, the other is for the length of the needle
+class Solution {
+public:
+    int strStr(string haystack, string needle) {
+        int len_n = needle.size();
+        int len_h = haystack.size();
+        if(len_n == 0)
+            return 0;
+        
+        int j = 0;
+        for(int i = 0; i< len_h; i++){
+            if(haystack[i] == needle[j]){
+                if(j == len_n - 1)
+                    return i - j;
+                j++;
+            }
+            else{
+                i = i - j;
+                j = 0;
+            }
+                
+        }
+        return -1;
+    }
+};
+
