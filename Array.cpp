@@ -2757,3 +2757,34 @@ public:
     }
 };
 
+/*
+Explanation: https://leetcode.com/problems/132-pattern/discuss/94071/Single-pass-C%2B%2B-O(n)-space-and-time-solution-(8-lines)-with-detailed-explanation.
+The requirement is that we need to find i < j < k and s1 < s3 < s2. Then we can
+start from the end of the array and always maintain the maximum possible value
+for s3, and we maintain a stack to keep track of all values of s2 (s2 must be 
+greater than s3). Once we know that s2 is greater than s3, and if we find any
+nums[i] < s3, then we have s1 < s3 < s2, we can return true.
+Very tricky problem!
+*/
+class Solution {
+public:
+    bool find132pattern(vector<int>& nums) {
+        int len = nums.size();
+        if(len < 3) return false;
+        stack<int> s2St;
+        int s3 = INT_MIN;
+        for(int i = len - 1;  i >= 0; --i){
+            if(s3 > nums[i]) return true;
+            else{
+                while(!s2St.empty() && nums[i] > s2St.top()){
+                    s3 = s2St.top();
+                    s2St.pop();
+                }
+            }
+            //nums[i] is greater than s3 at this point (guaranteed!)
+            s2St.push(nums[i]);
+        }
+        return false;
+    }
+};
+
