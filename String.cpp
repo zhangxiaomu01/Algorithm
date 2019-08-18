@@ -749,6 +749,33 @@ public:
     }
 };
 
+/* Optimized version */
+//In-place solution is much trickier! Should be able to get it right.
+class Solution {
+public:
+    string reverseWords(string s) {
+        int len = s.size();
+        if(len == 0) return s;
+        int l = 0, i = 0, j = 0;
+        int wordCount = 0;
+        while(true){
+            while(i < len && s[i] == ' ') i++;
+            if(i == len) break;
+            if(wordCount) s[j++] = ' ';
+            l = j;
+            while(i < len && s[i] != ' '){
+                s[j] = s[i];
+                i++;
+                j++;
+            }
+            reverse(s.begin() + l, s.begin() + j);
+            wordCount++;
+        }
+        s.resize(j);
+        reverse(s.begin(), s.end());
+        return s;
+    }
+};
 
 
 
