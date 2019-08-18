@@ -667,4 +667,26 @@ public:
 };
 
 
+//14. Longest Common Prefix
+//https://leetcode.com/problems/longest-common-prefix/
+/* Brute force solution, compare prefix char by char. Can terminate earlier! */
+class Solution {
+public:
+    string longestCommonPrefix(vector<string>& strs) {
+        int len = strs.size();
+        if(len == 0) return "";
+        if(len == 1) return strs[0];
+        int prefixLen = 0;
+        for(int i = 0; i < strs[0].size(); ++i){
+            for(int j = 1; j < strs.size(); ++j){
+                if(i >= strs[j].size() || strs[j][i] != strs[j-1][i]){
+                    return strs[j].substr(0, prefixLen);
+                }
+            }
+            prefixLen++;
+        }
+        return strs[0].substr(0, prefixLen);
+    }
+};
+
 
