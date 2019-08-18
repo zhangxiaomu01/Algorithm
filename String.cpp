@@ -600,3 +600,46 @@ public:
     }
 };
 
+
+//443. String Compression
+//https://leetcode.com/problems/string-compression/
+/* Not optimized version */
+class Solution {
+public:
+    int compress(vector<char>& chars) {
+        vector<char> compress;
+        int count = 1;
+        chars.push_back('0');
+        for(int i = 0; i < chars.size(); ++i){
+            if(i == 0) {
+                compress.push_back(chars[i]);
+                continue;
+            }
+                
+            if(chars[i] == chars[i-1]){
+                count++;
+            }else if(chars[i]!= chars[i-1]){
+                if(count != 1){
+                    stringstream ss;
+                    ss << count;
+                    string tS(ss.str());
+                    for(char digit : tS){
+                        //cout << digit << endl;
+                        compress.push_back(digit);
+                    }                   
+                }
+                count = 1;
+                compress.push_back(chars[i]);
+            }
+        }
+        compress.pop_back();
+        int len = compress.size();
+        swap(compress, chars);
+        return len;
+    }
+};
+
+
+
+
+
