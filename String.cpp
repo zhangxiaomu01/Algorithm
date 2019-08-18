@@ -639,7 +639,32 @@ public:
     }
 };
 
-
+//Optimized solution: two pointers
+class Solution {
+public:
+    int compress(vector<char>& chars) {
+        int cnt = 0;
+        int curPtr = 0;
+        int len = chars.size();
+        //handles the corner case
+        chars.push_back('0');
+        for(int i = 0; i < len; ++i){
+            cnt++;
+            if(chars[i] != chars[i+1] || i == len){
+                chars[curPtr++] = chars[i];
+                if(cnt > 1){
+                    string s = to_string(cnt);
+                    for(int j = 0; j < s.size(); ++j){
+                        chars[curPtr++] = s[j];
+                    }
+                }
+                cnt = 0;
+            }
+        }
+        chars.pop_back();
+        return curPtr;
+    }
+};
 
 
 
