@@ -727,3 +727,29 @@ public:
         return len_w;
     }
 };
+
+
+//151. Reverse Words in a String
+//https://leetcode.com/problems/reverse-words-in-a-string/
+/* string stream solution. Not memory efficient! */
+class Solution {
+public:
+    string reverseWords(string s) {
+        istringstream ss(s);
+        string word;
+        string res;
+        while(ss >> word){
+            word.push_back(' ');
+            reverse(word.begin(), word.end());
+            res.append(word);
+        }
+        reverse(res.begin(), res.end());
+        res.pop_back();
+        return res;
+    }
+};
+
+
+
+
+
