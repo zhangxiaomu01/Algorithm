@@ -690,3 +690,25 @@ public:
 };
 
 
+//Sorting to decrease the number of comparisons
+class Solution {
+public:
+    string longestCommonPrefix(vector<string>& strs) {
+        int len = strs.size();
+        int prefixLen = 0;
+        if(len == 0) return "";
+        sort(strs.begin(), strs.end());
+        int n = strs[0].size();
+        for(int i = 0; i<n; i++)
+        {
+            if(strs[0][i] == strs[len-1][i]){
+                prefixLen ++;
+            }  
+            else
+                break;
+        }
+        return strs[0].substr(0, prefixLen);
+    }
+};
+
+
