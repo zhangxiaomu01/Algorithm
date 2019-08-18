@@ -666,6 +666,136 @@ public:
 
 
 
+//707. Design Linked List
+//https://leetcode.com/problems/design-linked-list/
+//define the node
+struct node{
+    int val;
+    node* next;
+    node(int x) : val(x), next(nullptr){}
+};
+class MyLinkedList {
+private:
+    int m_size;
+    node* m_lhead;
+    node* m_ltail;
+    
+public:
+    /** Initialize your data structure here. */
+    MyLinkedList() {
+        m_size = 0;
+        m_lhead = nullptr;
+        m_ltail = nullptr;
+    }
+    
+    void printList(){
+        if(!m_lhead) return;
+        node* temp = m_lhead;
+        while(temp){
+            cout << temp->val << " ";
+            temp = temp->next;
+        }
+        cout << endl;
+    }
+    
+    /** Get the value of the index-th node in the linked list. If the index is invalid, return -1. */
+    int get(int index) {
+        if(index < 0 || index >= m_size)
+            return -1;
+        
+        node* temp = m_lhead;
+        while(index > 0){
+            temp = temp->next;
+            index--;
+        }
+        return temp->val;
+    }
+    
+    /** Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list. */
+    void addAtHead(int val) {
+        node* tempNode = new node(val);
+        if(!m_lhead) {
+            m_lhead = tempNode;
+            m_ltail = tempNode;
+            m_size++;
+            //printList();
+            return;
+        }
+        tempNode->next = m_lhead;
+        m_lhead = tempNode;
+        m_size++;
+        //printList();
+    }
+    
+    /** Append a node of value val to the last element of the linked list. */
+    void addAtTail(int val) {
+        if(!m_lhead){
+            addAtHead(val);
+            return;
+        }
+        node* tempNode = new node(val);
+        m_ltail->next = tempNode;
+        m_ltail = tempNode;
+        m_size++;
+        //printList();
+    }
+    
+    node* getNodeBeforeI(int index){
+        int i = index - 1;
+        node* temp = m_lhead;
+        while(i > 0){
+            temp = temp->next;
+            i--;
+        }
+        return temp;
+    }
+    
+    /** Add a node of value val before the index-th node in the linked list. If index equals to the length of linked list, the node will be appended to the end of linked list. If index is greater than the length, the node will not be inserted. */
+    void addAtIndex(int index, int val) {
+        if(index > m_size) return;
+        if(index <= 0) addAtHead(val);
+        else if(index == m_size) addAtTail(val);
+        else{
+            node* temp = getNodeBeforeI(index);
+            node* tempNode = new node(val);
+            node* tempNextNode = temp->next;
+            temp->next = tempNode;
+            tempNode->next = tempNextNode;
+            m_size++;
+        }
+        //printList();
+    }
+    
+    /** Delete the index-th node in the linked list, if the index is valid. */
+    void deleteAtIndex(int index) {
+        if(index < 0 || index >= m_size) return;
+        node* temp = getNodeBeforeI(index);
+        if(index == 0){
+            m_lhead = temp->next;
+            m_size--;
+            delete temp;
+        }
+        else{
+            if(index == m_size - 1) m_ltail = temp;
+            node* pendingDeleteNode = temp->next;
+            temp->next = pendingDeleteNode->next;
+            m_size--;
+            delete pendingDeleteNode;            
+        }
+        //printList();
+    }
+};
+
+/**
+ * Your MyLinkedList object will be instantiated and called as such:
+ * MyLinkedList* obj = new MyLinkedList();
+ * int param_1 = obj->get(index);
+ * obj->addAtHead(val);
+ * obj->addAtTail(val);
+ * obj->addAtIndex(index,val);
+ * obj->deleteAtIndex(index);
+ */
+
 
 
 
