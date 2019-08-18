@@ -47,6 +47,39 @@ Dependency Inversion - Depend on abstractions NOT on concrete implementations.
 (Depend on abstract classes and interfaces, which can't be instantiated, rather 
 then any specific instance)
 
+1. @3:00 Break programs into logically independent components, allowing component 
+dependencies where necessary. 
+2. @3:10 Inspect your data objects and graph their interactions/where they flow. 
+Keep classes simple. Keep one-way dataflow/interactions simple. 
+@3:29 Simplicity -- keep a small number of class types (controller, views, data 
+objects) avoid creating classes that aliases those classes (managers, coordinators, 
+helpers, handlers, providers, executor). @4:02 -- Keep dataflow simple (e.g., don't 
+let Views have business logic; views shouldn't need to communicate any data upstream). 
+3. @4:33 Keep data model objects pruned of logic, except if the logic is part of the
+ objects' states. Single Responsibility Principle. If you can't describe a class's 
+ responsibility straightforwardly, it's too complex. 
+4. @5:25 Inspect class composition ("follow ownership graph"). Follow the life of a 
+child (composed) object to make sure that accessibility to and operations done on 
+that object is managed. 
+5. @5:55 Singletons ("basically globals floating in a system"). Use dependency 
+injection (?) to 'scope singletons' and make them testable (?). Singletons often 
+represent independent (uncoupled) objects which is good for representing independent
+ execution flow. Too many inter-communicating singletons in a system make it 
+ difficult to trace data flow and understand the overall transformation of the data 
+ through the system. 
+6. @6:50 Singleton communication patterns. Singletons expose Publisher/Subscriber 
+interface (one publisher object, many subscriber objects listening to events). 
+7. @7:41 Delegate communication pattern. (?)
+8.@8:02 Chain of Responsibility Pattern. Hierarchical data flow -- unhandled events 
+bubble upwards to parent objects who should handle them. Conflicts with (2) by 
+allowing upstream dataflow. Use with discretion. 
+9. @8:53 OOP's Inheritance can create tightly coupled hierarchical objects that are 
+hard to refactor (object dependencies). Use composition pattern to allow flexibility
+ in what the container object can do. 
+10. @9:58 Lazy initialization. Startup performance boost. 
+11. @10:06 Adapter Pattern. 
+12. @10:26 Factory builder classes.
+
 */
 
 //146. LRU Cache
