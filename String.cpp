@@ -711,4 +711,19 @@ public:
     }
 };
 
-
+//58. Length of Last Word
+//https://leetcode.com/problems/length-of-last-word/
+/* pretty standard solution */
+class Solution {
+public:
+    int lengthOfLastWord(string s) {
+        int len_s = s.size() - 1;
+        int len_w = 0;
+        while(len_s >= 0 && s[len_s] == ' ') len_s--;
+        while(len_s >= 0 && s[len_s] != ' '){
+            len_s--;
+            len_w++;
+        }
+        return len_w;
+    }
+};
