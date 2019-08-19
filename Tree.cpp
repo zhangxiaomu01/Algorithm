@@ -2079,3 +2079,24 @@ public:
         return root;
     }
 };
+
+
+//701. Insert into a Binary Search Tree
+//https://leetcode.com/problems/insert-into-a-binary-search-tree/
+class Solution {
+public:
+    TreeNode* insertIntoBST(TreeNode* root, int val) {
+        //Base case, when tree is empty
+        if(!root){
+            root = new TreeNode(val);
+        }//insert to left sub tree
+        else if(root->val >= val)
+            root->left = insertIntoBST(root->left, val);
+        else
+            root->right = insertIntoBST(root->right, val);
+        return root;
+    }
+};
+
+
+
