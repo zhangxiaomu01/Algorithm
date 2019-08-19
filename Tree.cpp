@@ -2027,3 +2027,55 @@ public:
     }
 };
 
+
+//450. Delete Node in a BST
+//https://leetcode.com/problems/delete-node-in-a-bst/
+//Recursive version is popular!
+//Good explanation:
+//https://www.youtube.com/watch?v=gcULXE7ViZw&vl=en
+class Solution {
+private:
+    TreeNode* findMin(TreeNode* root){
+        while(root->left){
+            root = root->left;
+        }
+        return root;
+    }
+public:
+    TreeNode* deleteNode(TreeNode* root, int key) {
+        //Corner case!
+        if(!root) return root;
+        //key is in right sub tree
+        else if (root->val < key) root->right = deleteNode(root->right, key);
+        else if (root->val > key) root->left = deleteNode(root->left, key);
+        //We find right node
+        else{
+            //If our node is a leaf
+            if(!root->left && !root->right){
+                delete root;
+                root = nullptr;
+            }//If only have right node
+            else if(!root->left){
+                TreeNode* temp = root;
+                root = root->right;
+                delete temp;
+            }
+            else if(!root->right){
+                TreeNode* temp = root;
+                root = root->left;
+                delete temp;
+            }//We have two sub trees
+            else{
+                //We need to find the minimum value in right sub tree
+                //or we find the maximum value in left sub tree
+                TreeNode* temp = findMin(root->right);
+                //We set the our current root to be the minimum value
+                root->val = temp->val;
+                //Reduce to case 1 or 2
+                root->right = deleteNode(root->right, temp->val);
+                
+            }
+        }
+        return root;
+    }
+};
