@@ -881,7 +881,86 @@ public:
  */
 
 
+//705. Design HashSet
+//https://leetcode.com/problems/design-hashset/
+typedef list<int> hl;
+class MyHashSet {
+private:
+    /*
+    //Get value from key
+    unsigned int unhash(unsigned int x) {
+        x = ((x >> 16) ^ x) * 0x119de1f3;
+        x = ((x >> 16) ^ x) * 0x119de1f3;
+        x = (x >> 16) ^ x;
+        return x;
+    }
+    */
+    //decent Hash function (without module)
+    unsigned int hash(unsigned int x) {
+        x = ((x >> 16) ^ x) * 0x45d9f3b;
+        x = ((x >> 16) ^ x) * 0x45d9f3b;
+        x = (x >> 16) ^ x;
+        return x % 997;
+    }
+    vector<hl*> container;
+    
+public:
+    /** Initialize your data structure here. */
+    MyHashSet() {
+        container = vector<hl*>(997, nullptr);
+        
+    }
+    
+    void add(int key) {
+        unsigned int kIndex = hash(key);
+        if(container[kIndex] == nullptr){
+            container[kIndex] = new hl(1, key);
+        }else{
+            hl* tList = container[kIndex];
+            auto it = tList->begin();
+            for(; it != tList->end(); ++it){
+                if(*it == key) return;
+            }
+            if(it == tList->end())
+                container[kIndex]->emplace_back(key);
+        }
+    }
+    
+    void remove(int key) {
+        unsigned int kIndex = hash(key);
+        if(container[kIndex] == nullptr) return;
+        else{
+            hl* tList = container[kIndex];
+            for(auto it = tList->begin(); it != tList->end(); ++it){
+                if(*it == key){
+                    tList->erase(it);
+                    return;
+                }
+            }
+        }
+    }
+    
+    /** Returns true if this set contains the specified element */
+    bool contains(int key) {
+        unsigned int kIndex = hash(key);
+        if(container[kIndex] == nullptr) return false;
+        else{
+            hl* tList = container[kIndex];
+            for(auto it = tList->begin(); it != tList->end(); ++it){
+                if(*it == key) return true;
+            }
+        }
+        return false;
+    }
+};
 
+/**
+ * Your MyHashSet object will be instantiated and called as such:
+ * MyHashSet* obj = new MyHashSet();
+ * obj->add(key);
+ * obj->remove(key);
+ * bool param_3 = obj->contains(key);
+ */
 
 
 
