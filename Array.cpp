@@ -2880,5 +2880,64 @@ public:
 };
 
 
+//421. Maximum XOR of Two Numbers in an Array
+//https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/
+class Solution {
+    //Note we are trying to build a trie, that the root represents the most 
+    //significant bits (left most bit)
+    //We can do better by preprocessing the array n and find the position of
+    //the most significant 1 in all numbers by:
+    //int pos = (int)(log2(n));
+    //Then we can start the inner loop from the left most pos instead of 31
+    //for [3, 10, 5, 25, 2, 8], the left most pos is 6, from 25
+    TreeNode* buildTree(const vector<int>& n, const int maxPos){
+        TreeNode* root = new TreeNode(0);
+        for(int i = 0; i < n.size(); ++i){
+            TreeNode* cur = root;
+            for(int j = maxPos; j >= 0; --j){
+                int bit = (n[i] & (1 << j)) ? 1 : 0;
+                //cout << bit << " ";
+                if(bit == 1){
+                    if(!cur->right) cur->right = new TreeNode(bit);
+                    cur = cur->right;
+                }else{
+                    if(!cur->left) cur->left = new TreeNode(bit);
+                    cur = cur->left;
+                }
+            }
+        }
+        return root;
+    }
+public:
+    int findMaximumXOR(vector<int>& nums) {
+        int maxPos = 0;
+        for(int n : nums){
+            maxPos = max(maxPos, static_cast<int>(log2(n)));
+            //cout << maxPos << " ";
+        }
+        TreeNode* root = buildTree(nums, maxPos);
+        int res = 0;
+        for(int i = 0; i < nums.size(); ++i){
+            int curNum = nums[i];
+            TreeNode* cur = root;
+            int tempNum = 0;
+            for(int j = maxPos; j >= 0; --j){
+                int bit = (curNum & (1 << j)) ? 1 : 0;
+                if(cur->left && cur->right){
+                    cur = (bit == 1) ? cur->left : cur->right;
+                }else
+                    cur = (cur->left) ? cur->left : cur->right;
+                //cout << cur->val << " ";
+                tempNum |= (cur->val << j);
+            }
+            //cout << endl;
+            res = max(curNum ^ tempNum, res);
+        }
+        return res;
+    }
+};
+
+
+
 
 
