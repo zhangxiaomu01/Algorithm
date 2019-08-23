@@ -994,6 +994,7 @@ public:
         if(m_nums.empty()) return vector<int>();
         int j = 0;
         for(int i = m_size-1; i >= 0; --i){
+            //Fisher Yates algorithm
             j = rand() % (i+1);
             swap(m_nums[i], m_nums[j]);
         }
