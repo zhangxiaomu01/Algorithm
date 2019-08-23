@@ -778,5 +778,33 @@ public:
 };
 
 
-
+//409. Longest Palindrome
+//https://leetcode.com/problems/longest-palindrome/
+//Utilize a dictionary, the problem is not hard, but has too many corner cases
+class Solution {
+public:
+    int longestPalindrome(string s) {
+        int dict[256];
+        memset(dict, 0, sizeof(dict));
+        for(char c : s){
+            dict[c] += 1; 
+        }
+        int res = 0;
+        int maxOdd = 0;
+        for(int i = 0; i < 256; ++i){
+            if(dict[i] != 0){
+                if(dict[i] & 1 && dict[i] > maxOdd){
+                    res += maxOdd ? maxOdd-1 : 0;
+                    maxOdd = max(maxOdd, dict[i]);
+                }   
+                else if(dict[i] & 1)
+                    res += dict[i] - 1;
+                else
+                    res += dict[i];
+            }
+        }
+        res += maxOdd;
+        return res;
+    }
+};
 
