@@ -963,6 +963,42 @@ public:
  */
 
 
-
+//384. Shuffle an Array
+//https://leetcode.com/problems/shuffle-an-array/
+//Note how we use the time as the seed
+class Solution {
+private:
+    vector<int> initNum;
+    vector<int> m_nums;
+    unsigned int m_size;
+    
+public:
+    Solution(vector<int>& nums) {
+        //We use time as the seed
+        srand(time(NULL));
+        m_size = nums.size();
+        for(int n : nums){
+            initNum.push_back(n);
+            m_nums.push_back(n);
+        }
+    }
+    
+    /** Resets the array to its original configuration and return it. */
+    vector<int> reset() {
+        m_nums = initNum;
+        return m_nums;
+    }
+    
+    /** Returns a random shuffling of the array. */
+    vector<int> shuffle() {
+        if(m_nums.empty()) return vector<int>();
+        int j = 0;
+        for(int i = m_size-1; i >= 0; --i){
+            j = rand() % (i+1);
+            swap(m_nums[i], m_nums[j]);
+        }
+        return m_nums;
+    }
+};
 
 
