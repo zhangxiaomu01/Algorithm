@@ -2099,4 +2099,55 @@ public:
 };
 
 
+//Interview: Maximum path sum of a tree (from root -> leaf)
+//Calculate the path sum from root to all leaves, and return the maximum path sum
+//and also return the path contains the sum
+//Now the time complexity should be O(n) - post order traversal
+//Space complexity should be O(h) - h is the height of the tree
+int TreeSum(Node* node, int& maxSum, vector<int>& res) {
+	if (!node) return 0;
+
+	vector<int> pathL, pathR;
+	int leftSum = TreeSum(node->left, maxSum, pathL);
+	int rightSum = TreeSum(node->right, maxSum, pathR);
+
+	if (leftSum > rightSum) {
+		maxSum = leftSum + node->val;
+		pathL.push_back(node->val);
+		res.swap(pathL);
+	}
+	else if (leftSum <= rightSum) {
+		maxSum = rightSum + node->val;
+		pathR.push_back(node->val);
+		res.swap(pathR);
+	}
+	return maxSum;
+}
+
+
+//Build binary tree from an array in level order
+//The array defines the tree in the following order
+//arr[0] is the root, the left child and right child of node i are
+//(2*i+1) and (2*i+2)
+// Function to insert nodes in level order 
+Node* insertLevelOrder(vector<int>& arr, Node* root,
+	int i)
+{ 
+	if (i < arr.size())
+	{
+		Node* temp = new Node(arr[i]);
+		root = temp;
+
+		// insert left child 
+		root->left = insertLevelOrder(arr,
+			root->left, 2 * i + 1);
+
+		// insert right child 
+		root->right = insertLevelOrder(arr,
+			root->right, 2 * i + 2);
+	}
+	return root;
+}
+
+
 
