@@ -2939,5 +2939,39 @@ public:
 
 
 
+//413. Arithmetic Slices
+//https://leetcode.com/problems/arithmetic-slices/
+//Not hard, just try to find the right rule!
+//(n*n - 3*n) / 2 + 1
+class Solution {
+private:
+    //n is the length of arithmetic slice
+    int calCulateArithmetic(int n){
+        if(n < 3) return 0;
+        return (n*n - 3*n) / 2 + 1;
+    }
+public:
+    int numberOfArithmeticSlices(vector<int>& A) {
+        unsigned int len = A.size();
+        if(len < 3) return 0;
+        int tempSub = 0;
+        int res = 0, localMaxLen = 2;
+        for(int j = 1; j < len; ++j){
+            if(j == 1) {
+                tempSub = A[j] - A[j-1];
+                continue;
+            }
+            if(A[j-1] + tempSub == A[j])
+                localMaxLen ++;
+            else{
+                res += calCulateArithmetic(localMaxLen);
+                localMaxLen = 2;
+                tempSub = A[j] - A[j-1];
+            }
+        }
+        res += calCulateArithmetic(localMaxLen);
+        return res;
+    }
+};
 
 
