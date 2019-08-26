@@ -1896,5 +1896,103 @@ public:
 };
 
 
+//368. Largest Divisible Subset
+//https://leetcode.com/problems/largest-divisible-subset/
+/* DFS solution: Note the following is the pure DFS, will cause time limit error. */
+class Solution {
+    vector<int> helper(vector<int>& nums, int pos){
+        vector<int> select;
+        vector<int> res;
+        if(pos == nums.size()) return res;
+        
+        int div = (pos == 0) ? 1 : nums[pos-1];
+        for(int i = pos; i < nums.size(); ++i){
+            if(nums[i] % div == 0){
+                //check the next sub array
+                select = helper(nums, i+1);
+                select.push_back(nums[i]);
+                if(select.size() > res.size())
+                    swap(res, select);
+            }
+        }
+        return res;
+    }
+public:
+    vector<int> largestDivisibleSubset(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        return helper(nums, 0);
+    }
+};
 
+/* We can utilize the memeorization techniques to solve the issue. 
+Not memory efficient! Slow in general. */
+class Solution {
+    vector<int> helper(vector<int>& nums, int pos, vector<vector<int>>& memo){
+        vector<int> select;
+        vector<int> res;
+        if(pos == nums.size()) return res;
+        if(memo[pos].size() != 0) return memo[pos];
+        int div = (pos == 0) ? 1 : nums[pos-1];
+        for(int i = pos; i < nums.size(); ++i){
+            if(nums[i] % div == 0){
+                //check the next sub array
+                select = helper(nums, i+1, memo);
+                select.push_back(nums[i]);
+                if(select.size() > res.size())
+                    swap(res, select);
+            }
+        }
+        swap(memo[pos], res);
+        return memo[pos];
+    }
+public:
+    vector<int> largestDivisibleSubset(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        int len = nums.size();
+        vector<vector<int>> memo(len, vector<int>());
+        return helper(nums, 0, memo);
+    }
+};
+
+//DP solution, hard to get the insight.
+//Note how to maintain the maxLen and parent array is interesting!
+//Fast and elegant!
+class Solution {
+public:
+    vector<int> largestDivisibleSubset(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        int len = nums.size();
+        if(len <= 1) return nums;
+        //maxLen records the max len of the subset we could have for 
+        //nums[i..len-1], parent record a parent element for element i
+        //(we can have mutiple parent elements). These two arrays are 
+        //used to rebuild the set of our result
+        int maxLen[len], parent[len];
+        memset(maxLen, 0, sizeof(maxLen));
+        //firstElement is the entry for the first element of our largest 
+        //divisible subset, we can rebuild the set by traversing parent 
+        //array
+        int firstElement = 0, globalMaxLen = 0;
+        for(int i = len-1; i >= 0; --i){
+            //check i ... len-1
+            for(int j = i; j < len; ++j){
+                if(nums[j] % nums[i] == 0 && maxLen[i] < maxLen[j] + 1){
+                    maxLen[i] = maxLen[j] + 1;
+                    parent[i] = j;
+                }
+            }
+            if(maxLen[i] > globalMaxLen){
+                firstElement = i;
+                globalMaxLen = maxLen[i];
+            }
+        }
+        
+        vector<int> res;
+        for(int i = 0; i < globalMaxLen; ++i){
+            res.push_back(nums[firstElement]);
+            firstElement = parent[firstElement];
+        }
+        return res;
+    }
+};
 
