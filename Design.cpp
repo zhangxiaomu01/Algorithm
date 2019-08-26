@@ -1214,3 +1214,65 @@ public:
 };
 
 
+//380. Insert Delete GetRandom O(1)
+//https://leetcode.com/problems/insert-delete-getrandom-o1/
+//The tricky part is how to delete an element in an array in O(1)
+//A very useful techniques!
+class RandomizedSet {
+private:
+    unordered_map<int, int> uMap;
+    //Use the data to keep track of all the elements in the uMap
+    //so we can implement random
+    vector<int> data;
+    default_random_engine seed;
+public:
+    /** Initialize your data structure here. */
+    RandomizedSet() {
+        seed = default_random_engine((random_device())());
+    }
+    
+    /** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
+    bool insert(int val) {
+        if(uMap.count(val) > 0) return false;
+        //save the indices for element val in data
+        int len = data.size();
+        uMap[val] = len;
+        data.push_back(val);
+        return true;
+    }
+    
+    /** Removes a value from the set. Returns true if the set contained the specified element. */
+    bool remove(int val) {
+        if(uMap.count(val) == 0) return false;
+        if(data.back() == val){
+            data.pop_back();
+        }else{
+            int index = uMap[val];
+            int lastElement = data.back();
+            //swap the to be deleted element with the last element of
+            //the array, and then update the uMap
+            swap(data[index], data.back());
+            uMap[lastElement] = index;
+            data.pop_back();
+        }
+        uMap.erase(val);
+        return true;
+    }
+    
+    /** Get a random element from the set. */
+    int getRandom() {
+        int len = data.size();
+        uniform_int_distribution<int> distri(0, len-1);
+        int index = distri(seed);
+        return data[index];
+    }
+};
+
+/**
+ * Your RandomizedSet object will be instantiated and called as such:
+ * RandomizedSet* obj = new RandomizedSet();
+ * bool param_1 = obj->insert(val);
+ * bool param_2 = obj->remove(val);
+ * int param_3 = obj->getRandom();
+ */
+
