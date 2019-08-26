@@ -1003,3 +1003,83 @@ public:
 };
 
 
+//355. Design Twitter
+//https://leetcode.com/problems/design-twitter/
+/*My implementation, inefficient!*/
+struct userData{
+    int m_id;
+    unordered_set<int> m_following;
+    //user will always follow himself/herself
+    userData(int id):m_id(id){
+        m_following.insert(id);
+    }
+};
+class Twitter {
+private:
+    list<pair<int, int>> TweetsPool;
+    unordered_map<int, userData*> userPool;
+    
+public:
+    /** Initialize your data structure here. */
+    Twitter() {
+        
+    }
+    
+    /** Compose a new tweet. */
+    void postTweet(int userId, int tweetId) {
+        if(userPool.count(userId) == 0)
+            userPool[userId] = new userData(userId);
+        TweetsPool.push_front({tweetId, userId});
+        //cout << "The user id is:" << userId << "Tweet ID is: " << tweetId << endl;
+    }
+    
+    /** Retrieve the 10 most recent tweet ids in the user's news feed. Each item in the news feed must be posted by users who the user followed or by the user herself. Tweets must be ordered from most recent to least recent. */
+    vector<int> getNewsFeed(int userId) {
+        int total = 0;
+        if(userPool.count(userId) == 0) return vector<int>();
+        vector<int> res;
+        for(auto it = TweetsPool.begin(); it != TweetsPool.end(); ++it){
+            int followeeID = (*it).second;
+            if(userPool[userId]->m_following.count(followeeID) > 0){
+                res.push_back((*it).first);
+                total++;
+            }
+            if(total >= 10) return res;
+        }
+        return res;
+    }
+    
+    /** Follower follows a followee. If the operation is invalid, it should be a no-op. */
+    void follow(int followerId, int followeeId) {
+        if(userPool.count(followerId) == 0)
+            userPool[followerId] = new userData(followerId);
+        if(userPool.count(followeeId) == 0)
+            userPool[followeeId] = new userData(followeeId);
+        
+        userPool[followerId]->m_following.insert(followeeId);
+        //cout << "Now user: " << followerId << "followed user: " << followeeId << "with total number of followees: " << userPool[followerId]->m_following.size() << endl;
+    }
+    
+    /** Follower unfollows a followee. If the operation is invalid, it should be a no-op. */
+    void unfollow(int followerId, int followeeId) {
+        if(userPool.count(followerId) == 0)
+            userPool[followerId] = new userData(followerId);
+        if(userPool.count(followeeId) == 0)
+            userPool[followeeId] = new userData(followeeId);
+        //user cannot unfollow himself/herself
+        if(followerId == followeeId) return;
+        if(userPool.count(followerId) && userPool.count(followeeId)){
+            userPool[followerId]->m_following.erase(followeeId);
+        }
+    }
+};
+
+/**
+ * Your Twitter object will be instantiated and called as such:
+ * Twitter* obj = new Twitter();
+ * obj->postTweet(userId,tweetId);
+ * vector<int> param_2 = obj->getNewsFeed(userId);
+ * obj->follow(followerId,followeeId);
+ * obj->unfollow(followerId,followeeId);
+ */
+
