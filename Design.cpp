@@ -963,6 +963,78 @@ public:
  */
 
 
+//706. Design HashMap
+//https://leetcode.com/problems/design-hashmap/
+//hash list for each entry
+//first is key, second is value
+typedef list<pair<int, int>> hl;
+class MyHashMap {
+private:
+
+    vector<hl*> hashContainer;
+    //decent Hash function (without module)
+    unsigned int hash(unsigned int x) {
+        x = ((x >> 16) ^ x) * 0x45d9f3b;
+        x = ((x >> 16) ^ x) * 0x45d9f3b;
+        x = (x >> 16) ^ x;
+        return x % 997;
+    }
+public:
+    
+    /** Initialize your data structure here. */
+    MyHashMap() {
+        hashContainer = vector<hl*>(997, nullptr);
+    }
+    
+    /** value will always be non-negative. */
+    void put(int key, int value) {
+        int entry = hash(key);
+        if(hashContainer[entry] == nullptr){
+            hashContainer[entry] = new hl();
+            hashContainer[entry]->push_back(make_pair(key, value));
+        }else{
+            for(auto it = hashContainer[entry]->begin(); it != hashContainer[entry]->end(); ++it){
+                if((*it).first == key){
+                    (*it).second = value;
+                    return;
+                }    
+            }
+            hashContainer[entry]->push_back(make_pair(key, value));
+        }
+    }
+    
+    /** Returns the value to which the specified key is mapped, or -1 if this map contains no mapping for the key */
+    int get(int key) {
+        int entry = hash(key);
+        if(hashContainer[entry] == nullptr) return -1;
+        for(auto it = hashContainer[entry]->begin(); it != hashContainer[entry]->end(); ++it){
+            if((*it).first == key)
+                return (*it).second;
+        }
+        return -1;
+    }
+    
+    /** Removes the mapping of the specified value key if this map contains a mapping for the key */
+    void remove(int key) {
+        int entry = hash(key);
+        if(hashContainer[entry] == nullptr) return;
+        for(auto it = hashContainer[entry]->begin(); it != hashContainer[entry]->end(); ++it){
+            if((*it).first == key){
+                hashContainer[entry]->erase(it);
+                return;
+            }   
+        }
+    }
+};
+
+/**
+ * Your MyHashMap object will be instantiated and called as such:
+ * MyHashMap* obj = new MyHashMap();
+ * obj->put(key,value);
+ * int param_2 = obj->get(key);
+ * obj->remove(key);
+ */
+
 //384. Shuffle an Array
 //https://leetcode.com/problems/shuffle-an-array/
 //Note how we use the time as the seed
@@ -1140,4 +1212,5 @@ public:
         followers[followerId].erase(followeeId);
     }
 };
+
 
