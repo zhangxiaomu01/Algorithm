@@ -808,3 +808,39 @@ public:
     }
 };
 
+
+//415. Add Strings
+//https://leetcode.com/problems/add-strings/
+class Solution {
+public:
+    string addStrings(string num1, string num2) {
+        int carry = 0;
+        int len1 = num1.size(), len2 = num2.size();
+        if(len1 > len2) return addStrings(num2, num1);
+        
+        int j = len2 - 1;
+        string res;
+        for(int i = len1 - 1; i >= 0; --i){
+            int digit1 = num1[i] - '0';
+            int digit2 = num2[j] - '0';
+            int sum = digit1 + digit2 + carry;
+            res.push_back(sum % 10 + '0');
+            carry = sum / 10;
+            j--;
+        }
+        for(; j >= 0; --j){
+            if(carry == 0){
+                res.push_back(num2[j]);
+            }else{
+                int digit = num2[j] - '0';
+                digit = digit + carry;
+                
+                res.push_back(digit % 10 + '0');
+                carry = digit / 10;
+            }
+        }
+        if(carry == 1) res.push_back('1');
+        reverse(res.begin(), res.end());
+        return res;
+    }
+};
