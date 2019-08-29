@@ -844,3 +844,34 @@ public:
         return res;
     }
 };
+
+
+//205. Isomorphic Strings
+//https://leetcode.com/problems/isomorphic-strings/
+//You can also use two arrays char[256] to record this
+//Since we may only have 256 characters
+class Solution {
+public:
+    bool isIsomorphic(string s, string t) {
+        int len = s.size();
+        unordered_map<char, char> dict;
+        unordered_map<char, char> rdict;
+        for(int i = 0; i < len; i++){
+            if(dict.find(s[i])!= dict.end()){
+                if(dict[s[i]] != t[i])
+                    return false;
+            }
+            if(rdict.find(t[i])!=rdict.end()){
+                if(rdict[t[i]] != s[i])
+                    return false;
+            }
+            
+            dict[s[i]] = t[i];
+            rdict[t[i]] = s[i];
+        }
+        return true;
+    }
+};
+
+
+
