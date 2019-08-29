@@ -875,3 +875,26 @@ public:
 
 
 
+//49. Group Anagrams
+//https://leetcode.com/problems/group-anagrams/
+//Using hash map to map the key!
+class Solution {
+public:
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        unordered_map<string, vector<string>> hashMap;
+        vector<string> temp = strs;
+        for(int i = 0; i < strs.size(); ++i){
+            sort(temp[i].begin(), temp[i].end());
+            hashMap[temp[i]].push_back(strs[i]);
+        }
+        int len = hashMap.size();
+        vector<vector<string>> res(len, vector<string>());
+        int j = 0;
+        for(auto it = hashMap.begin(); it != hashMap.end(); ++it){
+            swap((*it).second, res[j++]);
+        }
+        return res;
+    }
+};
+
+
