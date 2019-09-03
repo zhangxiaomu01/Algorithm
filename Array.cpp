@@ -3001,4 +3001,40 @@ public:
 };
 
 
-//
+//416. Partition Equal Subset Sum
+//https://leetcode.com/problems/partition-equal-subset-sum/
+//DFS + Memorization! Note in order to save time, we use the set to track
+//pos and target values! Not that efficient!
+class Solution {
+private:
+    int helper(int pos, int target, vector<int>& n, unordered_set<string>& memo){
+        if(target == 0) return 1;
+        if(target < 0 || pos == n.size()) return 0;
+        if(memo.count(to_string(pos) + '_' + to_string(target))>0) return false;
+        int res;
+        for(int i = pos; i < n.size(); ++i){
+            res = helper(i+1, target - n[i], n, memo);
+            if(res) return 1;
+        }
+        //we only record failed paths!
+        memo.insert(to_string(pos) + '_' + to_string(target));
+        return 0;
+    }
+public:
+    bool canPartition(vector<int>& nums) {
+        int sum = 0;
+        for(int n : nums){
+            sum += n;
+        }
+        if(sum % 2 == 1) return false;
+        int target = sum / 2;
+        //The general vector<int> memo here won't work since
+        //we need to keep track of the failed path! or we need 
+        //to allocate a 2D array to keep track of both pos and 
+        //target. That won't pass the test case!
+        //So we use a uset to record the path
+        unordered_set<string> memo;
+        return helper(0, target, nums, memo);
+    }
+};
+
