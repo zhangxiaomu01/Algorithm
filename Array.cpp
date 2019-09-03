@@ -3084,8 +3084,7 @@ public:
         vector<int> dp(target+1, 0);
         //when target reaches 0
         dp[0] = 1;
-        sort(nums.begin(), nums.end());
-        
+
         //Please draw the dp table, note we cannot swap the two loops 
         //here since when we calculate dp[i][j], we need the value for
         //dp[i][j-1], so we need to calculate dp[i][j-1] first. And we
@@ -3104,6 +3103,49 @@ public:
             }
         }
         return dp[target];
+    }
+};
+
+//Bit Solution
+//An elegant bitset solution! very clever!
+//Since each element will not be able to exceeds 100, and the array size
+//will not exceed 200, we can allocate the bitset which represents the 
+//total Sum.
+/*
+Size of bitset is the maximum sum that can be achieved by array + 1.
+Ex. [5,2,4] ---> bitset of size 12 ==> 000000000001
+That means initially we can achieve sum 0 with empty array subset [ ].
+We have only 0's bit set.
+
+num = 5
+0 -> 5 (set 5's bit, since we can achieve sum 5.)
+Now we can achieve 0 and 5 with [ ] and [ 5 ]. So by the union of both, we have 000000100001
+
+num = 2
+0->2
+5->7
+We can achieve 0,2,5,7 from [5,2] ==> [ ], [5], [2], [5,2]
+After union our bitset is 000010100101
+
+num = 4
+0->4
+2->6
+5->9
+7->11
+We can achieve 0,2,4,5,6,7,11 from [5,2] ==> [ ], [5], [2], [4], [5,2], [2,4], [5,4], [5,2,4]
+After union our bitset is 101011110101
+*/
+class Solution {
+public:
+    bool canPartition(vector<int>& nums) {
+        //Initialize the first bit to be 1 (rightmost)
+        bitset<20001> bits(1);
+        int sum = 0;
+        for(int n : nums){
+            sum += n;
+            bits |= (bits << n);
+        }
+        return (!(sum & 1)) && bits[sum >> 1];
     }
 };
 
