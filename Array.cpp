@@ -3038,3 +3038,73 @@ public:
     }
 };
 
+//Time exceed limit: early trimming DFS
+//failed case: [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+//1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+//1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,100]
+class Solution {
+private:
+    int helper(int pos, int target, vector<int>& n){
+        if(target == 0) return 1;
+        if(target < 0 || pos == n.size()) return 0;
+        for(int i = pos; i < n.size(); ++i){
+            //early trim: since the array is sorted
+            if(target < n[i])
+                break;
+            if(helper(i+1, target - n[i], n))
+                return 1;
+        }
+        return 0;
+    }
+public:
+    bool canPartition(vector<int>& nums) {
+        int sum = 0;
+        for(int n : nums){
+            sum += n;
+        }
+        if(sum % 2 == 1) return false;
+        int target = sum / 2;
+        //we need to sort the array for early trim!
+        sort(nums.begin(), nums.end());
+        return helper(0, target, nums);
+    }
+};
+
+
+//DP solution
+class Solution {
+public:
+    bool canPartition(vector<int>& nums) {
+        int len = nums.size();
+        int sum = 0;
+        for(int i : nums)
+            sum += i;
+        if(sum & 1) return false;
+        int target  = sum / 2;
+        vector<int> dp(target+1, 0);
+        //when target reaches 0
+        dp[0] = 1;
+        sort(nums.begin(), nums.end());
+        
+        //Please draw the dp table, note we cannot swap the two loops 
+        //here since when we calculate dp[i][j], we need the value for
+        //dp[i][j-1], so we need to calculate dp[i][j-1] first. And we
+        //also need to start from i = target, since dp[i-nums[j]][j-1]
+        //should be preseved before update!
+        //A safe way is to use 2D array to get the solution and then 
+        //optimize it.
+        for(int j = 0; j < len-1; ++j){
+            for(int i = target; i >= nums[j]; --i){
+                 if(i >= nums[j])
+                    dp[i] = dp[i] || dp[i - nums[j]];
+                //Cannot add dp[i] break here, since we need to reuse
+                //the result for next round, so we need to calculate
+                //the result
+                //if(dp[i]) break;
+            }
+        }
+        return dp[target];
+    }
+};
+
+
