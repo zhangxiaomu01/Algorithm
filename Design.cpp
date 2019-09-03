@@ -1414,6 +1414,10 @@ public:
         m_size = 0;
         m_front = m_tail = 0;
     }
+
+    ~MyCircularQueue(){
+        delete[] m_array;
+    }
     
     /** Insert an element into the circular queue. Return true if the operation is successful. */
     bool enQueue(int value) {
@@ -1468,6 +1472,100 @@ public:
  * bool param_6 = obj->isFull();
  */
 
+
+//641. Design Circular Deque
+//https://leetcode.com/problems/design-circular-deque/
+//Exactly the same as problem 622.
+class MyCircularDeque {
+private:
+    int m_capacity;
+    int m_size;
+    int m_front, m_tail;
+    int* m_array;
+public:
+    /** Initialize your data structure here. Set the size of the deque to be k. */
+    MyCircularDeque(int k) {
+        m_array = new int[k];
+        m_size = 0;
+        m_capacity = k;
+        m_front = m_tail = 0;
+    }
+    
+    ~MyCircularDeque(){
+        delete[] m_array;
+    }
+    
+    /** Adds an item at the front of Deque. Return true if the operation is successful. */
+    bool insertFront(int value) {
+        if(isFull()) return false;
+        m_front = (m_front + m_capacity - 1) % m_capacity;
+        m_array[m_front] = value;
+        m_size++;
+        return true;
+    }
+    
+    /** Adds an item at the rear of Deque. Return true if the operation is successful. */
+    bool insertLast(int value) {
+        if(isFull()) return false;
+        m_array[m_tail] = value;
+        m_tail = (m_tail + 1) % m_capacity;
+        m_size++;
+        return true;
+    }
+    
+    /** Deletes an item from the front of Deque. Return true if the operation is successful. */
+    bool deleteFront() {
+        if(isEmpty()) return false;
+        m_front = (m_front + 1) % m_capacity;
+        m_size--;
+        return true;
+    }
+    
+    /** Deletes an item from the rear of Deque. Return true if the operation is successful. */
+    bool deleteLast() {
+        if(isEmpty()) return false;
+        //pop the last element, we need to add m_capacity to avoid
+        //negative index
+        m_tail = (m_tail + m_capacity - 1) % m_capacity;
+        m_size--;
+        return true;
+    }
+    
+    /** Get the front item from the deque. */
+    int getFront() {
+        if(isEmpty()) return -1;
+        return m_array[m_front];
+    }
+    
+    /** Get the last item from the deque. */
+    int getRear() {
+        if(isEmpty()) return -1;
+        return m_array[(m_tail + m_capacity - 1) % m_capacity];
+    }
+    
+    /** Checks whether the circular deque is empty or not. */
+    bool isEmpty() {
+        return m_size == 0;
+    }
+    
+    /** Checks whether the circular deque is full or not. */
+    bool isFull() {
+        return m_size == m_capacity;
+    }
+};
+
+/**
+ * Your MyCircularDeque object will be instantiated and called as such:
+ * MyCircularDeque* obj = new MyCircularDeque(k);
+ * bool param_1 = obj->insertFront(value);
+ * bool param_2 = obj->insertLast(value);
+ * bool param_3 = obj->deleteFront();
+ * bool param_4 = obj->deleteLast();
+ * int param_5 = obj->getFront();
+ * int param_6 = obj->getRear();
+ * bool param_7 = obj->isEmpty();
+ * bool param_8 = obj->isFull();
+ */
 
 
 
