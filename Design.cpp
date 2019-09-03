@@ -1276,3 +1276,124 @@ public:
  * int param_3 = obj->getRandom();
  */
 
+//460. LFU Cache
+//https://leetcode.com/problems/lfu-cache/
+//First Try: Wrong!
+class LFUCache {
+private:
+    int m_capacity;
+    std::list<int> keyOrder;
+    std::unordered_map<int, int> uMap; 
+    unordered_map<int, list<int>::iterator> uDictIt;
+public:
+    LFUCache(int capacity) {
+        m_capacity = capacity;
+    }
+    
+    int get(int key) {
+        if(uMap.count(key) == 0 || m_capacity == 0) {
+            return -1;
+        }
+        auto it = uDictIt[key];
+        keyOrder.erase(it);
+        keyOrder.emplace_front(key);
+        uDictIt[key] = keyOrder.begin();
+        //cout << uMap[key] << endl;
+        return uMap[key];
+    }
+    
+    void put(int key, int value) {
+        if(m_capacity == 0) return;
+        if(keyOrder.size() == m_capacity){
+            int lastKey = keyOrder.back();
+            uMap.erase(lastKey);
+            uDictIt.erase(lastKey);
+            keyOrder.pop_back();
+        }
+        uMap[key] = value;
+        keyOrder.emplace_back(key);
+        auto it = keyOrder.begin();
+        for(; it != keyOrder.end(); ++it){
+            if(std::next(it) == keyOrder.end())
+                break;
+        }
+        uDictIt[key] = it;
+        //for(int i : keyOrder)
+        //    cout << i << " ";
+        //cout << endl;
+        
+    }
+};
+
+
+//Right solution! Not an easy task to get it right! How to maintain the 
+//information is critical here!
+class LFUCache {
+private:
+    int m_lfu, m_capacity, m_size;
+    //stores the key with the same frequency!
+    unordered_map<int, list<int>> freq_keyMap;
+    //stores the key, value - frequency map
+    unordered_map<int, pair<int, int>> uMap;
+    //stores the key - iterator map
+    unordered_map<int, list<int>::iterator> key_Iter;
+    
+    void UpdateKey(int key){
+        auto it = key_Iter[key];
+        //original frequency
+        int frequency = uMap[key].second;
+        uMap[key].second++;
+        freq_keyMap[frequency].erase(it);
+        freq_keyMap[frequency+1].emplace_back(key);
+        key_Iter[key] = --freq_keyMap[frequency+1].end();
+        //If our original lfu is empty, we need to increase it by 1
+        if(freq_keyMap[m_lfu].empty())
+            m_lfu++;
+    }
+    
+public:
+    LFUCache(int capacity) {
+        m_lfu = 0;
+        m_capacity = capacity;
+        m_size = 0;
+    }
+    
+    int get(int key) {
+        if(uMap.count(key) == 0) return -1;
+        UpdateKey(key);
+        return uMap[key].first;
+    }
+    
+    void put(int key, int value) {
+        if(!m_capacity) return;
+        if(uMap.count(key) != 0){
+            uMap[key].first = value;
+            UpdateKey(key);
+        }else{
+            //The container reaches the limit
+            if(m_size == m_capacity){
+                int lastUsedKey = freq_keyMap[m_lfu].front();
+                uMap.erase(lastUsedKey);
+                key_Iter.erase(lastUsedKey);
+                freq_keyMap[m_lfu].pop_front();
+            }else
+                m_size++;
+            
+            //Newly insert element with frequency to be 1
+            uMap[key] = make_pair(value, 1);
+            freq_keyMap[1].emplace_back(key);
+            key_Iter[key] = --freq_keyMap[1].end();
+            m_lfu = 1;
+        }
+    }
+};
+
+/**
+ * Your LFUCache object will be instantiated and called as such:
+ * LFUCache* obj = new LFUCache(capacity);
+ * int param_1 = obj->get(key);
+ * obj->put(key,value);
+ */
+
+
+
