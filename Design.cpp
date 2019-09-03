@@ -1396,4 +1396,78 @@ public:
  */
 
 
+//622. Design Circular Queue
+//https://leetcode.com/problems/design-circular-queue/
+//How to maintain the front and tail pointer is the key to success
+class MyCircularQueue {
+private:
+    int m_capacity;
+    int m_size;
+    int* m_array;
+    int m_front, m_tail;
+    
+public:
+    /** Initialize your data structure here. Set the size of the queue to be k. */
+    MyCircularQueue(int k) {
+        m_array = new int[k];
+        m_capacity = k;
+        m_size = 0;
+        m_front = m_tail = 0;
+    }
+    
+    /** Insert an element into the circular queue. Return true if the operation is successful. */
+    bool enQueue(int value) {
+        if(isFull()) return false;
+        m_array[m_tail] = value;
+        m_size++;
+        m_tail = (m_tail + 1) % m_capacity;
+        return true;
+    }
+    
+    /** Delete an element from the circular queue. Return true if the operation is successful. */
+    bool deQueue() {
+        if(isEmpty()) return false;
+        m_size--;
+        m_front = (m_front + 1) % m_capacity;
+        return true;
+    }
+    
+    /** Get the front item from the queue. */
+    int Front() {
+        if(isEmpty()) return -1;
+        return m_array[m_front];
+    }
+    
+    /** Get the last item from the queue. */
+    int Rear() {
+        if(isEmpty()) return -1;
+        //We need to add m_capacity here in order to prevent the 
+        //situation that m_tail - 1 < 0
+        return m_array[(m_tail + m_capacity - 1) % m_capacity];
+    }
+    
+    /** Checks whether the circular queue is empty or not. */
+    bool isEmpty() {
+        return m_size == 0;
+    }
+    
+    /** Checks whether the circular queue is full or not. */
+    bool isFull() {
+        return m_size == m_capacity;
+    }
+};
+
+/**
+ * Your MyCircularQueue object will be instantiated and called as such:
+ * MyCircularQueue* obj = new MyCircularQueue(k);
+ * bool param_1 = obj->enQueue(value);
+ * bool param_2 = obj->deQueue();
+ * int param_3 = obj->Front();
+ * int param_4 = obj->Rear();
+ * bool param_5 = obj->isEmpty();
+ * bool param_6 = obj->isFull();
+ */
+
+
+
 
