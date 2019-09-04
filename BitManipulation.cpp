@@ -116,3 +116,23 @@ public:
     }
 };
 
+//401. Binary Watch
+//https://leetcode.com/problems/binary-watch/
+//Intresting problem! The way how to handle the hours and minutes is intresting.
+//Please be more comfortable with bitset!
+class Solution {
+public:
+    vector<string> readBinaryWatch(int num) {
+        vector<string> res;
+        for(int h = 0; h <= 11; ++h){
+            for(int m = 0; m <= 59; ++m){
+                //move hours 6 bits and make room for minutes
+                //exhaustive search
+                if(bitset<10>(h << 6 | m).count() == num)
+                    res.push_back(to_string(h) + (m < 10 ? ":0" : ":") + to_string(m));
+            }
+        }
+        return res;
+    }
+};
+
