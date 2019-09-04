@@ -898,3 +898,41 @@ public:
 };
 
 
+//395. Longest Substring with At Least K Repeating Characters
+//https://leetcode.com/problems/longest-substring-with-at-least-k-repeating-characters/
+//Brute Force Solution. Even this solution is not easy to get!
+class Solution {
+public:
+    int longestSubstring(string s, int k) {
+        int len = s.size();
+        //When k is less than or equal to 1, we can safely return
+        if(k <= 1) return len;
+        int maxLen = 0;
+        for(int i = 0; i < len; ++i){
+            //No need to continue search!
+            if(maxLen > len - i) return maxLen;
+            int cMap[26];
+            memset(cMap, 0, sizeof(cMap));
+            int check = 0, count = 0;
+            int end = i;
+            for(int j = i; j < len; ++j){
+                if(cMap[s[j] - 'a'] == 0) 
+                    count++;
+                if(cMap[s[j] - 'a'] < k)
+                    check++;
+                cMap[s[j] - 'a'] ++;
+                //This is the most tricky part, we record the minimum
+                //characters satisfying the condition at least k
+                //and move the second pointer to it
+                if(check >= count * k){
+                    end = j;
+                }
+            }
+            int newLen = (end == i ? 0 : end - i + 1);
+            maxLen = max(maxLen, newLen);
+        }
+        return maxLen;
+    }
+};
+
+
