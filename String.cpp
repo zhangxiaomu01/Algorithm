@@ -935,4 +935,42 @@ public:
     }
 };
 
+//OPtimized recursive solution!!
+//Optimized recursive solution! 
+class Solution {
+private:
+    int helper(string& s, int k, int l, int r){
+        if(r - l < k) return 0;
+        int dict[26];
+        memset(dict, 0, sizeof(dict));
+        int len = s.size();
+        for(int i = l; i < r; ++i){
+            dict[s[i] - 'a']++;
+        }
+        int maxLen = 0;
+        for(int j = l; j < r;){
+            while(j < r && dict[s[j] - 'a'] < k) j++;
+            if(j == r) break;
+            int end = j;
+            while(end < r && dict[s[end] - 'a'] >= k) end++;
+            //The whole substring meets our need, no need to do further
+            //calculation!
+            if(j == l && end == r) return r - l;
+            maxLen = max(maxLen, helper(s, k, j, end));
+            //start with the next element!
+            j = end;
+        }
+        
+        return maxLen;
+    }
+public:
+    int longestSubstring(string s, int k) {
+        int len = s.size();
+        if(k <= 1) return len;
+        return helper(s, k, 0, len);
+    }
+};
+
+
+
 
