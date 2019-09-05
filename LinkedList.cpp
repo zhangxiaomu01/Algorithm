@@ -28,6 +28,42 @@ public:
     }
 };
 
+//445. Add Two Numbers II
+//https://leetcode.com/problems/add-two-numbers-ii/
+//Reverse listNode, and then sum them together
+//exact the same as Add Two Numbers I
+class Solution {
+private:
+    ListNode* ReverseList(ListNode* l){
+        if(!l || !l->next) return l;
+        ListNode* p = ReverseList(l->next);
+        l->next->next = l;
+        l->next = nullptr;
+        return p;
+    }
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        l1 = ReverseList(l1);
+        l2 = ReverseList(l2);
+        ListNode head(0);
+        ListNode* ptr = &head;
+        int carry = 0;
+        while(l1 || l2 || carry){
+            int sum = (l1 ? l1->val : 0) + (l2 ? l2->val : 0) + carry;
+            carry = sum / 10;
+            int newVal = sum % 10;
+            ptr->next = new ListNode(newVal);
+            ptr = ptr->next;
+            l1 = (l1 ? l1->next : nullptr);
+            l2 = (l2 ? l2->next : nullptr);
+        }
+        ptr = ReverseList(head.next);
+        return ptr;
+    }
+};
+
+
+
 //206. Reverse Linked List
 //https://leetcode.com/problems/reverse-linked-list/
 //Both versions are tricky!
