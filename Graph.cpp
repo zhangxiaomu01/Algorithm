@@ -219,4 +219,55 @@ public:
     }
 };
 
+//Graph approach
+//A very good problem for practicing graph build and graph traversal
+//The graph approach is more intuitive! and easy to code.
+//Note how we build the graph!
+typedef unordered_map<string, unordered_map<string, double>> Graph;
+class Solution {
+private:
+    void BuildGraph(Graph& g, vector<vector<string>>& e, vector<double>& v){
+        for(int i = 0; i < e.size(); ++i){
+            string s1 = e[i][0];
+            string s2 = e[i][1];
+            g[s1][s2] = v[i];
+            g[s2][s1] = 1.0 / v[i];
+        }
+    }
+    double getPathWeight(Graph& g, string& s, string& t, unordered_set<string>& visited){
+        if(g.count(s) == 0 || g.count(t) == 0)
+            return -1.0;
+        if(g[s].count(t) > 0)
+            return g[s][t];
+        
+        visited.insert(s);
+        for(auto it = g[s].begin(); it != g[s].end(); ++it){
+            if(visited.count(it->first) == 0){
+                string tempStr = it->first;
+                double tempRes = getPathWeight(g, tempStr, t, visited);
+                //we cannot return -1.0 when tempRes == -1.0
+                //we have to exhaustively search all the paths
+                if(tempRes != -1.0)
+                    return tempRes * g[s][tempStr];
+            } 
+        }
+        return -1.0;
+    }
+    
+public:
+    vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& values, vector<vector<string>>& queries) {
+        Graph eGraph;
+        BuildGraph(eGraph, equations, values);
+        
+        int qLen = queries.size();
+        vector<double> res(qLen, 0.0);
+        for(int i = 0; i < qLen; ++i){
+            unordered_set<string> uSet;
+            res[i] = getPathWeight(eGraph, queries[i][0], queries[i][1], uSet);
+        }
+        return res;
+    }
+};
+
+
 
