@@ -422,3 +422,176 @@ public:
     }
 };
 
+
+//DFS: Cycle detection! (Unoptimized version!)
+class Solution {
+private:
+    //tobeVisited is a flag which keep track of the nodes we will visit
+    //later. 
+    bool DFS(vector<vector<int>>& G, vector<int>& tobeVisited, int node){
+        //When we explore the graph, and find some node has already been
+        //marked as tobeVisited, we find a cycle!
+        if(tobeVisited[node]) return false;
+        //backtracking, when we finish explore node, we need to reset
+        //to be visited[node] to be 0
+        tobeVisited[node] = 1;
+        for(int n : G[node]){
+            if(!DFS(G, tobeVisited, n))
+                return false;
+        }
+        tobeVisited[node] = 0;
+        return true;
+    }
+public:
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        if(numCourses <= 1 || prerequisites.empty()) return true;
+        vector<vector<int>> graph(numCourses, vector<int>());
+        unsigned int len = prerequisites.size();
+        for(int i = 0; i < len; ++i){
+            graph[prerequisites[i][1]].push_back(prerequisites[i][0]);
+        }
+        
+        vector<int> tobeVisited(numCourses, 0);
+        
+        for(int i = 0; i < numCourses; ++i){
+            if(!DFS(graph, tobeVisited, i))
+                return false;
+        }
+        return true;
+    }
+};
+
+//DFS: Cycle detection! Optimized version. Using another array to keep track
+//of already explored nodes!
+class Solution {
+private:
+    bool DFS(vector<vector<int>>& G, vector<int>& tobeVisited, vector<int>& explored, int node){
+        if(tobeVisited[node]) return false;
+        //Whenever we go to an already visited node branch, we know we have
+        //explored the following graph, can safely return true here!
+        if(explored[node]) return true;
+        tobeVisited[node] = 1;
+        explored[node] = 1;
+        for(int n : G[node]){
+            if(!DFS(G, tobeVisited, explored, n))
+                return false;
+        }
+        tobeVisited[node] = 0;
+        return true;
+    }
+public:
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        if(numCourses <= 1 || prerequisites.empty()) return true;
+        vector<vector<int>> graph(numCourses, vector<int>());
+        unsigned int len = prerequisites.size();
+        for(int i = 0; i < len; ++i){
+            graph[prerequisites[i][1]].push_back(prerequisites[i][0]);
+        }
+        
+        vector<int> tobeVisited(numCourses, 0);
+        //Add another vector to keep track of thouse already explored node
+        vector<int> explored(numCourses, 0);
+        //We need a loop here since the graph is not necessarily connected!
+        for(int i = 0; i < numCourses; ++i){
+            //if a node has been explored, we can skip the recursion!
+            if(!explored[i] && !DFS(graph, tobeVisited, explored, i))
+                return false;
+        }
+        return true;
+    }
+};
+
+
+//210. Course Schedule II
+//https://leetcode.com/problems/course-schedule-ii/
+class Solution {
+private:
+    //It's similar to post order traversal! we need first to make sure that
+    //we can have a valid leaf node, then push the leaf to our res first
+    //That's the reason why in the end, we need to reverse the order of
+    //res. It must be post-order
+    bool helper(vector<vector<int>>& G, vector<int>& tobeVisited, vector<int>& explored, vector<int>& res, int node){
+        if(tobeVisited[node]) return false;
+        if(explored[node]) return true;
+        explored[node] = true;
+        tobeVisited[node] = true;
+        
+        for(int n : G[node]){
+            if(!helper(G, tobeVisited, explored, res, n))
+                return false;
+        }
+        tobeVisited[node] = false;
+        //Did not get this! 
+        res.push_back(node);
+        return true;
+    }
+public:
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+        vector<int> res;
+        int len = prerequisites.size();
+        vector<vector<int>> graph(numCourses, vector<int>());
+        for(int i = 0; i < len; ++i){
+            graph[prerequisites[i][1]].push_back(prerequisites[i][0]);
+        }
+        
+        vector<int> tobeVisited(numCourses, 0);
+        vector<int> explored(numCourses, 0);
+        for(int i = 0; i < numCourses; ++i){
+            //if we find a cycle in the graph
+            if(!explored[i] && !helper(graph, tobeVisited, explored, res, i))
+                return vector<int>();
+        }
+        
+        reverse(res.begin(), res.end());
+        return res;        
+    }
+};
+
+//BFS solution, be careful about when we push element to the queue!
+class Solution {
+public:
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+        vector<int> res;
+        int len = prerequisites.size();
+        vector<int> inDeg(numCourses, 0);
+        vector<vector<int>> graph(numCourses, vector<int>());
+        for(int i = 0; i < len; ++i){
+            graph[prerequisites[i][1]].push_back(prerequisites[i][0]);
+            inDeg[prerequisites[i][0]]++;
+        }
+        
+        queue<int> Q;
+        vector<int> visited(numCourses, 0);
+        for(int i = 0; i < numCourses; ++i){
+            if(inDeg[i] == 0){
+                Q.push(i);
+                res.push_back(i);
+            }    
+        }
+
+        while(!Q.empty()){
+            int index = Q.front();
+            Q.pop();
+            visited[index] = 1;
+            for(int i = 0; i < graph[index].size(); ++i){
+                int neighbor = graph[index][i];
+                if(!visited[neighbor]){
+                    --inDeg[neighbor];
+                    //only push back when incoming degree becomes 0
+                    if(inDeg[neighbor] == 0){
+                        res.push_back(neighbor);
+                        Q.push(neighbor);
+                    }
+                        
+                }
+            }
+        }
+        
+        //Only if we include all the nodes, we return res
+        if(res.size() == numCourses)
+            return res;
+        
+        return vector<int>();        
+    }
+};
+
