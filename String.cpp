@@ -997,3 +997,29 @@ public:
 };
 
 
+//929. Unique Email Addresses
+//https://leetcode.com/problems/unique-email-addresses/
+//The idea how to solve the problem is not hard!
+//However, how to utilize the standard template library is key to 
+//success!
+class Solution {
+public:
+    int numUniqueEmails(vector<string>& emails) {
+        unordered_set<string> uSet;
+        string name, domain;
+        unsigned int len = emails.size();
+        for(int i = 0; i < len; ++i){
+            //return size_t
+            //The position of the first character that matches.
+            auto pivot = emails[i].find_first_of('@');
+            name = emails[i].substr(0, pivot);
+            domain = emails[i].substr(pivot);
+            //https://en.wikipedia.org/wiki/Erase%E2%80%93remove_idiom
+            name.erase(remove(name.begin(), name.end(), '.'), name.end());
+            auto pos = name.find_first_of('+');
+            pos == string::npos ? uSet.insert(name + domain) : uSet.insert(name.erase(pos) + domain);
+        }
+        return static_cast<int>(uSet.size());
+    }
+};
+
