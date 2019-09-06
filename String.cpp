@@ -1023,3 +1023,28 @@ public:
     }
 };
 
+//482. License Key Formatting
+//https://leetcode.com/problems/license-key-formatting/
+//Not hard!
+class Solution {
+public:
+    string licenseKeyFormatting(string S, int K) {
+        string res;
+        int lenS = S.size();
+        int count = 0;
+        for(int i = lenS - 1; i >= 0; --i){
+            if(S[i] != '-'){
+                res.push_back(isalpha(S[i]) ? toupper(S[i]) : S[i]);
+                count++;
+                if(count == K){
+                    res.push_back('-');
+                    count = 0;
+                }  
+            }  
+        }
+        if(res.back() == '-') res.pop_back();
+        reverse(res.begin(), res.end());
+        return res;
+    }
+};
+
