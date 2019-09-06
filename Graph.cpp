@@ -378,3 +378,47 @@ public:
     }
 };
 
+
+//207. Course Schedule
+//https://leetcode.com/problems/course-schedule/
+//First build the graph as ajacent list, then graph traversal!
+//BFS
+typedef vector<vector<int>> graph;
+class Solution {
+private:
+    void buildGraph(int n, vector<pair<int, int>>& p, graph& g, vector<int>& s){
+        int len = p.size();
+        for(int i = 0; i < len; i++){
+            g[p[i].second].push_back(p[i].first);
+            s[p[i].first]++;
+        }
+    }
+public:
+    bool canFinish(int numCourses, vector<pair<int, int>>& prerequisites) {
+        int len = prerequisites.size();
+        graph G(numCourses);
+        vector<int> Ideg(numCourses, 0);
+        buildGraph(numCourses, prerequisites, G, Ideg);
+        queue<int> Q;
+        for(int i = 0; i < numCourses; i++){
+            //We need to push all possible j here
+            //since graph is not necessarily connected!
+            if(Ideg[i] == 0){
+                Q.push(i);
+            }
+        }
+        int counter = 0;
+        while(!Q.empty()){
+            int node = Q.front();
+            Q.pop();
+            counter++;
+            for(int i : G[node]){
+                Ideg[i]--;
+                if(Ideg[i]==0)
+                    Q.push(i);
+            }
+        }
+        return counter == numCourses;
+    }
+};
+
