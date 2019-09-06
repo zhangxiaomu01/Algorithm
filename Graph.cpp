@@ -330,6 +330,9 @@ public:
 //https://leetcode.com/problems/max-points-on-a-line/
 //Note unordered_map cannot hash std::pair, you need to define your own hash
 //function if you want to use unordered_map.
+//Or we can convert to string: 
+//counter[to_string(dx / g) + '_' + to_string(dy / g)]++;
+
 //This solution is actually a bruteforce solution, we cache the ratio in our
 //map, and always check the maximum points after the cache.
 //Using map and cache ratios is key to success
