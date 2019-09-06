@@ -326,4 +326,52 @@ public:
 };
 
 
+//149. Max Points on a Line
+//https://leetcode.com/problems/max-points-on-a-line/
+//Note unordered_map cannot hash std::pair, you need to define your own hash
+//function if you want to use unordered_map.
+//This solution is actually a bruteforce solution, we cache the ratio in our
+//map, and always check the maximum points after the cache.
+//Using map and cache ratios is key to success
+//Note we may have two points on the same location
+class Solution {
+private:
+    int gcd(int a, int b){
+        while(b != 0){
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+public:
+    int maxPoints(vector<vector<int>>& points) {
+        int len = points.size();
+        map<pair<int, int>, int> pMap;
+        int maxNumPoints = 0;
+        for(int i = 0; i < len; ++i){
+            pMap.clear();
+            int duplicate = 1;
+            //j should start with i+1. For 0..i we have already checked in the
+            //previous loop
+            for(int j = i + 1; j < len; ++j){
+                if(points[j][0] == points[i][0] && points[j][1] == points[i][1]){
+                    duplicate++;
+                    continue;
+                }
+                
+                int deltaX = points[j][0] - points[i][0];
+                int deltaY = points[j][1] - points[i][1];
+                int gcdDelta = gcd(deltaX, deltaY);
+                pMap[{deltaX/gcdDelta, deltaY/gcdDelta}]++;
+                
+            }
+            maxNumPoints = max(maxNumPoints, duplicate);
+            for(auto it = pMap.begin(); it != pMap.end(); ++it){
+                maxNumPoints = max(maxNumPoints, it->second + duplicate);
+            }
+        }
+        return maxNumPoints;
+    }
+};
 
