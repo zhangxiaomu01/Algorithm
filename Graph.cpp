@@ -304,5 +304,26 @@ public:
     }
 };
 
+//Recursive version. I am not so confident to come up with
+//this solution. Even though it's actually DFS
+class Solution {
+private:
+    unordered_map<Node*, Node*> uMap;
+public:
+    Node* cloneGraph(Node* node) {
+        if(!node) return node;
+        //when node is visited, we will simply return uMap[node]
+        if(uMap.find(node) == uMap.end()){
+            Node* newNode = new Node(node->val, vector<Node*>());
+            //Build the mapping here
+            uMap[node] = newNode;
+            for(Node* neighbor : node->neighbors){
+                newNode->neighbors.push_back(cloneGraph(neighbor));
+            }
+        }
+        return uMap[node];
+    }
+};
+
 
 
