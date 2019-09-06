@@ -270,4 +270,39 @@ public:
 };
 
 
+//133. Clone Graph
+//https://leetcode.com/problems/clone-graph/
+//Come up with the mapping is the key to success!
+class Solution {
+public:
+    Node* cloneGraph(Node* node) {
+        if(!node) return node;
+        queue<Node*> Q;
+        //Mapping each node we created with original node
+        //It also serves as a visited set that prevent repetitively visit the 
+        //same element!
+        unordered_map<Node*, Node*> uMap;
+        Node* head = new Node(node->val, vector<Node*>());
+        Q.push(node);
+        uMap[node] = head;
+        while(!Q.empty()){
+            Node* tempNode = Q.front();
+            Q.pop();
+            for(Node* neighbor : tempNode->neighbors){
+                //Only if we do not have visited that node, we will create a 
+                //new node
+                if(uMap.count(neighbor) == 0){
+                    Node* newNeighbor = new Node(neighbor->val, vector<Node*>());
+                    //Build the connection!
+                    uMap[neighbor] = newNeighbor;
+                    Q.push(neighbor);
+                }
+                uMap[tempNode]->neighbors.push_back(uMap[neighbor]);
+            }
+        }
+        return head;
+    }
+};
+
+
 
