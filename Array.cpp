@@ -3150,3 +3150,70 @@ public:
 };
 
 
+//904. Fruit Into Baskets
+//https://leetcode.com/problems/fruit-into-baskets/
+//Sliding window. The first pointer always includes new elements
+//When our basket is full, we need to move the second pointer 
+//forward. In general, the time complexity is O(n)
+class Solution {
+public:
+    int totalFruit(vector<int>& tree) {
+        unsigned int len = tree.size();
+        if(len == 0) return 0;
+        unordered_map<int, int> uMap;
+        uMap[tree[0]] = 1;
+        int maxFruit = 1;
+        int i = 0;
+        int j = 1;
+        for(; i < len; ){
+            while(j < len){
+                if(uMap.count(tree[j]) == 0){
+                    uMap[tree[j]] = 1;
+                    if(uMap.size() > 2){
+                        maxFruit = max(maxFruit, j - i);
+                        j++;
+                        break;
+                    }
+                }else{
+                    uMap[tree[j]]++;
+                }
+                j++;
+            }    
+            while(uMap.size() > 2){
+                uMap[tree[i]]--;
+                if(uMap[tree[i]] == 0)
+                    uMap.erase(tree[i]);
+                i++;
+            }
+            if(j == len && uMap.size() <= 2)
+                break;
+        }
+        maxFruit = max(maxFruit, j - i);
+        return maxFruit;
+    }
+};
+
+//Optimized sliding window!
+//Sliding window. The first pointer always includes new elements
+//When our basket is full, we need to move the second pointer 
+//forward. In general, the time complexity is O(n)
+//Exactly the same idea! However, this implementation is elegant!
+//Note we do not need to move i to the designated position and 
+//update each time, since i and j move with the same speed, we can
+//update i only when count.size() > 2
+class Solution {
+public:
+    int totalFruit(vector<int> &tree) {
+        unordered_map<int, int> count;
+        int i, j;
+        for (i = 0, j = 0; j < tree.size(); ++j) {
+            count[tree[j]]++;
+            if (count.size() > 2) {
+                if (--count[tree[i]] == 0)count.erase(tree[i]);
+                i++;
+            }
+        }
+        return j - i;
+    }
+};
+
