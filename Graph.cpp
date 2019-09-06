@@ -123,3 +123,100 @@ public:
     }
 };
 
+//399. Evaluate Division
+//https://leetcode.com/problems/evaluate-division/
+//Union-Find solution: Hard to get it right during the interview!
+//The idea is to find the common root which stands as a standard for all
+//potential values. For example, we may have 
+// a / c = 2.0 | a / b = 3.0 | d / e = 4.0 | a / d = 5.0
+//In this example, given the first three equations, we can build up the 
+//relationship like below. 
+// b(2.0/3) -> a(2.0) -> c(1.0)       (1)
+// d(4.0) -> e(1.0)                   (2)
+//When the fourth equation appears, then we need to map all values from 
+//list (1) to list (2) (or map (2) to (1)), since we know a / d = 5.0
+//Then we calculate the scaling factor (ratio) of the conversion:
+//ratio = d * 5.0 / a = 4.0 * 5.0 / 2.0 = 10.0;
+//Which means all the values in (1) should be multiplied by this ratio
+//in order to consider e(1.0) as the common root! After multiplying
+//the ratio we can merge two lists together:
+// b(20.0/3) -> a(20.0) -> c(10. 0)
+//                            v
+//              d(4.0) -> e(1.0)
+//This is the idea of the algorithm! We have some small optimization here
+//Like flatten the tree when find the parent. Please pay attention to 
+//these tricks!
+class Solution {
+private:
+    struct gNode{
+        double val;
+        gNode* parent;
+        gNode(){ parent = this; }
+    };
+    
+    gNode* findParent(gNode* g){
+        if(g->parent == g)
+            return g;
+        //Note we also flatten the tree by setting the current parent 
+        //to be the root!
+        g->parent = findParent(g->parent);
+        return g->parent;
+    }
+    
+    void unionNodes(gNode* g1, gNode* g2, unordered_map<string, gNode*>& uMap, double curValue){
+        gNode* parent1 = findParent(g1);
+        gNode* parent2 = findParent(g2);
+        //g1 and g2 already have the same common root
+        if(parent1 == parent2) return;
+        double ratio = curValue * g2->val / g1->val;
+        for(auto it = uMap.begin(); it != uMap.end(); ++it){
+            //nodes in the first list
+            if(findParent(it->second) == parent1)
+                it->second->val *= ratio;
+        }
+        //Attach parent 1 to parent 2
+        parent1->parent = parent2;
+    }
+    
+public:
+    vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& values, vector<vector<string>>& queries) {
+        int len = equations.size();
+        unordered_map<string, gNode*> uMap;
+        //Build up the union-find tree here!
+        for(int i = 0; i < len; ++i){
+            string s1 = equations[i][0], s2 = equations[i][1];
+            if(uMap.count(s1) == 0 && uMap.count(s2) == 0){
+                uMap[s1] = new gNode();
+                uMap[s2] = new gNode();
+                uMap[s1]->val = values[i];
+                uMap[s2]->val = 1.0;
+                uMap[s1]->parent = uMap[s2];
+            }else if(uMap.count(s1) == 0){
+                uMap[s1] = new gNode();
+                uMap[s1] -> val = values[i] * uMap[s2] -> val;
+                uMap[s1] -> parent = uMap[s2];
+            }else if(uMap.count(s2) == 0){
+                uMap[s2] = new gNode();
+                uMap[s2] -> val = uMap[s1] -> val / values[i];
+                uMap[s2] -> parent = uMap[s1];
+            }else
+                unionNodes(uMap[s1], uMap[s2], uMap, values[i]);
+        }
+        
+        int qLen = queries.size();
+        vector<double> res(qLen, 0);
+        for(int i = 0; i < qLen; ++i){
+            string s1 = queries[i][0], s2 = queries[i][1];
+            if(uMap.count(s1) == 0 || uMap.count(s2) == 0 || findParent(uMap[s1]) != findParent(uMap[s2]))
+                res[i] = -1;
+            else{
+                double tempVal = uMap[s1]->val / uMap[s2]->val;
+                res[i] = tempVal;
+            }
+        }
+        return res;
+        
+    }
+};
+
+
