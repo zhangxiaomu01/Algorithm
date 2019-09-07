@@ -474,3 +474,111 @@ public:
     }
 };
 
+
+//417. Pacific Atlantic Water Flow
+//https://leetcode.com/problems/pacific-atlantic-water-flow/
+//Unoptimized DFS solution! too many repetitive search!
+class Solution {
+private:
+    int m_row, m_col;
+    
+    void dfs(vector<vector<int>>& M, int i, int j, pair<bool, bool>& detector){
+        if(i < 0 || j < 0 || i >= m_row || j >= m_col) return;
+        if(i == 0 || j == 0){
+            detector.first = true;
+        }
+        if(i == m_row-1 || j == m_col-1){
+            detector.second = true;
+        }
+        if(detector.first && detector.second) return;
+        
+        int tempNum = M[i][j];
+        if(i > 0 && M[i][j] >= M[i-1][j]){
+            M[i][j] = INT_MAX;
+            dfs(M, i-1, j, detector);
+            M[i][j] = tempNum;
+        }
+        if(j > 0 && M[i][j] >= M[i][j-1]){
+            M[i][j] = INT_MAX;
+            dfs(M, i, j-1, detector);
+            M[i][j] = tempNum;
+        }
+        if(i < m_row-1 && M[i][j] >= M[i+1][j]){
+            M[i][j] = INT_MAX;
+            dfs(M, i+1, j, detector);
+            M[i][j] = tempNum;
+        }
+        if(j < m_col-1 && M[i][j] >= M[i][j+1]){
+            M[i][j] = INT_MAX;
+            dfs(M, i, j+1, detector);
+            M[i][j] = tempNum;
+        }
+    }
+public:
+    vector<vector<int>> pacificAtlantic(vector<vector<int>>& matrix) {
+        m_row = matrix.size();
+        m_col = m_row ? matrix[0].size() : 0;
+        vector<vector<int>> res;
+        
+        for(int i = 0; i < m_row; ++i){
+            for(int j = 0; j < m_col; ++j){
+                pair<bool, bool> localPair({false, false});
+                dfs(matrix, i, j, localPair);
+                if(localPair.first && localPair.second)
+                    res.push_back(vector<int>({i, j}));
+            }
+        }
+        return res;
+    }
+};
+
+
+//Heavily optimized solution! Hard to get the idea during the interview!
+//The key is to come up with a solution to utilize the m_visited array to store
+//the result!
+class Solution {
+private:
+    int m_row, m_col;
+    //Note m_visited is global, then we can update it from 4 directions
+    //m_visited represents whenther grid[i][j] can reach the boundries!
+    vector<vector<int>> m_visited;
+    //label means we already reached which side. 
+    //when m_visited[i][j] == 3, we know we can reach from both sides.
+    void DFS(vector<vector<int>>& M, int i, int j, int pre, int label, vector<vector<int>>& res){
+        //Note m_visited[i][j] == label, we need to return as well
+        //since we already checked grid[i][j] can come from label's side
+        if(i < 0 || i >= m_row || j < 0 || j >= m_col || M[i][j] < pre || m_visited[i][j] == label || m_visited[i][j] == 3)
+            return;
+        m_visited[i][j] += label;
+        //std::cout << m_visited[i][j] << std::endl;
+        if(m_visited[i][j] == 3) res.push_back({i, j});
+        DFS(M, i-1, j, M[i][j], label, res);
+        DFS(M, i+1, j, M[i][j], label, res);
+        DFS(M, i, j+1, M[i][j], label, res);
+        DFS(M, i, j-1, M[i][j], label, res);
+    }
+public:
+    vector<vector<int>> pacificAtlantic(vector<vector<int>>& matrix) {
+        m_row = matrix.size();
+        m_col = m_row ? matrix[0].size() : 0;
+        vector<vector<int>> res;
+        m_visited.resize(m_row, vector<int>(m_col, 0));
+        //If we search from pacific to atlantic, then we will have label 1
+        //meas that the grid to be visited can reach pacific. Vice versa!
+        for(int i = 0; i < m_row; ++i){
+            //we start from pacific
+            DFS(matrix, i, 0, matrix[i][0], 1, res);
+            //we start from atlantic
+            DFS(matrix, i, m_col-1, matrix[i][m_col-1], 2, res);
+        }
+        for(int j = 0; j < m_col; ++j){
+            DFS(matrix, 0, j, matrix[0][j], 1, res);
+            DFS(matrix, m_row-1, j, matrix[m_row-1][j], 2, res);
+        }
+        //Since we already searched from all directions, which means 
+        //we already get the result!
+        return res;
+    }
+};
+
+
