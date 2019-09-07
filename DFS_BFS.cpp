@@ -582,3 +582,71 @@ public:
 };
 
 
+//BFS version, in general, slower than DFS version!
+class Solution {
+private:
+    vector<vector<int>> offset = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+    void BFS(vector<vector<int>>& M, queue<vector<int>>& Q, vector<vector<int>>& visited, int label){
+        int m = M.size();
+        int n = m ? M[0].size() : 0;
+        while(!Q.empty()){
+            auto cur = Q.front();
+            Q.pop();
+            for(int k = 0; k < offset.size(); ++k){
+                int indexI = cur[0] + offset[k][0];
+                int indexJ = cur[1] + offset[k][1];
+                if(indexI < 0 || indexJ < 0 || indexI >= m || indexJ >= n || visited[indexI][indexJ] == 3 || visited[indexI][indexJ] == label || M[cur[0]][cur[1]] > M[indexI][indexJ])
+                    continue;
+                visited[indexI][indexJ] += label;
+                Q.push(vector<int>({indexI, indexJ}));
+            }
+        }
+    }
+public:
+    vector<vector<int>> pacificAtlantic(vector<vector<int>>& matrix) {
+        int m = matrix.size();
+        int n = m ? matrix[0].size() : 0;
+        vector<vector<int>> res;
+        if(m == 0 || n == 0) return res;
+        //stores value represents whether [i,j] can reaches both ocean
+        //1 - can reach pacific ocean
+        //2 - can reach atlantic ocean
+        //3 - can reach both
+        //0 - cannot reach either ocean
+        vector<vector<int>> visited(m, vector<int>(n, 0));
+        queue<vector<int>> pacificQ, atlanticQ;
+        for(int i = 0; i < m; ++i){
+            pacificQ.push({i, 0});
+            visited[i][0] = visited[i][0] == 1 ? 1 : visited[i][0]+1;
+            atlanticQ.push({i, n-1});
+            visited[i][n-1] = visited[i][n-1]==2 ? 2 : visited[i][n-1]+2;
+        }
+        for(int j = 0; j < n; ++j){
+            pacificQ.push({0, j});
+            visited[0][j] = visited[0][j] == 1 ? 1 : visited[0][j]+1;
+            atlanticQ.push({m-1, j});
+            visited[m-1][j] = visited[m-1][j]==2 ? 2 : visited[m-1][j]+2;
+        }
+        //Handle the corner case when either row or column has only 1 
+        //element!
+        if(m == 1) {
+            visited[0][0] = 3;
+            visited[0][n-1] = 3;
+        }
+        if(n == 1){
+            visited[0][0] = 3;
+            visited[m-1][0] = 3;
+        }
+        BFS(matrix, pacificQ, visited, 1);
+        BFS(matrix, atlanticQ, visited, 2);
+        
+        for(int i = 0; i < m; ++i){
+            for(int j = 0; j < n; ++j){
+                if(visited[i][j] == 3)
+                    res.push_back({i, j});
+            }
+        }
+        return res;
+    }
+};
+
