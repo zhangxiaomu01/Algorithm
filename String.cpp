@@ -1048,3 +1048,80 @@ public:
     }
 };
 
+
+//87. Scramble String
+//https://leetcode.com/problems/scramble-string/
+//A hard problem, almost impossible to get the solution during the 
+//interview. In general, when we come to the recursive solution,
+//we always need to come with the base case, then validation, then
+//recursive formula.
+class Solution {
+public:
+    bool isScramble(string s1, string s2) {
+        //base case
+        if(s1 == s2) return true;
+        if(s1.size() != s2.size()) return false;
+        int dict[26] = {0};
+        
+        //check validation
+        for(int i = 0; i < s1.size(); ++i){
+            dict[s1[i] - 'a'] ++;
+        }
+        for(int i = 0; i < s2.size(); ++i){
+            dict[s2[i] - 'a'] --;
+            //s2 has different number of characters than s1
+            if(dict[s2[i] - 'a'] < 0)
+                return false;
+        }
+        
+        //recursive check for substring
+        for(int i = 1; i < s1.size(); ++i){
+            if(isScramble(s1.substr(0, i), s2.substr(0, i)) && 
+              isScramble(s1.substr(i), s2.substr(i)))
+                return true;
+            if(isScramble(s1.substr(0, i), s2.substr(s2.size() - i)) && 
+              isScramble(s1.substr(i), s2.substr(0, s2.size() - i)))
+                return true;
+        }
+        return false;
+    }
+};
+
+
+//Actually, I do not think this uDict can prevent too many repetitive 
+//calculation! It's slower
+class Solution {
+private:
+    bool checkScramble(string s1, string s2, unordered_map<string, bool>& uDict){
+        if(s1 == s2) return true;
+        if(s1.size() != s2.size()) return false;
+        string tempS = s1 + s2;
+        if(uDict.count(tempS)) return uDict[tempS];
+        int cDict[26] = {0};
+        
+        for(int i = 0; i < s1.size(); ++i){
+            cDict[s1[i] - 'a']++;
+        }
+        for(int i = 0; i < s2.size(); ++i){
+            cDict[s2[i] - 'a'] --;
+            if(cDict[s2[i] - 'a'] < 0)
+                return uDict[tempS] = false;
+        }
+        
+        for(int i = 1; i < s1.size(); ++i){
+            if(checkScramble(s1.substr(0, i), s2.substr(0, i), uDict) && 
+               checkScramble(s1.substr(i), s2.substr(i), uDict))
+                return uDict[tempS] = true;
+            if(checkScramble(s1.substr(0, i), s2.substr(s2.size() - i), uDict) 
+               && checkScramble(s1.substr(i), s2.substr(0, s2.size() - i), uDict))
+                return uDict[tempS] = true;
+        }
+        return uDict[tempS] = false;
+    }
+public:
+    bool isScramble(string s1, string s2) {
+        unordered_map<string, bool> uDict;
+        return checkScramble(s1, s2, uDict);
+    }
+};
+
