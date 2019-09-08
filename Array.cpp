@@ -3404,4 +3404,39 @@ public:
 };
 
 
+//DFS + Memorization: if you know how to implement DP solution
+//Slow but easy to understand!
+class Solution {
+private:
+    long long DFS(int pos, vector<int>& nums, int m, vector<vector<long long>>& memo, long long * preSum){
+        if(m == 0) return preSum[nums.size()] - preSum[pos];
+        if(pos >= nums.size() || m < 0) return LONG_MAX;
+        if(memo[m][pos] != -1) return memo[m][pos];
+        
+        long long res = LONG_MAX;
+        for(int i = pos; i < nums.size(); ++i){
+            long long leftMax = preSum[i+1] - preSum[pos];
+            //Note we have already cut 1 time here
+            long long rightMax = DFS(i+1, nums, m-1, memo, preSum);
+            res = min(res, max(leftMax, rightMax));
+        }
+        memo[m][pos] = res;
+        return res;
+    }
+public:
+    int splitArray(vector<int>& nums, int m) {
+        int len = nums.size();
+        long long preSum[len+1] = {0};
+        for(int i = 0; i < len; ++i){
+            preSum[i+1] = preSum[i] + nums[i];
+        }
+        //memo[s][j] means that for [j...len-1], if we can split 
+        //m times, what is the minimum largest sum of different
+        //partitions? s = [0 .. m-1]
+        vector<vector<long long>> memo(m, vector<long long>(len, -1));
+        //here m-1 means m-1 times cuts
+        return DFS(0, nums, m-1, memo, preSum);
+    }
+};
+
 
