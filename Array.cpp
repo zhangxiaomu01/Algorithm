@@ -3217,3 +3217,138 @@ public:
     }
 };
 
+
+//857. Minimum Cost to Hire K Workers
+//https://leetcode.com/problems/minimum-cost-to-hire-k-workers/
+//A very good explanation:
+//https://leetcode.com/problems/minimum-cost-to-hire-k-workers/discuss/141768/Detailed-explanation-O(NlogN)
+//The key insight is to find that in order to make the minimum 
+//payment, there is at least one worker which will be paid the his
+//expected minimum wage. Another important facts is that if we 
+//select a person whose ratio is the smallest, we can never make 
+//any other people happy. For example: [10, 20, 5] - [70, 50, 30]
+//The second worker has the smallest ratio, which is 2.5, if we 
+//pick him, then according to the first rule, the first person 
+//will be paid 25, and the third will be paid 12.5. Which does not
+//satisfy the second rule. If we pick up the person with the largest
+//ratio to pay him the expected minimum wage, say first person. 
+//we can safely pick either second one or third one. 
+//That is to say, if person i has raotio R[i], then any one whose
+//ratio greater than R[i] cannot be included!
+//Then we can see a clear strategy is to greedily select a person
+//with lower ratio, and pick up k people with smallest possible 
+//qualities, and we check for each person from samller ratio to
+//higher ratio.
+//Time: O(nlogn)
+class Solution {
+private:
+    struct Workers{
+        int quality, wage;
+        double ratio;
+        Workers(int q, int w){
+            quality = q;
+            wage = w;
+            ratio = double(wage) / double(quality);
+        }
+    };
+    
+    struct myComp{
+        bool operator()(Workers& w1, Workers& w2){
+            return w1.ratio < w2.ratio;
+        }
+    } Comparator;
+    
+public:
+    double mincostToHireWorkers(vector<int>& quality, vector<int>& wage, int K) {
+        int len = quality.size();
+        vector<Workers> workerList;
+        //build the workers list
+        for(int i = 0; i < len; ++i){
+            workerList.push_back(Workers(quality[i], wage[i]));
+        }
+        double res = DBL_MAX;
+        //Calculate the current total quality can save us time to calculate
+        //current payment when we select worker[i]
+        int sumQuality = 0;
+        //sort the ratio from the smallest to the lagest
+        sort(workerList.begin(), workerList.end(), Comparator);
+        //save the quality to max queue, we only care about workers
+        //with smaller quality
+        priority_queue<int> pq;
+        for(auto& w : workerList){
+            sumQuality += w.quality;
+            pq.push(w.quality);
+            if(pq.size() > K){
+                sumQuality -= pq.top();
+                pq.pop();
+            } 
+            if(pq.size() == K) res = min(res, sumQuality * w.ratio);
+        }
+        
+        return res;
+    }
+};
+
+
+//410. Split Array Largest Sum
+//https://leetcode.com/problems/split-array-largest-sum/
+//Good explanation:
+//https://leetcode.com/problems/split-array-largest-sum/discuss/89819/C%2B%2B-Fast-Very-clear-explanation-Clean-Code-Solution-with-Greedy-Algorithm-and-Binary-Search
+//Very tricky solution: Greedy + Binary search!
+class Solution {
+private:
+    //this function answers a question: if given cuts number of 
+    //cuts, can we split the array nums with cuts+1 subarray, with
+    //each subarray sum <= upperBound ?
+    bool canSplit(vector<int>&nums, int cuts, int upperBound){
+        //we use acc to record whether we can put this element to
+        //current subarray, if we can, acc += n; else we have to
+        //use one more cuts, and start over with acc = n
+        long long acc = 0;
+        for(int n : nums){
+            //impossible if upperbound is greater than individual 
+            //element
+            if(n > upperBound) return false;
+            else if(acc + n <= upperBound){
+                acc += n;
+            }else{
+                acc = n;
+                cuts--;
+                if(cuts < 0) return false;
+            }
+        }
+        return true;
+    }
+public:
+    int splitArray(vector<int>& nums, int m) {
+        int len = nums.size();
+        //l and r represents the lower and upperbound of any 
+        //array. For example: [1, 2, 3, 4, 5], the bound should
+        //be [l, r] = [5, 15]
+        long long l = 0, r = 0;
+        for(int n : nums){
+            l = max(l, (long long)n);
+            r += n;
+        }
+        //Actually, from lowerbound to upperbound, we will have a
+        //boolean array which represents wheather we can split 
+        //the array to m-1 subarray if the given bound is from
+        //[l, r]. For example, [1, 2, 3, 4, 5]. If m = 3 (2 cuts).
+        //then we will have an array with [5, 6, ... 15] to search
+        //we know [5:false, 6:true, 7:true...15:true].Then we need
+        //to find the first true index in this array. We can apply
+        //binary search here!
+        while(l < r){
+            int mid = l + (r - l) / 2;
+            if(canSplit(nums, m-1, mid)) r = mid;
+            else
+                l = mid + 1;
+        }
+        return l;
+
+    }
+};
+
+
+
+
