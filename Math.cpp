@@ -414,3 +414,57 @@ public:
 };
 
 
+//For the random solution, since we arbitrarily select an word
+//it could potentially get a word with 0 matches. If we want to 
+//improve the result, we need to minimize the possibilities that
+//we select such word. We can do a preprocessing, and try to find
+//a word with minimum 0 matched words. Then start with this word.
+//The code is slower, but has higher chance to get it right!
+class Solution {
+private:
+    int match(string s1, string s2){
+        int res = 0;
+        for(int i = 0; i < s1.size(); ++i)
+            res += (s1[i] == s2[i]) ? 1 : 0;
+        return res;
+    }
+public:
+    void findSecretWord(vector<string>& wordlist, Master& master) {
+        for(int i = 0, x = 0; i < 10 && x < 6; ++i){
+            unordered_map<string, int> uMap;
+            for(string& w1 : wordlist)
+                for(string& w2 : wordlist)
+                    if(match(w1, w2) == 0) 
+                        uMap[w1]++;
+            
+            string pick = wordlist[0];
+            int count = INT_MAX;
+            /*
+            //should not check uMap, because it could potentially be
+            //empty
+            for(auto it = uMap.begin(); it != uMap.end(); ++it){
+                if(it->second < x){
+                    pick = it->first;
+                    x = it->second;
+                }
+            }*/
+            //The purpose for this loop is just find pick, count is
+            //an auxiliary varibale
+            for(string& w : wordlist){
+                if(uMap[w] < count){
+                    pick = w; 
+                    count = uMap[w];
+                } 
+            }
+            //check guess here!
+            x = master.guess(pick);
+            vector<string> wordlist2;
+            for(string& w : wordlist){
+                if(match(w, pick) == x)
+                    wordlist2.push_back(w);
+            }
+            wordlist.swap(wordlist2);
+        }
+    }
+};
+
