@@ -1125,3 +1125,76 @@ public:
     }
 };
 
+
+//844. Backspace String Compare
+//https://leetcode.com/problems/backspace-string-compare/
+//Space: O(n)
+class Solution {
+public:
+    bool backspaceCompare(string S, string T) {
+        stack<char> sSt, tSt;
+        int lenS = S.size();
+        int lenT = T.size();
+        int i = 0, j = 0;
+        while(i < lenS){
+            if(S[i] != '#')
+                sSt.push(S[i]);
+            else if(!sSt.empty()){
+                sSt.pop();
+            }
+            i++;
+        }
+        while(j < lenT){
+            if(T[j] != '#')
+                tSt.push(T[j]);
+            else if(!tSt.empty())
+                tSt.pop();
+            j++;
+        }
+        //std::cout << sSt.size() << std::endl;
+        if(sSt.size() != tSt.size()) return false;
+        while(!sSt.empty()){
+            if(sSt.top() != tSt.top()) return false;
+            sSt.pop();
+            tSt.pop();
+        }
+        return true;
+    }
+};
+
+//The idea is not hard, however get it well structured and figure out all the 
+//corner cases is not easy!
+class Solution {
+public:
+    bool backspaceCompare(string S, string T) {
+        int lenS = S.size(), lenT = T.size();
+        int i = lenS-1, j = lenT-1;
+       
+        while(i >= 0 || j >= 0){
+            int count = 0;
+             
+            while(i >= 0 && (count || S[i] == '#')){
+                count += (S[i] == '#' ? 1 : -1);
+                i--;
+            }
+            count = 0;
+            while(j >= 0 && (count || T[j] == '#')){
+                count += (T[j] == '#' ? 1 : -1);
+                j--;
+            }
+            //reset count!
+            count = 0;
+            if(i >= 0 && j >= 0 && S[i] != T[j]) return false;
+            //This part is hard to get, we need to return both i == -1 &&
+            //j == -1
+            if(i < 0 || j < 0 ){
+                return (i==-1) && (j == -1);
+            } 
+            //Decrement i and j here. If S[i] == T[j], and both != '#'
+            --i; --j;
+        }
+        return true;
+    }
+};
+
+
