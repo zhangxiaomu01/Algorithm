@@ -380,3 +380,37 @@ public:
     }
 };
 
+
+//843. Guess the Word
+//https://leetcode.com/problems/guess-the-word/
+//A nice explanation from:
+//https://leetcode.com/problems/guess-the-word/discuss/133862/Random-Guess-and-Minimax-Guess-with-Comparison
+class Solution {
+private:
+    int match(string& s1, string& s2){
+        int res = 0;
+        for(int i = 0; i < s1.size(); ++i){
+            res += s1[i] == s2[i] ? 1 : 0;
+        }
+        return res;
+    }
+public:
+    void findSecretWord(vector<string>& wordlist, Master& master) {
+        //if x == 6, we guess the correct word
+        for(int j = 0, x = 0; j < 10 && x < 6; ++j){
+            string pick = wordlist[rand() % wordlist.size()];
+            x = master.guess(pick);
+            //it's like a filter, each time we filter the matched word
+            //to a new list. Then keep filtering until we find the matched 
+            //word or we run out of times
+            vector<string> wordlist2;
+            for(int i = 0; i < wordlist.size(); ++i){
+                if(x == match(wordlist[i], pick))
+                    wordlist2.push_back(wordlist[i]);
+            }
+            wordlist.swap(wordlist2);      
+        }
+    }
+};
+
+
