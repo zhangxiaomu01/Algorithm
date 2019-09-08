@@ -3389,7 +3389,10 @@ public:
                     //preSum[j] - preSum[i] will be even larger, so
                     //we can break here!
                     //here we should have t <= dp[i] instead of < 
-                    //dp[i], weird!
+                    //dp[i]. The reason is dp[j] could be maximum
+                    //and have dp[i] == dp[j], if we break earlier
+                    //we lost the case that in the future roud, 
+                    //we have preSum[j] - preSum[i] < dp[i]
                     if(t <= dp[i]) dp[i] = t;
                     else break;
                 }
@@ -3399,5 +3402,6 @@ public:
         return dp[0];
     }
 };
+
 
 
