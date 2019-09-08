@@ -468,3 +468,73 @@ public:
     }
 };
 
+
+//857. Minimum Cost to Hire K Workers
+//https://leetcode.com/problems/minimum-cost-to-hire-k-workers/
+//A very good explanation:
+//https://leetcode.com/problems/minimum-cost-to-hire-k-workers/discuss/141768/Detailed-explanation-O(NlogN)
+//The key insight is to find that in order to make the minimum 
+//payment, there is at least one worker which will be paid the his
+//expected minimum wage. Another important facts is that if we 
+//select a person whose ratio is the smallest, we can never make 
+//any other people happy. For example: [10, 20, 5] - [70, 50, 30]
+//The second worker has the smallest ratio, which is 2.5, if we 
+//pick him, then according to the first rule, the first person 
+//will be paid 25, and the third will be paid 12.5. Which does not
+//satisfy the second rule. If we pick up the person with the largest
+//ratio to pay him the expected minimum wage, say first person. 
+//we can safely pick either second one or third one. 
+//That is to say, if person i has raotio R[i], then any one whose
+//ratio greater than R[i] cannot be included!
+//Then we can see a clear strategy is to greedily select a person
+//with lower ratio, and pick up k people with smallest possible 
+//qualities, and we check for each person from samller ratio to
+//higher ratio.
+//Time: O(nlogn)
+class Solution {
+private:
+    struct Workers{
+        int quality, wage;
+        double ratio;
+        Workers(int q, int w){
+            quality = q;
+            wage = w;
+            ratio = double(wage) / double(quality);
+        }
+    };
+    
+    struct myComp{
+        bool operator()(Workers& w1, Workers& w2){
+            return w1.ratio < w2.ratio;
+        }
+    } Comparator;
+    
+public:
+    double mincostToHireWorkers(vector<int>& quality, vector<int>& wage, int K) {
+        int len = quality.size();
+        vector<Workers> workerList;
+        //build the workers list
+        for(int i = 0; i < len; ++i){
+            workerList.push_back(Workers(quality[i], wage[i]));
+        }
+        double res = DBL_MAX;
+        int sumQuality = 0;
+        //sort the ratio from the smallest to the lagest
+        sort(workerList.begin(), workerList.end(), Comparator);
+        //save the quality to max queue, we only care about workers
+        //with smaller quality
+        priority_queue<int> pq;
+        for(auto& w : workerList){
+            sumQuality += w.quality;
+            pq.push(w.quality);
+            if(pq.size() > K){
+                sumQuality -= pq.top();
+                pq.pop();
+            } 
+            if(pq.size() == K) res = min(res, sumQuality * w.ratio);
+        }
+        
+        return res;
+    }
+};
+
