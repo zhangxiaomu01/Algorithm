@@ -3349,6 +3349,55 @@ public:
     }
 };
 
-
+//DP solution: DP formula is the key to success
+//dp[s,j] is the solution for splitting subarray n[j]...n[L-1] into 
+//s parts.
+//dp[s+1,i] = min{ max(dp[s,j], n[i]+...+n[j-1]) }, i+1 <= j <= L-s
+class Solution {
+public:
+    int splitArray(vector<int>& nums, int m) {
+        int len = nums.size();
+        long long preSum[len+1] = {0};
+        //dp array, we can do dp[s][i] here.
+        //but dp[s][i] only depends on dp[s-1][j], we can compress
+        //the result here
+        long long dp[len] = {0};
+        for(int i = 1; i <= len; ++i){
+            preSum[i] = preSum[i-1] + nums[i-1];
+        }
+        for(int i = 0; i < len; ++i){
+            //the first dp[i] means we have dp[0][i] for 
+            //[i+1...len-1], which is simply the sum of i+1 to len-1
+            dp[i] = preSum[len] - preSum[i];
+        }
+        //since we split s segments from [j..len-1], then we can 
+        //have at most m-1 segments. (we will have one more segment
+        //[i ... j-1])
+        for(int s = 1; s < m; ++s){
+            //we need to at least leave (s-1) elements for dp[s][j]
+            //so we can partition it to s-1 subarrays
+            for(int i = 0; i < len - s; ++i){
+                dp[i] = LONG_MAX;
+                for(int j = i+1; j <= len-s; ++j){
+                    //preSum[j] - preSum[i]: [i .. j-1]
+                    //dp[j]: dp[s-1][j]
+                    //maximum potential split if we split in j 
+                    //index
+                    int t = max(preSum[j] - preSum[i], dp[j]); 
+                    //since the array contains all positive numbers
+                    //if t == dp[i], in the next loop, 
+                    //preSum[j] - preSum[i] will be even larger, so
+                    //we can break here!
+                    //here we should have t <= dp[i] instead of < 
+                    //dp[i], weird!
+                    if(t <= dp[i]) dp[i] = t;
+                    else break;
+                }
+            }
+        }
+        //actually return dp[m][0]
+        return dp[0];
+    }
+};
 
 
