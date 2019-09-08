@@ -1996,3 +1996,58 @@ public:
     }
 };
 
+
+//975. Odd Even Jump
+//https://leetcode.com/problems/odd-even-jump/
+//DP + TreeMap. Good question!
+//Good explanation:https://leetcode.com/problems/odd-even-jump/discuss/217981/JavaC%2B%2BPython-DP-idea-Using-TreeMap-or-Stack
+class Solution {
+public:
+    int oddEvenJumps(vector<int>& A) {
+        map<int, int> valueIndexMap;
+        int len = A.size();
+        //higher[i] represents for index i, we do the odd jump
+        //(jump to minimum higher value); lower[i] means even
+        //jump. So the result will be how many valid higher[i]
+        //exists
+        //In order to determine higher[i], we need to know a j
+        //which A[j] >= A[i] and A[j] is the smallest among
+        //all the potential valid j. So we need to find a way
+        //efficiently retrive the lowerbound(A[i]). We need a 
+        //binary search tree!
+        int higher[len] = {0}, lower[len] = {0};
+        //Since this is a DP solution, base case is when we are
+        //at len-1 (destination), so both lower and higher will
+        //be 1
+        higher[len-1] = 1, lower[len-1] = 1;
+        //Build up value - index map
+        valueIndexMap[A[len-1]] = len-1;
+        //res should be 1, because last element is always valid
+        int res = 1;
+        for(int i = len-2; i >=0; --i){
+            auto hi = valueIndexMap.lower_bound(A[i]);
+            //We need to find a value <= A[i], upper_bound will
+            //give the first element that is greater than A[i]
+            //so --lo will point to the value we want!
+            auto lo = valueIndexMap.upper_bound(A[i]);
+            //if jump odd at i, then even at hi->second
+            if(hi != valueIndexMap.end()) 
+                higher[i] = lower[hi->second];
+            //if lo == map.begin(), all elements([i+1...len-1])
+            //are greater than A[i], no way to go even here, 
+            //we have lower[i] = 0 in this case
+            if(lo != valueIndexMap.begin())
+                lower[i] = higher[(--lo)->second];
+            if(higher[i]) res++;
+            valueIndexMap[A[i]] = i;
+        }
+        return res;
+    }
+};
+
+
+
+
+
+
+
