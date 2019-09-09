@@ -463,10 +463,10 @@ public:
 natural way to solve it. let dp[i][j] represents the ways 
 if we have i types of coins in order to make up the amount j.
 The dp formula is a little bit hard to get, which is 
-dp[i][j] = dp[i-1][j] + dp[i][j-coins[j]].
-We either give up coins[j] or select coins[j]. Note we build
+dp[i][j] = dp[i-1][j] + dp[i][j-coins[i]].
+We either give up coins[i] or select coins[i]. Note we build
 the table from beginning to end, then we already consider the 
-situation if amount j can include multiple coins[j]s when it
+situation if amount j can include multiple coins[i]s when it
 comes to j.*/
 class Solution {
 public:
@@ -476,7 +476,7 @@ public:
         int len = coins.size();
         vector<vector<int>> dp(len+1, vector<int>(amount+1, 0));
         dp[0][0] = 1;
-        //dp[i][0] should always be 0 unless j == 0
+        //dp[i][0] should always be 1 
         for(int j = 1; j <= amount; ++j){
             //If we have no coins, then we have no way to make up amount
             dp[0][j] = 0; 
