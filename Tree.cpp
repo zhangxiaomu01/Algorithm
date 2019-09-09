@@ -2150,4 +2150,25 @@ Node* insertLevelOrder(vector<int>& arr, Node* root,
 }
 
 
+//222. Count Complete Tree Nodes
+//https://leetcode.com/problems/count-complete-tree-nodes/
+//Level order Traversal
+class Solution {
+public:
+    int countNodes(TreeNode* root) {
+        int count = 0;
+        if(!root) return count;
+        queue<TreeNode*> Q;
+        Q.push(root);
+        while(!Q.empty()){
+            TreeNode* node = Q.front();
+            Q.pop();
+            count++;
+            if(node->left) Q.push(node->left);
+            if(node->right) Q.push(node->right);
+        }
+        return count;
+    }
+};
+
 
