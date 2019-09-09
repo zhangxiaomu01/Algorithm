@@ -650,3 +650,104 @@ public:
     }
 };
 
+
+//947. Most Stones Removed with Same Row or Column
+//https://leetcode.com/problems/most-stones-removed-with-same-row-or-column/
+//DFS solution. We consider each stone as a node in graph (in this 
+//code, slightly different). The number of stones we can remove 
+//equals to N - number of connected components. (Since each component
+//we must leave at least 1 stone)
+/*
+When we search on points,
+we alternately change our view on a row and on a col.
+
+We think:
+a row index, connect two stones on this row
+a col index, connect two stones on this col.
+
+In another view：
+A stone, connect a row index and col.
+
+Have this idea in mind, the solution can be much simpler.
+The number of islands of points,
+is the same as the number of islands of indexes.
+*/
+class Solution {
+public:
+    int removeStones(vector<vector<int>>& stones) {
+        //Adjacent list representation!
+        unordered_map<int, vector<int>> graph;
+        for(auto& v : stones){
+            //~x = -x - 1, equivalenet to x = x + 10000
+            //We just make sure row and col can be represented in
+            //the same map
+            //Note the graph, the stone is edge between two indices
+            //However, the connected component should be the same
+            graph[v[0]].push_back(~v[1]);
+            graph[~v[1]].push_back(v[0]);
+        }
+        
+        int numOfComponent = 0;
+        unordered_set<int> Visited;
+        stack<int> tobeVisited;
+        //Iterative DFS
+        for(int i = 0; i < stones.size(); ++i){
+            for(int j = 0; j < 2; ++j){
+                //A little trick to determine the index
+                int s = j == 0 ? stones[i][0] : ~stones[i][1];
+                if(Visited.count(s) == 0){
+                    tobeVisited.push(s);
+                    numOfComponent++;
+                    while(!tobeVisited.empty()){
+                        int index = tobeVisited.top();
+                        Visited.insert(index);
+                        tobeVisited.pop();
+                        for(int neighbor : graph[index]){
+                            if(Visited.count(neighbor) == 0)
+                                tobeVisited.push(neighbor);
+                        }
+                    }
+                }
+            }
+        }
+        return stones.size() - numOfComponent;
+    }
+};
+
+
+//DFS solution ver 2
+class Solution {
+private:
+    void DFS(int index, unordered_map<int, vector<int>>& G, unordered_set<int>& visited){
+        visited.insert(index);
+        for(int neighbor : G[index]){
+            if(visited.count(neighbor) == 0)
+                DFS(neighbor, G, visited);
+        }
+    }
+public:
+    int removeStones(vector<vector<int>>& stones) {
+        unordered_map<int, vector<int>> graph;
+        for(auto& v : stones){
+            graph[v[0]].push_back(~v[1]);
+            graph[~v[1]].push_back(v[0]);
+        }
+        
+        int numOfComponent = 0;
+        unordered_set<int> Visited;
+        for(int i = 0; i < stones.size(); ++i){
+            for(int j = 0; j < 2; ++j){
+                int s = j == 0 ? stones[i][0] : ~stones[i][1];
+                if(Visited.count(s) == 0){
+                    numOfComponent++;
+                    DFS(s, graph, Visited);
+                }
+            }
+        }
+        
+        return stones.size() - numOfComponent;
+    }
+};
+
+
+
