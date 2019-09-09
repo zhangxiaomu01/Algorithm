@@ -1198,3 +1198,37 @@ public:
 };
 
 
+//777. Swap Adjacent in LR String
+//https://leetcode.com/problems/swap-adjacent-in-lr-string/
+//The key insight is that start[i] == 'L', then its index i should be 
+//>= j, or we can never make the move. For start[i] == 'R', then i 
+//should be <= j
+class Solution {
+public:
+    bool canTransform(string start, string end) {
+        if(start == end) return true;
+        if(start.size() != end.size()) return false;
+        string s1, s2;
+        int lenS = start.size();
+        for(int i = 0; i < lenS; ++i){
+            if(start[i] != 'X') s1.push_back(start[i]);
+            if(end[i] != 'X') s2.push_back(end[i]);
+        }
+        //We do not have equal number of 'L' or 'R'
+        //or they have wrong sequence
+        if(s1 != s2) return false;
+        
+        //Two pointers!
+        for(int i = 0, j = 0; i < lenS && j < lenS;){
+            while(i < lenS && start[i] == 'X') i++;
+            while(j < lenS && end[j] == 'X') j++;
+            if(start[i] != end[j]) return false;
+            if((start[i] == 'L' && i < j) || start[i] == 'R' && i > j)
+                return false;
+            else
+                i++; j++;
+        }
+        return true;
+    }
+};
+
