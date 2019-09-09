@@ -240,6 +240,33 @@ public:
     }
 };
 
+class Solution {
+public:
+    vector<int> postorderTraversal(TreeNode* root) {
+        vector<int> nodes;
+        stack<TreeNode*> todo;
+        TreeNode* last = NULL;
+        while (root || !todo.empty()) {
+            while (root) {
+                todo.push(root);
+                root = root -> left;
+            } 
+            
+            TreeNode* node = todo.top();
+            //can use if(...) {root = node->right; continue;}
+            if (node -> right && last != node -> right) {
+                root = node -> right;
+            }
+            else{
+                nodes.push_back(node -> val);
+                last = node;
+                todo.pop();
+            }
+        }
+        return nodes;
+    }
+};
+
 //102. Binary Tree Level Order Traversal
 //https://leetcode.com/problems/binary-tree-level-order-traversal/
 /*
