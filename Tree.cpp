@@ -2171,4 +2171,28 @@ public:
     }
 };
 
+//We can do binary search
+//O(h logh)
+class Solution {
+private:
+    int countDepth(TreeNode* node, bool isLeft){
+        int depth = 0;
+        while(node){
+            depth++;
+            node = isLeft ? node->left : node->right;
+        }
+        return depth;
+    }
+public:
+    int countNodes(TreeNode* root) {
+        if(!root) return 0;
+        int leftDepth = countDepth(root, true);
+        int rightDepth = countDepth(root, false);
+        if(leftDepth == rightDepth)
+            return (1 << leftDepth) - 1;
+        else
+            return 1 + countNodes(root->left) + countNodes(root->right);
+    }
+};
+
 
