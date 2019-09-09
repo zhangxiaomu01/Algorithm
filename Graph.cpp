@@ -595,3 +595,53 @@ public:
     }
 };
 
+//Union Find solution!
+//Good explanation:
+//https://leetcode.com/problems/most-stones-removed-with-same-row-or-column/discuss/197668/Count-the-Number-of-Islands-O(N)
+class Solution {
+private:
+    //maps the UF value with its parent!
+    unordered_map<int, int> UFMap;
+    int numOfComponents;
+    
+    int find(int x){
+        //If x is new, we map it to its self. 
+        //Since potentially x will be a new component, we need 
+        //increment numOfComponents
+        if(UFMap.count(x) == 0){
+            UFMap[x] = x; numOfComponents ++;
+        }
+        //if(node->parent != node) 
+        //  node->parent = find(node->parent);
+        //We update the parent pointer here, and map it to the 
+        //common root
+        if(x != UFMap[x]) UFMap[x] = find(UFMap[x]);
+        return UFMap[x];
+    }
+
+    void UFOperation(int x, int y){
+        int parentX = find(x);
+        int parentY = find(y);
+        //Since we know a stone joins two indexes together
+        //which means we have two groups combined together! We need 
+        //to decrement numOfComponents.
+        if(parentX != parentY) {
+            UFMap[parentX] = parentY;
+            numOfComponents --;
+        }
+    }
+    
+public:
+    int removeStones(vector<vector<int>>& stones) {
+        //Initialize here
+        numOfComponents = 0;
+        for(int i = 0; i < stones.size(); ++i){
+            //~stones[i][1] maps col to different index range
+            //equivalent to ~x = -x - 1, or x += 10000
+            //since this quetion says 0 <= stones[i][j] < 10000
+            UFOperation(stones[i][0], ~stones[i][1]);
+        }
+        return stones.size() - numOfComponents;
+    }
+};
+
