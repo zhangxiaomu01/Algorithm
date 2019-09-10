@@ -1516,7 +1516,7 @@ public:
     }
 };
 
-/* Optimize version. Exact the same idea like the previous one. Exception that we
+/* Optimize version. Exact the same idea like the previous one. Except that we
 add some acceleration code */
 class Solution {
 public:

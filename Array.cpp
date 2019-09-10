@@ -3440,3 +3440,46 @@ public:
 };
 
 
+//1007. Minimum Domino Rotations For Equal Row
+//https://leetcode.com/problems/minimum-domino-rotations-for-equal-row/
+//First try! It's wrong!!!!! we need to count both swap from A to B and B to A.
+//Using only one countA will not be sufficient! len - countA does not represent
+//swap from A to B. Be careful!
+//counter example: [1,2,2,1,1,2] [2,1,1,1,2,1]
+class Solution {
+public:
+    int minDominoRotations(vector<int>& A, vector<int>& B) {
+        if(A.empty() || A.size() != B.size()) return -1;
+        int len = A.size();
+        int a = A[0], b = B[0];
+        int countA = 0;
+        int countB = 0;
+        int i = 0;
+        for(; i < len; ++i){
+            if(A[i] != a && B[i] != a) {
+                i = -1; break;
+            }
+            //Initial thought! it was wrong!!!!!
+            if(A[i] != a && B[i] == a) countA++;
+        }
+
+        //it is possible that we swap len - countA times to formulate a
+        //valid B array
+        countA = i == -1 ? INT_MAX : (min(countA, len - countA));
+        
+        int j = 0;
+        for(; j < len; ++j){
+            if(A[j] != b && B[j] != b) {
+                j = -1; break;
+            }
+            if(A[j] == b && B[j] != b) countB++;
+        }
+        countB = j == -1 ? INT_MAX : (min(countB, len - countB));
+        if(i == -1 && j == -1) return -1;
+        return min(countA, countB);
+    }
+};
+
+
+
+
