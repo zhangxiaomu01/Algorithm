@@ -3578,3 +3578,52 @@ public:
 };
 
 
+//quick select. Implemented by me!
+class Solution {
+    //p0 will be the pivot point
+    bool farther(vector<int>& p0, vector<int>& p1){
+        return p0[0]*p0[0] + p0[1]*p0[1] < p1[0]*p1[0] + p1[1]*p1[1];
+    }
+    bool closer(vector<int>& p0, vector<int>& p1){
+        return p0[0]*p0[0] + p0[1]*p0[1] > p1[0]*p1[0] + p1[1]*p1[1];
+    } 
+    //put elements smaller than p[index] before p[index], greater than 
+    int partition(vector<vector<int>>& p, int l, int r){
+        int index = l;
+        l = l + 1;
+        while(l <= r){
+            if(farther(p[index], p[l]) && closer(p[index], p[r])){
+                swap(p[l], p[r]);
+                l++; r--;
+                continue;
+            }
+            if(!farther(p[index], p[l])){
+                l++;
+            }
+            if(!closer(p[index], p[r])){
+                r--;
+            }
+        }
+        swap(p[index], p[r]);
+        return r;
+    }
+public:
+    vector<vector<int>> kClosest(vector<vector<int>>& points, int k) {
+        int l = 0, r = points.size() - 1;
+        if(k > r) return points;
+        while(l < r){
+            int index = partition(points, l, r);
+            //we find kth element
+            if(index == k-1) break;
+            //we have less than k elements in the left
+            if(index < k-1)
+                l = index + 1;
+            else
+                r = index;
+        }
+        return vector<vector<int>>(points.begin(), points.begin() + k);
+    }
+};
+
+
+
