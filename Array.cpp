@@ -3626,4 +3626,29 @@ public:
 };
 
 
+//475. Heaters
+//https://leetcode.com/problems/heaters/
+//Set solution!
+//using set to store all the heaters.
+class Solution {
+public:
+    int findRadius(vector<int>& houses, vector<int>& heaters) {
+        set<int> heaterSet(heaters.begin(), heaters.end());
+        int miniRange = INT_MIN;
+        for(int i = 0; i < houses.size(); ++i){
+            int localMin = 0;
+            int housePos = houses[i];
+            auto it = heaterSet.lower_bound(housePos);
+            if(it == heaterSet.begin()) 
+                localMin = abs(*it - housePos);
+            else{
+                localMin = min(abs(*(--it) - housePos), abs(*it - housePos));
+            }
+            miniRange = max(miniRange, localMin);
+            
+        }
+        return miniRange;
+    }
+};
+
 
