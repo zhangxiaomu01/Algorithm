@@ -3446,6 +3446,7 @@ public:
 //Using only one countA will not be sufficient! len - countA does not represent
 //swap from A to B. Be careful!
 //counter example: [1,2,2,1,1,2] [2,1,1,1,2,1]
+/*
 class Solution {
 public:
     int minDominoRotations(vector<int>& A, vector<int>& B) {
@@ -3479,7 +3480,48 @@ public:
         return min(countA, countB);
     }
 };
+*/
 
-
+//A natural approach is to check x from 1... 6 and to see for each A[i],
+//B[i], wheather either A[i] == x or B[i] == x. Actually we can do better,
+//we can check A[0] and B[0] separately.  We know if either A or B satisfy 
+//the requirement, then A[0] or B[0] must be included. We can reduce the
+//search!
+class Solution {
+public:
+    int minDominoRotations(vector<int>& A, vector<int>& B) {
+        if(A.empty() || A.size() != B.size()) return -1;
+        int len = A.size();
+        int a = A[0], b = B[0];
+        int countA = 0;
+        int countB = 0;
+        int i = 0;
+        for(; i < len; ++i){
+            if(A[i] != a && B[i] != a) {
+                break;
+            }
+            //We need to count both A and B, which represents wheather we
+            //swap B[i] to A[i] or swap A[i] to B[i]
+            //Note it's not equivalent
+            if(A[i] != a) countA++;
+            if(B[i] != a) countB++;
+            if(i == len-1) return min(countA, countB);
+        }
+        
+        countA = countB = 0;
+        int j = 0;
+        for(; j < len; ++j){
+            if(A[j] != b && B[j] != b) {
+               break;
+            }
+            if(A[j] != b) countA++;
+            if(B[j] != b) countB++;
+            if(j == len-1) return min(countA, countB);
+        }
+        //If we do not terminate earlier, which means we cannot have valid
+        //swap
+        return -1;
+    }
+};
 
 
