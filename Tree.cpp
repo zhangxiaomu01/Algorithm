@@ -2223,3 +2223,36 @@ public:
 };
 
 
+//1161. Maximum Level Sum of a Binary Tree
+//https://leetcode.com/problems/maximum-level-sum-of-a-binary-tree/
+//General BFS
+class Solution {
+public:
+    int maxLevelSum(TreeNode* root) {
+        if(!root) return 0;
+        queue<TreeNode*> Q;
+        Q.push(root);
+        int maxLevelSum = INT_MIN;
+        int minLevel = 1;
+        int curLevel = 0;
+        while(!Q.empty()){
+            int lenQ = Q.size();
+            int tempSum = 0;
+            curLevel++;
+            for(int i = 0; i < lenQ; ++i){
+                TreeNode* node = Q.front();
+                Q.pop();
+                tempSum += node->val;
+                if(node->left) Q.push(node->left);
+                if(node->right) Q.push(node->right);
+            }
+            if(maxLevelSum < tempSum){
+                maxLevelSum = tempSum;
+                minLevel = curLevel;
+            }
+        }
+        return minLevel;
+    }
+};
+
+
