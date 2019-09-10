@@ -3717,3 +3717,34 @@ public:
     }
 };
 
+
+//939. Minimum Area Rectangle
+//https://leetcode.com/problems/minimum-area-rectangle/
+//Brute Force solution
+//Note how to define your own hash function is critical here!
+struct Hash{
+     size_t operator()(const pair<int, int>& p) const{
+         return hash<long long>()(((long long)p.first << 32) ^ ((long long)p.second));
+     }
+};
+class Solution {
+public:
+    int minAreaRect(vector<vector<int>>& points) {
+        unordered_set<pair<int, int>, Hash> uSet;
+        int res = numeric_limits<int>::max();
+        for(auto&p : points){
+            int x1 = p[0], y1 = p[1];
+            for(auto&[x2, y2] : uSet){
+                if(uSet.count({x1, y2}) && uSet.count({x2, y1})){
+                    int localArea = abs(y2 - y1) * abs(x2 - x1);
+                    res = min(localArea, res);
+                }
+            }
+            uSet.insert({x1, y1});
+        }
+        //We could potentially have no rectangle!
+        return res == numeric_limits<int>::max() ? 0 : res;
+    }
+};
+
+
