@@ -3652,3 +3652,68 @@ public:
 };
 
 
+/*
+Example:    h = house,  * = heater  M = INT_MAX
+
+        h   h   h   h   h   h   h   h   h    houses
+        1   2   3   4   5   6   7   8   9    index
+        *           *       *                heaters
+                
+        0   2   1   0   1   0   -   -   -    (distance to nearest RHS heater)
+        0   1   2   0   1   0   1   2   3    (distance to nearest LHS heater)
+
+        0   1   1   0   1   0   1   2   3    (res = minimum of above two)
+
+Result is maximum value in res, which is 3.
+*/
+//Very good two pass cache solution! 
+class Solution {
+public:
+    int findRadius(vector<int>& houses, vector<int>& heaters) {
+        int len = houses.size();
+        sort(houses.begin(), houses.end());
+        sort(heaters.begin(), heaters.end());
+        vector<int> minimumRange(len, INT_MAX);
+        for(int i = 0, j = 0; i < len && j < heaters.size();){
+            if(houses[i] <= heaters[j]){
+                minimumRange[i] = heaters[j] - houses[i];
+                i++;
+            }
+            else
+                j++;
+        }
+        for(int i = len-1, j = heaters.size()-1; i>=0 &&j >=0;){
+            if(houses[i] >= heaters[j]){
+                minimumRange[i] = min(houses[i] - heaters[j], minimumRange[i]);
+                i--;
+            }else
+                j--;
+        }
+        
+        return *max_element(minimumRange.begin(), minimumRange.end());
+    }
+};
+
+
+//Binary search, with no auxiliary array
+//O(nlogn) time. O(1) space.
+class Solution {
+public:
+    int findRadius(vector<int>& houses, vector<int>& heaters) {
+        int res = 0, n = heaters.size();
+        sort(heaters.begin(), heaters.end());
+        for (int house : houses) {
+            int left = 0, right = n;
+            while (left < right) {
+                int mid = left + (right - left) / 2;
+                if (heaters[mid] < house) left = mid + 1;
+                else right = mid;
+            }
+            int dist1 = (right == n) ? INT_MAX : heaters[right] - house;
+            int dist2 = (right == 0) ? INT_MAX : house - heaters[right - 1];
+            res = max(res, min(dist1, dist2));
+        }
+        return res;
+    }
+};
+
