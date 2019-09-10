@@ -3525,3 +3525,32 @@ public:
 };
 
 
+//973. K Closest Points to Origin
+//https://leetcode.com/problems/k-closest-points-to-origin/
+//O(nlogk)
+class Solution {
+private:
+    long calEuclideanDist(vector<int>& p){
+        return p[0] * p[0] + p[1] * p[1];
+    }
+public:
+    vector<vector<int>> kClosest(vector<vector<int>>& points, int K) {
+        int len = points.size();
+        if(K >= len) return points;
+        //pq will save the smallest element and its index!
+        priority_queue<pair<long, int>> pq;
+        for(int i = 0; i < len; ++i){
+            long dist = calEuclideanDist(points[i]);
+            pq.push(make_pair(dist, i));
+            if(pq.size() > K) pq.pop();
+        }
+        vector<vector<int>> res;
+        while(!pq.empty()){
+            res.push_back(points[pq.top().second]);
+            pq.pop();
+        }
+        return res;
+    }
+};
+
+
