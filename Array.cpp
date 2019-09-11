@@ -3748,3 +3748,71 @@ public:
 };
 
 
+//Heavily optimized version. Tricky, too many tricks and not easy to implement
+struct Hash{
+    unsigned int operator()(const pair<int, int>& p) const {
+        return hash<long long>()(((long long)p.first << 32) ^ ((long long)p.second));
+    }
+};
+class Solution {
+private:
+    //count the maximum different coordinates for x and y
+    pair<int, int> countCoord(vector<vector<int>>& points){
+        unordered_set<int> sx, sy;
+        for(auto& p : points){
+            sx.insert(p[0]);
+            sy.insert(p[1]);
+        }
+        return make_pair(sx.size(), sy.size());
+    }
+public:
+    int minAreaRect(vector<vector<int>>& points) {
+        auto [nx, ny] = countCoord(points);
+        //We need to make sure the key will be sorted! so in the end,
+        //we can safely using x2 - x
+        map<int, vector<int>> pMap;
+        //Make sure we always make the list for each entry shorter. 
+        //Optimization! since index x and y has the same logic
+        //It does not matter if we switch them
+        if(nx > ny) {
+            for(auto& p : points)
+                pMap[p[0]].push_back(p[1]);
+        }else{
+            for(auto& p : points)
+                pMap[p[1]].push_back(p[0]);
+        }
+        
+        int res = INT_MAX;
+        unordered_map<pair<int, int>, int, Hash> uMap;
+        for(auto&[x, vy] : pMap){
+            sort(vy.begin(), vy.end());
+            for(int i = 1; i < vy.size(); ++i){
+                for(int j = 0; j < i; ++j){
+                    int y1 = vy[j], y2 = vy[i];
+                    if(uMap.count({y1, y2})){
+                        //since {y1, y2} has already been inserted, we
+                        //know that x1 must be smaller.
+                        int x1 = uMap[{y1, y2}];
+                        int x2 = x;
+                        res = min(res, (x2 - x1) * (y2 - y1));
+                    }
+                    //indicates that current x can form a range between
+                    //[y1, y2] (y1 <= y2)
+                    uMap[{y1, y2}] = x;
+                }
+            }
+            
+        }
+        return res == INT_MAX ? 0 : res;
+        
+    }
+};
+
+
+
+
+
+
+
+
+
