@@ -1232,3 +1232,30 @@ public:
     }
 };
 
+
+//38. Count and Say
+//https://leetcode.com/problems/count-and-say/
+//Just run simulation!
+class Solution {
+public:
+    string countAndSay(int n) {
+        if(n == 0) return "";
+        if(n == 1) return "1";
+        string res = "1";
+        while(n-- > 1){
+            string tempRes;
+            for(int i = 0; i < res.size(); ++i){
+                int count = 1;
+                while( i+1 < res.size() && res[i+1] == res[i]) {
+                    count++;
+                    i++;
+                }
+                tempRes.append(to_string(count));
+                tempRes.push_back(res[i]);
+            }
+            swap(res, tempRes);
+        }
+        
+        return res;
+    }
+};
