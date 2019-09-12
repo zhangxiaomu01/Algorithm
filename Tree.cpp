@@ -2256,3 +2256,72 @@ public:
 };
 
 
+//Google interview:
+//Create a class LightString to manage a string of lights, each of which has 
+//a value 0 or 1 indicating whether it is on or off.
+/*
+class LightString {
+    public LightString(int numOfLights) {
+	}
+
+    // Return if the i-th light is on or off.
+    public boolean isOn(int i) {
+	}
+
+	//Switch state (turn on if it's off, turn off if it's on) of every 
+    //light in the range [start, end].
+    public void toggle(int start, int end) {
+	}
+}
+*/
+/*
+Example:
+
+LightString str = new LightString(5); // all lights are initially off
+str.isOn(0); // false
+str.isOn(1); // false
+str.isOn(2); // false
+str.toggle(0, 2);
+str.isOn(0); // true
+str.isOn(1); // true
+str.isOn(2); // true
+str.isOn(3); // false
+str.toggle(1, 3);
+str.isOn(1); // false
+str.isOn(2); // false
+str.isOn(3); // true
+
+Can you do better than O(n) for update?
+*/
+class LightString {
+	public:
+	LightString(int numOfLights) : n(numOfLights) {
+		tree.resize(n << 1);
+	}
+	
+	bool isOn(int i) {
+		i += n;
+		int cnt = 0;
+		while (i > 0) {
+			cnt += tree[i];
+			i >>= 1;
+		}
+		return cnt & 1;
+	}
+	
+	void toggle(int start, int end) {
+		for (start += n, end += n; start <= end; start >>= 1, end >>= 1) {
+			if (start & 1) {
+				++tree[start++];
+			}
+			if (!(end & 1)) {
+				++tree[end--];
+			}
+		}
+	}
+	
+	private:
+	int n;
+	vector<int> tree;
+};
+
