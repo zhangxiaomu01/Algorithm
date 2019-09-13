@@ -802,4 +802,43 @@ public:
 };
 
 
+//Google interview!
+//https://leetcode.com/discuss/interview-question/363081
+//Rhyme Schemes problem
+//Good question, the key insight here is to
+//Seems like for each successive character you can either pick any character 
+//that has been used already, or the next one in the sequence.
+
+//max represent for position i, we already have how many characters to choose.
+//We know that pos i can only have characters from characters already
+//in our cur string, or have characters the next one in the sequence.
+//For n == 2,  if we alreay have ['A'] in our string, then for pos 1, we can
+//only have two possible situation, 'A' or 'A' + 1 == 'B'
+void generatePoemsR(int n, int max, string& cur, vector<string>& ans) {
+	for (int i = 0; i < max; i++) {
+		cur.push_back('A' + i);
+		// picking the next character in the sequence expands the number of available characters
+		//The most tricky part is how to maintain the max
+		if (n > 1) generatePoemsR(n - 1, i == max - 1 ? max + 1 : max, cur, ans);
+		else ans.push_back(cur);
+		cur.pop_back();
+	}
+}
+
+void generatePoems(int n) {
+	vector<string> ans;
+	string cur;
+	if (n > 0) generatePoemsR(n, 1, cur, ans);
+	for (string& s : ans) {
+		cout << s << endl;
+	}
+	
+}
+
+int main() {
+	generatePoems(4);
+	system("pause");
+	return 0;
+}
+
 
