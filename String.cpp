@@ -1297,3 +1297,43 @@ public:
         return res;
     }
 };
+
+//168. Excel Sheet Column Title
+//https://leetcode.com/problems/excel-sheet-column-title/
+//Make sure you have totally understand the process before writing code
+//Mimic the recursive call. Spent approximately 30 minutes to finish!
+class Solution {
+public:
+    string convertToTitle(int n) {
+        string res;
+        while(n > 0){
+            int index = n % 26;
+            //Remove the amount we have
+            n = n - (index == 0 ? 26 : index);
+            index = ((index == 0) ? 26 : index) - 1;
+            //cout << index << endl;
+            res.push_back('A' + index);
+            n /= 26;
+        }
+        reverse(res.begin(), res.end());
+        return res;
+    }
+};
+
+
+//A more elegant version
+// Note hard, need some intuition...
+class Solution {
+public:
+    string convertToTitle(int n) {
+        string res;
+        while(n){
+            n--;
+            res.push_back(static_cast<char>(n%26 + 'A'));
+            n = n/26;
+        }
+        reverse(res.begin(), res.end());
+        return res;
+    }
+};
+
