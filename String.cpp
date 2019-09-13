@@ -1337,3 +1337,37 @@ public:
     }
 };
 
+//171. Excel Sheet Column Number
+//https://leetcode.com/problems/excel-sheet-column-number/
+//Not hard, just to be careful!
+class Solution {
+public:
+    int titleToNumber(string s) {
+        int res = 0;
+        if(s.empty()) return res;
+        int i = s.size() - 1;
+        int count = 0;
+        for(; i >= 0; --i){
+            int coord = s[i] - 'A' + 1;
+            res = res + coord * pow(26, count);
+            count++;
+        }
+        return res;
+    }
+};
+
+//Be careful about this kind of simple problem
+class Solution {
+public:
+    int titleToNumber(string s) {
+        int len = s.size();
+        if(len == 0) return 0;
+        int res = 0;
+        for(int i = 0; i < len; i++){
+            res = res*26 + static_cast<int>(s[i] - 'A') +1;
+        }
+        return res;
+    }
+};
+
+
