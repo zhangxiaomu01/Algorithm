@@ -1371,3 +1371,55 @@ public:
 };
 
 
+//13. Roman to Integer
+//https://leetcode.com/problems/roman-to-integer/
+//The key insight is to discover when s[i] > s[j], we need to substract
+//res -= uMap[s[i]] first, then add uMap[s[j]] - uMap[s[i]]
+class Solution {  
+public:
+    int romanToInt(string s) {
+        unordered_map<char, int> uMap({{'I', 1}, {'V', 5}, {'X', 10}, {'L', 50}, {'C', 100}, {'D', 500}, {'M', 1000}});
+        int len = s.size();
+        int res = 0;
+        stack<char> tempSt;
+        for(int i = 0; i < len; ++i){
+            if(i >= 1 && uMap[s[i]] > uMap[s[i-1]]){
+                int val = uMap[s[i-1]];
+                res -= val;
+                res += uMap[s[i]] - val;
+            }else {
+                res += uMap[s[i]];
+            }
+        }
+        return res;
+    }
+};
+
+//The same idea, different implementation! find(string) is not efficient!
+class Solution {
+public:
+    int romanToInt(string s) {
+        int finalSum = 0;        
+        if(s.find("IV")!=-1) finalSum -= 2;
+        if(s.find("IX")!=-1) finalSum -= 2;
+        if(s.find("XL")!=-1) finalSum -= 20;
+        if(s.find("XC")!=-1) finalSum -= 20;
+        if(s.find("CD")!=-1) finalSum -= 200;
+        if(s.find("CM")!=-1) finalSum -= 200;
+        
+        for(int i = 0; i< s.size(); i++)
+        {
+            if(s[i] == 'M') finalSum += 1000;
+            if(s[i] == 'D') finalSum += 500;
+            if(s[i] == 'C') finalSum += 100;
+            if(s[i] == 'L') finalSum += 50;
+            if(s[i] == 'X') finalSum += 10;
+            if(s[i] == 'V') finalSum += 5;
+            if(s[i] == 'I') finalSum += 1;
+        }
+        
+        return finalSum;
+    }
+};
+
+
