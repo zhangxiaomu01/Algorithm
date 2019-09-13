@@ -2426,3 +2426,69 @@ private static int getComponentSize(TreeNode n, TreeNode branch, Map<TreeNode, M
     return size;
 }
 
+
+//https://leetcode.com/discuss/interview-question/376813/
+//Google interview!
+//The tricky part is how to randomly pick up a word. 
+/*
+For each trie node, keep track of the number of words below/ending at it. 
+Start at the root level and for each level generate a random number r between 
+(1, total number of words of all the nodes for that level) and route 
+accordingly. Once you select the trie node by above method, if no word ends 
+at it, proceed to the below level and repeat the same. Otherwise stop there 
+by generating a random number r between (1, total number of words for that 
+node)
+
+eg) using the one from @btaylor4
+Art, Apple, Basic ,Cast, Care, Case, Dying, Daring, Dashing, Doll.
+Root has A-2, B-1, C-3, D-4. Generate a random number between (1, 10). 
+Assume 8 so D is selected. Prob - 4/10
+For next level A-2, O-1, Y-1. Generate (1, 4). Assume 1 so A is selected. 
+Prob - 2/4
+Next R-1, S-1. Generate (1,2). Assume 2 so S. Prob - 1/2
+Net prob = 4/10 * 2/4 * 1/2 = 1/10
+*/
+//Try tomorrow
+
+
+//429. N-ary Tree Level Order Traversal
+//https://leetcode.com/problems/n-ary-tree-level-order-traversal/
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    vector<Node*> children;
+
+    Node() {}
+
+    Node(int _val, vector<Node*> _children) {
+        val = _val;
+        children = _children;
+    }
+};
+*/
+class Solution {
+public:
+    vector<vector<int>> levelOrder(Node* root) {
+        vector<vector<int>> res;
+        if(!root) return res;
+        queue<Node*> Q;
+        Q.push(root);
+        while(!Q.empty()){
+            int lenQ = Q.size();
+            vector<int> levelNodes;
+            for(int i = 0; i < lenQ; ++i){
+                Node* tempNode = Q.front();
+                Q.pop();
+                levelNodes.push_back(tempNode->val);
+                for(Node*& n : tempNode->children){
+                    if(n) Q.push(n);
+                }
+            }
+            res.push_back(levelNodes);
+        }
+        return res;
+    }
+};
+
