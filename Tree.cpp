@@ -2368,6 +2368,10 @@ private static int countNodes(TreeNode node, TreeNode ignore) {
 }
 
 //Follow up: Jave code!
+//This is the same concept like the original one. If I do the first move, I 
+//will choose a node which split the tree to 3 components, with the largest 
+//possible component to be less than num of tree nodes / 2. Then no matter how
+//opponent moves, we can guarantee a win.
 public static TreeNode bestMove(TreeNode root) {
     if (root == null) return null;
     if (root.left == null && root.right == null) return root;
@@ -2421,3 +2425,4 @@ private static int getComponentSize(TreeNode n, TreeNode branch, Map<TreeNode, M
     getComponentSize(n, n.parent, components); // calculate size of parent component for current node
     return size;
 }
+
