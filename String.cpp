@@ -1259,3 +1259,41 @@ public:
         return res;
     }
 };
+
+
+//316. Remove Duplicate Letters
+//https://leetcode.com/problems/remove-duplicate-letters/
+//I came up with the stack and using dict to store elements, but failed to
+//know whether the character is in the res
+//The key insight is stack + isInRes, and update them properly!
+class Solution {
+public:
+    string removeDuplicateLetters(string s) {
+        string res;
+        if(s.empty()) return res;
+        //record how many characters we have now
+        int dict[26] = {0};
+        //Record whether we have the character in our res now
+        int isInRes[26] = {0};
+        for(char c : s) dict[c - 'a'] ++;
+        for(int i = 0; i < s.size(); ++i){
+            dict[s[i] - 'a'] --;
+            if(res.empty()){
+                res.push_back(s[i]);
+                isInRes[s[i] - 'a'] = 1;
+                continue;
+            }
+            //skip those who is already in the res
+            if(isInRes[s[i] - 'a']) continue; 
+            
+            while(!res.empty() && s[i] < res.back() && dict[res.back() - 'a'] > 0){
+                isInRes[res.back() - 'a'] = 0;
+                res.pop_back();
+            }
+            res.push_back(s[i]);
+            isInRes[s[i] - 'a'] = 1;
+        }
+        
+        return res;
+    }
+};
