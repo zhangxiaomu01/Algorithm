@@ -300,6 +300,62 @@ public:
     }
 };
 
-
+//1171. Remove Zero Sum Consecutive Nodes from Linked List
+//https://leetcode.com/problems/remove-zero-sum-consecutive-nodes-from-linked-list/
+//Prefix sum is the key!
+class Solution {
+private:
+    //[s, e)
+    void releaseMemory(ListNode* s, ListNode* e, int preSum, unordered_map<int, ListNode*>& uMap){
+        while(s != e){
+            preSum += s->val;
+            //When s->next == e, we abort. Since we cannot delete original
+            //preSum
+            if(s && s->next != e){
+                uMap.erase(preSum);
+            }
+            
+            ListNode* temp = s;
+            s = s->next;
+            //It's weird that when I delete the node, there will be runtime
+            //error, however, in play ground, it looks good.
+            //It seems that when the test case need to delete the leftmost 
+            //value, then error occurs!
+            delete temp;
+        }
+    }
+public:
+    ListNode* removeZeroSumSublists(ListNode* head) {
+        if(!head) return head;
+        //uMap for prefix sum
+        unordered_map<int, ListNode*> uMap;
+        //Since all node with value 0 will be removed, we need to 
+        //initialize dummy to be 1001 here
+        ListNode dummy(10001);
+        dummy.next = head;
+        ListNode* node = &dummy;
+        int prefixSum = 0;
+        while(node != nullptr){
+            prefixSum += node->val;
+            //Which means we have add a value and cancel the sum of [i..j]
+            //which means sum of [i..j] to be 0
+            if(node->val == 0 || uMap.count(prefixSum) > 0){
+                //cout << prefixSum <<endl;
+                ListNode* tempNode = uMap[prefixSum];
+                ListNode* deleteStartNode = tempNode->next;
+                tempNode->next = node->next;
+                releaseMemory(deleteStartNode, node->next, prefixSum, uMap);
+                //note here node has already been deleted, we need to reset
+                //node to tempNode->next
+                node = tempNode->next;
+                continue;
+            }
+            uMap[prefixSum] = node;
+            node = node->next;
+        }
+        
+        return dummy.next;
+    }
+};
 
 

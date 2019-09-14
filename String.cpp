@@ -1466,59 +1466,68 @@ public:
 };
 
 
-//1171. Remove Zero Sum Consecutive Nodes from Linked List
-//https://leetcode.com/problems/remove-zero-sum-consecutive-nodes-from-linked-list/
+//273. Integer to English Words
+//https://leetcode.com/problems/integer-to-english-words/
 class Solution {
 private:
-    //[s, e)
-    void releaseMemory(ListNode* s, ListNode* e, int preSum, unordered_map<int, ListNode*>& uMap){
-        while(s != e){
-            preSum += s->val;
-            //When s->next == e, we abort. Since we cannot delete original
-            //preSum
-            if(s && s->next != e){
-                uMap.erase(preSum);
-            }
-            
-            ListNode* temp = s;
-            s = s->next;
-            //It's weird that when I delete the node, there will be runtime
-            //error, however, in play ground, it looks good.
-            //It seems that when the test case need to delete the leftmost 
-            //value, then error occurs!
-            delete temp;
+    int range[4] = {1000000000, 1000000, 1000, 100};
+    string dict[4] = {"Billion", "Million", "Thousand", "Hundred"};
+    string digits[20] = {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"};
+    string tens[9] = {"Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"};
+    
+    //Covert integer less than 1000. Since thousand - million or million - 
+    //billion, we cannot exceed 1000
+    string convertItoS(int x){
+        string res;
+        if(x >= 100){
+            int i = x/100;
+            res.append(digits[i]);
+            res.push_back(' ');
+            res.append("Hundred ");
         }
+        x = x % 100;
+        if(x >= 20){
+            int i = x/10;
+            res.append(tens[i-1]);
+            res.push_back(' ');
+        }
+        if(x >= 20)
+            x = x % 10;
+        if(x != 0){
+            res.append(digits[x]);
+            res.push_back(' ');
+        }
+        return res;
     }
 public:
-    ListNode* removeZeroSumSublists(ListNode* head) {
-        if(!head) return head;
-        //uMap for prefix sum
-        unordered_map<int, ListNode*> uMap;
-        //Since all node with value 0 will be removed, we need to 
-        //initialize dummy to be 1001 here
-        ListNode dummy(10001);
-        dummy.next = head;
-        ListNode* node = &dummy;
-        int prefixSum = 0;
-        while(node != nullptr){
-            prefixSum += node->val;
-            //Which means we have add a value and cancel the sum of [i..j]
-            //which means sum of [i..j] to be 0
-            if(node->val == 0 || uMap.count(prefixSum) > 0){
-                //cout << prefixSum <<endl;
-                ListNode* tempNode = uMap[prefixSum];
-                ListNode* deleteStartNode = tempNode->next;
-                tempNode->next = node->next;
-                releaseMemory(deleteStartNode, node->next, prefixSum, uMap);
-                //note here node has already been deleted, we need to reset
-                //node to tempNode->next
-                node = tempNode->next;
-                continue;
-            }
-            uMap[prefixSum] = node;
-            node = node->next;
+    string numberToWords(int num) {
+        string res;
+        if(num == 0) return "Zero";
+        
+        if(num <= 999){
+            res = convertItoS(num);
+            res.pop_back();
+            return res;
         }
         
-        return dummy.next;
+        for(int i = 0; i < 4; ++i){
+            if(num <= 999){
+                res.append(convertItoS(num));
+                res.pop_back();
+                return res;
+            }
+            int count = num / range[i];
+            if(count == 0) continue;
+            else{
+                string temp = convertItoS(count);
+                res.append(temp);
+                res.append(dict[i]);
+                res.push_back(' ');
+            }
+            num = num % range[i];
+        }
+        return res;
     }
 };
+
+
