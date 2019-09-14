@@ -1423,3 +1423,45 @@ public:
 };
 
 
+//12. Integer to Roman
+//https://leetcode.com/problems/integer-to-roman/
+//Very clever approach, hard to get without practice!
+class Solution {
+public:
+    string intToRoman(int num) {
+        //Add one empty here in order to append null string, then make
+        //code simpler!
+        string digits[10] = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
+        string tens[10] = {"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
+        string hundrends[10] = {"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
+        string thousands[4] = {"", "M", "MM", "MMM"};
+        
+        string res;
+        res.append(thousands[num/1000]);
+        res.append(hundrends[(num%1000)/100]);
+        res.append(tens[(num%100)/10]);
+        res.append(digits[(num%10)]);
+        
+        return res;
+    }
+};
+
+
+//Another interesting idea. Hard to get!
+//Not as efficient as the solution 1
+class Solution {
+public:
+    string intToRoman(int num) {
+        int numbers[13] = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+        string comb[13] = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+        string res;
+        for(int i = 0; i < 13; ++i){
+            while(num >= numbers[i]){
+                res.append(comb[i]);
+                num = num - numbers[i];
+            }
+        }
+        return res;
+    }
+};
+
