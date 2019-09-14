@@ -1468,6 +1468,7 @@ public:
 
 //273. Integer to English Words
 //https://leetcode.com/problems/integer-to-english-words/
+//Be careful, you spent too much time on this! Not hard, just a little bit annoying
 class Solution {
 private:
     int range[4] = {1000000000, 1000000, 1000, 100};
@@ -1530,4 +1531,66 @@ public:
     }
 };
 
+
+//65. Valid Number
+//https://leetcode.com/problems/valid-number/
+//A hard problem! Not an easy task to get all the potential situations!
+//'+/-': only valid when in first pos or immediately after 'e'
+//'e': only valid when follows a digit and there cannot be another 'e'
+//'.': only valid if not after 'e' and cannot have duplicate '.'
+//'0-9': always valid, set number detection flag to be true, and numberAfterE
+//to be true
+//Other cases: false
+//Return isSeenNum and numberAfterE
+//Good summary:
+//https://leetcode.wang/leetCode-65-Valid-Number.html
+class Solution {
+public:
+    bool isNumber(string s) {
+        int i = s.size() - 1;
+        while(s[i] == ' ') {
+            s.pop_back();
+            i--;
+        }
+            
+        i = 0;
+        while(s[i] == ' ')
+            i++;
+        
+        //Our startpos is not necessarily to be 0
+        int startPos = i;
+        
+        bool isSeenDigits = false;
+        //'.'
+        bool isSeenDot = false;
+        //we do not need to keep track of '+' or '-' because the only 
+        //possible pos for '+/-' is at the very beginning or immediate
+        //after 'e'
+        //bool isSeenPM = false;
+        //'e'
+        bool isSeenE = false;
+        bool isDigitsAfterE = true;
+        
+        for(; i < s.size(); ++i){
+            if(s[i] >= '0' && s[i] <= '9'){
+                isSeenDigits = true;
+                isDigitsAfterE = true;
+            }else if(s[i] == '+' || s[i] == '-'){
+                if(i != startPos && s[i-1] != 'e') return false;
+            }else if(s[i] == '.'){
+                if(isSeenDot || isSeenE) return false;
+                isSeenDot = true;
+            }
+            else if(s[i] == 'e'){
+                if(isSeenE || !isSeenDigits) return false;
+                isSeenE = true;
+                isDigitsAfterE = false;
+            }else{
+                return false;
+            }
+        }
+        
+        return isSeenDigits && isDigitsAfterE;
+    }
+};
 
