@@ -1594,3 +1594,61 @@ public:
     }
 };
 
+
+//Clever state machine solution! You need to draw the state machine diagram first!
+//https://leetcode.com/problems/valid-number/discuss/23725/C%2B%2B-My-thought-with-DFA
+//State picture: Implemented by myself
+/*
+[s0 - s1 : +/-], [s0 - s2 : number], [s0 - s3 : '.'],
+[s1 - s2 : number], [s1 - s3 : '.'],
+[s2 - s2 : number], [s2 - s3 : '.'], [s2 - s4 : 'e'],
+[s3 - s4 : 'e'], [s3 - s3 : number],
+[s4 - s5 : +/-], [s4 - s6 : number], 
+[s5 - s6 : number],
+[s6 - s6 : number]
+The valid final state: s2, isSeenDigit && s3, s6
+*/
+class Solution {
+public:
+    bool isNumber(string s) {
+        if(s.empty()) return false;
+        int i = s.size() - 1;
+        while(s[i] == ' '){
+            s.pop_back(); i--;
+        }
+        
+        i = 0;
+        while(i < s.size() && s[i] == ' '){
+            i++;
+        }
+        s.erase(0, i);
+        if(s.empty()) return false;
+        
+        int state = 0;
+        bool isSeenDigit = false;
+        for(int i = 0; i < s.size(); ++i){
+            if(s[i] >= '0' && s[i] <= '9'){
+                isSeenDigit = true;
+                if(state <= 2) state = 2;
+                else if(state >= 4) state = 6;
+            }else if(s[i] == '+' || s[i] == '-'){
+                if(state == 0 || state == 4) state++;
+                else return false;
+            }else if(s[i] == '.'){
+                if(state < 3) state = 3;
+                else return false;
+            }else if(s[i] == 'e'){
+                if(state == 2 || (isSeenDigit && state == 3))
+                    state = 4;
+                else return false;
+            }
+            else 
+                return false;
+        }
+        
+        return (state == 2) || (isSeenDigit && state == 3) || (state == 6);
+    }
+};
+
+
+
