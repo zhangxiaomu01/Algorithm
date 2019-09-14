@@ -2492,3 +2492,22 @@ public:
     }
 };
 
+
+//437. Path Sum III
+//https://leetcode.com/problems/path-sum-iii/
+//Double check later! you did not get it! 
+//Try something intuitive to you.
+class Solution {
+private:
+    int rootSum(TreeNode* node, int sum){
+        if(!node) return 0;
+        int nextSum = sum - node->val;
+        int totalWithNode = (nextSum == 0 ? 1 : 0) + rootSum(node->left, nextSum) + rootSum(node->right, nextSum);
+        return totalWithNode;
+    }
+public:
+    int pathSum(TreeNode* root, int sum) {
+        if(!root) return 0;
+        return rootSum(root, sum) + pathSum(root->left, sum) + pathSum(root->right, sum);
+    }
+};
