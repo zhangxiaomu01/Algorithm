@@ -2496,7 +2496,7 @@ public:
 //437. Path Sum III
 //https://leetcode.com/problems/path-sum-iii/
 //Double check later! you did not get it! 
-//Try something intuitive to you.
+//Try something intuitive to you. Not very efficient!
 class Solution {
 private:
     int rootSum(TreeNode* node, int sum){
@@ -2511,3 +2511,34 @@ public:
         return rootSum(root, sum) + pathSum(root->left, sum) + pathSum(root->right, sum);
     }
 };
+
+//Optimized version with memorization + prefixsum
+/*
+prefix sum + tree traversal. 
+Tricky, almost impossible during the interview!
+*/
+class Solution {
+private:
+    int helper(TreeNode* node, int sum, unordered_map<int, int>& uMap, int preVal){
+        if(!node) return 0;
+        //Calculate the presum for node i (sum of this node with parent node)
+        node->val += preVal;
+        //uMap: current - sum equals some previous sum, which means we have
+        //a valid path.
+        int res = (node->val == sum) + (uMap.count(node->val - sum) ? uMap[node->val - sum] : 0);
+        //add current sum to map
+        uMap[node->val] ++;
+        res += helper(node->left, sum, uMap, node->val) + helper(node->right, sum, uMap, node->val);
+        //Note we are backtracking here
+        uMap[node->val] --;
+        return res;
+        
+    }
+public:
+    int pathSum(TreeNode* root, int sum) {
+        //We will use this map to record the presum we have already found!
+        unordered_map<int, int> uMap;
+        return helper(root, sum, uMap, 0);
+    }
+};
+
