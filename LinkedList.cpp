@@ -128,6 +128,29 @@ public:
 };
 
 
+class Solution {
+private:
+    ListNode* helper(ListNode* l1, ListNode* l2){
+        if(!l1 && !l2) return nullptr;
+        if(!l1) return l2;
+        if(!l2) return l1;
+        
+        if(l1->val <= l2->val){
+            ListNode* node = helper(l1->next, l2);
+            l1->next = node;
+            return l1;
+        }else{
+            ListNode* node = helper(l1, l2->next);
+            l2->next = node;
+            return l2;
+        }
+    }
+public:
+    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+        return helper(l1, l2);
+    }
+};
+
 
 //142. Linked List Cycle II
 //https://leetcode.com/problems/linked-list-cycle-ii/

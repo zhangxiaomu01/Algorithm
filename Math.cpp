@@ -513,3 +513,53 @@ public:
 
 };
 
+
+//779. K-th Symbol in Grammar
+//https://leetcode.com/problems/k-th-symbol-in-grammar/
+//An interesting idea
+//https://leetcode.com/problems/k-th-symbol-in-grammar/discuss/121544/
+/*
+if K % 2 == 1, it is the first number in '01' or '10',
+if Kth number is 0, K+1 th is 1.
+if Kth number is 1, K+1 th is 0.
+so it will be different from K + 1.
+
+If K % 2 == 0, it is the second number in '01' or '10', generated from K/2 th number.
+If Kth number is 0, it is generated from 1.
+If Kth number is 1, it is generated from 0.
+*/
+//I cannot get it in the interview. Not intuitive solution!
+class Solution {
+public:
+    int kthGrammar(int N, int K) {
+        int res = 0;
+        //Track back from beginning to end
+        while(K > 1){
+            K = (K % 2 == 1) ? K+1 : K / 2;
+            res ^= 1;
+        }
+        return res;
+    }
+};
+
+//Actually, we can consider the seqeunce as binary search tree. 
+//If current node is 1, then its two sub tree is L:1, R: 0
+//If current node is 0, then its two sub tree is L:0, R: 1
+//If K is even, then its parent should be K/2. And we know if its parent
+//is 1, it should be 0. If the parent is 0, then it should be 1.
+//If K is odd, then its parent should be (K+1)/2. It should be the same as
+//its parent!
+//Please draw a binary tree graph to see this!
+//It's not that easy to get this problems
+class Solution {
+public:
+    int kthGrammar(int N, int K) {
+        if(N == 1) return 0;
+        //Odd should be the same as its parent
+        if(K % 2 == 1) return (kthGrammar(N-1, (K+1)/2) == 0) ? 0 : 1;
+        else return (kthGrammar(N-1, K/2) == 0) ? 1 : 0;
+    }
+};
+
+
+
