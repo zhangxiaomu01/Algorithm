@@ -782,18 +782,15 @@ public:
 //https://leetcode.com/problems/maximum-depth-of-binary-tree/
 //DFS
 class Solution {
-private:
-    int dfs(TreeNode* node){
-        if(!node) return 0;
-        if(!node->left) return dfs(node->right) + 1;
-        if(!node->right) return dfs(node->left) + 1;
-        return max(dfs(node->left), dfs(node->right))+1;
-    }
 public:
     int maxDepth(TreeNode* root) {
-        return dfs(root);
+        if(!root) return 0;
+        int maxLeft = maxDepth(root->left);
+        int maxRight = maxDepth(root->right);
+        return 1 + max(maxLeft, maxRight);
     }
 };
+
 //BFS
 class Solution {
 public:
