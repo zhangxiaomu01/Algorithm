@@ -359,3 +359,42 @@ public:
 };
 
 
+//24. Swap Nodes in Pairs
+//https://leetcode.com/problems/swap-nodes-in-pairs/
+//Recursive solution!
+class Solution {
+    ListNode* helper(ListNode* node){
+        if(!node || !node->next) return node;
+        ListNode* tempNode = node->next->next;
+        ListNode* newHead = node->next;
+        newHead->next = node;
+        node->next = helper(tempNode);
+        return newHead;
+        
+    }
+public:
+    ListNode* swapPairs(ListNode* head) {
+        return helper(head);
+    }
+};
+
+//Iterative Version
+class Solution {
+public:
+    ListNode* swapPairs(ListNode* head) {
+        ListNode* dummy = new ListNode(0);
+        dummy->next = head;
+        ListNode* p = dummy;
+        while(p->next&&p->next->next){
+            ListNode* p1 = p->next;
+            ListNode* p2 = p->next->next;
+            p->next = p2;
+            p1->next = p2->next;
+            p2->next = p1;
+            p = p1;
+        }
+        return dummy->next;
+        
+    }
+};
+
