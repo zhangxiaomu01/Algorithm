@@ -3888,3 +3888,50 @@ public:
 };
 
 
+//912. Sort an Array
+//https://leetcode.com/problems/sort-an-array/
+//Wrong! first try!
+class Solution {
+private:
+    vector<int> mergeSort(vector<int>& nums, int l, int r){
+        if(l > r) return vector<int>();
+        if(l == r) return vector<int>(nums[l]);
+        
+        int mid = l + (r - l) / 2;
+        vector<int> leftHalf = mergeSort(nums, l, mid);
+        vector<int> rightHalf = mergeSort(nums, mid+1, r);
+        if(!leftHalf.empty()) cout << leftHalf[0] << endl;
+        vector<int> temp = merge(leftHalf, rightHalf);
+        int j = 0;
+        for(int i = l; i <= r; ++l)
+            nums[l] = temp[j++];
+        
+        return nums;
+    }
+    
+    vector<int> merge(vector<int>& n1, vector<int>& n2){
+        vector<int> res;
+        int len1 = n1.size(), len2 = n2.size();
+        int i = 0, j = 0;
+        for(; i < len1 && j < len2;){
+            if(n1[i] <= n2[j]) {
+                res.push_back(n1[i++]);
+            }
+            else res.push_back(n2[j++]);
+        }
+        while(i < len1) res.push_back(n1[i++]);
+        while(j < len2) res.push_back(n2[j++]);
+        return res;
+    }
+    
+public:
+    vector<int> sortArray(vector<int>& nums) {
+        int len = nums.size();
+        if(len <= 1) return nums;
+        int l = 0, r = len-1;
+        return mergeSort(nums, l, r);
+    }
+};
+
+
+
