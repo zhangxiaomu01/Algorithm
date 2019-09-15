@@ -3851,3 +3851,40 @@ public:
 };
 
 
+//119. Pascal's Triangle II
+//https://leetcode.com/problems/pascals-triangle-ii/
+//Note how we save the space for this problem
+class Solution {
+public:
+    vector<int> getRow(int rowIndex) {
+        //Since row starts from 0
+        vector<int> res(rowIndex+1, 0);
+        res[0] = 1;
+        for(int i = 0; i < rowIndex + 1; ++i){
+            //For ith row, we at most need to update [1..index] elements
+            for(int j = i; j >= 1; --j){
+                res[j] += res[j-1];
+            }
+        }
+        return res;
+    }
+};
+
+//Recursive version is the same as before
+class Solution {
+public:
+    vector<int> getRow(int rowIndex) {
+        if(rowIndex < 0) return vector<int>();
+        if(rowIndex == 0) return vector<int>(1, 1);
+        auto tempRes = getRow(rowIndex-1);
+        vector<int> curRes(rowIndex+1, 0);
+        curRes[0] = 1;
+        curRes.back() = 1;
+        for(int i = 1; i < tempRes.size(); ++i){
+            curRes[i] = tempRes[i-1] + tempRes[i];
+        }
+        return curRes;
+    }
+};
+
+
