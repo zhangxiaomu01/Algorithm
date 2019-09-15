@@ -2046,8 +2046,49 @@ public:
 };
 
 
+//509. Fibonacci Number
+//https://leetcode.com/problems/fibonacci-number/
+class Solution {
+    unordered_map<int, int> uMap;
+public:
+    int fib(int N) {
+        if(uMap.count(N) > 0) return uMap[N];
+        int res = 0;
+        if(N < 2) res = N;
+        else{
+            res = fib(N-1) + fib(N-2);
+        }
+        uMap[N] = res;
+        return res;
+    }
+};
 
+class Solution {
+public:
+    int fib(int N) {
+        if(N < 2) return N;
+        vector<int> dp(N+1, 0);
+        dp[1] = 1;
+        for(int i = 2; i <= N; ++i){
+            dp[i] = dp[i-1] + dp[i-2];
+        }
+        return dp[N];
+    }
+};
 
-
-
+class Solution {
+public:
+    int fib(int N) {
+        if(N < 2) return N;
+        int pre = 0;
+        int cur = 1;
+        for(int i = 2; i <= N; ++i){
+            //dp[i] = dp[i-1] + dp[i-2];
+            int temp = cur;
+            cur = cur + pre;
+            pre = temp;
+        }
+        return cur;
+    }
+};
 
