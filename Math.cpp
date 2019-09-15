@@ -469,4 +469,47 @@ public:
 };
 
 
+//50. Pow(x, n)
+//https://leetcode.com/problems/powx-n/
+//Note how we handle n, n could be potentially large, and we need to divide
+//it by 2, instead of -1.
+class Solution {
+private:
+    double helper(double x, long long n){
+        if(n == 0) return 1.000;
+        if(n == 1) return x;
+        //Note we need to divide by 2, or we will have 
+        //stack overflow
+        double res = helper(x, n/2);
+        res *= res;
+        if(n % 2 == 1)
+            res = x * res;
+        return res;
+    }
+public:
+    double myPow(double x, int n) {
+        //if(x == 0.000000000 && n < 0) 
+        if(x == 1.000000) return x;
+        long long nl = abs(static_cast<long long>(n));
+        if(n > 0) return helper(x, nl);
+        else return 1.0 / helper(x, nl);
+            
+    }
+};
+
+//Iterative version
+class Solution {
+public:
+    double myPow(double x, int n) {
+        double ans = 1;
+        long nl = abs(static_cast<long>(n));
+        while(nl > 0){
+            if((nl&1) == 1) ans = ans * x;
+            nl >>= 1;
+            x *= x;
+        }
+        return n<0 ? 1.0/ans : ans;
+    }
+
+};
 
