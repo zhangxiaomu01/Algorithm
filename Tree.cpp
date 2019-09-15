@@ -1746,6 +1746,45 @@ public:
     }
 };
 
+
+//95. Unique Binary Search Trees II
+//https://leetcode.com/problems/unique-binary-search-trees-ii/
+class Solution {
+private:
+    vector<TreeNode*> buildTree(int s, int e){
+        vector<TreeNode*> res;
+        //should be s > e. then we push null
+        if(s > e) {
+            res.push_back(nullptr);
+            return res;
+        }
+        
+        for(int i = s; i <= e; ++i){
+            //Build the left tree and right tree
+            vector<TreeNode*> leftSub = buildTree(s, i-1);
+            vector<TreeNode*> rightSub = buildTree(i+1, e);
+            
+            for(TreeNode* l : leftSub){
+                for(TreeNode* r : rightSub){
+                    TreeNode* root = new TreeNode(i);
+                    root->left = l;
+                    root->right = r;
+                    res.push_back(root);
+                }
+            }
+        }
+        return res;
+        
+    }
+public:
+    vector<TreeNode*> generateTrees(int n) {
+        if(n == 0) return vector<TreeNode*>();
+        return buildTree(1, n);
+    }
+};
+
+
+
 //116. Populating Next Right Pointers in Each Node
 //https://leetcode.com/problems/populating-next-right-pointers-in-each-node/
 //We can do level order traversal, but this problem requires us to use constant 
