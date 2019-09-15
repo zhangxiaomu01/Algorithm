@@ -1749,6 +1749,7 @@ public:
 
 //95. Unique Binary Search Trees II
 //https://leetcode.com/problems/unique-binary-search-trees-ii/
+//Note we do not implement memorization in this approach. 
 class Solution {
 private:
     vector<TreeNode*> buildTree(int s, int e){
@@ -1783,6 +1784,70 @@ public:
     }
 };
 
+//Optimized version, with memo
+class Solution {
+public:
+    vector<TreeNode*> generateTrees(int n) {
+        vector<TreeNode*> r;
+        if(n==0) return r;
+        unordered_map<int, vector<TreeNode*>> m;
+        r = generateTrees(1, n, m);
+        return r;
+    }
+    
+    vector<TreeNode*> generateTrees(int s, int e, unordered_map<int, vector<TreeNode*>>& m)
+    {
+        vector<TreeNode*> r;
+        if(s>e)
+        {
+            r.push_back(NULL);
+            return r;
+        }
+        
+        for(int i=s;i<=e;i++)
+        {
+            vector<TreeNode*> left;
+            int pos = s*1000 + i-1;
+            auto iter = m.find(pos);
+            if(iter!=m.end())
+            {
+                left = iter->second;
+            }
+            else
+            {
+                left =  generateTrees(s, i-1, m);
+                m.emplace(pos, left);
+            }
+            
+            pos = (i+1)*1000 + e;
+            iter = m.find(pos);
+            vector<TreeNode*> right;
+            if(iter!=m.end())
+            {
+                right = iter->second;
+            }
+            else
+            {
+                right = generateTrees(i+1, e, m);
+                m.emplace(pos, right);
+            }
+            
+            for(int j=0;j<left.size();j++)
+            {
+                for(int k=0;k<right.size();k++)
+                {
+                    TreeNode* n = new TreeNode(i);
+                    n->left = left[j];
+                    n->right= right[k];
+                    
+                    r.push_back(n);
+                }
+            }
+        }
+        
+        return r;
+    }
+};
 
 
 //116. Populating Next Right Pointers in Each Node
