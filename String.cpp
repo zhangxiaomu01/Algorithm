@@ -244,6 +244,19 @@ public:
     }
 };
 
+//Recursive version!
+class Solution {
+private:
+    void reverseS(vector<char>& str, int s, int e){
+        if(s >= e) return;
+        swap(str[s], str[e]);
+        reverseS(str, s+1, e-1);
+    }
+public:
+    void reverseString(vector<char>& s) {
+        reverseS(s, 0, s.size()-1);
+    }
+};
 
 
 //345. Reverse Vowels of a String
