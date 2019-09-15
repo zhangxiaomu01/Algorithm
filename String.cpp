@@ -1651,4 +1651,77 @@ public:
 };
 
 
+//68. Text Justification
+//https://leetcode.com/problems/text-justification/
+//Just run simulation, check each word line by line.
+class Solution {
+public:
+    vector<string> fullJustify(vector<string>& words, int maxWidth) {
+        queue<string> Q;
+        int len = words.size(); 
+        vector<string> res;
+        int localLengthW = 0;
+        for(int i = 0; i < len;){
+            //We need to consider white space
+            if(localLengthW + words[i].size() <= maxWidth){
+                auto& w = words[i];
+                localLengthW += w.size() + 1;
+                if(localLengthW > maxWidth) {
+                    localLengthW --;
+                    Q.push(w);
+                }else{
+                    w.push_back(' ');
+                    Q.push(w);
+                }
+                ++i;
+            }else{
+                string tempRes;
+                int extraGap = maxWidth - localLengthW;
+                //cout << extraGap << endl;
+                if(extraGap == 0 && Q.back().back() != ' '){
+                    while(!Q.empty()){
+                        tempRes.append(Q.front());
+                        Q.pop();
+                    }
+                }else if(Q.size() == 1){
+                    tempRes.append(Q.front());
+                    tempRes.append(extraGap, ' ');
+                    Q.pop();
+                }else{
+                    int lenQ = Q.size();
+                    Q.back().pop_back();
+                    //Since extraGap != 0, remember last element we add a
+                    //' ' behind, we need to remove that
+                    extraGap++;
+                    //How many ' ' we need to add for each gap
+                    int addOn = extraGap / (lenQ - 1);
+                    int posAdd = extraGap % (lenQ - 1);
+                    
+                    int j = 0;
+                    while(!Q.empty()){
+                        auto& w = Q.front();
+                        if(Q.size() > 1)
+                            w.append((j < posAdd ? 1 : 0) + addOn, ' ');
+                        tempRes.append(w);
+                        Q.pop();
+                        j++;
+                    }
+                }
+                res.push_back(tempRes);
+                localLengthW = 0;
+            }
+        }
+        string tempRes;
+        //Last line
+        while(!Q.empty()){
+            tempRes.append(Q.front());
+            Q.pop();
+        }
+        int extraSpace = maxWidth - tempRes.size();
+        tempRes.append(extraSpace, ' ');
+        res.push_back(tempRes);
+        return res;
+    }
+};
+
 
