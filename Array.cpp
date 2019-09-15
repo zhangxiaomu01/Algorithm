@@ -3809,9 +3809,45 @@ public:
 };
 
 
+//118. Pascal's Triangle
+//https://leetcode.com/problems/pascals-triangle/
+//Iterative version is pretty straightforward
+class Solution {
+public:
+    vector<vector<int>> generate(int numRows) {
+        vector<vector<int>> res;
+        for(int i = 0; i < numRows; i++){
+            vector<int> row(i+1, 1);
+            res.push_back(row);
+            for(int j = 1; j < i; j++){
+                res[i][j] = res[i-1][j-1] + res[i-1][j];
+            }
+        }
+        return res;        
+    }
+};
 
-
-
-
+//Recursive version. Note how we retrieve the nums-1 result and reuse it for
+//current row computing
+//Recursive version is a little bit tricky! Be careful when 
+//write in this form
+class Solution {
+public:
+    vector<vector<int>> generate(int numRows) {
+        if(numRows <= 0) return vector<vector<int>>();
+        //Base case
+        if(numRows == 1) return vector<vector<int>>(1, vector<int>(1,1));
+        auto tempRes = generate(numRows-1);
+        const auto& preRow = tempRes.back();
+        //Build current row;
+        vector<int> curRow(1, 1);
+        for(int i = 0; i < preRow.size()-1; ++i){
+            curRow.push_back(preRow[i] + preRow[i+1]);
+        }
+        curRow.push_back(1);
+        tempRes.emplace_back(curRow);
+        return tempRes;
+    }
+};
 
 
