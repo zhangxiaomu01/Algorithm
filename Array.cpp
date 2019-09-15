@@ -3891,6 +3891,7 @@ public:
 //912. Sort an Array
 //https://leetcode.com/problems/sort-an-array/
 //Wrong! first try!
+/*
 class Solution {
 private:
     vector<int> mergeSort(vector<int>& nums, int l, int r){
@@ -3932,6 +3933,91 @@ public:
         return mergeSort(nums, l, r);
     }
 };
+*/
 
+//Merge sort algorithm!
+//You spent too much time implementing this algorithm! Tricky, please be careful
+class Solution {
+private:
+    void mergeSort(vector<int>& nums, int l, int r){
+        if(l >= r) return;
+        int mid = l + (r - l) / 2;
+        mergeSort(nums, l, mid);
+        mergeSort(nums, mid+1, r);
+        merge(nums, l, mid, r);
+    }
+    void merge(vector<int>& nums, int l, int mid, int r){
+        vector<int> res(r - l + 1, 0);
+        int i = l, j = mid+1, ret = 0;
+        while(i <= mid && j <= r){
+            if(nums[i] <= nums[j]){
+                res[ret++] = nums[i++];
+            }else
+                res[ret++] = nums[j++];
+        }
+        while(i <= mid) res[ret++] = nums[i++];
+        while(j <= r) res[ret++] = nums[j++];
+        i = 0, ret = 0;
+        //should be < r-l+1
+        for(; i < r - l + 1; ++i){
+            nums[i + l] = res[ret++];
+        }
+    }
+public:
+    vector<int> sortArray(vector<int>& nums) {
+        int len = nums.size();
+        if(len <= 1) return nums;
+        mergeSort(nums, 0, len-1);
+        return nums;
+    }
+};
 
+//Merge sort in-place! O(n^2logn) (not very useful!)
+class Solution {
+private:
+    void mergeSort(vector<int>& nums, int l, int r){
+        if(l >= r) return;
+        int mid = l + (r - l) / 2;
+        mergeSort(nums, l, mid);
+        mergeSort(nums, mid+1, r);
+        merge(nums, l, mid, r);
+    }
+    //In-place merge!
+    void merge(vector<int>& nums, int l, int mid, int r){
+        int s1 = l, s2 = mid + 1;
+        //already sorted!
+        if(nums[mid] <= nums[s2]) return; 
+        
+        while(s1 <= mid && s2 <= r){
+            if(nums[s1] <= nums[s2])
+                s1++;
+            else{
+                int index = s2;
+                int val = nums[s2];
+                //shift all the elements between s1 - s2 right by 1
+                //leave room for val
+                while(index != s1){
+                    nums[index] = nums[index-1];
+                    index--;
+                }
+                nums[s1] = val;
+                
+                s1++;
+                s2++;
+                //We need to update mid here, because s1 <= mid is
+                //termination condition!
+                mid++;
+            }
+        }
+        
+    }
+public:
+    vector<int> sortArray(vector<int>& nums) {
+        int len = nums.size();
+        if(len <= 1) return nums;
+        mergeSort(nums, 0, len-1);
+        return nums;
+    }
+};
 
+//quick sort algorithm!
