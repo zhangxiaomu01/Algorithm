@@ -1720,6 +1720,31 @@ public:
     }
 };
 
+//My recursive one
+class Solution {
+private:
+    int helper(int n, vector<int>& memo){
+        if(n == 0) return 1;
+        if(n == 1) return 1;
+        if(n == 2) return 2;
+        if(memo[n] != -1) return memo[n];
+        int res = 0;
+        for(int i = 0; i < n/2; ++i){
+            res += helper(n-1-i, memo) * helper(i, memo) * 2;
+        }
+        if(n % 2 == 1) {
+            int temp = helper((n-1)/2, memo) ;
+            res += temp * temp;
+        }
+        memo[n] = res;    
+        return res;
+    }
+public:
+    int numTrees(int n) {
+        vector<int> memo(n+1, -1);
+        return helper(n, memo);
+    }
+};
 
 //116. Populating Next Right Pointers in Each Node
 //https://leetcode.com/problems/populating-next-right-pointers-in-each-node/
