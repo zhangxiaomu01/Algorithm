@@ -1784,7 +1784,7 @@ public:
     }
 };
 
-//Optimized version, with memo
+//Optimized version, with memo. Not implemented by me. Code from others.
 class Solution {
 public:
     vector<TreeNode*> generateTrees(int n) {
