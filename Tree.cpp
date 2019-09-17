@@ -2668,3 +2668,169 @@ public:
     }
 };
 
+
+//427. Construct Quad Tree
+//https://leetcode.com/problems/construct-quad-tree/
+//The following code does not work! while I cannot tell the difference between
+//it with the valid java code:
+//
+/*
+class Solution {
+private:
+    Node* helper(vector<vector<int>>& G, int left, int right, int up, int bottom){
+        //if(left > right || up > bottom) return nullptr;
+        if(left == right || up == bottom) 
+            return new Node(G[left][up] == 1, true, nullptr, nullptr, nullptr, nullptr);
+        int midX = left + (right - left) / 2;
+        int midY = up + (bottom - up) / 2;
+        Node* topL = helper(G, left, midX, up, midY);
+        Node* topR = helper(G, midX+1, right, up, midY);
+        Node* bottomL = helper(G, left, midX, midY+1, bottom);
+        Node* bottomR = helper(G, midX+1, right, midY+1, bottom);
+        
+        Node* root = new Node(G[left][up] == 1, true, topL, topR, bottomL, bottomR);
+        
+        if(!topL || !topR || !bottomL || !bottomR){
+            return root;
+        }
+        
+        if(topL->isLeaf && topR->isLeaf && bottomL->isLeaf && bottomR->isLeaf && topL->val == topR->val && topL->val == bottomL->val && topL->val == bottomR->val){
+            root->val = topL->val;
+            root->topLeft = nullptr;
+            delete topL;
+            root->topRight = nullptr;
+            delete topR;
+            root->bottomLeft = nullptr;
+            delete bottomL;
+            root->bottomRight = nullptr;
+            delete bottomR;
+            
+        }else{
+            root->isLeaf = false;
+        }
+        
+        return root;
+    }
+public:
+    Node* construct(vector<vector<int>>& grid) {
+        int m = grid.size();
+        int n = m ? grid[0].size() : 0;
+        if(!m || !n) return nullptr;
+        return helper(grid, 0, n-1, 0, m-1);
+    }
+};
+*/
+
+
+/*
+// Definition for a QuadTree node.
+class Node {
+public:
+    bool val;
+    bool isLeaf;
+    Node* topLeft;
+    Node* topRight;
+    Node* bottomLeft;
+    Node* bottomRight;
+
+    Node() {}
+
+    Node(bool _val, bool _isLeaf, Node* _topLeft, Node* _topRight, Node* _bottomLeft, Node* _bottomRight) {
+        val = _val;
+        isLeaf = _isLeaf;
+        topLeft = _topLeft;
+        topRight = _topRight;
+        bottomLeft = _bottomLeft;
+        bottomRight = _bottomRight;
+    }
+};
+*/
+//The same idea with length works. Weird!
+class Solution {
+private:
+    Node* buildNode(vector<vector<int>>& grid, int x, int y, int length) {
+        if (length == 1) {
+            return new Node(grid[x][y] == 1, true, nullptr, nullptr, nullptr, nullptr);
+        }
+        
+        int newLength = length / 2;
+        Node* topLeft = buildNode(grid, x, y, newLength);
+        Node* topRight = buildNode(grid, x, y + newLength, newLength);
+        Node* botLeft = buildNode(grid, x + newLength, y, newLength);
+        Node* botRight = buildNode(grid, x + newLength, y + newLength, newLength);
+        
+        if (topLeft -> isLeaf && topRight -> isLeaf && botRight -> isLeaf && botLeft -> isLeaf &&
+            ((topLeft -> val && topRight -> val && botLeft -> val && botRight -> val) ||
+            !(topLeft -> val || topRight -> val || botLeft -> val || botRight -> val))) {
+            bool val = topLeft -> val;
+            delete topLeft;
+            topLeft = nullptr;
+            delete topRight;
+            topRight = nullptr;
+            delete botLeft;
+            botLeft = nullptr;
+            delete botRight;
+            botRight = nullptr;
+            return new Node(val, true, nullptr, nullptr, nullptr, nullptr);
+        }
+        return new Node(true, false, topLeft, topRight, botLeft, botRight);
+    }
+public:
+    Node* construct(vector<vector<int>>& grid) {
+        int N = grid.size();
+        if (N == 0) {
+            return nullptr;
+        }
+        return buildNode(grid, 0, 0, N);
+    }
+};
+
+//Optimized version: We check whether the valid grid can forms a leaf, so we 
+//no longer need to recursively explore all the results
+class Solution {
+public:
+    Node* f(const vector<vector<int>>& grid, int i1, int j1,int i2,int j2){
+        if(i1==i2 && j1==j2){
+            Node* ret = new Node();
+            ret -> val = grid[i1][j1]?true:false;
+            ret->isLeaf = true;
+            ret->topLeft = ret->topRight = ret->bottomLeft = ret->bottomRight = nullptr;
+            return ret;
+        }
+        //Optimization here!
+        int val = grid[i1][j1];
+        int allSame = true;
+        for(int i = i1;i<=i2;i++) {
+            for(int j = j1;j<=j2;j++) {
+                if(grid[i][j]!=val) {
+                    allSame = false;
+                    break;
+                }
+            }
+        }
+        if(allSame) {
+            Node* ret = new Node();
+            ret->val = val?true:false;
+            ret->isLeaf = true;
+            ret->topLeft = ret->topRight = ret->bottomLeft = ret->bottomRight = nullptr;
+            return ret;
+        }
+        Node* ret = new Node();
+        ret->isLeaf = false;
+        ret->val = true;
+        int i_mid = (i1+i2)/2;
+        int j_mid = (j1+j2)/2;
+        ret->topLeft = f(grid,i1,j1,i_mid,j_mid);
+        ret->topRight = f(grid,i1,j_mid+1,i_mid,j2);
+        ret->bottomLeft = f(grid,i_mid+1,j1,i2,j_mid);
+        ret->bottomRight = f(grid,i_mid+1,j_mid+1,i2,j2);
+        return ret;
+    }
+    Node* construct(vector<vector<int>>& grid) {
+        if(grid.empty()){
+            return nullptr;
+        }
+        return f(grid,0,0,grid.size()-1,grid[0].size()-1);
+    }
+};
+
