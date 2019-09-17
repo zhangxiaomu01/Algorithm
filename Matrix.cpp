@@ -994,5 +994,95 @@ public:
 };
 
 
+//939. Minimum Area Rectangle
+//https://leetcode.com/problems/minimum-area-rectangle/
+//Brute Force solution
+//Note how to define your own hash function is critical here!
+struct Hash{
+     size_t operator()(const pair<int, int>& p) const{
+         return hash<long long>()(((long long)p.first << 32) ^ ((long long)p.second));
+     }
+};
+class Solution {
+public:
+    int minAreaRect(vector<vector<int>>& points) {
+        unordered_set<pair<int, int>, Hash> uSet;
+        int res = numeric_limits<int>::max();
+        for(auto&p : points){
+            int x1 = p[0], y1 = p[1];
+            for(auto&[x2, y2] : uSet){
+                if(uSet.count({x1, y2}) && uSet.count({x2, y1})){
+                    int localArea = abs(y2 - y1) * abs(x2 - x1);
+                    res = min(localArea, res);
+                }
+            }
+            uSet.insert({x1, y1});
+        }
+        //We could potentially have no rectangle!
+        return res == numeric_limits<int>::max() ? 0 : res;
+    }
+};
+
+
+//Heavily optimized version. Tricky, too many tricks and not easy to implement
+struct Hash{
+    unsigned int operator()(const pair<int, int>& p) const {
+        return hash<long long>()(((long long)p.first << 32) ^ ((long long)p.second));
+    }
+};
+class Solution {
+private:
+    //count the maximum different coordinates for x and y
+    pair<int, int> countCoord(vector<vector<int>>& points){
+        unordered_set<int> sx, sy;
+        for(auto& p : points){
+            sx.insert(p[0]);
+            sy.insert(p[1]);
+        }
+        return make_pair(sx.size(), sy.size());
+    }
+public:
+    int minAreaRect(vector<vector<int>>& points) {
+        auto [nx, ny] = countCoord(points);
+        //We need to make sure the key will be sorted! so in the end,
+        //we can safely using x2 - x
+        map<int, vector<int>> pMap;
+        //Make sure we always make the list for each entry shorter. 
+        //Optimization! since index x and y has the same logic
+        //It does not matter if we switch them
+        if(nx > ny) {
+            for(auto& p : points)
+                pMap[p[0]].push_back(p[1]);
+        }else{
+            for(auto& p : points)
+                pMap[p[1]].push_back(p[0]);
+        }
+        
+        int res = INT_MAX;
+        unordered_map<pair<int, int>, int, Hash> uMap;
+        for(auto&[x, vy] : pMap){
+            sort(vy.begin(), vy.end());
+            for(int i = 1; i < vy.size(); ++i){
+                for(int j = 0; j < i; ++j){
+                    int y1 = vy[j], y2 = vy[i];
+                    if(uMap.count({y1, y2})){
+                        //since {y1, y2} has already been inserted, we
+                        //know that x1 must be smaller.
+                        int x1 = uMap[{y1, y2}];
+                        int x2 = x;
+                        res = min(res, (x2 - x1) * (y2 - y1));
+                    }
+                    //indicates that current x can form a range between
+                    //[y1, y2] (y1 <= y2)
+                    uMap[{y1, y2}] = x;
+                }
+            }
+            
+        }
+        return res == INT_MAX ? 0 : res;
+        
+    }
+};
+
 
 

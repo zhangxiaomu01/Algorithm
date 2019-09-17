@@ -1029,6 +1029,7 @@ public:
 //https://leetcode.com/problems/maximal-rectangle/
 /* The following algorithm is your first try. It's Wrong!!! Note we cannot get the 
 right boundry and check the area if we only record the maximum width and height! */
+/*
 class Solution {
 public:
     int maximalRectangle(vector<vector<char>>& matrix) {
@@ -1080,7 +1081,7 @@ public:
         return maxArea;
     }
 };
-
+*/
 /* We propose the following algorithms to solve the problems. Their ideas are similar.
 However, it's critical to come up with the idea that we need to record the height
 first. */
@@ -1142,6 +1143,52 @@ public:
     }
 };
 
+/* Second Solution */
+//This solution is based on the solution of problem 84. The general idea is that we will
+//first calculate the height of each entry row by row. Then for each row, we call the 
+//algorthm to calculate the largest triangle in our defined histogram. We maintain a 
+//maxArea variable to keep track of the maximum area we could potentially have.
+class Solution {
+private:
+    int calMaxArea(vector<int>& V){
+        stack<int> hSt;
+        int len = V.size() - 1;
+        int maxArea = 0;
+        for(int i = 0; i <= len;){
+            if(hSt.empty() || V[hSt.top()] <= V[i])
+                hSt.push(i++);
+            else{
+                while(!hSt.empty() && V[hSt.top()] > V[i]){
+                    int index = hSt.top();
+                    hSt.pop();
+                    maxArea = max(maxArea, (i - 1 - (hSt.empty() ? -1 : hSt.top())) * V[index]);
+                }
+            }
+        }
+        return maxArea;
+    }
+public:
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        if(matrix.empty()) return 0;
+        int m = matrix.size(), n = m ? matrix[0].size() : 0;
+        vector<int> height(n+1, 0);
+        int maxArea = 0;
+        for(int i = 0; i < m; ++i){
+            for(int j = 0; j < n; ++j){
+                if(matrix[i][j] == '1'){
+                    height[j]++;
+                }            
+                else{
+                    height[j] = 0;
+                }
+            }
+            int localMax = calMaxArea(height);
+
+            maxArea = max(maxArea, localMax);
+        }
+        return maxArea;
+    }
+};
 
 //198. House Robber
 //https://leetcode.com/problems/house-robber/
