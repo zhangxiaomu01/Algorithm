@@ -2834,3 +2834,56 @@ public:
     }
 };
 
+
+//979. Distribute Coins in Binary Tree
+//https://leetcode.com/problems/distribute-coins-in-binary-tree/
+//You should consider leaves first. If leaf has more coins, it should 
+//push the coins to its parent, or it needs more coins from its parent!
+class Solution {
+    int DFS(TreeNode* root, int& count){
+        if(!root) return 0;
+        int leftTotal = DFS(root->left, count);
+        int rightTotal = DFS(root->right, count);
+        count += abs(leftTotal) + abs(rightTotal);
+        return root->val - 1 + leftTotal + rightTotal;
+    }
+public:
+    int distributeCoins(TreeNode* root) {
+        if(!root) return 0;
+        int count = 0;
+        DFS(root, count);
+        return count;
+    }
+};
+
+
+//617. Merge Two Binary Trees
+//https://leetcode.com/problems/merge-two-binary-trees/
+class Solution {
+private:
+    TreeNode* buildTree(TreeNode* node){
+        if(!node) return nullptr;
+        TreeNode* root = new TreeNode(node->val);
+        if(node->left)
+            root->left = buildTree(node->left);
+        if(node->right)
+            root->right = buildTree(node->right);
+        return root;
+    }
+    TreeNode* helper(TreeNode* t1, TreeNode* t2){
+        if(!t1 && !t2) return nullptr;
+        if(!t1) return buildTree(t2);
+        if(!t2) return buildTree(t1);
+        
+        TreeNode* root = new TreeNode(t1->val + t2->val);
+        root->left = helper(t1->left, t2->left);
+        root->right = helper(t1->right, t2->right);
+        return root;
+    }
+public:
+    TreeNode* mergeTrees(TreeNode* t1, TreeNode* t2) {
+        return helper(t1, t2);
+    }
+};
+
+
