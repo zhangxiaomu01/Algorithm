@@ -3670,7 +3670,6 @@ public:
     }
 };
 
-
 //118. Pascal's Triangle
 //https://leetcode.com/problems/pascals-triangle/
 //Iterative version is pretty straightforward
@@ -3919,3 +3918,100 @@ public:
 };
 
 
+
+//218. The Skyline Problem
+//https://leetcode.com/problems/the-skyline-problem/
+//A very hard problem, the solution is tricky!
+//The key idea is to keep track of each boundry, and record the highest height within at that point. For example:
+//[2 9 10][3 7 15][5 12 12][15 20 10][19, 24 8]
+//At each horizontal point, we are going to record the highest height and get a couple of pairs like below (we use multiset and multimap to do this):
+//[2 10][3, 15][5,15][7 12][9 12][12 0][15 10][19 10][20 8][24 0]
+//Then we remove all the consecutive pairs which have the same height (we only keep the first one). 
+class Solution {
+public:
+    vector<vector<int>> getSkyline(vector<vector<int>>& buildings) {
+        vector<vector<int>> res;
+        int len = buildings.size();
+        
+        multimap<int, int> mMap;
+        for(auto& v : buildings){
+            //set second point with negative height, then we know
+            //which point is the first
+            mMap.emplace(v[0], v[2]);
+            mMap.emplace(v[1], -v[2]);
+        }
+        
+        //Build the x coordinate and height relationship
+        //We need to insert 0 to heights as the base case! or when we have
+        //0 heights, we cannot remove any elements in the set, will cause
+        //problem!
+        multiset<int> heights{0};
+        //build the relationship of current x and current max height!
+        //do not need multimap here, since the smae x will have the same
+        //result. Save time and space
+        map<int, int> xHMapping;
+        for(auto& v : mMap){
+            //When we encounter first point, we push the height!
+            if(v.second > 0){
+                heights.insert(v.second);
+            }else{
+                //cannot just say heights.erase(-v.second). we will erase
+                //all the -v.second in heights
+                heights.erase(heights.find(-v.second));
+            }
+            xHMapping[v.first] = (*heights.crbegin());
+            
+        }
+
+        for(auto& v : xHMapping){
+            if(res.empty() || res.back()[1] != v.second)
+                res.push_back(vector<int>({v.first, v.second}));
+        }
+        return res;
+    }
+};
+
+
+//A little bit optimization!
+//This solution is more efficient, however it's a solution relies on sort rule...
+//In general, it's bad!!
+
+class Solution {
+public:
+    vector<vector<int>> getSkyline(vector<vector<int>>& buildings) {
+        
+        vector<pair<int, int>> dict;
+        for(vector<int>& b:buildings){
+            //We have to make the negative value go first, or the following if(cmaxHeight != preMaxHeight) will not work.
+            dict.push_back({b[0], -b[2]});
+            dict.push_back({b[1], b[2]});
+        }
+        //Sorting here is different compared with using multimap. For example, in multimap,
+        //We will have sorting like [0 -3][2 3][2 -3][5 3]
+        //Here, we will have [0 -3][2 -3][2 3][5 3]
+        //It's critical when we try to get rid of duplicates from the array
+        sort(dict.begin(), dict.end());
+        //Note elements inserted to height are also sorted
+        multiset<int> heights{0};
+        int preMaxHeight = 0, cmaxHeight;
+        vector<vector<int>> res;
+        for(const pair<int, int>& p : dict){
+            //we meet the first boundry
+            if(p.second < 0){
+                heights.insert(-p.second);
+            }
+            else 
+                heights.erase(heights.find(p.second));
+            //We update the max height for current position
+            cmaxHeight = *heights.crbegin();
+            //We keep track of the previous maxHeight, and get rid of the duplicate elments
+            //Note this only works when we implement dict using vector and put negative height to our left boundry... Very weird...
+            if(cmaxHeight != preMaxHeight){
+                vector<int> t{p.first, cmaxHeight};
+                res.push_back(t);
+                preMaxHeight = cmaxHeight;
+            }
+        }
+        return res;
+    }
+};
