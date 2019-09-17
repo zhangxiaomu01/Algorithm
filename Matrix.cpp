@@ -415,6 +415,7 @@ public:
 };
 
 //Divide and conquer! Dammn, it's hard to get it right!!!
+//Do not try to implement it during the interview. Using smart method!
 class Solution {
     bool binarySearch(vector<vector<int>>& M, int target, int up, int left, int bottom, int right){
         if(left > right || up > bottom) return false;
