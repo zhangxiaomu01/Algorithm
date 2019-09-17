@@ -1796,3 +1796,38 @@ bool validPalindrome(string s) {
 }
 
 
+
+//937. Reorder Data in Log Files
+//https://leetcode.com/problems/reorder-data-in-log-files/
+//stable_sort + custom comparator!
+//Not a hard problem! however, we need to consider the retain stable
+//during the sorting process. It's still good to know that there is 
+//some way in STL can help us to do so!
+//A very weird problem, hard to solve.
+class Solution {
+public:
+    vector<string> reorderLogFiles(vector<string>& logs) {
+        auto myComp = [](string a, string b){
+                int i = a.find(' ');
+                int j = b.find(' ');
+                if(!isdigit(a[i+1]) && !isdigit(b[j+1])){
+                    if(a.substr(i+1) == b.substr(j+1))
+                        //handle ties of two strings
+                        return a.substr(0, i+1) < b.substr(0, j+1);
+                    else if(a.substr(i+1) < b.substr(j+1))
+                        return true;
+                }else{
+                    //make sure characters go first
+                    if(!isdigit(a[i+1]))
+                        return true;
+                    else
+                        return false;
+                }
+            return false;
+        };
+        stable_sort(logs.begin(), logs.end(), myComp);
+        return logs;
+    }
+};
+
+
