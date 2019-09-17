@@ -414,7 +414,42 @@ public:
     }
 };
 
-//
+//Divide and conquer! Dammn, it's hard to get it right!!!
+class Solution {
+    bool binarySearch(vector<vector<int>>& M, int target, int up, int left, int bottom, int right){
+        if(left > right || up > bottom) return false;
+        if(target < M[up][left] || target > M[bottom][right])
+            return false;
+        int l = left, r = right, u = up, b = bottom;
+        while(l <= r && u <= b){
+            int midX = l + (r - l) / 2;
+            int midY = u + (b - u) / 2;
+            if(M[midY][midX] == target) return true;
+            else if(M[midY][midX] < target){
+                u = midY < M.size() - 1 ? midY + 1 : M.size() - 1;
+                l = midX < M[0].size() - 1 ? midX + 1: M[0].size() - 1;
+               
+            }else{
+                b = midY > 0 ? midY - 1 : 0;
+                r = midX > 0 ? midX - 1 : 0;
+            }
+        }
+        //check left bottom and right top
+        //Tricky part!
+        return binarySearch(M, target, u, left, bottom, l-1) || 
+            binarySearch(M, target, up, l, u-1, right);
+        
+    }
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        int m = matrix.size();
+        int n = m ? matrix[0].size() : 0;
+        if(!m || !n || target < matrix[0][0] || target > matrix[m-1][n-1]) 
+            return false;
+        return binarySearch(matrix, target, 0, 0, m-1, n-1);
+    }
+};
+
 
 /*
 A natura approach is to iterate through each row, and do the binary search, the 
