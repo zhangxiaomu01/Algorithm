@@ -842,3 +842,33 @@ int main() {
 }
 
 
+//733. Flood Fill
+//https://leetcode.com/problems/flood-fill/
+class Solution {
+public:
+    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int newColor) {
+        int m = image.size();
+        int n = m ? image[0].size() : 0;
+        if(!m || !n) return image;
+        queue<pair<int, int>> Q;
+        Q.push(make_pair(sr, sc));
+        int oriColor = image[sr][sc];
+        if(oriColor == newColor) return image;
+        while(!Q.empty()){
+            pair<int, int> pixel = Q.front();
+            Q.pop();
+            image[pixel.first][pixel.second] = newColor;
+            if(pixel.first+1 < m && image[pixel.first+1][pixel.second] == oriColor)
+                Q.push({pixel.first+1, pixel.second});
+            if(pixel.first-1 >= 0 && image[pixel.first-1][pixel.second]== oriColor)
+                Q.push({pixel.first-1, pixel.second});
+            if(pixel.second+1 < n && image[pixel.first][pixel.second+1] == oriColor)
+                Q.push({pixel.first, pixel.second + 1});
+            if(pixel.second-1 >= 0 && image[pixel.first][pixel.second-1] == oriColor)
+                Q.push({pixel.first, pixel.second-1});
+        }
+        return image;
+    }
+};
+
+
