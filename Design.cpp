@@ -1569,3 +1569,81 @@ public:
 
 
 
+//855. Exam Room
+//https://leetcode.com/problems/exam-room/
+//A straightforward approach. O(n) for insertion, O(1) for deletion
+class ExamRoom {
+private:
+    int m_length;
+    list<int> seats;
+    //maps current seat index with an iterator in seats list, for fast
+    //deletion
+    unordered_map<int, list<int>::iterator> seatMap;
+public:
+    ExamRoom(int N) {
+        m_length = N;
+    }
+    
+    int seat() {
+        if(seats.empty()){
+            seats.emplace_back(0);
+            seatMap[0] = seats.begin();
+            return 0;
+        }
+        //Note we need to check which distance is larger:
+        // ....s........s_k......
+        //which is befroe the first seat, between the first seat and last
+        //seat and after the last seat
+        // pre - previous seat in the list
+        int pre = -1;
+        //val - current seat index, dist - distance between pre and 
+        //current
+        int val = 0, dist = 0;
+        //pos - the position we are going to insert the seat to our list
+        list<int>::iterator pos;
+        for(auto it = seats.begin(); it!=seats.end(); ++it){
+            //handle the first case, now pre points to the first 
+            //seat
+            if(pre == -1){
+                dist = *it;
+                pos = it;
+                val = 0;
+            }
+            //find a gap larger than previous one
+            else if((*it - pre) / 2 > dist){
+                dist = (*it - pre) / 2;
+                val = (*it + pre) / 2;
+                pos = it;
+            }
+            pre = *it;
+        }
+        //Now we need to check the distance after the last seat
+        if(m_length - 1 - seats.back() > dist){
+            val = m_length - 1;
+            dist = m_length - 1 - seats.back();
+            pos = seats.end();
+        }
+        //The return value will be the iterator points to new inserted 
+        //element
+        //insert before pos
+        pos = seats.insert(pos, val);
+        seatMap[val] = pos;
+        return val;
+    }
+    
+    void leave(int p) {
+        auto it = seatMap[p];
+        seatMap.erase(p);
+        seats.erase(it);
+    }
+};
+
+/**
+ * Your ExamRoom object will be instantiated and called as such:
+ * ExamRoom* obj = new ExamRoom(N);
+ * int param_1 = obj->seat();
+ * obj->leave(p);
+ */
+
+
+
