@@ -1916,3 +1916,43 @@ public:
 
 
 
+//30. Substring with Concatenation of All Words
+//https://leetcode.com/problems/substring-with-concatenation-of-all-words/
+//Just do a direct search for each entry i in s. We start from i and check
+//each potential substring.
+class Solution {
+public:
+    vector<int> findSubstring(string s, vector<string>& words) {
+        vector<int> res;
+        if(s.empty() || words.empty()) return res;
+        
+        int len_s = s.size(), numW = words.size(), len_w = words[0].size();
+        if(len_s < len_w * numW) return res;
+        
+        unordered_map<string, int> wordDict;
+        for(auto& word : words){
+            wordDict[word]++;
+        }
+        
+        for(int i = 0; i < len_s - numW * len_w + 1; ++i){
+            unordered_map<string, int> detect;
+            int j = 0;
+            for(; j < numW; ++j){
+                string tempWord = s.substr(i + j*len_w, len_w);
+                if(wordDict.count(tempWord) > 0){
+                    detect[tempWord]++;
+                    if(detect[tempWord] > wordDict[tempWord])
+                        break;
+                }else{
+                    break;
+                }
+            }
+            if(j == numW) res.push_back(i);
+        }
+        return res;
+    }
+};
+
+
+
+
