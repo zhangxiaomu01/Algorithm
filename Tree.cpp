@@ -2887,3 +2887,36 @@ public:
 };
 
 
+
+//1145. Binary Tree Coloring Game
+//https://leetcode.com/problems/binary-tree-coloring-game/
+//The problem is not hard, we just traverse the tree and find x, and check the
+//3 partitions that x divides. If the sum of any of the two is less than third
+//one, which means our y can start from partiton 3 and guarantee a win!
+class Solution {
+    int countNodes(TreeNode* root){
+        if(!root) return 0;
+        int leftCount = countNodes(root->left);
+        int rightCount = countNodes(root->right);
+        return leftCount+ rightCount + 1;
+    }
+    TreeNode* findNode(TreeNode* root, int x){
+        if(!root) return nullptr;
+        if(root->val == x) return root;
+        TreeNode* leftNode = findNode(root->left, x);
+        TreeNode* rightNode = findNode(root->right, x);
+        return leftNode ? leftNode : rightNode;
+    }
+public:
+    bool btreeGameWinningMove(TreeNode* root, int n, int x) {
+        if(!root) return false;
+        TreeNode* nodeP1 = findNode(root, x);
+        int partition1 = countNodes(nodeP1->left);
+        int partition2 = countNodes(nodeP1->right);
+        int partition3 = n - 1 - partition1 - partition2;
+        return (partition3 > (partition1 + partition2)) || 
+        (partition1 > (partition3 + partition2)) || 
+        partition2 > (partition1 + partition3);
+    }
+};
+
