@@ -1831,3 +1831,32 @@ public:
 };
 
 
+//43. Multiply Strings
+//https://leetcode.com/problems/multiply-strings/
+class Solution {
+public:
+    string multiply(string num1, string num2) {
+        int len1 = num1.size(), len2 = num2.size();
+        if(num1 == "0" || num2 == "0")
+            return "0";
+        //Result will not exceed len1 + len2
+        string res(len1 + len2, '0');
+        int carry = 0;
+        for(int i = len1 - 1; i >= 0; --i){
+            carry = 0;
+            for(int j = len2-1; j >= 0; --j){
+                //here we add all the result together! This is a critical
+                //part!
+                int tempRes = (num1[i] - '0') * (num2[j] - '0') + carry + (res[i+j+1] - '0');
+                res[i+j+1] = (tempRes%10 + '0');
+                carry = tempRes / 10;
+            }
+            res[i] = (carry + '0');
+        }
+        size_t pos = res.find_first_not_of('0');
+        return res.substr(pos);
+    }
+};
+
+
+
