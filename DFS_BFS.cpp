@@ -872,3 +872,94 @@ public:
 };
 
 
+//778. Swim in Rising Water
+//https://leetcode.com/problems/swim-in-rising-water/
+//Dijkstra algorithm. We use a priority_queue to handle the case. The critical
+//part is that this is not the typical dijkstra algorithm, since we did not
+//record the shortest path for each node! (we can do it on the fly though, not
+//necessarily for this problem!) Then when we reach the last node, we need to
+//immediately return the result!
+class Solution {
+public:
+    int swimInWater(vector<vector<int>>& grid) {
+        int m = grid.size();
+        int n = m ? grid[0].size() : 0;
+        if(!m || !n) return 0;
+        priority_queue<vector<int>, vector<vector<int>>, greater<vector<int>>> pq;
+        vector<vector<int>> visited(m, vector<int>(n, 0));
+        pq.push(vector<int>({grid[0][0], 0, 0}));
+        visited[0][0] = 1;
+        const int dir[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        int res = 0;
+        while(!pq.empty()){
+            auto& v = pq.top();
+            int indexI = v[1];
+            int indexJ = v[2];
+            res = max(res, v[0]);
+            pq.pop();  
+            //We need to return earlier since when we reach the end
+            //or we can no longer guarantee we find the shortest path
+            if(indexI == m-1 && indexJ == n-1) return res;
+            for(int i = 0; i < 4; ++i){
+                int nextI = indexI + dir[i][0];
+                int nextJ = indexJ + dir[i][1];
+                
+                if(nextI >= 0 && nextI < m && nextJ >= 0 && nextJ < n && visited[nextI][nextJ] == 0){
+                    visited[nextI][nextJ] = 1;
+                    pq.push(vector<int>({grid[nextI][nextJ], nextI, nextJ}));
+                }
+            }
+        }
+        
+        return res;
+    }
+};
+
+
+//Optimized version! note we can use BFS to search all the value less than res
+//earlier. Then we do not need to push these value to pq, and save some time!
+class Solution {
+public:
+    int swimInWater(vector<vector<int>>& grid) {
+        int n = grid.size();
+        int m = n ? grid[0].size() : 0;
+        if(!m || !n) return 0;
+        int res = max(grid[0][0], grid[n-1][n-1]);
+        priority_queue<vector<int>, vector<vector<int>>, greater<vector<int>>> pq;
+        vector<vector<int>> visited(n, vector<int>(n, 0));
+        
+        //const int dir[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        vector<int> dir({-1, 0, 1, 0, -1});
+        visited[0][0] = 1;
+        pq.push(vector<int>({grid[0][0], 0, 0}));
+
+        while(!pq.empty()){
+            auto v = pq.top();
+            pq.pop();  
+            res = max(res, v[0]);
+            queue<pair<int, int>> myq;
+            myq.push({v[1], v[2]});
+            while(!myq.empty()){
+                auto vec = myq.front();
+                myq.pop();
+                //We need to return earlier since when we reach the end
+                //or we can no longer guarantee we find the shortest path
+                if(vec.first == n-1 && vec.second == n-1) return res;
+                for(int i = 0; i < 4; ++i){
+                    int nextI = vec.first + dir[i];
+                    int nextJ = vec.second + dir[i+1];
+                    if(nextI >= 0 && nextI < n && nextJ >= 0 && nextJ < n && visited[nextI][nextJ] == 0){
+                        visited[nextI][nextJ] = 1;
+                        if(grid[nextI][nextJ] <= res){
+                            myq.push({nextI, nextJ});
+                        }else
+                            pq.push({grid[nextI][nextJ], nextI, nextJ});
+                    }
+                }
+            }
+            
+        }
+        
+        return -1;
+    }
+};
