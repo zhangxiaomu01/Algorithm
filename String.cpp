@@ -1860,3 +1860,59 @@ public:
 
 
 
+//76. Minimum Window Substring
+//https://leetcode.com/problems/minimum-window-substring/
+//The implementation is tricky! Logic is not hard
+//Better to do 2 passes during the interview!
+class Solution {
+public:
+    string minWindow(string s, string t) {
+        if(s.empty() || t.empty() || (t.size() > s.size())) return "";
+        int tDict[128] = {0};
+        //when required == 0, which means we have find a window which
+        //contains all the characters from t
+        int required = t.size();
+        for(char c : t){
+            tDict[c] ++;
+        }
+        int minLen = INT_MAX;
+        //start will be the beginning index of the minimum sub string
+        int start = 0, r = 0, l = 0;
+        while(r < s.size() && l < s.size()){
+            //if required not equal to 0, we need to search right
+            if(required){
+                tDict[s[r]]--;
+                //Note >= here, means we find 1 character from t
+                if(tDict[s[r]] >= 0) required--;
+                r++;
+            }else{
+                //when we know our window has all characters, update
+                //minLen. Should be r - l here, not r-l+1
+                if(minLen > r - l){
+                    minLen = r - l;
+                    start = l;
+                }
+                tDict[s[l]]++;
+                //we still need some character from s
+                if(tDict[s[l]] > 0) required++;
+                l++;
+            }
+        }
+        //cout << required << endl;
+        while(l < s.size() && required == 0){
+            if(minLen > r - l){
+                minLen = r - l;
+                start = l;
+            }
+            tDict[s[l]]++;
+            //we still need some character from s
+            if(tDict[s[l]] > 0) required++;
+            l++;
+        }
+        
+        return minLen == INT_MAX ? "" : s.substr(start, minLen);
+    }
+};
+
+
+
