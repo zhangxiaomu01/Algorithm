@@ -4016,3 +4016,30 @@ public:
     }
 };
 
+
+
+//442. Find All Duplicates in an Array
+//https://leetcode.com/problems/find-all-duplicates-in-an-array/
+class Solution {
+public:
+    vector<int> findDuplicates(vector<int>& nums) {
+        vector<int> res;
+        for(int i = 0; i < nums.size(); ){
+            if(nums[i] == -1) {
+                i++;
+                continue;
+            }
+            if(nums[i] - 1 == i)
+                i++;
+            else if(nums[i] - 1 != i && nums[nums[i]-1] != nums[i]){
+                swap(nums[i], nums[nums[i]-1]);
+            }
+            else if(nums[i] - 1 != i && nums[nums[i] - 1] == nums[i]){
+                res.push_back(nums[i]);
+                nums[i] = -1;
+                i++;
+            }
+        }
+        return res;
+    }
+};
