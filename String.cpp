@@ -1955,4 +1955,71 @@ public:
 
 
 
+//434. Number of Segments in a String
+//https://leetcode.com/problems/number-of-segments-in-a-string/
+class Solution {
+public:
+    int countSegments(string s) {
+        //handle the last case
+        s.push_back(' ');
+        int len = s.size();
+        int i = 0;
+        int res = 0;
+        while(i < len && s[i] == ' ') i++;
+        for(; i < len; ++i){
+            if(s[i] == ' '){
+                res++;
+                while(i < len && s[i] == ' ') i++;
+            }
+        }
+        return res;
+    }
+};
+
+
+//438. Find All Anagrams in a String
+//https://leetcode.com/problems/find-all-anagrams-in-a-string/
+/*
+Not very hard! 
+*/
+class Solution {
+public:
+    vector<int> findAnagrams(string s, string p) {
+         vector<int> res;
+        if(p.empty() || s.empty()) return res;
+        //count characters in p
+        int uDict[26] = {0};
+        for(char c : p){
+            uDict[c - 'a']++;
+        }
+        int uDetect[26] = {0};
+       
+        int i = 0;
+        for(int j = 0; j < s.size(); ++j){
+            char curC = s[j];
+            if(uDict[curC- 'a'] == 0){
+                i = j+1;
+                memset(uDetect, 0, sizeof(uDetect));
+            }else{
+                if(uDetect[curC-'a'] < uDict[curC-'a']){
+                    uDetect[curC-'a']++;
+                    
+                }else{
+                    uDetect[curC-'a']++;
+                    while(i < j && uDetect[curC-'a'] > uDict[curC-'a']){
+                        uDetect[s[i]-'a']--;
+                        i++;
+                    }
+                }
+                if(j - i + 1 == p.size()) {
+                    res.push_back(i);
+                    uDetect[s[i]-'a'] --;
+                    i++;
+                }
+            }
+        }
+        return res;
+        
+    }
+};
 
