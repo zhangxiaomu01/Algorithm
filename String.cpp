@@ -2023,3 +2023,44 @@ public:
     }
 };
 
+
+//833. Find And Replace in String
+//https://leetcode.com/problems/find-and-replace-in-string/
+//The idea is we sort the index from start to the end, so we can start our
+//replacement from right to left. (no need to keep track of where to insert
+//for string S). The idea is not complex, need sometime to get it!
+class Solution {
+public:
+    string findReplaceString(string S, vector<int>& indexes, vector<string>& sources, vector<string>& targets) {
+        string res;
+        vector<pair<int, int>> vMap;
+        int len = indexes.size();
+        for(int i = 0; i < len; ++i){
+            //build the index[i] and ith elements map
+            vMap.push_back({indexes[i], i});
+        }
+        //sort in descending order
+        sort(vMap.rbegin(), vMap.rend());
+        
+        for(int i = 0; i < len; ++i){
+            //indexS represents the starting index i in S
+            int indexS = vMap[i].first;
+            string& src = sources[vMap[i].second];
+            string& tar = targets[vMap[i].second];
+            //We need to replace now
+            if(S.substr(indexS, src.size()) == src){
+                string tempS = S.substr(0, indexS);
+                tempS.append(tar);
+                int k = 0;
+                while(k < S.size() - (indexS + src.size())){
+                    tempS.push_back(S[k+indexS + src.size()]);
+                    k++;
+                }
+                swap(tempS, S);
+            }
+        }
+        return S;
+        
+    }
+};
+
