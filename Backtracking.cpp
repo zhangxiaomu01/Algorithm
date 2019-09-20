@@ -781,8 +781,52 @@ public:
 
 
 
+//980. Unique Paths III
+//https://leetcode.com/problems/unique-paths-iii/
+//Not very hard, just backtracking!
+class Solution {
+private:
+    int helper(vector<vector<int>>& G, int i, int j, int emptyGrid){
+        if(i < 0 || i >= G.size() || j < 0 || j >= G[0].size() || (G[i][j] == 2 && emptyGrid != 0) || G[i][j] == -1)
+            return 0;
+        if(G[i][j] == 2 && emptyGrid == 0){
+            return 1;
+        }
+        //even if G[i][j] == 1, we still decrement emptyGrid
+        emptyGrid--;
+        G[i][j] = -1;
+        int res = helper(G, i-1, j, emptyGrid) + 
+            helper(G, i+1, j, emptyGrid) + 
+            helper(G, i, j-1, emptyGrid) + 
+            helper(G, i, j+1, emptyGrid);
+        //backtrack here!
+        //I forget to include this!!
+        G[i][j] = 0;
+        emptyGrid++;
+        return res;
 
-
+    }
+public:
+    int uniquePathsIII(vector<vector<int>>& grid) {
+        int m = grid.size();
+        int n = m ? grid[0].size() : 0;
+        if(!m || !n) return 0;
+        int sI = 0, sJ = 0;
+        int emptyGrid = 0;
+        for(int i = 0; i < m; ++i){
+            for(int j = 0; j < n; ++j){
+                if(grid[i][j] == 1){
+                    sI = i;
+                    sJ = j;
+                }else if(grid[i][j] == 0)
+                    emptyGrid++;    
+            }
+        }
+        //including 1
+        emptyGrid++;
+        return helper(grid, sI, sJ, emptyGrid);
+    }
+};
 
 
 
