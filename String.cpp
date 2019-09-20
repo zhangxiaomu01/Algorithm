@@ -1980,7 +1980,7 @@ public:
 //438. Find All Anagrams in a String
 //https://leetcode.com/problems/find-all-anagrams-in-a-string/
 /*
-Not very hard! 
+Not very hard! Implemented by myself, get it work at the first try!
 */
 class Solution {
 public:
