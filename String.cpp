@@ -2064,3 +2064,38 @@ public:
     }
 };
 
+
+//809. Expressive Words
+//https://leetcode.com/problems/expressive-words/
+//In general, the problem is not hard. You have to find a way to organize 
+//your code well.
+//This 4 pointers solution is elegant. Hard to get it right!
+class Solution {
+private:
+    bool checkWords(const string& s, const string& w){
+        int len_s = s.size(), len_w = w.size();
+        int i = 0, j = 0;
+        for(int sI = 0, wJ = 0; i < len_s && j <len_w; i = sI, j = wJ){
+            if(s[i] != w[j]) return false;
+            while(sI < len_s && s[sI] == s[i]) sI++;
+            while(wJ < len_w && w[wJ] == w[j]) wJ++;
+            //A little bit tricky here, note when sI - i == wJ - j
+            //this condition will be false!
+            if(sI - i != wJ - j && sI - i < max(3, wJ-j)) 
+                return false;
+        }
+        //critical here!
+        return i == len_s && j == len_w;
+    }
+public:
+    int expressiveWords(string S, vector<string>& words) {
+        int res = 0;
+        if(S.empty() || words.empty()) return 0;
+        for(auto& w : words){
+            if(checkWords(S, w)) res++;
+        }
+        return res;
+    }
+};
+
+
