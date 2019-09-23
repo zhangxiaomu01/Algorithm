@@ -4101,4 +4101,39 @@ public:
 };
 
 
+//447. Number of Boomerangs
+//https://leetcode.com/problems/number-of-boomerangs/
+//straightforward O(n^2) solution!
+class Solution {
+public:
+    int numberOfBoomerangs(vector<vector<int>>& points) {
+        int len = points.size();
+        if(len < 3) return 0;
+        int res = 0;
+        for(int i = 0; i < len; ++i){
+            //map distance and number of elements with the distance
+            unordered_map<long, int> uMap;
+            for(int j = 0; j < len; ++j){
+                if(j == i) continue;
+                long distX = points[j][0] - points[i][0];
+                long distY = points[j][1] - points[i][1];
+                
+                long finalDist = distX * distX + distY * distY;
+                
+                uMap[finalDist]++;
+            }
+            
+            for(auto& it : uMap){
+                //if we have more than one element with the same distance
+                if(it.second > 1){
+                    //Note we pick up 2 elements from n elements
+                    //And the order matters!
+                    res += (it.second) * (it.second-1);
+                }
+            }
+        }
+        return res;
+    }
+};
+
 
