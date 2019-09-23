@@ -1690,3 +1690,51 @@ public:
  */
 
 
+//981. Time Based Key-Value Store
+//https://leetcode.com/problems/time-based-key-value-store/
+class TimeMap {
+    //create a key - (val, time stamp) map
+    unordered_map<string, vector<pair<int, string>>> uMap;
+    int getIndex(vector<pair<int, string>>& v, int t){
+        int l = 0, r = v.size()-1;
+        while(l < r){
+            int mid = l + (r - l) / 2;
+            if(v[mid].first >= t)
+                r = mid;
+            else
+                l = mid+1;
+        }
+        return l;
+    }
+    
+public:
+    /** Initialize your data structure here. */
+    TimeMap() {
+        
+    }
+    
+    void set(string key, string value, int timestamp) {
+        uMap[key].push_back({timestamp, value});
+    }
+    
+    string get(string key, int timestamp) {
+        if(uMap.count(key) == 0) return "";
+        auto myComp = [](pair<int, string>& p1, int p2){
+            return p1.first < p2;
+        };
+
+        int pos = getIndex(uMap[key], timestamp);
+        if(pos == 0 && uMap[key][pos].first > timestamp) return "";
+        else if(pos > 0 && uMap[key][pos].first > timestamp)
+            return uMap[key][pos-1].second;
+        else
+            return uMap[key][pos].second;
+    }
+};
+
+/**
+ * Your TimeMap object will be instantiated and called as such:
+ * TimeMap* obj = new TimeMap();
+ * obj->set(key,value,timestamp);
+ * string param_2 = obj->get(key,timestamp);
+ */
