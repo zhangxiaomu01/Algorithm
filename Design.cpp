@@ -1647,3 +1647,46 @@ public:
 
 
 
+//900. RLE Iterator
+//https://leetcode.com/problems/rle-iterator/
+class RLEIterator {
+private:
+    //create a number - val mapping
+    queue<pair<int, int>> Q;
+public:
+    RLEIterator(vector<int>& A) {
+        for(int i = 0; i < A.size(); ++i){
+            if(i % 2 == 0){
+                if(A[i] == 0) continue;
+                Q.push({A[i+1], A[i]});
+            }
+        }
+    }
+    
+    int next(int n) {
+        
+        while(!Q.empty()){
+            //We need to create a reference here, since we want to modify
+            //queue on the fly!
+            auto& p = Q.front();
+            int num = p.second;
+            int val = p.first;
+            if(num >= n){
+                p.second -= n;
+                return val;
+            }else{
+                n -= num;
+                Q.pop();
+            }
+        }
+        return -1;
+    }
+};
+
+/**
+ * Your RLEIterator object will be instantiated and called as such:
+ * RLEIterator* obj = new RLEIterator(A);
+ * int param_1 = obj->next(n);
+ */
+
+
