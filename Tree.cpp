@@ -2921,3 +2921,67 @@ public:
 };
 
 
+//449. Serialize and Deserialize BST
+//https://leetcode.com/problems/serialize-and-deserialize-bst/
+//Following code: in order traversal! do not work for this kind of problem!
+//Hard to maintain tree structure!
+/*
+class Codec {
+private:
+    string m_series;
+public:
+    
+    // Encodes a tree to a single string.
+    string serialize(TreeNode* root) {
+        if(!root) return "n ";
+        string s = serialize(root->left);
+        
+        int val = root->val;
+        s.append(to_string(val) + ' ');
+        
+        s.append(serialize(root->right));
+        
+        return s;
+    }
+    
+    TreeNode* buildTree(vector<string>& v, int l, int r){
+        if(l > r) return nullptr;
+        // We always right side node first
+        int mid = l + (r - l) / 2;
+        if(v[mid] == "n") return nullptr;
+        TreeNode* root = new TreeNode(stoi(v[mid]));
+        
+        root->left = buildTree(v, l, mid-1);
+        root->right = buildTree(v, mid+1, r);
+        return root;
+    }
+    
+    void stv(string& s, vector<string>& v){
+        string tempS;
+        for(int i = 0; i < s.size(); ++i){
+            if(s[i] != ' '){
+                if(s[i] == 'n') v.push_back(string(1, s[i]));
+                else {
+                    tempS.push_back(s[i]);
+                }
+            }else{
+                if(!tempS.empty()){
+                    v.push_back(tempS);
+                    tempS.clear();
+                }
+            }
+        }
+    }
+    
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+        cout << data << endl;
+        vector<string> v;
+        stv(data, v);
+        //for(auto s : v) cout << s << endl;
+        return buildTree(v, 0, v.size()-1);
+    }
+};
+*/
+
+//Level-order traversal!
