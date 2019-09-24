@@ -4137,3 +4137,27 @@ public:
 };
 
 
+
+//448. Find All Numbers Disappeared in an Array
+//https://leetcode.com/problems/find-all-numbers-disappeared-in-an-array/
+class Solution {
+public:
+    vector<int> findDisappearedNumbers(vector<int>& nums) {
+        int len = nums.size();
+        vector<int> res;
+        for(int i = 0; i < len; ++i){
+            if(nums[i] == i + 1) continue;
+
+            while(nums[i] != i+1 && nums[i] != nums[nums[i]-1]){
+                swap(nums[i], nums[nums[i]-1]);
+            }
+            //if(nums[i] != i+1) res.push_back(i+1);
+        }
+        for(int i = 0; i < len; ++i){
+            if(nums[i] != i+1) res.push_back(i+1);
+        }
+        return res;
+    }
+};
+
+
