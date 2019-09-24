@@ -2099,3 +2099,72 @@ public:
 };
 
 
+
+//966. Vowel Spellchecker
+//https://leetcode.com/problems/vowel-spellchecker/
+//Handle the 3 cases separately!
+/*
+1. Check whether there is an exactly match
+2. Check whether there is upper case 
+3. Check vowel (replace all vowels with '#', and create the key!)
+*/
+class Solution {
+public:
+    vector<string> spellchecker(vector<string>& wordlist, vector<string>& queries) {
+        unordered_set<string> uSet(wordlist.begin(), wordlist.end());
+        unordered_map<string, vector<string>> uMap;
+        unordered_map<string, vector<string>> uMapVowel;
+        
+        auto toLowerC = [](char& c){ c = tolower(c); };
+        
+        for(int i = 0; i < wordlist.size(); ++i){
+            //make a copy!
+            string s = wordlist[i];
+            for_each(s.begin(), s.end(), toLowerC);
+            uMap[s].push_back(wordlist[i]);
+            
+            string sNoVowel;
+            for(char c : s){
+                if(c != 'a' && c != 'e' && c != 'i' && c != 'o' &&
+                   c != 'u'){
+                    sNoVowel.push_back(c);
+                }else
+                    //we need to push the holder here or we cannot tell 
+                    //where is the vowel
+                    sNoVowel.push_back('#');
+            }
+            uMapVowel[sNoVowel].push_back(wordlist[i]);
+        }
+        vector<string> res;
+        for(auto& s : queries){
+            if(uSet.count(s) > 0) {
+                res.push_back(s);
+                continue;
+            }
+            for_each(s.begin(), s.end(), toLowerC);
+            
+            if(uMap.count(s) > 0) {
+                res.push_back(uMap[s][0]);
+                continue;
+            }
+            string sNoVowel;
+            //s is lower case now!
+            for(char c : s){
+                if(c != 'a' && c != 'e' && c != 'i' && c != 'o' &&
+                   c != 'u'){
+                    sNoVowel.push_back(c);
+                }else
+                    sNoVowel.push_back('#');
+            }
+            
+            if(uMapVowel.count(sNoVowel) > 0) {
+                res.push_back(uMapVowel[sNoVowel][0]);
+            }
+            else res.push_back("");
+        }
+        return res;
+    }
+};
+
+
+
