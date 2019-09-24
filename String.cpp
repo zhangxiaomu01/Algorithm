@@ -2238,3 +2238,171 @@ public:
 };
 
 
+//467. Unique Substrings in Wraparound String
+//https://leetcode.com/problems/unique-substrings-in-wraparound-string/
+/* //First try, wrong
+class Solution {
+private:
+    
+    int getRes(string& s, vector<int>& cDict){
+        int len = s.size();
+        int res = (len + 1) * len / 2;
+        if(len == 1 && cDict[s[0] - 'a'] == 1) return 0;
+        for(char c : s){
+            if(cDict[c - 'a'] != 1){
+                cDict[c - 'a'] = 1;
+            }else{
+                res--;
+            }
+        }
+        return res;
+    }
+public:
+    int findSubstringInWraproundString(string p) {
+        int len = p.size();
+        if(len == 0) return 0;
+        int res = 0;
+        string tempStr;
+        unordered_set<string> uSet;
+        vector<int> chaDict(26, 0);
+        //p_01 stores p without repeating character
+        string p_01;
+        for(int i = 0; i < len; ++i){
+            if(i>0 && p[i] == p[i-1])
+                continue;
+            p_01.push_back(p[i]);
+        }
+        p.swap(p_01);
+        len = p.size();
+        
+        for(int i = 0; i < len; ++i){
+            if(i == 0 || p[i-1] == 'z' && p[i] == 'a' || p[i] == (p[i-1]+1)){
+                tempStr.push_back(p[i]);
+            }else{
+                uSet.insert(tempStr);
+                //cout << tempStr << endl;
+                //reset tempStr here
+                tempStr = "";
+                tempStr.push_back(p[i]);
+            }
+        }
+        uSet.insert(tempStr);
+        //cout << tempStr << endl;
+        for(auto it = uSet.begin(); it != uSet.end(); ++it){
+            string s = *it;
+            //cout << s << endl;
+            //int len_s = getLen(s, chaDict);
+            res += getRes(s, chaDict);
+        }
+        return res;
+    }
+};
+*/
+
+/*
+Great explanation: 
+https://leetcode.com/problems/unique-substrings-in-wraparound-string/discuss/95454/
+*/
+//O(n^2) with unordered_set 
+//cannot pass OJ: TLE
+class Solution {
+private:
+    struct Hash{
+        size_t operator()(const pair<char, int>& p) const {
+            return hash<string>()(to_string(p.second)+ '_' + p.first);
+        }
+    };
+public:
+    int findSubstringInWraproundString(string p) {
+        int len = p.size();
+        //set to reduce duplicate element!
+        unordered_set<pair<char, int>, Hash> cSet;
+        for(int i = 0; i < len; ++i){
+            for(int j = i; j < len; ++j){
+                //p[j-1]-p[j] == 25 --- 'za'
+                //Here we must have j > i (instead of j > 0)
+                //since for each entry i, we need to at least examine it 
+                //once!
+                if(j > i && p[j] != p[j-1]+1 && p[j-1] - p[j] != 25)
+                    break;
+                //note for each character c, if it has diffferent substring
+                //length, then we need to insert it to our set
+                //duplicate will be handled by set!
+                cSet.insert({p[j], j-i+1});
+            }
+        }
+        return cSet.size();
+    }
+};
+
+//O(n^2), no hashing, passed OJ, slow!
+class Solution {
+public:
+    int findSubstringInWraproundString(string p) {
+        int len = p.size();
+        //thid dict saves the potential maximum length of the substr start
+        //with character cDict[i]; We only need to take of maximum length,
+        //since the shorter length has already been covered by longer 
+        //length! The length means starting with character cDict[i], how
+        //many substrings (with different length) we can get !
+        int cDict[26] = {0};
+        for(int i = 0; i < len; ++i){
+            for(int j = i; j < len; ++j){
+                if(j > i && p[j] != p[j-1]+1 && p[j-1]-p[j] != 25)
+                    break;
+                cDict[p[j]-'a'] = max(cDict[p[j]-'a'], j-i+1);
+            }
+        }
+        
+        return accumulate(cDict, cDict+26, 0);
+    }
+};
+
+//O(n) solution, tricky!!
+class Solution {
+public:
+    int findSubstringInWraproundString(string p) {
+        int len = p.size();
+        int cDict[26] = {0};
+        //start index of i
+        int i = 0;
+        for(int j = i; j < len; ){
+            if(j > i && p[j] != p[j-1]+1 && p[j-1]-p[j] != 25){
+                //Here i+26 means we at most need to update 26 characters
+                //if the substring length is greater than 26, then it must
+                //have included all characters
+                for(int k = i; k < min(i+26, j); ++k)
+                    cDict[p[k]-'a'] = max(cDict[p[k]-'a'], j-k);
+                i = j;
+            }else
+                ++j;
+        }
+        //Handle the situation when last substring perfectly match, then
+        //we miss one case
+        for(int k = i; k < min(i+26, len); ++k){
+            cDict[p[k]-'a'] = max(cDict[p[k]-'a'], len-k);
+        }
+
+        return accumulate(cDict, cDict+26, 0);
+    }
+};
+
+//Similar O(n) solution, but very hard to understand at first glance
+class Solution {
+public:
+    int findSubstringInWraproundString(string p) {
+        int len = p.size();
+        int cDict[26] = {0};
+        int localLen = 0;
+        int res = 0;
+        for(int i = 0; i < len; ++i){
+            int cur = p[i] - 'a';
+            if(i > 0 && p[i-1] != (cur + 26 - 1)%26 + 'a') localLen = 0;
+            if(++localLen > cDict[cur]){
+                res += localLen - cDict[cur];
+                cDict[cur] = localLen;
+            }
+        }
+        return res;
+    }
+};
