@@ -2167,4 +2167,74 @@ public:
 };
 
 
+//424. Longest Repeating Character Replacement
+//https://leetcode.com/problems/longest-repeating-character-replacement/
+/* Sliding window solution
+Did not get the idea at first!
+https://leetcode.com/problems/longest-repeating-character-replacement/discuss/208284/
+Maintain a window with r - l + 1 - maxFreq > k is key to success
+*/
+class Solution {
+public:
+    int characterReplacement(string s, int k) {
+        int len = s.size();
+        //dict to keep track of the frequency of each character
+        //within current window
+        int dict[26] = {0};
+        int maxFreq = 1;
+        int l = 0, r = 0;
+        int maxLen = 0;
+        for(; r < len; ++r){
+            dict[s[r] - 'A']++;
+            //always update the frequency of R
+            maxFreq = max(dict[s[r]-'A'], maxFreq);
+            if(r - l + 1 - maxFreq > k){
+                maxLen = max(r - l, maxLen);
+                dict[s[l]-'A']--;
+                l++;
+                //Update maxFreq when we decrement dict[l]
+                maxFreq = *max_element(dict, dict+26);
+            }
+        }
+        //We need to update maxLen here for the case:
+        //"ABAB" 2
+        maxLen = max(maxLen, r-l);
+        return maxLen;
+    }
+};
+
+
+//Optimization! Keep the global maxFreq
+class Solution {
+public:
+    int characterReplacement(string s, int k) {
+        int len = s.size();
+        //dict to keep track of the frequency of each character
+        //within current window
+        int dict[26] = {0};
+        int maxFreq = 1;
+        int l = 0, r = 0;
+        int maxLen = 0;
+        for(; r < len; ++r){
+            dict[s[r] - 'A']++;
+            //always update the frequency of R
+            maxFreq = max(dict[s[r]-'A'], maxFreq);
+            if(r - l + 1 - maxFreq > k){
+                maxLen = max(r - l, maxLen);
+                dict[s[l]-'A']--;
+                l++;
+                //No need to update maxFreq here, since if window A has 
+                //larger maxFreq than B, then length of A must be longer
+                //than B. We only need a global maxFreq, which will be 
+                //sufficient since maxFreq only goes up!
+                //maxFreq = *max_element(dict, dict+26);
+            }
+        }
+        //We need to update maxLen here for the case:
+        //"ABAB" 2
+        maxLen = max(maxLen, r-l);
+        return maxLen;
+    }
+};
+
 
