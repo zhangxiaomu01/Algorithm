@@ -4240,6 +4240,8 @@ public:
                 shot++;
                 pre = i;
             }
+            //keep track of the smaller right bound if 
+            //points[i][0] <= points[pre][1]
             if(points[i][1] < points[pre][1])
                 pre = i;
         }
