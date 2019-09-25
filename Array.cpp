@@ -4221,3 +4221,31 @@ public:
 };
 
 
+//452. Minimum Number of Arrows to Burst Balloons
+//https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/
+class Solution {
+public:
+    int findMinArrowShots(vector<vector<int>>& points) {
+        if(points.empty()) return 0;
+        //without comp, the default sorting is slow! with comp, 
+        //much faster!
+        auto comp = [](vector<int>& p1, vector<int>& p2){
+            return p1[0] < p2[0];
+        };
+        sort(points.begin(), points.end(), comp);
+        int pre = 0;
+        int shot = 1;
+        for(int i = 1; i < points.size(); ++i){
+            if(points[i][0] > points[pre][1]){
+                shot++;
+                pre = i;
+            }
+            if(points[i][1] < points[pre][1])
+                pre = i;
+        }
+        return shot;
+    }
+};
+
+
+
