@@ -4161,3 +4161,63 @@ public:
 };
 
 
+//435. Non-overlapping Intervals
+//https://leetcode.com/problems/non-overlapping-intervals/
+/*
+//Original idea, which is wrong. 
+//Cannot pass the test case like: [[2,4],[3,6],[7,8],[1,8]]
+//The only part we are missing is to update previous interval!
+class Solution {
+public:
+    int eraseOverlapIntervals(vector<vector<int>>& intervals) {
+        if(intervals.empty()) return 0;
+        auto comp = [](vector<int>& p1, vector<int>& p2){
+            return p1[0] < p2[0] || (p1[0] == p2[0] && p1[1] < p2[1]);
+        };
+        sort(intervals.begin(), intervals.end(), comp);
+        vector<int> tempV = intervals[0];
+        int res = 0;
+        for(int i = 1; i < intervals.size(); ++i){
+            if(intervals[i][0] < tempV[1]){
+                res++;
+            }else{
+                tempV = intervals[i];
+            }
+       }
+        
+       return res; 
+    }   
+};
+*/
+//Almost the same idea. The only thing we are missing is 
+//if(intervals[i][1] < tempV[1]) tempV = intervals[i];
+class Solution {
+public:
+    //Original idea about the problem!
+    //Cannot pass the test case like: [[2,4],[3,6],[7,8],[1,8]]
+    int eraseOverlapIntervals(vector<vector<int>>& intervals) {
+        if(intervals.empty()) return 0;
+        auto comp = [](vector<int>& p1, vector<int>& p2){
+            return p1[0] < p2[0];
+        };
+        sort(intervals.begin(), intervals.end(), comp);
+
+        vector<int> tempV = intervals[0];
+        int res = 0;
+        for(int i = 1; i < intervals.size(); ++i){
+            if(intervals[i][0] < tempV[1]){
+                res++;
+                //Note we need update tempV to be the overlapped interval
+                //with larger right bound!
+                if(intervals[i][1] < tempV[1]) tempV = intervals[i];
+            }else{
+                tempV = intervals[i];
+            }
+       }
+        
+       return res; 
+    }
+        
+};
+
+
