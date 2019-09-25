@@ -2985,3 +2985,75 @@ public:
 */
 
 //Level-order traversal!
+class Codec {
+public:
+    
+    // Encodes a tree to a single string.
+    string serialize(TreeNode* root) {
+        if(!root) return "";
+        queue<TreeNode*> Q;
+        string res;
+        Q.push(root);
+        res.append(to_string(root->val) + ',');
+        while(!Q.empty()){
+            TreeNode* node = Q.front();
+            Q.pop();
+            if(!node->left) res.append("n,");
+            else {
+                res.append(to_string(node->left->val) + ',');
+                Q.push(node->left);
+            }
+            
+            if(!node->right) res.append("n,");
+            else {
+                res.append(to_string(node->right->val) + ',');
+                Q.push(node->right);
+            }
+        }
+        return res;
+    }
+
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+        if(data.empty()) return nullptr;
+        vector<string> strVector;
+        string tempStr;
+        for(int i = 0; i < data.size(); ++i){
+            if(data[i] == 'n') strVector.push_back("n");
+            else if(data[i]!=','){
+                tempStr.push_back(data[i]);
+            }else if(data[i] == ','){
+                if(!tempStr.empty()){
+                    strVector.push_back(tempStr);
+                    tempStr.clear();
+                }
+            }
+        }
+        
+        queue<TreeNode*> Q;
+        int k = 0;
+        TreeNode* root = new TreeNode(stoi(strVector[k]));
+        Q.push(root);
+        while(!Q.empty()){
+            TreeNode* node = Q.front();
+            Q.pop();
+            k++;
+            if(k < strVector.size() && strVector[k] != "n"){
+                int val = stoi(strVector[k]);
+                TreeNode* leftNode = new TreeNode(val);
+                node->left = leftNode;
+                Q.push(leftNode);
+            }
+            k++;
+            if(k < strVector.size() && strVector[k] != "n"){
+                int val = stoi(strVector[k]);
+                TreeNode* rightNode = new TreeNode(val);
+                node->right = rightNode;
+                Q.push(rightNode);
+            }
+        }
+        return root;
+    }
+};
+
+
