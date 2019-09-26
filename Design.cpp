@@ -1740,6 +1740,83 @@ public:
  */
 
 
+//729. My Calendar I
+//https://leetcode.com/problems/my-calendar-i/
+class MyCalendar {
+private:
+    vector<pair<int, int>> bookings;
+public:
+    MyCalendar() {
+        
+    }
+    
+    bool book(int start, int end) {
+        for(auto p : bookings){
+            if(start < p.second && end > p.first)
+                return false;
+        }
+        bookings.push_back({start, end});
+        return true;
+    }
+};
+
+/**
+ * Your MyCalendar object will be instantiated and called as such:
+ * MyCalendar* obj = new MyCalendar();
+ * bool param_1 = obj->book(start,end);
+ */
+
+//Slow
+class MyCalendar {
+private:
+    map<int, int> bookings;
+public:
+    MyCalendar() {
+        
+    }
+    
+    bool book(int start, int end) {
+        bookings[start]++;
+        bookings[end]--;
+        int booked = 0;
+        for(auto it : bookings){
+            booked += it.second;
+            if(booked == 2){
+                bookings[start]--;
+                bookings[end]++;
+                return false;
+            }
+        }
+        return true;
+    }
+};
+
+//Binary tree, not bad
+class MyCalendar {
+private:
+    //Alternatively, we can set as well like below:
+    //set<pair<int, int>> books;
+    //auto next = books.lower_bound({s, e});
+    map<int, int> bookings;
+public:
+    MyCalendar() {
+        
+    }
+    
+    bool book(int start, int end) {
+        // first element with key not go before k (i.e., either it is equivalent or goes after). 
+        //Note how we use the lower_bound here to boost efficiency!
+        auto next = bookings.lower_bound(start);
+        if(next != bookings.end() && next->first < end)
+            return false;
+        if(next != bookings.begin() && (--next)->second > start)
+            return false;
+        bookings[start] = end;
+        return true;
+    }
+};
+
+
 //731. My Calendar II
 //https://leetcode.com/problems/my-calendar-ii/
 /*
