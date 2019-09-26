@@ -2406,3 +2406,44 @@ public:
         return res;
     }
 };
+
+
+
+//423. Reconstruct Original Digits from English
+//https://leetcode.com/problems/reconstruct-original-digits-from-english/
+class Solution {
+public:
+    string originalDigits(string s) {
+        const string numDict[] = {"zero", "two", "four", "five", "six", "seven", "eight", "three", "nine", "one"};
+        const char id[] = {'z', 'w', 'u', 'f', 'x', 'v', 'g', 't', 'i', 'o'};
+        const int numMap[] = {0,2,4,5,6,7,8,3,9,1};
+        //This array will count how many nums in our final result
+        int numArray[10] = {0};
+        int uDict[26] = {0};
+        unsigned int len = s.size();
+        string res;
+        
+        for(char c : s) { uDict[c - 'a']++; }
+        
+        for(int i = 0; i < 10; ++i){
+            int countNum = uDict[id[i] - 'a'];
+            for(int j = 0; j < numDict[i].size(); ++j){
+                uDict[numDict[i][j] - 'a'] -= countNum;
+            }
+            numArray[numMap[i]] += countNum;
+        }
+        
+        for(int i = 0; i < 10; ++i){
+            int localCount = numArray[i];
+            while(localCount > 0){
+                res.push_back(i + '0');
+                localCount--;
+            }
+        }
+        return res;
+    }
+};
+
+
+
+
