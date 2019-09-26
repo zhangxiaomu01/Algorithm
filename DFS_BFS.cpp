@@ -963,3 +963,55 @@ public:
         return -1;
     }
 };
+
+
+//464. Can I Win
+//https://leetcode.com/problems/can-i-win/
+/*
+https://leetcode.com/problems/can-i-win/discuss/95320/
+Good problem: Actually, an NP problem! We need to determine when player 1
+pick up a number, all the possible pick of player 2. Then determine which
+state can gurantee player 1 a win! 
+Since maxChoosableInteger <= 20, we can use a 32bit interger to record 
+whether a number has been picked up or not. 
+*/
+class Solution {
+private:
+    //We need to have memorization here to boost the efficiency
+    bool helper(int M, int T, int selectK, int* memo){
+        if(T <= 0)  return false; //player for this turn loses
+        if(memo[selectK] != 0) return memo[selectK] == 1;
+        
+        //exhaustive search!
+        for(int i = 0; i < M; ++i){
+            //We check player 2's situation, if we select ith number,
+            //and turns out that player 2 can always lose, then return 
+            //true!
+            if(!(selectK & (1 << i)) && !helper(M, T - (i+1), (selectK | (1 << i)), memo))
+                return memo[selectK] = 1;
+        }
+        //current player cannot win!
+        memo[selectK] = -1;
+        return false;
+        
+    }
+public:
+    bool canIWin(int maxChoosableInteger, int desiredTotal) {
+        //if ith bit of selectK is 1, then i is selected from 
+        //maxChoosableInteger
+        int selectK = 0;
+        int totalSum = (maxChoosableInteger+1) * maxChoosableInteger / 2;
+        if(totalSum < desiredTotal) return false;
+        if(desiredTotal < 2) return true; 
+        //If we have odd number choice, then player 1 gurantee a win!
+        if(totalSum == desiredTotal) return maxChoosableInteger%2 == 1;
+        //We need to allocate the same amount of space to store 2^M 
+        //possible situation. if memo[i] == -1, player 2 can force a win
+        //if memo[i] == 1, then player can force a win
+        int memo[(1 << maxChoosableInteger)] = {0};
+        cout << memo[2];
+        return helper(maxChoosableInteger, desiredTotal, selectK, memo);
+    }
+};
+
+
