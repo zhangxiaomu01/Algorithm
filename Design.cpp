@@ -1879,4 +1879,76 @@ public:
     }
 };
 
+//Another option, not implemented by myself. 
+class MyCalendar {
+public:
+    MyCalendar() {} 
+    bool book(int start, int end) {
+        int p=0,st=0,en=arr.size()-1;
+        while(st<=en){
+            if(start<arr[st].first){p=st;break;}
+            if(start>arr[en].first){p=en+1;break;}
+            int mid=(st+en)>>1;
+            if(start==arr[mid].first)return false;
+            if(start<arr[mid].first)en=mid-1;
+            else st=mid+1;
+        }
+        if((p>0&&start<arr[p-1].second)||(p<arr.size()&&end>arr[p].first))return false;
+        arr.insert(arr.begin()+p,pair<int,int>(start,end));
+        return true;
+    }
+private:
+    vector<pair<int,int> >arr;
+};
+
+
+//732. My Calendar III
+//https://leetcode.com/problems/my-calendar-iii/
+class MyCalendarThree {
+private:
+    map<int, int> bookings;
+public:
+    MyCalendarThree() {
+        
+    }
+    
+    int book(int start, int end) {
+        bookings[start]++;
+        bookings[end]--;
+        int count = 0;
+        int res = 0;
+        for(auto p : bookings){
+            count += p.second;
+            res = max(res, count);
+        }
+        return res;
+    }
+};
+
+
+/*Excellent idea from:
+https://leetcode.com/problems/my-calendar-iii/discuss/176950/
+Very tricky! Fast in practice
+*/
+class MyCalendarThree {
+private:
+    //map records the index and how many overlap we have for current index
+    //Note we have to put -1 here because 
+    //we can initialize bookings like below
+    map<int, int> bookings = {{-1, 0}};
+    //maintain a global res here
+    int res = 0;
+public:
+    MyCalendarThree() {
+        
+    }
+    int book(int start, int end) {
+        auto sIndex = bookings.emplace(start, (--bookings.lower_bound(start))->second).first;
+        auto eIndex = bookings.emplace(end, (--bookings.lower_bound(end))->second).first; 
+        for(auto it = sIndex; it != eIndex; ++it){
+            res = max(res, ++(it->second));
+        }
+        return res;
+    }
+};
 
