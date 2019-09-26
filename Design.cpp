@@ -1738,3 +1738,68 @@ public:
  * obj->set(key,value,timestamp);
  * string param_2 = obj->get(key,timestamp);
  */
+
+
+//731. My Calendar II
+//https://leetcode.com/problems/my-calendar-ii/
+/*
+Utilize the two vectors to save the information of booking and overlap. 
+Not that bad.
+*/
+class MyCalendarTwo {
+private:
+    vector<pair<int, int>> bookings;
+    vector<pair<int, int>> doubleBookings;
+public:
+    MyCalendarTwo() {
+        
+    }
+    
+    bool book(int start, int end) {
+        for(auto p : doubleBookings){
+            if(start < p.second && end > p.first)
+                return false;
+        }
+        for(auto p : bookings){
+            //Note we need to maintain the shorter interval!
+            if(start < p.second && end > p.first)
+                doubleBookings.push_back({max(start, p.first), min(end, p.second)});
+        }
+        bookings.push_back({start, end});
+        return true;
+    }
+};
+
+/**
+ * Your MyCalendarTwo object will be instantiated and called as such:
+ * MyCalendarTwo* obj = new MyCalendarTwo();
+ * bool param_1 = obj->book(start,end);
+ */
+
+//Treemap. Similar to light on/off question!
+//Add a tag to start and end position, and calculate the range sum.
+//Slower than 2 vector solution!
+class MyCalendarTwo {
+private:
+    map<int, int> bookings;
+public:
+    MyCalendarTwo() {
+        
+    }
+    bool book(int start, int end) {
+        bookings[start]++;
+        bookings[end]--;
+        int booked = 0;
+        for(auto p : bookings){
+            booked += p.second;
+            if(booked == 3){
+                bookings[start] --;
+                bookings[end] ++;
+                return false;
+            }
+        }
+        return true;
+    }
+};
+
+
