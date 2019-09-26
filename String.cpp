@@ -2411,6 +2411,8 @@ public:
 
 //423. Reconstruct Original Digits from English
 //https://leetcode.com/problems/reconstruct-original-digits-from-english/
+//Interesting question with not so intuitive solution! Identify the uniqueness
+//of each number is key to success
 class Solution {
 public:
     string originalDigits(string s) {
@@ -2445,5 +2447,36 @@ public:
 };
 
 
-
+//524. Longest Word in Dictionary through Deleting
+//https://leetcode.com/problems/longest-word-in-dictionary-through-deleting/
+/* Brute force approach. Not that efficient! 
+Sorting the array d and do some early prune might be more efficient!
+like start with the longest the string, eliminate string shorter than
+local res's length*/
+class Solution {
+public:
+    string findLongestWord(string s, vector<string>& d) {
+        int len_s = s.size();
+        int len_d = d.size();
+        string res = "";
+        for(int i = 0; i < len_d; ++i){
+            if(d[i].size() < res.size()) continue;
+            int p = 0, q = 0;
+            while(p < len_s && q < d[i].size()){
+                if(s[p] == d[i][q])
+                    q++;
+                p++;
+            }
+            //save word as ans if the three conditions are met: 
+                //1. k==n: if every letter of word exists in string s (and in order of the word)
+                //2. ans.size()<n: word is a longer word than ans 
+                //3. (ans.size()==n && ans>word): word is same size as ans but is lexicographically smaller
+            //REMEMBER: "return the longest word with the smallest lexicographical order."
+            if(q == d[i].size() && ((res.size() == d[i].size() && d[i] < res) || res.size() < d[i].size())){
+                res = d[i];
+            }
+        }
+        return res;
+    }
+};
 
