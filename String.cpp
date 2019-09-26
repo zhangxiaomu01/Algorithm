@@ -2500,3 +2500,50 @@ public:
 };
 
 
+//9. Palindrome Number
+//https://leetcode.com/problems/palindrome-number/
+//The most intuitive way is to convert it to string! 
+class Solution {
+public:
+    bool isPalindrome(int x) {
+        int preX = x;
+        int val = 0;
+        if(x < 0) return false;
+        if(x < 10) return true;
+        //All 10, 20 etc. is impossible!
+        //We need to add the condition here, or the following code will
+        //be wrong when we have test case like 10
+        if(x % 10 == 0) return false;
+        //rebuild half of the integer
+        //121 .. val = 12, prex = 12, x = 1
+        //in the end
+        while(x > val){
+            val = val * 10 + x % 10;
+            preX = x;
+            x /= 10;
+        }
+        
+        return (preX == val) || (x == val);
+        
+    }
+};
+
+class Solution {
+public:
+    bool isPalindrome(int x) {
+        if(x<0)
+            return false;
+        else if(x>=0 && x<9)
+            return true;
+        int temp = x;
+        long reverse = 0;
+        while(temp !=0){
+            reverse = reverse*10 + temp%10;
+            temp = temp/10;
+        }
+        return reverse == x;
+    }
+};
+
+
+
