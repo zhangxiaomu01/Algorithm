@@ -4251,3 +4251,33 @@ public:
 
 
 
+//436. Find Right Interval
+//https://leetcode.com/problems/find-right-interval/
+//Tree map solution!
+class Solution {
+public:
+    vector<int> findRightInterval(vector<vector<int>>& intervals) {
+        int len = intervals.size();
+        //map the left boundry with interval index
+        map<int, int> uMap;
+        for(int i = 0; i < len; ++i){
+            uMap[intervals[i][0]] = i;
+        }
+        
+        vector<int> res;
+        for(int i = 0; i < len; ++i){
+            int rightBoundry = intervals[i][1];
+            auto it = uMap.lower_bound(rightBoundry);
+            if(it == uMap.end()) res.push_back(-1);
+            else{
+                res.push_back(it->second);
+            }
+        }
+        return res;
+    }
+};
+
+
+
+
+
