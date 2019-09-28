@@ -1015,3 +1015,61 @@ public:
 };
 
 
+//433. Minimum Genetic Mutation
+//https://leetcode.com/problems/minimum-genetic-mutation/
+//BFS
+class Solution {
+private:
+    int diffStrs(string& s1, string& s2){
+        int cnt = 0;
+        for(int i = 0; i < s1.size(); ++i){
+            if(s1[i] != s2[i]){
+                cnt++;
+                if(cnt > 1) return 0;
+            }
+        }
+        return cnt == 1;
+    }
+public:
+    int minMutation(string start, string end, vector<string>& bank) {
+        if(bank.empty()) return -1;
+        unordered_set<string> uSet(bank.begin(), bank.end());
+        if(uSet.count(end) == 0) return -1;
+        queue<string> Q;
+        for(auto& s : bank){
+            if(s == start){
+                uSet.erase(s);
+            }else if(diffStrs(s, start)){
+                uSet.erase(s);
+                Q.push(s);
+            }
+        }
+        if(Q.empty()) return -1;
+        
+        int level = 0;
+        while(!Q.empty()){
+            int lenQ = Q.size();
+            level++;
+            
+            for(int i = 0; i < lenQ; ++i){
+                string str = Q.front();
+                Q.pop();
+                if(str == end) return level;
+                for(auto it = uSet.begin(); it != uSet.end();){
+                    string temp = *it;
+                    //cout << temp << endl;
+                    if(diffStrs(str, temp)){
+                        Q.push(temp);
+                        it = uSet.erase(it);
+                    }else{
+                        ++it;
+                    }
+                }
+            }
+            
+        }
+        return -1;
+    }
+};
+
+
