@@ -1156,6 +1156,55 @@ public:
     }
 };
 */
-
-
+//BFS with priority queue. Like greedy! Not easy to figure it out at first 
+//glance! Once get the idea, the problem is not hard!
+class Solution {
+public:
+    int trapRainWater(vector<vector<int>>& heightMap) {
+        int m = heightMap.size();
+        int n = m ? heightMap[0].size() : 0;
+        if(m < 3 || n < 3) return 0;
+        priority_queue<pair<int, pair<int, int>>, vector<pair<int, pair<int, int>>>, greater<pair<int, pair<int, int>>>> pq;
+        bool visited[m][n] = {0};
+        for(int i = 0; i < n; ++i){
+            pq.push({heightMap[0][i], {0, i}});
+            visited[0][i] = 1;
+            pq.push({heightMap[m-1][i], {m-1, i}});
+            visited[m-1][i] = 1;
+            
+        }
+        for(int j = 1; j < m-1; ++j){
+            pq.push({heightMap[j][0], {j, 0}});
+            visited[j][0] = 1;
+            pq.push({heightMap[j][n-1], {j, n-1}});
+            visited[j][n-1] = 1;
+        }
+        
+        int maxH = 0;
+        const int offset[] = {-1, 0, 1, 0, -1};
+        int res = 0;
+        while(!pq.empty()){
+            auto grid = pq.top();
+            pq.pop();
+            int curX = grid.second.first;
+            int curY = grid.second.second;
+            maxH = max(maxH, grid.first);
+            for(int i = 0; i < 4; ++i){
+                int nextX = curX + offset[i];
+                int nextY = curY + offset[i + 1];
+                //only care about those unvisited
+                if(nextX < 0 || nextX >= m || nextY < 0 || nextY >= n || visited[nextX][nextY])
+                    continue;
+                int diff = maxH - heightMap[nextX][nextY];
+                if(diff > 0) res += diff;
+                pq.push({heightMap[nextX][nextY], {nextX, nextY}});
+                visited[nextX][nextY] = 1;
+            }
+            
+        }
+        
+        return res;
+    }
+    
+};
 
