@@ -1106,3 +1106,56 @@ public:
         return -1;
     }
 };
+
+
+//407. Trapping Rain Water II
+//https://leetcode.com/problems/trapping-rain-water-ii/
+/*
+//The first try, not work! Extension from 1D trapping rain water
+class Solution {
+public:
+    int trapRainWater(vector<vector<int>>& heightMap) {
+        int m = heightMap.size();
+        int n = m ? heightMap[0].size() : 0;
+        if(m == 0 || n == 0) return 0;
+        //Save the maximum height from four directions:
+        //l->r dict[1], t->b dict[0], r->l dict[3], b->t dict[2]
+        int hDict[m][n][4];
+        for(int i = 1; i < m-1; ++i){
+            for(int j = 1; j < n-1; ++j){
+                hDict[i][j][1] = hDict[i][j][1] = 0;
+                hDict[i][j][3] = hDict[i][j][3] = 0;
+            }
+        }
+        for(int i = 0; i < m; ++i){
+            hDict[i][0][1] = heightMap[i][0];
+            hDict[i][n-1][3] = heightMap[i][n-1];
+        }
+        for(int j = 0; j < n; ++j){
+            hDict[0][j][0] = heightMap[0][j];
+            hDict[m-1][j][2] = heightMap[m-1][j];
+        }
+        int res = 0;
+        for(int i = 1; i < m-1; ++i){
+            for(int j = 1; j < n-1; ++j){
+                hDict[i][j][0] = max(hDict[i-1][j][0], heightMap[i][j]);
+                hDict[i][j][1] = max(hDict[i][j-1][1], heightMap[i][j]);
+            }
+        }
+        for(int i = m-2; i >= 1; --i){
+            for(int j = n-2; j >= 1; --j){
+                hDict[i][j][2] = max(hDict[i+1][j][2], heightMap[i][j]);
+                hDict[i][j][3] = max(hDict[i][j+1][3], heightMap[i][j]);
+                int minHeight = min(min(hDict[i][j][0], hDict[i][j][1]), min(hDict[i][j][2], hDict[i][j][3]));
+                //cout << i << " " << j << " " << hDict[i][j][0] << " " << hDict[i][j][1] << " " << hDict[i][j][2] << " " << hDict[i][j][3] << " " <<minHeight << endl;
+                res +=(minHeight - heightMap[i][j] > 0 ? minHeight - heightMap[i][j] : 0);
+            }
+        }
+        
+        return res;
+    }
+};
+*/
+
+
+
