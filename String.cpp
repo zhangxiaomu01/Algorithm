@@ -2547,3 +2547,51 @@ public:
 
 
 
+//459. Repeated Substring Pattern
+//https://leetcode.com/problems/repeated-substring-pattern/
+/*
+//First try, wrong. Made the wrong assumption that a pattern cannot have
+//duplicate characters!
+class Solution {
+public:
+    bool repeatedSubstringPattern(string s) {
+        if(s.size() < 2) return false;
+        int uDict[26] = {0};
+        int cnt = 0;
+        for(char c : s){
+            uDict[c - 'a']++;
+            cnt = max(cnt, uDict[c-'a']);
+        }
+        for(int i = 0; i < 26; ++i){
+            if(uDict[i] != 0 && uDict[i] != cnt){
+                return false;
+            }
+        }
+        int ssLen = s.size() / cnt;
+        string pattern = s.substr(0, ssLen);
+        string tempStr;
+        while(cnt > 0){
+            tempStr.append(pattern);
+            cnt--;
+        }
+        //cout << tempStr << endl;
+        return tempStr == s;
+    }
+};
+*/
+
+//Solution 1: We shift the string by i position in order to check wheather 
+//the remaining will be a match! Not that intuitive for me!
+class Solution {
+public:
+    bool repeatedSubstringPattern(string s) {
+        int len = s.size();
+        if(len < 2) return false;
+        for(int i = 1; i <= len/2; ++i){
+            if(len % i == 0 && s.substr(i) == s.substr(0, len-i))
+                return true;
+        }
+        return false;
+    }
+};
+

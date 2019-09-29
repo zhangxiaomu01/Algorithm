@@ -4278,6 +4278,29 @@ public:
 };
 
 
-
+//454. 4Sum II
+//https://leetcode.com/problems/4sum-ii/
+//Not easy to get the idea!
+class Solution {
+public:
+    int fourSumCount(vector<int>& A, vector<int>& B, vector<int>& C, vector<int>& D) {
+        unordered_map<int, int> ABMap;
+        int res = 0;
+        for(int a : A){
+            for(int b : B){
+                ABMap[a + b] ++;
+            }
+        }
+        //Note for any combination of AB, -c-d will contribute one possible
+        //result
+        for(int c : C){
+            for(int d : D){
+                res += ABMap[-c-d];
+            }
+        }
+        
+        return res;
+    }
+};
 
 
