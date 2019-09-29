@@ -1208,3 +1208,79 @@ public:
     
 };
 
+
+
+//909. Snakes and Ladders
+//https://leetcode.com/problems/snakes-and-ladders/
+class Solution {
+public:
+    int snakesAndLadders(vector<vector<int>>& board) {
+        int m = board.size();
+        int n = m ? board[0].size() : 0;
+        if(!m || !n) return -1;
+        if(m == 1 && n == 1) return 0;
+        if(m * n <= 6) return 1;
+        
+        int totalLen = m * n;
+        int uBoard[totalLen] = {0};
+        int visited[totalLen] = {0};
+        int k = 0;
+        int dir = 0;
+        for(int i = m-1; i >= 0; --i){
+            dir = (dir == 0 ? 1 : 0);
+            for(int j = 0; j < n; ++j){
+                if(dir)
+                    uBoard[k] = board[i][j];
+                else
+                    uBoard[k] = board[i][n-1-j];
+                k++;
+            }
+        }
+
+        queue<int> Q;
+        int start = uBoard[0] > 0 ? uBoard[0]-1 : 0;
+        Q.push(start);
+        visited[start] = 1;
+        //cancel the first move!
+        int level = 0;
+        while(!Q.empty()){
+            int lenQ = Q.size();
+            for(int size = 0; size < lenQ; ++size){
+                int index = Q.front();
+                Q.pop();
+                if(index == totalLen-1) return level;
+                
+                for(int i = 1; i <= 6; ++i){
+                    int nextI = index + i;
+                    /*This is the only part you did not get it!*/
+                    //We cannot add visited[nextI] == 0 here. Since we 
+                    //potentially visited an entry which is euqals to 
+                    //current nextI before, With visited[nextI] == 0 here
+                    //we will potentially skip the possibility that 
+                    //uBoard[nextI] is still greater than 0. (Double jump)
+                    //Which loose the optimal solution!
+                    //For example: [-1, 3, 9, -1, -1, -1, -1, -1, -1]
+                    //If we first visit 3, then we will go to 9, and mark 
+                    //it as visited. Then with the constraint, we will skip
+                    //9 in the next loop. However, we need to visit it 
+                    //because we can directly jump to the destination!
+                    
+                    //if(nextI < totalLen && visited[nextI] == 0)
+                    if(nextI < totalLen){
+                        int dest = uBoard[nextI] > -1 ? uBoard[nextI]-1 : nextI;
+                            if(visited[dest] == 0){
+                                visited[dest] = 1;
+                                Q.push(dest);
+                        }
+                    }
+                    
+                }
+                
+            }
+            level++;
+        }
+        return -1;
+    }
+};
+
+
