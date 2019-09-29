@@ -2631,3 +2631,30 @@ public:
 };
 
 
+//451. Sort Characters By Frequency
+//https://leetcode.com/problems/sort-characters-by-frequency/
+//Bucket sort
+//Easy to get O(nlogn). O(n) solution should be preferred!
+class Solution {
+public:
+    string frequencySort(string s) {
+        int len_s = s.size();
+        int Dict[128] = {0};
+        for(char c : s){
+            Dict[c]++;
+        }
+        //Create a bucket to store frequency. Note frequency <= len_s
+        vector<string> bucket(len_s+1);
+        for(int i = 0; i < 127; ++i){
+            if(Dict[i] > 0){
+                bucket[Dict[i]].append(Dict[i], static_cast<char>(i));
+            }
+        }
+        string res;
+        for(int i = len_s; i >= 0; --i){
+            res.append(bucket[i]);
+        }
+        return res;
+        
+    }
+};
