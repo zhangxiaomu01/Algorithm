@@ -2612,18 +2612,21 @@ public:
         int len = s.size();
         if(len < 2) return false;
         int i = 1, j = 0;
-        int dp[len+1] = {0};
+        int dp[len] = {0};
         while(i < len){
-            if(s[i] == s[j]) dp[++i] = ++j;
+            if(s[i] == s[j]) {
+                dp[i] = ++j;
+                i++;
+            }
             else if(j == 0) ++i;
             else
-                j = dp[j];
+                j = dp[j-1];
         }
         /*
         for(int i = 0; i <= len; ++i){
             cout << i << " " << dp[i] << endl;
         }*/
-        return dp[len] && (len % (len - dp[len]) == 0);
+        return dp[len-1] && (len % (len - dp[len-1]) == 0);
     }
 };
 
