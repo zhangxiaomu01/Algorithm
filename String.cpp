@@ -2595,3 +2595,35 @@ public:
     }
 };
 
+//Solution 2: KMP algorithm
+/*
+First, we build the KMP table.
+
+Roughly speaking, dp[i+1] stores the maximum number of characters that the
+string is repeating itself up to position i.
+Therefore, if a string repeats a length 5 substring 4 times, then the last
+entry would be of value 15.
+To check if the string is repeating itself, we just need the last entry to
+be non-zero and str.size() to divide (str.size()-last entry).
+*/
+class Solution {
+public:
+    bool repeatedSubstringPattern(string s) {
+        int len = s.size();
+        if(len < 2) return false;
+        int i = 1, j = 0;
+        int dp[len+1] = {0};
+        while(i < len){
+            if(s[i] == s[j]) dp[++i] = ++j;
+            else if(j == 0) ++i;
+            else
+                j = dp[j];
+        }
+        /*
+        for(int i = 0; i <= len; ++i){
+            cout << i << " " << dp[i] << endl;
+        }*/
+        return dp[len] && (len % (len - dp[len]) == 0);
+    }
+};
+
