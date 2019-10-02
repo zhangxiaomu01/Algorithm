@@ -4304,3 +4304,83 @@ public:
 };
 
 
+
+//453. Minimum Moves to Equal Array Elements
+//https://leetcode.com/problems/minimum-moves-to-equal-array-elements/
+class Solution {
+public:
+    int minMoves(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        int res = 0;
+        for(int i = nums.size()-1; i >= 1; --i){
+            res += nums[i] - nums[0];
+        }
+        return res;
+    }
+};
+
+/*Actually, we only need to calculate the diff between each element and
+minimum element. Let's consider a sorted array, if we add num[i] - num[i-1]
+to num[i-1], then num[i] == num[i-1]. Then we consider add num[i+1] - 
+num[i-1] to num[i-1] and num[i], then we have num[i] == num[i+1] == num[i-1]. 
+Keep going. Which means we only need to find the minimum element, then do
+the calculation! */
+class Solution {
+public:
+    int minMoves(vector<int>& nums) {
+        int smallest = *min_element(nums.begin(), nums.end());
+        int res = 0;
+        for(int i = nums.size()-1; i >= 0; --i){
+            res += nums[i] - smallest;
+        }
+        return res;
+    }
+};
+
+
+//252. Meeting Rooms
+//https://leetcode.com/problems/meeting-rooms/
+class Solution {
+public:
+    bool canAttendMeetings(vector<vector<int>>& intervals) {
+        auto comp = [](vector<int>& v1, vector<int>& v2){
+            return v1[0] < v2[0];
+        };
+        sort(intervals.begin(), intervals.end(), comp);
+        int len = intervals.size();
+        for(int i = 1; i < len; ++i){
+            if(intervals[i][0] < intervals[i-1][1]) return false;
+        }
+        return true;
+    }
+};
+
+
+
+//253. Meeting Rooms II
+//https://leetcode.com/problems/meeting-rooms-ii/
+/* 
+Good solution: Add tag at the beginning and the end of each interval. And
+calculate the number of rooms needed accordingly. We keep track of the 
+maximum room we need on the fly!
+*/
+class Solution {
+public:
+    int minMeetingRooms(vector<vector<int>>& intervals) {
+        vector<pair<int, int>> timeSets;
+        int len = intervals.size();
+        for(int i = 0; i < len; ++i){
+            timeSets.push_back({intervals[i][0], 1});
+            timeSets.push_back({intervals[i][1], -1});
+        }
+        sort(timeSets.begin(), timeSets.end());
+        int res = 0;
+        int curRoom = 0;
+        for(int i = 0; i < timeSets.size(); ++i){
+            curRoom += timeSets[i].second;
+            res = max(res, curRoom);
+        }
+        return res;
+    }
+};
+
