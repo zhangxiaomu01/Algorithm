@@ -4373,7 +4373,13 @@ public:
             timeSets.push_back({intervals[i][0], 1});
             timeSets.push_back({intervals[i][1], -1});
         }
-        sort(timeSets.begin(), timeSets.end());
+        //when p1.first == p2.first, then p1.second must be positive 
+        //in order to go beyond. customize comparator improves the 
+        //efficiency
+        auto comp = [](pair<int, int>& p1, pair<int, int>& p2){
+            return p1.first < p2.first || (p1.first == p2.first && p1.second < p2.second);
+        };
+        sort(timeSets.begin(), timeSets.end(), comp);
         int res = 0;
         int curRoom = 0;
         for(int i = 0; i < timeSets.size(); ++i){
@@ -4384,3 +4390,28 @@ public:
     }
 };
 
+/* Priority queue implementation! */
+class Solution {
+public:
+    int minMeetingRooms(vector<vector<int>>& intervals) {
+        if(intervals.empty()) return 0;
+        auto comp = [](vector<int>& v1, vector<int>& v2){
+            return v1[0] < v2[0];
+        };
+        sort(intervals.begin(), intervals.end(), comp);
+        //at least 1
+        int res = 1;
+        priority_queue<int, vector<int>, greater<int>> pq;
+        //the end point of the first interval
+        pq.push(intervals[0][1]);
+        
+        for(int i = 1; i < intervals.size(); ++i){
+            while(!pq.empty() && intervals[i][0] >= pq.top()){
+                pq.pop();
+            }
+            pq.push(intervals[i][1]);
+            res = max(res, static_cast<int>(pq.size()));
+        }
+        return res;
+    }
+};
