@@ -1327,3 +1327,157 @@ public:
         return -1;
     }
 };
+
+
+//803. Bricks Falling When Hit
+//https://leetcode.com/problems/bricks-falling-when-hit/
+/* 
+//My first try: Failed some test case! I think it is potentially because I 
+//mixed too many check condition!
+class Solution {
+private:
+    int helper(vector<vector<int>>& G, int i, int j, int& count, bool& isReachEnd){
+        if(i < 0 || i >= G.size() || j < 0 || j >= G[0].size() || G[i][j] == 0)
+            return 0;
+        
+        if(i == 0 && G[i][j] == 1) {
+            isReachEnd = true;
+            return 0;
+        }
+        count++;
+        G[i][j] = 0;
+        helper(G, i-1, j, count, isReachEnd);
+        helper(G, i+1, j, count, isReachEnd);
+        helper(G, i, j-1, count, isReachEnd);
+        helper(G, i, j+1, count, isReachEnd);
+        //count--;
+        if(isReachEnd)
+            G[i][j] = 1;
+        return count;
+        
+    }
+public:
+    vector<int> hitBricks(vector<vector<int>>& grid, vector<vector<int>>& hits) {
+        int m = grid.size();
+        int n = m ? grid[0].size() : 0;
+        int len = hits.size();
+        vector<int> res;
+        if(!m || !n) return res;
+        for(int i = 0; i < len; ++i){
+            int x = hits[i][0];
+            int y = hits[i][1];
+            if(grid[x][y] == 0){
+                res.push_back(0);
+                continue;
+            } 
+            grid[x][y] = 0;
+            int count = 0;
+            bool isEnd = false;
+            int res1 = helper(grid, x-1, y, count, isEnd);
+            count = 0;
+            res1 = isEnd ? 0 : res1;
+            isEnd = false;
+            int res2 = helper(grid, x+1, y, count, isEnd);
+            count = 0;
+            res2 = isEnd ? 0 : res2;
+            isEnd = false;
+            int res3 = helper(grid, x, y-1, count, isEnd);
+            count = 0;
+            res3 = isEnd ? 0 : res3;
+            isEnd = false;
+            int res4 = helper(grid, x, y+1, count, isEnd);
+            res4 = isEnd ? 0 : res4;
+            res.push_back(res1 + res2 + res3 +res4);
+        }
+        return res;
+    }
+};
+ */
+
+
+//DFS implementation! Naive search. And we have duplicate search in count and
+//falling functions. Extremely slow!
+class Solution {
+private:
+    //id is used to record searching! 
+    //cnt is the final res
+    int id, cnt;
+    vector<vector<int>> visited;
+    const int dir[5] = {-1, 0, 1, 0, -1};
+    int m, n;
+    
+public:
+    bool checkValid(int x, int y){
+        if(x < 0 || x >= m || y < 0 || y >= n)
+            return false;
+        return true;
+    }
+    
+    //Note we do not update bricks value here!
+    bool falling(int x, int y, vector<vector<int>>& G){
+        if(!checkValid(x, y) || !G[x][y]) return true;
+        if(visited[x][y] == id) return true;
+        if(x == 0 ) return false; //now G[x][y] must be 1
+        
+        visited[x][y] = id;
+        for(int i = 0; i < 4; ++i){
+            if(!falling(x+dir[i], y + dir[i+1], G)) return false;
+        }
+        return true;
+    }
+    
+    //We are guaranteed to have valid count bricks here!
+    int countBricks(int x, int y, vector<vector<int>>& G){
+        if(!checkValid(x, y) || !G[x][y]) return 0;
+        //No need to check ID here, we are just redo the search
+        //if(visited[x][y] == id) return 0;
+        int res = 1;
+        G[x][y] = 0;
+        for(int i = 0; i < 4; ++i){
+            //we have one brick here!
+            res += countBricks(x + dir[i], y + dir[i+1], G);
+        }
+        return res;
+    }
+    
+    
+    vector<int> hitBricks(vector<vector<int>>& grid, vector<vector<int>>& hits) {
+        m = grid.size();
+        n = m ? grid[0].size() : 0;
+        if(!m || !n) return vector<int>();
+        id = cnt = 0;
+        visited = vector<vector<int>>(m, vector<int>(n, 0));
+        
+        vector<int> res;
+        
+        int len = hits.size();
+        for(int i = 0; i < len; ++i){
+            int x = hits[i][0];
+            int y = hits[i][1];
+            cnt = 0;
+            if(!grid[x][y]) {
+                res.push_back(cnt);
+                continue;
+            }
+            //We cannot assign ID here, the id actually represents the 
+            //different components. We will search [x, y] when we search its
+            //neighbors!
+            //visited[x][y] = id;
+            grid[x][y] = 0;
+            for(int j = 0; j < 4; ++j){
+                int nX = x + dir[j];
+                int nY = y + dir[j+1];
+                if(!checkValid(nX, nY) || !grid[nX][nY])
+                    continue;
+                id++;
+                if(falling(nX, nY, grid)) {
+                    cnt += countBricks(nX, nY, grid);
+                }
+                    
+            }
+            res.push_back(cnt);
+        }
+        
+        return res;
+    }
+};
