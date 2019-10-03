@@ -4415,3 +4415,30 @@ public:
         return res;
     }
 };
+
+
+
+//477. Total Hamming Distance
+//https://leetcode.com/problems/total-hamming-distance/
+// standard
+class Solution {
+public:
+    int totalHammingDistance(vector<int>& nums) {
+        int len = nums.size();
+        if(len == 0) return 0;
+        int res = 0;
+        //calculate how many 1's and 0's for each bit. The total difference
+        //will be countOne * countZero
+        for(int i = 0; i < 32; ++i){
+            int countOne = 0;
+            for(int j = 0; j < len; ++j){
+                countOne += ((nums[j] & (1 << i)) == 0) ? 0 : 1;
+            }
+            res += countOne * (len - countOne);
+        }
+        return res;
+    }
+};
+
+
+
