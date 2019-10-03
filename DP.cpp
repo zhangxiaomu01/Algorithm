@@ -2191,3 +2191,42 @@ public:
 };
 
 
+//265. Paint House II
+//https://leetcode.com/problems/paint-house-ii/
+/*Very nice O(nk) solution:
+Note we need to maintain two varibles: smallest cost and second smallest
+cost from i-1. Then when we update i, we have sufficient information!
+Better to start with 2D array during the interview!
+Heavily optimized version! Record the two minimums is impressive! */
+class Solution {
+public:
+    int minCostII(vector<vector<int>>& costs) {
+        int len = costs.size();
+        if(len == 0) return 0;
+        int k = costs[0].size();
+        int dp[k] = {0};
+        int fMini = INT_MAX, sMini = INT_MAX;
+        
+        for(int i = 0; i < len; ++i){
+            int oldfMini = (i == 0 ? 0 : fMini);
+            int oldsMini = (i == 0 ? 0 : sMini);
+            fMini = sMini = INT_MAX;
+            for(int j = 0; j < k; ++j){
+                if(dp[j] != oldfMini || oldfMini == oldsMini){
+                    dp[j] = oldfMini + costs[i][j];
+                }else{
+                    dp[j] = oldsMini + costs[i][j];
+                }
+                if(dp[j] > fMini){
+                    sMini = min(dp[j], sMini);
+                }else{
+                    sMini = fMini;
+                    fMini = dp[j];
+                } 
+            }         
+        }
+        return fMini;
+        
+    }
+};
+
