@@ -1086,3 +1086,22 @@ public:
 
 
 
+//463. Island Perimeter
+//https://leetcode.com/problems/island-perimeter/
+//Naive implementation is trivial! The following are interesting idea!
+class Solution {
+public://1035
+    int islandPerimeter(vector<vector<int>>& grid) {
+        if(grid.empty()) return 0;
+        int count = 0, repeat = 0;
+        for(int i = 0; i < grid.size(); i++)
+            for(int j = 0; j < grid[0].size(); j++){
+                if(grid[i][j] == 1){
+                    count++;
+                    if(i && grid[i - 1][j] == 1)  repeat++;
+                    if(j && grid[i][j - 1] == 1)  repeat++;
+                }
+            }
+        return 4 * count - 2 * repeat;
+    }
+};
