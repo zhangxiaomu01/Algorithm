@@ -2139,3 +2139,55 @@ public:
     }
 };
 
+
+
+//256. Paint House
+//https://leetcode.com/problems/paint-house/
+//standard DP, not hard!
+class Solution {
+public:
+    int minCost(vector<vector<int>>& costs) {
+        if(costs.empty()) return 0;
+        int len = costs.size();
+        int dp[len][3] = {0};
+        dp[0][0] = costs[0][0];
+        dp[0][1] = costs[0][1];
+        dp[0][2] = costs[0][2];
+        
+        for(int i = 1; i < len; ++i){
+            for(int j = 0; j < 3; ++j){
+                dp[i][j] += min(dp[i-1][(j+1)%3], dp[i-1][(j+2)%3]) + costs[i][j];
+            }
+        }
+        
+        return min(dp[len-1][0], min(dp[len-1][1], dp[len-1][2]));
+    }
+};
+
+//Optimized space version
+class Solution {
+public:
+    int minCost(vector<vector<int>>& costs) {
+        if(costs.empty()) return 0;
+        int len = costs.size();
+        int pre[3] = {0};
+        int cur[3] = {0};
+        pre[0] = costs[0][0];
+        pre[1] = costs[0][1];
+        pre[2] = costs[0][2];
+        
+        for(int i = 1; i < len; ++i){
+            for(int j = 0; j < 3; ++j){
+                cur[j] = min(pre[(j+1)%3], pre[(j+2)%3]) + costs[i][j];
+            }
+            for(int j = 0; j < 3; ++j){
+                swap(cur[j], pre[j]);
+                cur[j] = 0;
+            }
+        }
+        
+        return min(pre[0], min(pre[1], pre[2]));
+    }
+};
+
+
