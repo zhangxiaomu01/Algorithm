@@ -4442,3 +4442,39 @@ public:
 
 
 
+//462. Minimum Moves to Equal Array Elements II
+//https://leetcode.com/problems/minimum-moves-to-equal-array-elements-ii/
+//Find the median val
+class Solution {
+public:
+    int minMoves2(vector<int>& nums) {
+        if(nums.empty()) return 0;
+        sort(nums.begin(), nums.end());
+        int len = nums.size();
+        int mid = len / 2;
+        int val = nums[mid];
+        int res = 0;
+        for(int element : nums){
+            res += abs(element - val);
+        }
+        return res;
+    }
+};
+
+//O(n)
+class Solution {
+public:
+    int minMoves2(vector<int>& nums) {
+        if(nums.empty()) return 0;
+        random_shuffle(nums.begin(), nums.end());
+        int mid = nums.size() / 2;
+        nth_element(nums.begin(), nums.begin() + mid, nums.end());
+        int val = nums[mid];
+        int res = 0;
+        for(int element : nums){
+            res += abs(element - val);
+        }
+        
+        return res;
+    }
+};
