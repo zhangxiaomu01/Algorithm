@@ -2230,3 +2230,24 @@ public:
     }
 };
 
+
+//276. Paint Fence
+//https://leetcode.com/problems/paint-fence/
+//Very tricky problem! get the insight, do not get the final solution!
+class Solution {
+public:
+    int numWays(int n, int k) {
+        if(k==1 && n > 2 || n == 0 || k == 0) return 0;
+        if(n == 1) return k;
+        if(n == 2) return k * k;
+        //start from n == 2
+        int sameColor = k;
+        int diffColor = k * (k-1);
+        for(int i = 3; i <= n; ++i){
+            int temp = diffColor;
+            diffColor = (diffColor + sameColor) * (k-1);
+            sameColor = temp;
+        }
+        return sameColor + diffColor;
+    }
+};
