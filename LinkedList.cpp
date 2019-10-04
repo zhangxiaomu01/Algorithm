@@ -421,3 +421,40 @@ public:
     }
 };
 
+
+
+//708. Insert into a Cyclic Sorted List
+//https://leetcode.com/problems/insert-into-a-cyclic-sorted-list/
+//How to optimize code is the key!
+class Solution {
+public:
+    Node* insert(Node* head, int val){
+      if(!head){
+        head = new Node(val);
+        head->next = head;
+        return head;
+      }
+
+      Node* fPtr = head, *sPtr = head;
+      sPtr = head->next;
+      while(sPtr != head){
+        if(fPtr->val <= val && sPtr->val >= val){
+          break;
+        }
+        if(fPtr->val > sPtr->val && (fPtr->val <= val || sPtr->val >= val)){
+          break;
+        }
+          fPtr = sPtr;
+          sPtr = sPtr->next;
+      }
+
+      Node* tempNode = new Node(val);
+      fPtr->next = tempNode;
+      tempNode->next = sPtr;
+      return head;
+
+    }
+};
+
+
+
