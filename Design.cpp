@@ -1952,3 +1952,41 @@ public:
     }
 };
 
+
+
+//157. Read N Characters Given Read4
+//https://leetcode.com/problems/read-n-characters-given-read4/
+//Initial implementation, unoptimized!
+// Forward declaration of the read4 API.
+int read4(char *buf);
+
+class Solution {
+public:
+    /**
+     * @param buf Destination buffer
+     * @param n   Number of characters to read
+     * @return    The number of actual characters read
+     */
+    int read(char *buf, int n) {
+        int cnt = 0;
+        for(int i = 0; i < n/4; ++i){
+            char localBuf[4];
+            int x = read4(localBuf);
+            for(int j = 0; j < x; ++j)
+                buf[j+cnt] = localBuf[j];
+            cnt += x;
+            if(x == 0) break;
+        }
+        char localBuf[4];
+        int x = read4(localBuf);
+        for(int i = 0; i < min(n%4, x); ++i){
+            buf[i+cnt] = localBuf[i];
+        }
+        cnt += min(n%4, x);
+        
+        return cnt;
+    }
+};
+
+
+
