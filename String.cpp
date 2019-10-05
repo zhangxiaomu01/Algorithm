@@ -57,6 +57,29 @@ public:
     }
 };
 
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        if(s.empty()) return 0;
+        int uDict[256] = {0};
+        int len = s.size();
+        int i = 0;
+        int maxLen = 0;
+        for(int j = 0; j < len; ++j){
+            uDict[s[j]] ++;
+            if(uDict[s[j]] <= 1){
+                maxLen = max(maxLen, j-i+1);
+            }else{
+                while(i < j && uDict[s[j]] > 1){
+                    uDict[s[i]]--;
+                    i++;
+                }
+            }
+        }
+        return maxLen;
+    }
+};
+
 //The same idea. However, we use int[256] to map the all possible
 //characters to potential entry, and can quiaky retrieve the starting
 // index
