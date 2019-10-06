@@ -2019,3 +2019,46 @@ public:
 
 
 
+//158. Read N Characters Given Read4 II - Call multiple times
+//https://leetcode.com/problems/read-n-characters-given-read4-ii-call-multiple-times/
+/*
+Extreme elegant solution! note how to save the temperate result to member 
+variable and how to maintain two pointers is the key to success!
+*/
+
+// Forward declaration of the read4 API.
+int read4(char *buf);
+
+class Solution {
+private:
+    //internal buffer: since we will have mulptiple call, we need to save the
+    //temporary result to a member variable.
+    char tempChar[4];
+    //how many characters previous read!
+    int n4 = 0;
+    //Current pointer to internal buffer
+    int i4 = 0;
+public:
+    /**
+     * @param buf Destination buffer
+     * @param n   Number of characters to read
+     * @return    The number of actual characters read
+     */
+    int read(char *buf, int n) {
+        int total = 0;
+        while(total < n){
+            //when our internal buffer reaches boundry
+            if(i4 >= n4){
+                //reset i4
+                i4 = 0;
+                n4 = read4(tempChar);
+                //no need for further update
+                if(n4 == 0) break;
+            }
+            buf[total++] = tempChar[i4++];
+        }
+        return total;
+    }
+};
+
+
