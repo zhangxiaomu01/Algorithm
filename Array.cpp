@@ -4503,3 +4503,66 @@ public:
 };
 
 
+
+//163. Missing Ranges
+//https://leetcode.com/problems/missing-ranges/
+/* Naive implementation! Note we need to handle test case */
+class Solution {
+public:
+    vector<string> findMissingRanges(vector<int>& nums, int lower, int upper) {
+        vector<string> res;
+        int len = nums.size();
+        if(len == 0){
+            if(upper > lower)
+                res.push_back(to_string(lower) + "->" + to_string(upper));
+            else if(upper == lower)
+                res.push_back(to_string(lower));
+            return res;
+        }
+        
+        if(lower != nums.front()){
+            if(lower == nums.front()-1){
+                res.push_back(to_string(lower));
+            }else if(lower < nums.front()-1){
+                res.push_back(to_string(lower) + "->" + to_string(nums.front()-1));
+            }
+        }
+
+        
+        for(int i = 1; i < len; ++i){
+            if(nums[i] == nums[i-1] || nums[i] == nums[i-1]+1)
+                continue;
+            if(nums[i] == nums[i-1] + 2)
+                res.push_back(to_string(nums[i-1]+1));
+            else if(nums[i] > nums[i-1] + 2){
+                res.push_back(to_string(nums[i-1]+1) + "->" + to_string(nums[i]-1));
+            }
+        }
+        
+        if(upper == nums.back()) return res;
+        else if( upper == nums.back() + 1){
+            res.push_back(to_string(upper));
+        }else if(upper > nums.back() + 1){
+            res.push_back(to_string(nums.back()+1) + "->" + to_string(upper));
+        }
+        
+        return res;
+    }
+};
+
+/* Other's code. He did not handle integer overflow. The code is simple and 
+cocise. */
+public class Solution {
+    public List<String> findMissingRanges(int[] nums, int lower, int upper) {
+        List<String> list = new ArrayList<String>();
+        for(int n : nums){
+            int justBelow = n - 1;
+            if(lower == justBelow) list.add(lower+"");
+            else if(lower < justBelow) list.add(lower + "->" + justBelow);
+            lower = n+1;
+        }
+        if(lower == upper) list.add(lower+"");
+        else if(lower < upper) list.add(lower + "->" + upper);
+        return list;
+    }
+}
