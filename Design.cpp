@@ -1989,4 +1989,33 @@ public:
 };
 
 
+//Optimized version. Time complexity is the same. The code is more concise!
+// Forward declaration of the read4 API.
+int read4(char *buf);
+
+class Solution {
+public:
+    /**
+     * @param buf Destination buffer
+     * @param n   Number of characters to read
+     * @return    The number of actual characters read
+     */
+    int read(char *buf, int n) {
+        int total = 0;
+        char* bufPtr = buf;
+        while(total < n){
+            char tempBuf[4];
+            int m = read4(tempBuf);
+            //cout << m << endl;
+            for(int i = 0; i < min(m, n - total); ++i){
+                bufPtr[i + total] = tempBuf[i];  
+            }
+            total += min(m, n - total);
+            if(m < 4) break;
+        }
+        return total;
+    }
+};
+
+
 
