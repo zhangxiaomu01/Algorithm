@@ -2681,3 +2681,61 @@ public:
         
     }
 };
+
+
+
+//159. Longest Substring with At Most Two Distinct Characters
+//https://leetcode.com/problems/longest-substring-with-at-most-two-distinct-characters/
+/* With hash map */
+class Solution {
+public:
+    int lengthOfLongestSubstringTwoDistinct(string s) {
+        unsigned int len = s.size();
+        unordered_map<char, int> uMap;
+        int i = 0;
+        int maxLen = 0;
+        for(int j = 0; j < len; ++j){
+            uMap[s[j]]++;
+            while(uMap.size() > 2){
+                uMap[s[i]]--;
+                if(uMap[s[i]] == 0) uMap.erase(s[i]);
+                i++;
+            }
+            maxLen = max(maxLen, j - i + 1);
+        }
+        return maxLen;
+    }
+};
+
+//Same idea, with a common array. Faster! Not implemented by me!
+class Solution {
+    int freq[257];
+public:
+    int lengthOfLongestSubstringTwoDistinct(string s) {
+        int sz = s.size();
+        if(sz <= 1)
+            return sz;
+        for(int i = 0; i < 257; i++)
+            freq[i] = 0;
+        int st,ed;
+        st = 0;
+        ed = 1;
+        int distinct_count = 1;
+        freq[s[st]]++;
+        int ans = 1;
+        while(ed < sz){
+            freq[s[ed]]++;
+            if(freq[s[ed]] == 1)
+                distinct_count++;
+            while(st <= ed && distinct_count > 2){
+                freq[s[st]]--;
+                if(freq[s[st]] == 0)
+                    distinct_count--;
+                st++;
+            }
+            ans = max(ans, ed - st + 1);
+            ed++;
+        }
+        return ans;
+    }
+};
