@@ -2087,6 +2087,44 @@ public:
     }
 };
 
+class Solution {
+public:
+    string findReplaceString(string S, vector<int>& indexes, vector<string>& sources, vector<string>& targets) {
+        int lenS = S.size();
+        //using an array to keep track of the starting index and corresponding sources and
+        //target. Very clever!
+        int replace[lenS];
+        //only works for -1 or 0, no other values!
+        memset(replace, -1, sizeof(replace));
+        
+        for(int i = 0; i < indexes.size(); ++i){
+            //A map to map the starting index from S with sources and targets
+            replace[indexes[i]] = i;
+        }
+        
+        string res;
+        for(int i = 0; i < lenS; ++i){
+            if(replace[i] == -1){
+                res.push_back(S[i]);
+            }else{
+                string& src = sources[replace[i]];
+                if(S.substr(i, src.size()) == src){
+                    //append target to current res
+                    res.append(targets[replace[i]]);
+                    //since we increment our i for each round, we need to subtract 1 here
+                    i += src.size() - 1;
+                }else{
+                    res.push_back(S[i]);
+                }
+            }
+        }
+        
+        return res;
+        
+    }
+};
+
+
 
 //809. Expressive Words
 //https://leetcode.com/problems/expressive-words/
