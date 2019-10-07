@@ -540,3 +540,41 @@ public:
 };
 
 
+//19. Remove Nth Node From End of List
+//https://leetcode.com/problems/remove-nth-node-from-end-of-list/
+//Follow up: with one pass. Two pointers!
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        if(!head || !(head->next))
+            return nullptr;
+        
+        ListNode *fast = head, *slow =head;
+        int count = 0;
+        
+        while(fast->next != nullptr)
+        {
+            fast = fast->next;
+            count ++;
+            if(count> n)
+            {
+                slow = slow->next;
+            }
+        }
+        if(count + 1 == n)
+        {
+            head = head-> next;
+            delete slow;
+            return head;
+        }
+        
+        ListNode *temp = slow->next;
+        if(temp == nullptr)
+            return head;
+        slow->next = temp->next;
+        delete temp;
+        
+        return head;
+        
+    }
+};
