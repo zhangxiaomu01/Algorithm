@@ -458,3 +458,85 @@ public:
 
 
 
+//23. Merge k Sorted Lists
+//https://leetcode.com/problems/merge-k-sorted-lists/
+/* priority_queue solution! */
+class Solution {
+public:
+   
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        int len_l = lists.size();
+        ListNode head(0);
+        ListNode *h = &head;
+        auto comp = [](ListNode* l1, ListNode* l2){
+            return l1->val> l2->val;
+        };
+        priority_queue<ListNode*, std::vector<ListNode*>, decltype(comp)> q(comp);
+        
+        for(int i = 0; i < len_l; i++){
+            if(lists[i])
+                q.push(lists[i]);
+        }
+
+        while(q.empty() == false){
+            h->next = q.top();
+            q.pop();
+            h = h->next;
+            if(h&&h->next != NULL)
+                q.push(h->next); 
+        }
+        
+        return head.next;
+    }
+};
+
+
+//Merge sort step. Very celever!
+class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2){
+        ListNode head(0);
+        ListNode* h = &head;
+        while(l1&&l2){
+            if(l1->val < l2->val){
+                h->next = l1;
+                h=h->next;
+                l1= l1->next;
+            }
+            else{
+                h->next = l2;
+                h = h->next;
+                l2=l2->next;
+            }
+        }
+        if(l1)
+        {
+            h->next = l1;
+        }
+        if(l2)
+        {
+            h->next = l2;
+        }
+        
+        return head.next;
+    }
+    
+    
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        int len_l = lists.size();
+        if(len_l == 0)
+            return nullptr;
+        
+        int step = 1;
+        while(step < len_l){
+            for(int i = 0; i + step < len_l; i = i + step*2)
+                {
+                    lists[i] = mergeTwoLists(lists[i], lists[i+step]);
+                }
+            step = step*2;
+        }
+        return lists[0];
+    }
+};
+
+
