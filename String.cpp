@@ -2817,3 +2817,45 @@ public:
 
 
 
+//7. Reverse Integer
+//https://leetcode.com/problems/reverse-integer/
+class Solution {
+private:
+    bool checkValid(string& s1, string& s2){
+        if(s1.size() < s2.size()) return true;
+        if(s1.size() == s2.size()){
+            //Be careful about when we need to return true
+            for(int i = 0; i < s1.size(); ++i){
+                if(s1[i] < s2[i]) return true;
+                if(s1[i] > s2[i]) return false;
+            }
+        }
+        return true;
+    }
+public:
+    int reverse(int x) {
+        //We need to handle the corner case when x cannot have valid abs value
+        if(x == INT_MIN) return 0;
+        int temp = abs(x);
+        string s = to_string(temp);
+        std::reverse(s.begin(), s.end());
+        
+        
+        string upperBound = to_string(2147483647);
+        string lowerBound = upperBound;
+        lowerBound.back() += 1;
+        //cout << lowerBound << endl;
+        //cout << s << endl;
+        
+        if(x >= 0 && checkValid(s, upperBound)){
+            return stoi(s);
+        }
+        
+        if(x < 0 && checkValid(s, lowerBound)){
+            if(s == lowerBound) return INT_MIN;
+            return stoi(s) * (-1);
+        }
+        return 0;
+    }
+};
+
