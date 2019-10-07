@@ -1162,6 +1162,27 @@ public:
     }
 };
 
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        if(height.size() <= 1) return 0;
+        int len = height.size();
+        int left[len] = {0}, right[len] = {0};
+        int maxLeft = 0, maxRight = 0;
+        for(int i = 0; i < len; ++i){
+            maxLeft = max(maxLeft, height[i]);
+            left[i] = maxLeft;
+            maxRight = max(maxRight, height[len-1-i]);
+            right[len-1 -i] = maxRight; 
+        }
+        int res = 0;
+        for(int i = 1; i < len-1; ++i){
+            res += max(0, min(left[i], right[i]) - height[i]);
+        }
+        return res;
+    }
+};
+
 //724. Find Pivot Index
 //https://leetcode.com/problems/find-pivot-index/
 /* Prefix sum, nothing fancy */
