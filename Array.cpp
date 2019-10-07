@@ -4566,3 +4566,34 @@ public class Solution {
         return list;
     }
 }
+
+
+//849. Maximize Distance to Closest Person
+//https://leetcode.com/problems/maximize-distance-to-closest-person/
+/* Consider 3 different intervals separately! */
+class Solution {
+public:
+    int maxDistToClosest(vector<int>& seats) {
+        int len = seats.size();
+        int preFirst = 0;
+        int afterLast = 0;
+        int inBetween = 0;
+        int i = 0, j = len-1;
+        while(i < len && seats[i] == 0) i++;
+        preFirst = i;
+        while(j >= 0 && seats[j] == 0) j--;
+        afterLast = len - j - 1;
+        
+        
+        for(int k = i+1; k < j; ++k){
+            if(seats[k] == 0){
+                inBetween = max(inBetween, k - i);
+            }else{
+                i = k;
+            }
+        }
+        
+        return max(preFirst, max(afterLast, (inBetween + 1)/2));
+    }
+};
+
