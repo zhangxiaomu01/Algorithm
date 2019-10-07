@@ -4631,3 +4631,109 @@ int maxDistToClosest(vector<int> seats) {
     return res;
 }
 
+
+//135. Candy
+//https://leetcode.com/problems/candy/
+//Initial idea: priority queue! However, slow.
+class Solution {
+public:
+    int candy(vector<int>& ratings) {
+        if(ratings.empty()) return 0;
+        int len = ratings.size();
+        if(len == 1) return 1;
+        
+        priority_queue<pair<int, int>, vector<pair<int,int>>, greater<pair<int, int>>> pq;
+        int candyList[len] = {0};
+        for(int i = 0; i < len; ++i){
+            pq.push({ratings[i], i});
+        }
+        //At least 2 elements here
+        while(!pq.empty()){
+            auto p = pq.top();
+            pq.pop();
+            int leftNeighbour = p.second == 0 ? 0 : p.second - 1;
+            int rightNeighbour = p.second == len-1 ? len-1 : p.second+1;
+            int numCandy = 1;
+            
+            if(p.first <= ratings[leftNeighbour] && p.first <= ratings[rightNeighbour]){
+                candyList[p.second] = numCandy;
+                continue;
+            }
+
+            if(p.first > ratings[leftNeighbour])
+                numCandy = max(numCandy, candyList[leftNeighbour] + 1);
+            
+            if(p.first > ratings[rightNeighbour])
+                numCandy = max(numCandy, candyList[rightNeighbour] + 1);
+            
+            candyList[p.second] = numCandy;
+        }
+        
+        int res = 0;
+        for(int n : candyList){
+            //cout << n << endl;
+            res += n;
+        }
+        return res;
+        
+    }
+};
+
+
+//Actually, we can do 3 passes. Much elegant!
+class Solution {
+public:
+    int candy(vector<int>& ratings) {
+        int len = ratings.size();
+        if(len == 0) return 0;
+        vector<int> candy(len, 1);
+        int sum = 0;
+        for(int i = 1; i < len; i++){
+            if(ratings[i] > ratings[i-1]){
+                candy[i] = candy[i-1] + 1;
+            }
+        }
+        for(int j = len-2; j >= 0; j--){
+            if(ratings[j] > ratings[j+1])
+                candy[j] = max(candy[j], candy[j+1]+1);
+        }
+        for(int num : candy){
+            sum += num;
+        }
+        return sum;
+    }
+};
+
+
+// Space O(1) solution. Clever, but not very useful!
+// Hard to get and implement.
+class Solution {
+public:
+    int count(int n){
+        return (n*(n+1))/2;
+    }
+    int candy(vector<int>& ratings) {
+        int len = ratings.size();
+        if(len == 0) return 0;
+        int up = 0, down = 0, oldSlope = 0;
+        int candy = 0;
+        for(int i = 1; i < len; i++){
+            int nSlope = (ratings[i]>ratings[i-1]) ? 1: (ratings[i]<ratings[i-1] ? -1 : 0);
+            if((oldSlope>0 && nSlope == 0) || (oldSlope<0 && nSlope >= 0)){
+                candy += count(up) + count(down) + max(up, down);
+                //cout << candy << " ";
+                up = 0;
+                down = 0;
+            }
+            if(nSlope > 0) up++;
+            if(nSlope < 0) down++;
+            if(nSlope == 0) candy++;
+            
+            oldSlope = nSlope;
+        }
+        candy += count(up) + count(down) + max(up, down) + 1;
+        return candy;
+    }
+};
+
+
