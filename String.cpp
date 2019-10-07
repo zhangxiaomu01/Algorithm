@@ -2859,3 +2859,33 @@ public:
     }
 };
 
+//elegant solution: utilize the property of unsigned int
+class Solution {
+public:
+    int reverse(int x) {
+        int s;
+        unsigned xu;
+        if (x >= 0) {
+            s = 1;
+            xu = x;
+        }
+        else {
+            s = -1;
+            xu = -1 * unsigned(x);
+        }
+
+        
+        int y = 0;
+        while (xu > 0) {
+            int r = xu % 10;
+            if (y > 214748364) {
+                return 0;
+            }
+            y *= 10;
+            y += r;
+            xu /= 10;
+        }
+        
+        return s * y;
+    }
+};
