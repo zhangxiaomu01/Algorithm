@@ -2947,4 +2947,100 @@ public:
 };
 
 
+//247. Strobogrammatic Number II
+//https://leetcode.com/problems/strobogrammatic-number-ii/
+//Back tracking + DFS. My implementation.
+class Solution {
+private:
+    const char candidates[10] = {'0', '1', '*', '*', '*', '*', '9', '*', '8', '6'};
+    const char cand[5] = {'0', '1', '6', '8', '9'};
+    
+    void helper(string tempStr, vector<string>& res, int len, bool isOdd){
+        if(len < 0) return;
+        if(len == 0){
+            if(isOdd){
+                tempStr.push_back('0');
+                res.push_back(tempStr);
+                tempStr.back() = '1';
+                res.push_back(tempStr);
+                tempStr.back() = '8';
+                res.push_back(tempStr);
+            }else
+                res.push_back(tempStr);
+            return;
+        }
+        
+        for(int i = 0; i < 5; ++i){
+            if(cand[i] == '0' && tempStr.empty()) continue;
+            tempStr.push_back(cand[i]);
+            helper(tempStr, res, len-1, isOdd);
+            tempStr.pop_back();
+        }
+    }   
+    
+public:
+    vector<string> findStrobogrammatic(int n) {
+        vector<string> res;
+        if(n < 0) return res;
+        if(n == 0) {
+            res.push_back("");
+            return res;
+        }
+        bool isOdd = n % 2 == 1;
+        int len = n / 2;
+        string tempStr;
+        helper(tempStr, res, len, isOdd);
+        
+        for(auto& s : res){
+            
+            for(int i = len-1; i >= 0; --i){
+                s.push_back(candidates[s[i]-'0']);
+            }
+            //cout << s << endl;
+        }
+        return res;
+    }
+};
 
+/* Other's code. Note the optimization part is we resize the tempStr to be
+length of n. Then we do not need the outer loop to do the calculation any more.
+Another thing is that we will not have array resizing any more! */
+class Solution {
+public:
+    vector<string> findStrobogrammatic(int n) {
+        vector<string> ans;
+        vector<char> nums = {'0', '1', '6', '9', '8'};
+        string cur(n, '0');
+        dfs(n, nums, 0, cur, ans);
+        return ans;
+    }
+private:
+    void dfs(int n, const vector<char> &nums, int s, string &cur, vector<string>& ans) {
+        if (n % 2 == 0 && s > (n / 2 - 1)) {
+            ans.push_back(cur);
+            return;
+        }
+
+        if (n % 2 == 1 && s > (n/2)) {
+            ans.push_back(cur);
+            return;
+        }
+
+        for (int i = 0; i < nums.size(); ++i) {
+            if (n > 1 && s == 0 && nums[i] == '0') continue; // MISTAKE: forget about when n == 1, we can use '0'. so need to add n > 1
+            if ((n == 1 || (s == n - 1 - s)) && (nums[i] == '6' || nums[i] == '9')) continue; // MISTAKE: forget this case. if n == 1. it can't be 6 or 9
+
+            // fill s and n - 1 -s
+            cur[s] = nums[i];
+            if (nums[i] == '6')
+                cur[n - 1 - s] = '9';
+            else if (nums[i] == '9') {
+                cur[n - 1 - s] = '6';
+            } else {
+                cur[n - 1 - s] = cur[s];
+            }
+
+            dfs(n, nums, s + 1, cur, ans);
+        }
+    }
+};
