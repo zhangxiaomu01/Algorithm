@@ -2889,3 +2889,62 @@ public:
         return s * y;
     }
 };
+
+
+//246. Strobogrammatic Number
+//https://leetcode.com/problems/strobogrammatic-number/
+//Not hard
+class Solution {
+public:
+    bool isStrobogrammatic(string num) {
+        if(num.empty()) return true;
+        const char candidates[10] = {'0', '1', '*', '*', '*', '*', '9', '*', '8', '6'};
+        int len = num.size();
+        
+        string copy = num;
+        reverse(copy.begin(), copy.end());
+        for(int i = 0; i < len; ++i){
+            char c = copy[i];
+            if(candidates[c - '0'] == '*') return false;
+            else copy[i] = candidates[c - '0'];
+        }
+        
+        return copy == num;
+    }
+};
+
+
+//With early termination. Other person's code
+class Solution {
+public:
+    bool isStrobogrammatic(string num) {
+        int length = num.size();
+        for (int i = 0; i < length; i++) {
+            switch (num[i]) {
+                case '0':                    
+                case '1': 
+                case '8':
+                    if (num[length-i-1] != num[i]) {
+                        return false;
+                    }
+                    break;
+                case '6':
+                    if (num[length-i-1] != '9') {
+                        return false;
+                    }
+                    break;                    
+                case '9' :                    
+                    if (num[length-i-1] != '6') {
+                        return false;
+                    }
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+};
+
+
+
