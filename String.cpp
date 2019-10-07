@@ -2739,3 +2739,43 @@ public:
         return ans;
     }
 };
+
+
+
+//681. Next Closest Time
+//https://leetcode.com/problems/next-closest-time/
+//A tricky problem, not easy to immediately get the solution!
+class Solution {
+public:
+    string nextClosestTime(string time) {
+        string res = time;
+        set<char> charSet;
+        //we will sort on the fly
+        for(char c : time){
+            if(c == ':') continue;
+            charSet.insert(c);
+        }
+        
+        int len = time.size();
+        for(int i = len-1; i >= 0; --i){
+            char c = time[i];
+            if(c == ':') continue;
+            auto it = charSet.find(c);
+            //if this character is not the maximum one
+            if(c != *(charSet.rbegin())){
+                ++it;
+                res[i] = *it;
+                cout << res[i] << endl;
+                if((i >= 3 && stoi(res.substr(i, 2)) <= 59) || (i <= 2 && stoi(res.substr(0, 2)) <= 23))
+                    return res;
+            }
+            //make current character the smallest
+            res[i] = *(charSet.begin());
+        }
+        return res;
+        
+    }
+};
+
+
+
