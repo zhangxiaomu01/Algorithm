@@ -578,3 +578,88 @@ public:
         
     }
 };
+
+
+//138. Copy List with Random Pointer
+//https://leetcode.com/problems/copy-list-with-random-pointer/
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* next;
+    Node* random;
+
+    Node() {}
+
+    Node(int _val, Node* _next, Node* _random) {
+        val = _val;
+        next = _next;
+        random = _random;
+    }
+};
+*/
+//Build a map with previous node and new node
+class Solution {
+public:
+    Node* copyRandomList(Node* head) {
+        if(!head) return nullptr;
+        unordered_map<Node*, Node*> uMap;
+        Node* ptr = head;
+        Node dummy(0, nullptr, nullptr);
+        Node* ptr2 = &dummy;
+        while(ptr){
+            ptr2->next = new Node(ptr->val, nullptr, nullptr);
+            ptr2 = ptr2->next;
+            uMap[ptr] = ptr2;
+            ptr = ptr->next;
+        }
+        
+        ptr = head;
+        ptr2 = dummy.next;
+        while(ptr2){
+            ptr2->random = uMap[ptr->random];
+            ptr2 = ptr2->next;
+            ptr = ptr->next;
+        }
+        return dummy.next;
+    }
+};
+
+
+//Without map. Hard to get the insight and get it right!
+class Solution {
+public:
+    RandomListNode *copyRandomList(RandomListNode *head) {
+        if(head == NULL) return NULL;
+        RandomListNode* ptr = head;
+        //First pass, we interleave new node with old node
+        //New node is a copy of old node
+        while(ptr!=NULL){
+            RandomListNode* node = new RandomListNode(ptr->label);
+            node->next = ptr->next;
+            ptr->next = node;
+            ptr = ptr->next->next;
+        }
+        //Second Pass: set random pointers
+        ptr = head;
+        while(ptr!=NULL){
+            ptr->next->random = ptr->random == NULL ? NULL:ptr->random->next;
+            ptr = ptr->next->next;
+        }
+        //Last pass: separate two lists
+        RandomListNode* oldList = head;
+        RandomListNode* newList = head->next;
+        RandomListNode* newHead = head->next;
+        while(oldList!=NULL){
+            oldList->next = newList->next;
+            newList->next = oldList->next == NULL? NULL: oldList->next->next;
+            oldList = oldList->next;
+            newList = newList->next;
+        }
+        return newHead;
+        
+    }
+};
+
+
