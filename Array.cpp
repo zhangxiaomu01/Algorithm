@@ -2732,6 +2732,35 @@ public:
 
 //152. Maximum Product Subarray
 //https://leetcode.com/problems/maximum-product-subarray/
+//Naive implementation by me
+class Solution {
+public:
+    int maxProduct(vector<int>& nums) {
+        int len = nums.size();
+        if(len == 0) return 0;
+        int minDP[len] = {0};
+        int maxDP[len] = {0};
+        minDP[0] = nums[0];
+        maxDP[0] = nums[0];
+        int res = max(INT_MIN, nums[0]);
+        for(int i = 1; i < len; ++i){
+            if(nums[i] == 0){
+                minDP[i] = maxDP[i] = 0;
+                res = max(res, 0);
+            }else if(nums[i] > 0){
+                maxDP[i] = max(nums[i], maxDP[i-1] * nums[i]);
+                minDP[i] = min(nums[i], minDP[i-1] * nums[i]);
+                res = max(res, maxDP[i]);
+            }else{
+                minDP[i] = min(nums[i], maxDP[i-1] * nums[i]);
+                maxDP[i] = max(nums[i], minDP[i-1] * nums[i]);
+                res = max(res, maxDP[i]);
+            }
+        }
+        return res;
+    }
+};
+
 //Note maximum positive and negative value can swap by multiplying negative value
 //Very tricky implementation! Similar to Kadane's algorithm
 //We will keep track of the potential maximum and minimum production for each entry
@@ -3297,6 +3326,82 @@ public:
 
 //410. Split Array Largest Sum
 //https://leetcode.com/problems/split-array-largest-sum/
+//My implementation, unoptimized!
+class Solution {
+public:
+    int splitArray(vector<int>& nums, int m) {
+        if(nums.empty()) return 0;
+        int len = nums.size();
+        long dp[m][len] = {0};
+        long preSum[len] = {0};
+        dp[0][0] = nums[0];
+        preSum[0] = nums[0];
+        
+        for(int i = 1; i < len; ++i){
+            dp[0][i] = dp[0][i-1] + nums[i];
+            preSum[i] = preSum[i-1] + nums[i];
+        }
+        
+        for(int i = 1; i < m; ++i){
+            for(int j = 0; j < len; ++j){
+                long localMin = LONG_MAX;
+                for(int k = 0; k < j; ++k){
+                    localMin = min(max(dp[i-1][k], preSum[j] - preSum[k]), localMin);
+                }
+                dp[i][j] = j == 0 ? preSum[j] : localMin;
+            }
+        }
+        return dp[m-1][len-1];
+    }
+};
+
+
+//Optimized version
+class Solution {
+public:
+    int splitArray(vector<int>& nums, int m) {
+        if(nums.empty()) return 0;
+        int len = nums.size();
+        //long dp[m][len] = {0};
+        long* pre = new long [len];
+        long* cur = new long [len];
+        
+        long preSum[len] = {0};
+        //dp[0][0] = nums[0];
+        pre[0] = nums[0];
+        preSum[0] = nums[0];
+        
+        for(int i = 1; i < len; ++i){
+            //dp[0][i] = dp[0][i-1] + nums[i];
+            pre[i] = pre[i-1] + nums[i];
+            preSum[i] = preSum[i-1] + nums[i];
+        }
+        
+        for(int i = 1; i < m; ++i){
+            for(int j = 0; j < len; ++j){
+                long localMin = LONG_MAX;
+                for(int k = j-1; k >= 0; --k){
+                    //No need to traverse further, since preSum[k] will become smaller and
+                    //smaller! so preSum[j] - preSum[k] will be larger and larger
+                    if(preSum[j] - preSum[k] >= localMin) break;
+                    //localMin = min(max(dp[i-1][k], preSum[j] - preSum[k]), localMin);
+                    localMin = min(max(pre[k], preSum[j] - preSum[k]), localMin);
+                }
+                //dp[i][j] = j == 0 ? preSum[j] : localMin;
+                cur[j] = j == 0 ? preSum[j] : localMin;
+            }
+            swap(pre, cur);
+        }
+        
+        int res = pre[len-1];
+        delete[] pre;
+        delete[] cur;
+        //return dp[m-1][len-1];
+        return res;
+    }
+};
+
+
 //Good explanation:
 //https://leetcode.com/problems/split-array-largest-sum/discuss/89819/C%2B%2B-Fast-Very-clear-explanation-Clean-Code-Solution-with-Greedy-Algorithm-and-Binary-Search
 //Very tricky solution: Greedy + Binary search!
