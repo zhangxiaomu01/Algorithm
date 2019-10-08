@@ -4873,3 +4873,92 @@ public:
 };
 
 
+//845. Longest Mountain in Array
+//https://leetcode.com/problems/longest-mountain-in-array/
+//One pass, track everything
+class Solution {
+public:
+    int longestMountain(vector<int>& A) {
+        if(A.size() < 3) return 0;
+        int res = 0;
+        int len = A.size();
+        int i = 1;
+        while(i < A.size()){
+            int tempUp = 0;
+            int tempDown = 0;
+            while(i < A.size() && A[i] == A[i-1]) i++;
+            while(i < A.size() && A[i] > A[i-1]) {
+                tempUp ++;
+                i++;
+            }
+            while(i < A.size() && A[i] < A[i-1]){
+                tempDown++;
+                i++;
+            }
+            if(tempUp > 0 && tempDown > 0){
+                res = max(res, 1 + tempUp + tempDown);
+            }
+        }
+        return res;
+    }
+};
+
+
+//1095. Find in Mountain Array
+//https://leetcode.com/problems/find-in-mountain-array/
+/**
+ * // This is the MountainArray's API interface.
+ * // You should not implement it, or speculate about its implementation
+ * class MountainArray {
+ *   public:
+ *     int get(int index);
+ *     int length();
+ * };
+ */
+class Solution {
+public:
+    int findInMountainArray(int target, MountainArray &mountainArr) {
+        int len = mountainArr.length();
+        int l = 0;
+        int r = len-1;
+        int peak = 0;
+        //find the peak. Binary search.
+        while(l < r){
+            int m = l + (r - l) / 2;
+            if(mountainArr.get(m) > mountainArr.get(m-1)){
+                l = m + 1;
+            }else{
+                r = m;
+            }
+        }
+        peak = l;
+        
+        //search left
+        l = 0;
+        r = peak;
+        while(l <= r){
+            int m = l + (r - l) / 2;
+            if(mountainArr.get(m) == target) return m;
+            else if (mountainArr.get(m) < target) l = m+1;
+            else r = m - 1;
+        }
+        
+        //search right
+        l = peak;
+        r = len-1;
+        while(l <= r){
+            int m = l + (r - l) / 2;
+            if(mountainArr.get(m) == target) return m;
+            else if (mountainArr.get(m) > target) l = m+1;
+            else r = m - 1;
+        }
+        
+        return -1;
+    }
+};
+
+
+
+//315. Count of Smaller Numbers After Self
+//https://leetcode.com/problems/count-of-smaller-numbers-after-self
+
