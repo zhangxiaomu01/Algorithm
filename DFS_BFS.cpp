@@ -1481,3 +1481,47 @@ public:
         return res;
     }
 };
+
+
+//329. Longest Increasing Path in a Matrix
+//https://leetcode.com/problems/longest-increasing-path-in-a-matrix/
+//We need to do memorization here!
+class Solution {
+private:
+    int m;
+    int n;
+    int helper(vector<vector<int>>& M, int i, int j, long preVal, vector<vector<int>>& memo){
+        if(i < 0 || i >= m || j < 0 || j >= n || preVal <= M[i][j]) return 0;
+        if(memo[i][j] != -1) return memo[i][j];
+        
+        int num = M[i][j];
+        M[i][j] = INT_MAX;
+        
+        int leftMax = helper(M, i-1, j, num, memo);
+        int rightMax = helper(M, i+1, j, num, memo);
+        int upMax = helper(M, i, j+1, num, memo);
+        int bottomMax = helper(M, i, j-1, num, memo);
+        
+        M[i][j] = num;
+        int curMax = max(max(leftMax, rightMax), max(upMax, bottomMax)) + 1;
+        memo[i][j] = curMax;
+        return curMax;
+    }
+public:
+    int longestIncreasingPath(vector<vector<int>>& matrix) {
+        m = matrix.size();
+        n = m ? matrix[0].size() : 0;
+        if(!m || !n) return 0;
+        int maxLen = 0;
+        vector<vector<int>> memo(m, vector<int>(n, -1));
+        for(int i = 0; i < m; ++i){
+            for(int j = 0; j < n; ++j){
+                int curMax = helper(matrix, i, j, LONG_MAX, memo);
+                maxLen = max(curMax, maxLen);
+            }
+        }
+        return maxLen;
+    }
+};
+
+
