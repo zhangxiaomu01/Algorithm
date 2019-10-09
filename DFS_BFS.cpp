@@ -1525,3 +1525,63 @@ public:
 };
 
 
+
+//351. Android Unlock Patterns
+//https://leetcode.com/problems/android-unlock-patterns/
+/*
+Very interesting problem. Hard to formulate it right!
+*/
+class Solution {
+    //table record the move from i to j, which number we should by pass
+    //for example, from 1 -> 3, we need to by pass 2. If no number need to by pass
+    //the value will be 0 (default)
+    int table[10][10] = {0};
+    
+    int helper(int sPos, int len, vector<int>& visited, int cnt, int m, int n){
+        //exceed maximum length!
+        if(len > n) return cnt;
+        if(len >= m) cnt++;
+        
+        visited[sPos] = 1;
+        for(int next = 1; next <= 9; ++next){
+            int pass = table[sPos][next];
+            //if we already visit the next, or we have visited pass, we can continue.
+            if(!visited[next] && (pass == 0 || visited[pass] == 1)){
+                //start from next. And we need to update cnt on the fly
+                //I do not really like this part as well. cnt will be updated on the following
+                //recursive call. Another way is to make cnt a reference, and return 
+                //cnt in the end!
+                cnt = helper(next, len + 1, visited, cnt, m, n);
+            }
+        }
+        //backtrack!
+        visited[sPos] = 0;
+        
+        return cnt;
+    }
+        
+public:
+    int numberOfPatterns(int m, int n) {
+        if(m > n) return 0;
+        //Build our table
+        table[1][3] = table[3][1] = 2;
+        table[4][6] = table[6][4] = 5;
+        table[7][9] = table[9][7] = 8;
+        table[1][7] = table[7][1] = 4;
+        table[2][8] = table[8][2] = 5;
+        table[3][9] = table[9][3] = 6;
+        table[1][9] = table[9][1] = table[3][7] = table[7][3] = 5;
+        
+        vector<int> visited(10, 0);
+        int res = 0;
+        //We need to start with length == 1
+        //1-3, 7-9, 1-7, 3-9 are the same
+        res += helper(1, 1, visited, 0, m, n) * 4;
+        //2-8, 4-6 are the same
+        res += helper(4, 1, visited, 0, m, n) * 4;
+        res += helper(5, 1, visited, 0, m, n);
+        
+        return res;
+         
+    }
+};
