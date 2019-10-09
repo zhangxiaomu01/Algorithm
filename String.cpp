@@ -3044,3 +3044,54 @@ private:
         }
     }
 };
+
+
+
+//271. Encode and Decode Strings
+//https://leetcode.com/problems/encode-and-decode-strings/
+//Not that efficient, but easy to understand!
+class Codec {
+public:
+
+    // Encodes a list of strings to a single string.
+    string encode(vector<string>& strs) {
+        string res;
+        int len = strs.size();
+        if(len == 0) return res;
+        for(int i = 0; i < len; ++i){
+            int lenS = strs[i].size();
+            res.append(to_string(lenS));
+            res.push_back('#');
+            res.append(strs[i]);
+        }
+        return res;
+    }
+
+    // Decodes a single string to a list of strings.
+    vector<string> decode(string s) {
+        vector<string> res;
+        cout << s << endl;
+        int len = s.size();
+        int i = 0;
+        while(i < len){
+            string lenS;
+            while(isdigit(s[i])) lenS.push_back(s[i++]);
+            int localLen = stoi(lenS);
+            i++; // skip # 
+            string localStr;
+            for(int j = 0; j < localLen; ++j){
+                localStr.push_back(s[i]);
+                i++;
+            }
+            res.emplace_back(localStr);
+        }
+        
+        return res;
+    }
+};
+
+// Your Codec object will be instantiated and called as such:
+// Codec codec;
+// codec.decode(codec.encode(strs));
+
+
