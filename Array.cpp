@@ -4961,4 +4961,81 @@ public:
 
 //315. Count of Smaller Numbers After Self
 //https://leetcode.com/problems/count-of-smaller-numbers-after-self
+//Very elegant solution, I am afraid I cannot get it right during the interview!
+//O(nlogn)
+class Solution {
+private:
+    void sort_count(vector<pair<int, int>>::iterator l, 
+                           vector<pair<int, int>>::iterator r, 
+                           vector<int>& cnt){
+        if(l + 1 >= r) return;
+        auto m = l + (r - l) / 2;
+        //[l, m)
+        //Now [l,m) [m, r) have already been sorted
+        sort_count(l, m, cnt);
+        sort_count(m, r, cnt);
+        
+        for(auto i = l, j = m; i < m; ++i){
+            while(j < r && ((*i).first > (*j).first)) j++;
+            //Note we need to include j-m, not j-i, since i..m-1 has already been included
+            cnt[(*i).second] += (j - m);
+        }
+        //implce_merge(l, m, r) is easy to use, it will merge the array in place. given 3
+        //boundries
+        inplace_merge(l, m, r);
+        
+    }
+public:
+    vector<int> countSmaller(vector<int>& nums) {
+        int len = nums.size(); 
+        if(len == 0) return vector<int>();
+        //Allocate sufficient space here
+        vector<int> count(len, 0);
+        vector<pair<int, int>> hold;
+        for(int i = 0; i < len; ++i){
+            hold.push_back({nums[i], i});
+        }
+        
+        sort_count(hold.begin(), hold.end(), count);
+        return count;
+    }
+};
 
+//Binary search tree solution. Not implemented by me!
+struct node{
+    int val,copy,leftCnt;
+    node *left,*right;
+    node(int x){val=x;copy=1;leftCnt=0;left=NULL;right=NULL;}
+};
+
+int insert(node* root,int x){
+    if (root->val==x){
+        root->copy++;
+        return root->leftCnt;
+    }else if (root->val>x){
+        root->leftCnt++;
+        if (root->left==NULL) {
+            root->left = new node(x);
+            return 0;
+        }else  return insert(root->left,x);
+    }else{
+        if (root->right==NULL){
+            root->right = new node(x);
+            return root->leftCnt+root->copy;
+        }else return root->leftCnt+root->copy+insert(root->right,x);
+    }
+}
+
+class Solution {
+public:
+vector<int> countSmaller(vector<int>& nums) {
+    int sz=nums.size();
+    vector<int> res(sz,0);
+    if (sz<=1) return res;
+    node *root = new node(nums[sz-1]);
+    for (int i=sz-2;i>=0;i--){
+        res[i] = insert(root,nums[i]);
+    }
+    return res;
+}
+};
