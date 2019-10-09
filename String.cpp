@@ -3095,3 +3095,162 @@ public:
 // codec.decode(codec.encode(strs));
 
 
+
+//5. Longest Palindromic Substring
+//https://leetcode.com/problems/longest-palindromic-substring/
+//Extend from the center, implemented by me
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        int lenS = s.size();
+        if(lenS <= 1) return s;
+        
+        string newStr;
+        newStr.push_back('#');
+        for(int i = 0; i < lenS; ++i){
+            newStr.push_back(s[i]);
+            newStr.push_back('#');
+        }
+        
+        lenS = newStr.size();
+        int maxLen = 0;
+        int start = 0;
+        for(int i = 0; i < lenS; ++i){
+            int sIndex = i, eIndex = i;
+            while(sIndex >= 0 && eIndex < lenS){
+                if(newStr[sIndex] == newStr[eIndex]){
+                    sIndex--;
+                    eIndex++;
+                }else
+                    break;
+            }
+            sIndex++;
+            if(maxLen < eIndex - sIndex){
+                start = sIndex;
+                maxLen = eIndex - sIndex;
+            }
+        }
+        string tempStr = newStr.substr(start, maxLen);
+        string res;
+        for(int i = 0; i < tempStr.size(); ++i){
+            if(tempStr[i] != '#')
+                res.push_back(tempStr[i]);
+        }
+        //cout << tempStr << endl;
+        return res;
+    }
+};
+
+
+//DP, not that efficient
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        if(s == "")
+            return s;
+        
+        int len = s.size();
+        int maxsLen = 0;
+        bool arr[len][len];
+        string finalString;
+        
+        for(int i = 1; i <= len; i++)
+        {
+            for(int start = 0; start < len; start++)
+            {
+                int end = start + i - 1;
+                if(end >= len)
+                    break;
+                
+                arr[start][end] = (i == 1 || i == 2 || arr[start + 1][end - 1])&&(s[start] == s[end]);
+                if(arr[start][end] && i > maxsLen)
+                {
+                    finalString = s.substr(start, i);
+                    maxsLen = i;
+                    //cout << maxsLen;
+                    //maxsLen = i;
+                }
+                   
+            }
+        }
+        return finalString;
+        
+    }
+};
+
+
+//Manacher's algorithm
+//Ref: https://leetcode.wang/leetCode-5-Longest-Palindromic-Substring.html
+class Solution {
+public:
+    
+    string preProcess(string s)
+    {
+        int len = s.size();
+        string proStr = "^";
+        //string numberStr = "#";
+        //string dollarStr = "$";
+        
+        for(int i = 0; i < len; i++)
+        {
+            proStr.push_back('#');
+            proStr.push_back(s[i]);
+        }
+        proStr.push_back('#');
+        proStr.push_back('$');
+        
+        return proStr;
+        
+    }
+    
+    string longestPalindrome(string s) {
+        int len = s.size();
+        if(len == 0)
+            return s;
+        string pS = preProcess(s);
+        int len_pS = pS.size();
+        
+        int C = 0, R = 0, i_mirror = 0;
+        int arr[len_pS];
+        
+        for(int i = 0; i < len_pS; i++)
+        {
+            i_mirror = 2 * C - i;
+            
+            if(i < R)
+            {
+                arr[i] = min(R - i, arr[i_mirror]);
+            }
+            else
+            {
+                arr[i] = 0;
+            }
+            
+            while(pS[i+1 + arr[i]] == pS[i - 1 - arr[i]])
+            {
+                arr[i]++;
+            }
+            
+            if(i + arr[i] > R)
+            {
+                C = i;
+                R = i + arr[i];
+            }
+            
+        }
+        
+        int maxLen = 0, start = 0;
+        for(int i = 0; i < len_pS; i++)
+        {
+            if(arr[i]>maxLen){
+                maxLen = arr[i];
+                start = i;
+            }
+                
+        }
+        start = (start - maxLen)/2;
+        
+        return s.substr(start, maxLen);
+    }
+};
+
