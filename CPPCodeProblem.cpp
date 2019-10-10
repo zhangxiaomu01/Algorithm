@@ -5,6 +5,10 @@ void func(int*  a)
 }
 
 // What would be the output of the following program ?
+/*
+b = 10
+d = 24
+*/
 int main()
 {
   int* a = new int;
@@ -35,6 +39,11 @@ struct Circle : public Shape
 
 
 // What would be the output of the following program ?
+/*
+Shape+
+Circle+
+Shape-
+*/
 int main() {
   Shape* c = new Circle();
   delete c;
@@ -44,24 +53,49 @@ int main() {
 #include <iostream>
 struct A
 {
-  int a;
-  char b;
+	int a;
+	char b;
 };
 
 class  B
 {
-public:
-	B() : val(0.0){}
-	virtual ~B(){ val = 0.0;}	
 private:
-	float val;
+	int val;
+public:
+	B() : val(0.0) {}
+	virtual ~B() { val = 0.0; }
+
 };
 
+// structure C 
+typedef struct structc_tag
+{
+	char        c;
+	double      d;
+	int         s;
+	
+} structc_t;
+
+// structure D 
+typedef struct structd_tag
+{
+	double      d;
+	int         s;
+	char        c;
+	
+} structd_t;
+
 // What would be the output of the following program ?
+//https://www.geeksforgeeks.org/structure-member-alignment-padding-and-data-packing/
+/* A: 8, B: 16, C: 24, D: 16 */
 int main() {
 	std::cout << "Size of A:" << sizeof(A) << std::endl;
 	std::cout << "Size of B:" << sizeof(B) << std::endl;
+	std::cout << "Size of C:" << sizeof(structc_t) << std::endl;
+	std::cout << "Size of D:" << sizeof(structd_t) << std::endl;
+	system("pause");
 }
+
 
 ////////////////////////////////////////////////////////////////////
 #include <iostream>

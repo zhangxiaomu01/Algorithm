@@ -2062,3 +2062,62 @@ public:
 };
 
 
+//1032. Stream of Characters
+//https://leetcode.com/problems/stream-of-characters/
+/* Trie! */
+struct Trie{
+    vector<shared_ptr<Trie>> children;
+    bool isTerminated;
+    
+    Trie(){
+        isTerminated = false;
+        children = vector<shared_ptr<Trie>>(26, nullptr);
+    }
+    
+};
+
+class StreamChecker {
+private:
+    shared_ptr<Trie> root_;
+    deque<char> letters_;
+    int maxLen_;
+public:
+    //Build the trie of reverse order of s
+    StreamChecker(vector<string>& words) {
+        root_ = shared_ptr<Trie>(new Trie());
+        for(string& s : words){
+            int lenS = s.size();
+            maxLen_ = max(maxLen_, lenS);
+            shared_ptr<Trie> t = root_;
+            for(int i = s.size()-1; i >= 0; --i){
+                if(t->children[s[i]-'a'] == nullptr){
+                    t->children[s[i]-'a'] = shared_ptr<Trie>(new Trie());
+                }
+                t = t->children[s[i]-'a'];
+            }
+            t->isTerminated = true;
+        }
+    }
+    
+    bool query(char letter) {
+        letters_.push_back(letter);
+        if(letters_.size() > maxLen_){
+            letters_.pop_front();
+        }
+        shared_ptr<Trie> t = root_;
+        for(auto it = letters_.rbegin(); it != letters_.rend(); ++it){
+            if(t->children[(*it)-'a'] == nullptr) return false;
+            t = t->children[(*it)-'a'];
+            if(t->isTerminated) return true;
+        }
+        std::cout << std::endl;
+        return false;
+    }
+};
+
+/**
+ * Your StreamChecker object will be instantiated and called as such:
+ * StreamChecker* obj = new StreamChecker(words);
+ * bool param_1 = obj->query(letter);
+ */
+
