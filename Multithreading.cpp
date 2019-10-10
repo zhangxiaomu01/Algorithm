@@ -46,3 +46,44 @@ public:
 };
 
 
+
+//1117. Building H2O
+//https://leetcode.com/problems/building-h2o/
+class H2O {
+private:
+    mutex mu;
+    condition_variable cv;
+    int cnt;
+    
+public:
+    H2O() {
+        cnt = 0;
+    }
+
+    void hydrogen(function<void()> releaseHydrogen) {
+        unique_lock<mutex> locker(mu);
+        while(cnt % 3 >= 2){
+            cv.wait(locker);
+        }
+        // releaseHydrogen() outputs "H". Do not change or remove this line.
+        releaseHydrogen();
+        
+        cnt++;
+        cv.notify_one();
+    }
+
+    void oxygen(function<void()> releaseOxygen) {
+        unique_lock<mutex> locker(mu);
+        while(cnt % 3 < 2){
+            cv.wait(locker);
+        }
+        // releaseOxygen() outputs "O". Do not change or remove this line.
+        releaseOxygen();
+        
+        cnt++;
+        cv.notify_one();
+    }
+};
+
+
+
