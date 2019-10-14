@@ -3254,3 +3254,36 @@ public:
     }
 };
 
+
+
+//647. Palindromic Substrings
+//https://leetcode.com/problems/palindromic-substrings/
+//Center extension!
+class Solution {
+public:
+    int countSubstrings(string s) {
+        if(s.size() == 0) return 0;
+        string auxStr = "";
+        auxStr.push_back('#');
+        for(char c : s){
+            auxStr.push_back(c);
+            auxStr.push_back('#');
+        }
+        
+        int cnt = 0;
+        for(int i = 1; i < auxStr.size()-1; ++i){
+            int l = i, r = i;
+            while(l >= 0 && r < auxStr.size() && auxStr[l] == auxStr[r]){
+                if(auxStr[l] != '#'){
+                    
+                    cnt++;
+                }    
+                l--; 
+                r++;
+            }
+        }
+        return cnt;
+    }
+};
+
+
