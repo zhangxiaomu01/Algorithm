@@ -5028,14 +5028,46 @@ int insert(node* root,int x){
 
 class Solution {
 public:
-vector<int> countSmaller(vector<int>& nums) {
-    int sz=nums.size();
-    vector<int> res(sz,0);
-    if (sz<=1) return res;
-    node *root = new node(nums[sz-1]);
-    for (int i=sz-2;i>=0;i--){
-        res[i] = insert(root,nums[i]);
+    vector<int> countSmaller(vector<int>& nums) {
+        int sz=nums.size();
+        vector<int> res(sz,0);
+        if (sz<=1) return res;
+        node *root = new node(nums[sz-1]);
+        for (int i=sz-2;i>=0;i--){
+            res[i] = insert(root,nums[i]);
+        }
+        return res;
     }
-    return res;
-}
 };
+
+
+//739. Daily Temperatures
+//https://leetcode.com/problems/daily-temperatures/
+//Map solution: implemented by me O(nlogn)
+class Solution {
+public:
+    vector<int> dailyTemperatures(vector<int>& T) {
+        map<int, int> Map;
+        int len = T.size();
+        vector<int> res;
+        if(len == 0) return res;
+        for(int i = len-1; i >= 0; --i){
+            int temp = T[i];
+            auto it = Map.upper_bound(temp);
+            if(it == Map.end()) res.push_back(0);
+            else{
+                res.push_back(it->second - i);
+            }
+            //cannot reuse it here
+            while(!Map.empty() && Map.upper_bound(temp)!= Map.begin()){
+                int key = (--Map.upper_bound(temp))->first;
+                Map.erase(key); 
+            }
+            Map[temp] = i;
+        }
+        reverse(res.begin(), res.end());
+        return res;
+    }
+};
+
+
