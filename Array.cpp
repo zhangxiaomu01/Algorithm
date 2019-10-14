@@ -5070,4 +5070,27 @@ public:
     }
 };
 
+//Using stack. Same idea as above. There is no need to maintain a map!
+//We can also utilize the fact that T[i] is [30 - 100]. So we can do the 
+//calculation one by one, 30, 31, 32 ... 100 etc.
+class Solution {
+public:
+    vector<int> dailyTemperatures(vector<int>& T) {
+        stack<int> st;
+        int len = T.size();
+        if(len == 0) return vector<int>();
+        vector<int> res(len, 0);
+        
+        for(int i = len-1; i >= 0; --i){
+            int temp = T[i];
+            //<= to handle duplicate numbers
+            while(!st.empty() && T[st.top()] <= temp)
+                st.pop();
+            int next = st.empty() ? i : st.top();
+            res[i] = next - i;
+            st.push(i);
+        }
+        return res;
+    }
+};
 
