@@ -5094,3 +5094,56 @@ public:
     }
 };
 
+
+//581. Shortest Unsorted Continuous Subarray
+//https://leetcode.com/problems/shortest-unsorted-continuous-subarray/
+//Sorting: O(nlogn) I get this idea
+class Solution {
+public:
+    int findUnsortedSubarray(vector<int>& nums) {
+        vector<int> nums_sorted = nums;
+        sort(nums_sorted.begin(), nums_sorted.end());
+        int l = 0, r = nums.size()-1;
+        int len = nums.size();
+        while(l < len && nums[l] == nums_sorted[l])
+            l++;
+        while(r >= l && nums[r] == nums_sorted[r])
+            r--;
+        
+        return r - l + 1;
+    }
+};
+
+
+//O(n) with stack. Not easy to get!
+class Solution {
+public:
+    int findUnsortedSubarray(vector<int>& nums) {
+        int len = nums.size();
+        int startL = len-1, startR = 0;
+        //We need to use the stack to keep track of the boundry of left and
+        //right. we need to find the minimum elements from the unsorted array
+        //which determine the leftmost boundry, and maximum element which 
+        //determines the rightmost boundry.
+        stack<int> st;
+        for(int i = 0; i < len; ++i){
+            while(!st.empty() && nums[st.top()] > nums[i]){
+                startL = min(startL, st.top());
+                st.pop();
+            }
+            st.push(i);
+        }
+        
+        st = stack<int>();
+        
+        for(int i = len-1; i >= 0; --i){
+            while(!st.empty() && nums[st.top()] < nums[i]){
+                startR = max(startR, st.top());
+                st.pop();
+            }
+            st.push(i);
+        }
+        
+        return startR - startL <= 0 ? 0 : startR - startL + 1;
+    }
+};
