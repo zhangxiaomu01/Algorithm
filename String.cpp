@@ -3259,6 +3259,7 @@ public:
 //647. Palindromic Substrings
 //https://leetcode.com/problems/palindromic-substrings/
 //Center extension!
+//We can also use Manacher's algorithm as well! Omit now
 class Solution {
 public:
     int countSubstrings(string s) {

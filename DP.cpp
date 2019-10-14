@@ -2253,3 +2253,94 @@ public:
 };
 
 
+
+//494. Target Sum
+//https://leetcode.com/problems/target-sum/
+//Naive DFS approach: All implemented by me
+class Solution {
+private:
+    int helper(vector<int>& nums, long t, int pos){
+        if(pos == nums.size() && t == 0) return 1;
+        if(pos == nums.size() && t != 0) return 0;
+        
+        return helper(nums, t - nums[pos], pos+1) 
+            + helper(nums, t+nums[pos], pos+1);
+    }
+public:
+    int findTargetSumWays(vector<int>& nums, int S) {
+        if(nums.empty()) return 0;
+        long sum = 0;
+        for(int i = 0; i < nums.size(); ++i){
+            sum += nums[i];
+        }
+        if(sum < S || -1*sum > S) return 0;
+        return helper(nums, (long)S-nums[0], 1) + helper(nums, (long)S+nums[0], 1);
+    }
+};
+
+
+//DFS + Memorization
+class Solution {
+private:
+    int target;
+private:
+    int helper(vector<int>& nums, int t, int pos, vector<vector<int>>& memo){
+        if(pos == nums.size() && t == target) return 1;
+        if(pos == nums.size() && t != target) return 0;
+        if(memo[t+1000][pos] != -1) return memo[t+1000][pos];
+        //cout << t + 1000 << endl;
+        
+        int cnt = helper(nums, t - nums[pos], pos+1, memo); 
+        cnt += helper(nums, t + nums[pos], pos+1, memo);
+        
+        memo[t+1000][pos] = cnt;
+        return cnt;
+    }
+public:
+    int findTargetSumWays(vector<int>& nums, int S) {
+        if(nums.empty()) return 0;
+        long sum = 0;
+        for(int i = 0; i < nums.size(); ++i){
+            sum += nums[i];
+        }
+        if(sum < S || -1*sum > S) return 0;
+        target = S;
+        //cout << sum << endl;
+        int len = nums.size();
+        vector<vector<int>> memo(2001, vector<int>(len, -1));
+        
+        return helper(nums, 0, 0, memo);
+    }
+};
+
+
+//DP
+class Solution {
+public:
+    int findTargetSumWays(vector<int>& nums, int S) {
+        int sum = 0;
+        for(int n : nums) sum += n;
+        /*
+        We have nums=[1,2,3,4,5] and S=3 for example. There is a solution 
+        1-2+3-4+5=3. After moving nums in negative to the right side, 
+        it becomes 1+3+5=3+2+4. Each side is half of sum(nums)+S. 
+        This means we can turn this into a knapsack problem with 
+        sacks=nums and target_sum=(sum(nums)+S)/2. In this example 
+        sacks=[1,2,3,4,5] and target_sum=9. [1,3,5] is one of the 
+        solutions.
+        */
+        long long newS = long(S) + sum;
+        if(newS & 1 || sum < S || -1*sum > S) return 0;
+        newS = newS / 2;
+        int dp[newS + 1] = {0};
+        dp[0] = 1;
+        for(int i = 0; i < nums.size(); ++i){
+            for(int j = newS; j >= nums[i]; --j){
+                //dp[i][j] = dp[i-1][j] + dp[i][j-nums[i]];
+                dp[j] += dp[j-nums[i]];
+            }
+        }
+        return dp[newS];
+    }
+};
+
