@@ -5311,6 +5311,7 @@ public:
 
 //621. Task Scheduler
 //https://leetcode.com/problems/task-scheduler/
+//Tricky problem: https://leetcode.com/articles/task-scheduler/
 //Excellent simulation idea! not easy to get it!
 class Solution {
 public:
@@ -5340,4 +5341,76 @@ public:
     }
 };
 
+
+//priority_queue
+//Excellent simulation idea! not easy to get it!
+class Solution {
+public:
+    int leastInterval(vector<char>& tasks, int n) {
+        int res = 0;
+        vector<int> dict(26, 0);
+        for(char c : tasks){
+            dict[c - 'A'] ++;
+        }
+        
+        priority_queue<int> pq;
+        for(int n : dict){
+            if(n > 0) pq.push(n);
+        }
+        
+        while(!pq.empty()){
+            vector<int> vec;
+            int i = 0;
+            while(i <= n){
+                //we only care about whose frequency
+                if(!pq.empty()){
+                    if(pq.top() > 1){
+                        int freq = pq.top() - 1;
+                        vec.push_back(freq);
+                        pq.pop();
+                    }else{
+                        pq.pop();
+                    }
+                }
+                i++;
+                res++;
+                if(pq.empty() && vec.empty()) break;
+            }
+            for(int k : vec) pq.push(k);
+        }
+        
+        return res;
+        
+    }
+};
+
+//Finding the idle time first algorithm! Very elegant! Most efficient.
+//Hard to get!
+class Solution {
+public:
+    int leastInterval(vector<char>& tasks, int n) {
+        int len = tasks.size();
+        vector<int> dict(26, 0);
+        for(char c : tasks){
+            dict[c-'A'] ++;
+        }
+        sort(dict.begin(), dict.end());
+        //We need to calculate the empty intervals we need to add to the 
+        //final result! So we need to make maxFreq -1. Look at below:
+        /*
+        A B C - - -
+        A B C - - -
+        A B - - - -
+        A B
+        */
+        int maxFreq = dict[25]-1;
+        int idleTimeSlots = maxFreq * n;
+        //We need to start from 24, since n is the gap between two duplicate
+        //tasks
+        for(int i = 24; i >= 0 && dict[i] > 0; --i){
+            idleTimeSlots -= min(dict[i], maxFreq);
+        }
+        return idleTimeSlots > 0 ? idleTimeSlots + len : len;
+    }
+};
 
