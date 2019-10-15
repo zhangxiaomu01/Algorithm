@@ -5308,3 +5308,36 @@ public:
 };
 
 
+
+//621. Task Scheduler
+//https://leetcode.com/problems/task-scheduler/
+//Excellent simulation idea! not easy to get it!
+class Solution {
+public:
+    int leastInterval(vector<char>& tasks, int n) {
+        vector<int> dict(26, 0);
+        for(char c : tasks){
+            dict[c - 'A'] ++;
+        }
+        sort(dict.begin(), dict.end());
+        int res = 0;
+        //Keep sorting, the idea is beautiful!
+        while(dict[25] != 0){
+            int i = 0;
+            while(i <= n){
+                //when we add last task to CPU and find we no longer have
+                //any tasks left
+                if(dict[25] == 0) break;
+                if(i < 26 && dict[25 - i] > 0)
+                    dict[25-i] --;
+                i++;
+                res++;
+            }
+            sort(dict.begin(), dict.end());
+        }
+        
+        return res;
+    }
+};
+
+
