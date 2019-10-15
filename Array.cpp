@@ -5147,3 +5147,44 @@ public:
         return startR - startL <= 0 ? 0 : startR - startL + 1;
     }
 };
+
+
+//O(n) time, O(1) space. Hard to get it right.
+class Solution {
+public:
+    int findUnsortedSubarray(vector<int>& nums) {
+        int len = nums.size();
+        int startL = len-1, startR = 0;
+        int minElement = INT_MAX, maxElement = INT_MIN;
+         
+        bool flag = false;
+        for(int i = 1; i < len; ++i){
+            if(nums[i] < nums[i-1]) flag = true;
+            if(flag) minElement = min(minElement, nums[i]);
+        }
+        
+        flag = false;
+        for(int i = len-2; i >= 0; --i){
+            if(nums[i] > nums[i+1]) flag = true;
+            if(flag) maxElement = max(maxElement, nums[i]);
+        }
+        
+        for(int i = 0; i < len; ++i){
+            if(nums[i] > minElement) {
+                startL = i;
+                break;
+            }
+        }
+        
+        for(int i = len-1; i >= 0; --i){
+            if(nums[i] < maxElement){
+                startR = i;
+                break;
+            }
+        }
+        
+        return startR - startL <= 0 ? 0 : startR - startL + 1;
+    }
+};
+
+
