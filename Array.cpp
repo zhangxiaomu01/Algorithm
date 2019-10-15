@@ -5232,4 +5232,27 @@ public:
 
 
 
-
+//338. Counting Bits
+//https://leetcode.com/problems/counting-bits/
+class Solution {
+private:
+    int popBits(int x){
+        int cnt = 0;
+        while(x != 0){
+            //x &= x-1, it will flip the lowest 1 bit to 0
+            //Keep in mind!
+            x &= x-1;
+            cnt++;
+        }
+        return cnt;
+    }
+public:
+    vector<int> countBits(int num) {
+        vector<int> res(num+1, 0);
+        for(int i = 1; i <= num; ++i){
+            int bit = popBits(i);
+            res[i] = bit;
+        }
+        return res;
+    }
+};
