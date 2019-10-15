@@ -2345,3 +2345,34 @@ public:
     }
 };
 
+
+//1186. Maximum Subarray Sum with One Deletion
+//https://leetcode.com/problems/maximum-subarray-sum-with-one-deletion/
+//Dp solution. Unfortunately, I did not get the formula. It's not that
+//straightforward.
+class Solution {
+public:
+    int maximumSum(vector<int>& arr) {
+        int len = arr.size();
+        if(len == 0) return 0;
+        //Base case!
+        if(len == 1) return arr[0];
+        //dp[i][0] means the maximum subarray sum ending with i and we never 
+        //omit 1 element before. dp[i][1] means the maximum subarray sum 
+        //ending with i and we omit 1 element before.
+        int dp[len][2] = {0};
+        dp[0][0] = arr[0];
+        int res = INT_MIN;
+        for(int i = 1; i < len; ++i){
+            //when dp[i-1][0] + arr[i] < arr[i], we start over again
+            dp[i][0] = max(dp[i-1][0] + arr[i], arr[i]);
+            //dp[i-1][1] + arr[i], we add arr[i] to previous sum, because 
+            //we can never omit elements anymore. dp[i-1][0] means we omit
+            //current arr[i], and use the previous sum. We also need to make
+            //sure that max(arr[i], XXX) included
+            dp[i][1] = max(arr[i], max(dp[i-1][0], dp[i-1][1] + arr[i]));
+            res = max(res, max(dp[i][0], dp[i][1]));
+        }
+        return res;
+    }
+};
