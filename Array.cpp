@@ -5256,3 +5256,55 @@ public:
         return res;
     }
 };
+
+
+//DP solution: https://leetcode.com/articles/counting-bits/
+//Excellent solution. Especially the last DP
+//DP 1:
+//dp[x + b] = dp[x] + 1. b = 2^k
+//0 - 1, 01 - 23, 0123 - 4567, .... 
+class Solution {
+public:
+    vector<int> countBits(int num) {
+        int i = 0, b = 1;
+        vector<int> dp(num+1, 0);
+        while(b <= num){
+            while(i <= num && i + b <= num){
+                dp[i+b] = dp[i] + 1;
+                i++;
+            }
+            i = 0;
+            //doubles b here!
+            b = b << 1;
+        }
+        return dp;
+    }
+};
+
+//DP 2:
+//dp[x] = dp[x/2] + x&1. Get rid of the least significant bit
+class Solution {
+public:
+    vector<int> countBits(int num) {
+        vector<int> res(num+1, 0);
+        for(int i = 1; i <= num; ++i){
+            res[i] = res[i/2] + (i & 1);
+        }
+        return res;
+    }
+};
+
+//DP 3:
+//dp[x] = dp[(x & (x-1))] + 1. Flip the least significant 1
+class Solution {
+public:
+    vector<int> countBits(int num) {
+        vector<int> res(num+1, 0);
+        for(int i = 1; i <= num; ++i){
+            res[i] = res[(i & (i-1))] + 1;
+        }
+        return res;
+    }
+};
+
+
