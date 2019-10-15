@@ -5188,3 +5188,48 @@ public:
 };
 
 
+
+//560. Subarray Sum Equals K
+//https://leetcode.com/problems/subarray-sum-equals-k/
+class Solution {
+public:
+    int subarraySum(vector<int>& nums, int k) {
+        int len = nums.size();
+        int sum = 0;
+        int cnt = 0;
+        for(int i = 0; i < len; ++i){
+            sum = 0;
+            for(int j = i; j < len; ++j){
+                sum += nums[j];
+                if(sum == k) cnt++;
+            }
+        }
+        return cnt;
+    }
+};
+
+
+//A very clever solution and hard to get it right!
+class Solution {
+public:
+    int subarraySum(vector<int>& nums, int k) {
+        int len = nums.size();
+        unordered_map<int, int> uMap;
+        //The base case, when the sum-k == 0, we need to add 1 to the cnt
+        uMap[0] = 1;
+        int cnt = 0, sum = 0;
+        for(int i = 0; i < len; ++i){
+            sum += nums[i];
+            //if we have encountered sum - k before, we need to include it
+            //to our final cnt
+            if(uMap.count(sum - k) > 0)
+                cnt += uMap[sum-k];
+            uMap[sum] ++;
+        }
+        return cnt;
+    }
+};
+
+
+
+
