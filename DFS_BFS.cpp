@@ -1585,3 +1585,34 @@ public:
          
     }
 };
+
+
+//1025. Divisor Game
+//https://leetcode.com/problems/divisor-game/
+class Solution {
+    bool helper(int N, vector<int>& memo){
+        if(N <= 1) return false;
+        if(memo[N] != -1) return memo[N];
+        //isWin means whether the other player will win!
+        bool isWin = true;
+        int maxNum = sqrt(N);
+        for(int i = 1; i <= maxNum; ++i){
+            if(N % i == 0){
+                //If the other player can loose for some round, then Alice
+                //can pickup that round and win the game
+                isWin = isWin && helper(N-i, memo);
+            }
+            if(!isWin) break;
+        }
+        memo[N] = !isWin;
+        return memo[N];
+    }
+public:
+    bool divisorGame(int N) {
+        if(N <= 1) return false;
+        vector<int> memo(N+1, -1);
+        return helper(N, memo);
+    }
+};
+
+
