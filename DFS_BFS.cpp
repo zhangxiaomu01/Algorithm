@@ -1616,3 +1616,11 @@ public:
 };
 
 
+//Based on the observation that if N is even, we can win; N is odd, we will 
+//loose
+class Solution {
+public:
+    bool divisorGame(int N) {
+        return N % 2 == 0;
+    }
+};
