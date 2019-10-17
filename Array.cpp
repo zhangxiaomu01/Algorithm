@@ -1691,6 +1691,59 @@ public:
 };
 
 
+//480. Sliding Window Median
+//https://leetcode.com/problems/sliding-window-median/
+//The naive approach is to sort the window each iteration! and save the result
+//to our result array.
+//Solution with two multiset. We need to balance the two sets on the fly.
+//In general, the solution is hard to get during the interview!
+class Solution {
+public:
+    vector<double> medianSlidingWindow(vector<int>& nums, int k) {
+        //lo stores the lower half elements, hi stores the higher half 
+        //elements
+        multiset<int> lo, hi;
+        int len = nums.size();
+        vector<double> res;
+        
+        //Note we will always make lo and hi balanced. If k is odd, then
+        //lo will have 1 more element compared with hi. If k is even, then
+        //lo will have the same number of elements as hi
+        for(int i = 0; i < len; ++i){
+            //When we have sufficient 
+            if(i >= k){
+                if(nums[i-k] <= *lo.rbegin())
+                    lo.erase(lo.find(nums[i-k]));
+                else
+                    hi.erase(hi.find(nums[i-k]));
+            }
+            
+            lo.insert(nums[i]);
+            
+            //Maitain the balance of two multiset
+            hi.insert(*lo.rbegin());
+            lo.erase(--lo.end());
+            //It could potentially lo.size() is smaller, because we may 
+            //extract the smaller elements from the list.
+            if(lo.size() < hi.size()){
+                lo.insert(*hi.begin());
+                hi.erase(hi.begin());
+            }
+            
+            if(i >= k-1){
+                if(k%2 == 1)
+                    res.push_back(double(*lo.rbegin()));
+                else
+                    res.push_back((double(*lo.rbegin()) + double(*hi.begin()))/2.0);
+            }
+            
+        }
+        return res;
+    }
+};
+
+
+
 //53. Maximum Subarray
 //https://leetcode.com/problems/maximum-subarray/
 /* Kadane's algorithm */
@@ -5413,4 +5466,5 @@ public:
         return idleTimeSlots > 0 ? idleTimeSlots + len : len;
     }
 };
+
 
