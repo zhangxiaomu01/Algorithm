@@ -5593,3 +5593,79 @@ public:
 };
 
 
+//277. Find the Celebrity
+//https://leetcode.com/problems/find-the-celebrity/
+// Forward declaration of the knows API.
+bool knows(int a, int b);
+
+class Solution {
+public:
+    int findCelebrity(int n) {
+        if(n < 0) return -1;
+        if(n == 1) return 0;
+        
+        stack<int> st;
+        for(int i = 0; i < n; ++i){
+            st.push(i);
+        }
+        
+        //Each iteration, we eliminate the one of the two persons from our
+        //pool
+        while(st.size() > 1){
+            int a = st.top();
+            st.pop();
+            int b = st.top();
+            st.pop();
+            if(knows(a, b))
+                st.push(b);
+            else
+                st.push(a);
+        }
+        
+        //check the last one
+        int c = st.top();
+        for(int i = 0; i < n; ++i){
+            if(i != c && (knows(c, i) || !knows(i, c)))
+                return -1;
+        }
+        return c;
+    }
+};
+
+//A much concise implementation. However, a little bit hard to reasoning.
+bool knows(int a, int b);
+
+class Solution {
+
+public:
+
+    int findCelebrity(int n) {
+        if(n<=1) return n;
+        
+        int candidate = 0;
+        
+        for(int i=1; i<n; i++){
+            
+            if ( !knows(i,candidate) ){
+                candidate = i;
+            }
+        }
+        
+    
+        for(int j=0; j<n; j++){
+            
+            if(j== candidate) continue;
+        
+            if( !knows(j,candidate) || knows(candidate,j) ){
+                //if j does not know candidate, or candidate knows j, return -1;
+                return -1;
+            }
+    
+        }
+    
+        
+        return candidate;
+    
+    }
+};
+
