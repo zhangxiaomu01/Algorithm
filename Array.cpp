@@ -5662,10 +5662,7 @@ public:
             }
     
         }
-    
-        
-        return candidate;
-    
+        return candidate;   
     }
 };
 

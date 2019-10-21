@@ -3288,3 +3288,32 @@ public:
 };
 
 
+//243. Shortest Word Distance
+//https://leetcode.com/problems/shortest-word-distance/
+class Solution {
+public:
+    int shortestDistance(vector<string>& words, string word1, string word2) {
+        //p1 and p2 represents the indices of word1 and word2 respectively
+        int p1 = -1, p2 = -1;
+        int len = words.size();
+        int res = INT_MAX;
+        for(int i = 0; i < len; ++i){
+            if(words[i] == word1){
+                p1 = i;
+                //We do not need abs here because at now, i is the most right
+                //index
+                if(p2 != -1) res = min(res, p1 - p2);
+            }
+            if(words[i] == word2){
+                p2 = i;
+                if(p1 != -1) res = min(res, p2 - p1);
+            }
+        }
+        return res;
+        
+    }
+};
+
+
+
+
