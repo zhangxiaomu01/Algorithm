@@ -3310,9 +3310,43 @@ public:
             }
         }
         return res;
-        
     }
 };
+
+
+
+//244. Shortest Word Distance II
+//https://leetcode.com/problems/shortest-word-distance-ii/
+class WordDistance {
+private:
+    unordered_map<string, vector<int>> uMap;
+public:
+    WordDistance(vector<string>& words) {
+        for(int i = 0; i < words.size(); ++i){
+            uMap[words[i]].push_back(i);
+        }
+    }
+    
+    int shortest(string word1, string word2) {
+        int i = 0, j = 0;
+        int len1 = uMap[word1].size(), len2 = uMap[word2].size();
+        int res = INT_MAX;
+        while(i < len1 && j < len2){
+            res = min(res, abs(uMap[word2][j] - uMap[word1][i]));
+            if(uMap[word2][j] > uMap[word1][i])
+                i++;
+            else
+                j++;
+        }
+        return res;
+    }
+};
+
+/**
+ * Your WordDistance object will be instantiated and called as such:
+ * WordDistance* obj = new WordDistance(words);
+ * int param_1 = obj->shortest(word1,word2);
+ */
 
 
 
