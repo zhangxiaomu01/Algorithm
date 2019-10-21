@@ -5666,3 +5666,38 @@ public:
     }
 };
 
+
+//325. Maximum Size Subarray Sum Equals k
+//https://leetcode.com/problems/maximum-size-subarray-sum-equals-k/
+//My implementation! Need some intuition though!
+class Solution {
+public:
+    int maxSubArrayLen(vector<int>& nums, int k) {
+        int maxLen = 0;
+        int len = nums.size();
+        if(len == 0) return 0;
+        //Handle the corner case for the left boundry!
+        nums.insert(nums.begin(), 0);
+        len++;
+        //if(len == 1 && nums[0] == k) return 1;
+        
+        int preSum[len] = {0};
+        preSum[0] = nums[0];
+        for(int i = 1; i < len; ++i){
+            preSum[i] = preSum[i-1] + nums[i];
+        }
+        unordered_map<int, int> uMap;
+        uMap[0] = 0;
+        
+        for(int i = 1; i < len; ++i){
+            int target = preSum[i] - k;
+            if(uMap.find(target) != uMap.end()){
+                
+                maxLen = max(maxLen, i - uMap[target]);
+            }
+            uMap[preSum[i]] = min((uMap.find(preSum[i]) == uMap.end() ? INT_MAX : uMap[preSum[i]]), i);
+        }
+        return maxLen;
+    }
+};
+
