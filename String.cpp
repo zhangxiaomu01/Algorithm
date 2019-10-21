@@ -3349,5 +3349,54 @@ public:
  */
 
 
+//245. Shortest Word Distance III
+//https://leetcode.com/problems/shortest-word-distance-iii/
+class Solution {
+public:
+    int shortestWordDistance(vector<string>& words, string word1, string word2) {
+        int p1 = -1, p2 = -1;
+        int res = INT_MAX;
+        int len = words.size();
+        bool isSame = word1 == word2;
+        for(int i = 0; i < len; ++i){
+            if(words[i] == word1){
+                p1 = i;
+                if(p2 != -1) res = min(res, p1 - p2);
+            }
+            if(words[i] == word2){
+                //Swap the p1 with p2 is the soul of the algorithm! Extremely 
+                //efficient!
+                if(isSame)
+                    p1 = p2;
+                p2 = i;
+                if(p1 != -1) res = min(res, p2 - p1);
+            }
+        }
+        return res;
+    }
+};
 
 
+//Another implementation! Not easy to get! Above one is better!
+class Solution {
+public:
+    int shortestWordDistance(vector<string>& words, string word1, string word2) {
+        int p1 = -1, p2 = -1;
+        int res = INT_MAX;
+        int len = words.size();
+        bool isSame = word1 == word2;
+        for(int i = 0; i < len; ++i){
+            if(words[i] == word1){
+                p1 = i;
+                if(isSame)
+                    swap(p1, p2);
+                if(p1 != -1 && p2 != -1) res = min(res, abs(p2 - p1));
+            }
+            else if(words[i] == word2){
+                p2 = i;
+                if(p1 != -1 && p2 != -1) res = min(res, abs(p2 - p1));
+            }
+        }
+        return res;
+    }
+};
