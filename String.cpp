@@ -3419,3 +3419,52 @@ public:
         return res;
     }
 };
+
+
+//293. Flip Game
+//https://leetcode.com/problems/flip-game/
+class Solution {
+public:
+    vector<string> generatePossibleNextMoves(string s) {
+        vector<string> res;
+        for(int i = 1; i < s.size(); ++i){
+            if(s[i] == '+' && s[i] == s[i-1]){
+                s[i-1] = s[i] = '-';
+                res.push_back(s);
+                s[i-1] = s[i] = '+';
+            }
+        }
+        return res;
+    }
+};
+
+
+//294. Flip Game II
+//https://leetcode.com/problems/flip-game-ii/
+//DFS with memorization! not hard! 
+//Pay attention to how we do the memorization!
+class Solution {
+private:
+    bool helper(string& s, unordered_map<string, bool>& uMap){
+        if(uMap.count(s) > 0) return uMap[s];
+        for(int i = 1; i < s.size(); ++i){
+            if(s[i] == '+' && s[i-1] == '+'){
+                s[i] = s[i-1] = '-';
+                if(!helper(s, uMap)){
+                    s[i] = s[i-1] = '+';
+                    uMap[s] = true;
+                    return true;
+                }
+                s[i] = s[i-1] = '+';   
+            }
+        }
+        uMap[s] = false;
+        return false;
+    }
+public:
+    bool canWin(string s) {
+        if(s.empty() || s.size() < 2) return false;
+        unordered_map<string, bool> uMap;
+        return helper(s, uMap);
+    }
+};
