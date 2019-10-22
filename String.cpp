@@ -814,6 +814,25 @@ public:
 };
 
 
+//186. Reverse Words in a String II
+//https://leetcode.com/problems/reverse-words-in-a-string-ii/
+class Solution {
+public:
+    void reverseWords(vector<char>& s) {
+        reverse(s.begin(), s.end());
+        s.push_back(' ');
+        for(int i = 0, j = 0; j < s.size(); ++j){
+            //cout << s[j] << " ";
+            if(s[j] == ' '){
+                reverse(s.begin() + i, s.begin() + j);
+                i = j+1;
+            }
+        }
+        s.pop_back();
+    }
+};
+
+
 //409. Longest Palindrome
 //https://leetcode.com/problems/longest-palindrome/
 //Utilize a dictionary, the problem is not hard, but has too many corner cases
