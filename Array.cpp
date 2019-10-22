@@ -2205,6 +2205,38 @@ public:
     }
 };
 
+
+//280. Wiggle Sort
+//https://leetcode.com/problems/wiggle-sort/
+//Sorting solution! O(nlogn)
+class Solution {
+public:
+    void wiggleSort(vector<int>& nums) {
+        if(nums.empty()) return;
+        sort(nums.begin(), nums.end());
+        //We start from index 1 and swap the pairs accordingly.
+        for(int i = 1; i < nums.size()-1; i += 2){
+            swap(nums[i], nums[i+1]);
+        }
+    }
+};
+
+//O(n) linear scan solution. Do a linear scan, and fix each pair one by one!
+//When index is even, we need to fix nums[i] > nums[i+1] by swapping them;
+//when index is odd, we need to fix nums[i] < nums[i+1] by swapping them.
+class Solution {
+public:
+    void wiggleSort(vector<int>& nums) {
+        if(nums.empty()) return;
+        for(int i = 0; i < nums.size()-1; ++i){
+            if((i % 2 == 0) == (nums[i] > nums[i+1]))
+                swap(nums[i], nums[i+1]);
+        }
+        
+    }
+};
+
+
 //324. Wiggle Sort II
 //https://leetcode.com/problems/wiggle-sort-ii/
 /* Sorting and rearrange elements. The key insight is to put the smallest 
