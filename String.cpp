@@ -3468,3 +3468,53 @@ public:
         return helper(s, uMap);
     }
 };
+
+
+//249. Group Shifted Strings
+//https://leetcode.com/problems/group-shifted-strings/
+//Implemented by me
+class Solution {
+public:
+    vector<vector<string>> groupStrings(vector<string>& strings) {
+        vector<vector<string>> res;
+        unordered_map<string, int> uMap;
+        unordered_set<string> visited;
+        
+        for(int i = 0; i < strings.size(); ++i){
+            uMap[strings[i]]++;
+        }
+        
+        for(int i = 0; i < strings.size(); ++i){
+            if(visited.count(strings[i]) == 0){
+                vector<string> level;
+                string temp = strings[i];
+                visited.insert(temp);
+                while(uMap.count(temp) > 0){
+                    level.push_back(temp);
+                    uMap[temp] --;
+                    if(uMap[temp] == 0)
+                        uMap.erase(temp);
+                }
+                for(int j = 1; j <= 25; ++j){
+                    for(int k = 0; k < temp.size(); ++k){
+                        temp[k] = ((temp[k] - 'a') + j) % 26 + 'a';
+                    }
+                    if(uMap.count(temp) > 0) visited.insert(temp);
+                    
+                    while(uMap.count(temp) > 0){
+                        level.push_back(temp);
+                        uMap[temp] --;
+                        if(uMap[temp] == 0) uMap.erase(temp);
+                    }
+                    temp = strings[i];
+                }
+                res.emplace_back(level);
+            }
+        }
+        return res;
+    }
+};
+
+
+
+
