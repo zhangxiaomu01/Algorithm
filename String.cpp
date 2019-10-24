@@ -3516,5 +3516,31 @@ public:
 };
 
 
+//161. One Edit Distance
+//https://leetcode.com/problems/one-edit-distance/
+//Implemented by me
+class Solution {
+private:
+    bool checkStr(string& s, string& t, int posS, int posT){
+        while(posS < s.size() && posT < t.size()){
+            if(s[posS] != t[posT]) return false;
+            posS++;
+            posT++;
+        }
+        return posS == s.size() && posT == t.size();
+    }
+public:
+    bool isOneEditDistance(string s, string t) {
+        int lenS = s.size(), lenT = t.size();
+        if(abs(lenS - lenT) > 1) return false;
+        
+        int i = 0;
+        for(; i < lenS && i < lenT; ++i){
+            if(s[i] != t[i]) break;
+        }
+        
+        return checkStr(s, t, i+1, i) || checkStr(s, t, i, i+1) || checkStr(s, t, i+1, i+1);
+    }
+};
 
 
