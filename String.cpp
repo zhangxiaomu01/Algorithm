@@ -3595,3 +3595,42 @@ public:
     }
 };
 
+
+
+//340. Longest Substring with At Most K Distinct Characters
+//https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/
+//Not hard: just normal sliding window!
+//The only thing you need to be careful is that the characters can be all 
+//kinds of ASCII characters
+class Solution {
+public:
+    int lengthOfLongestSubstringKDistinct(string s, int k) {
+        if(k == 0) return 0;
+        if(s.size() <= 1 && k > 0) return s.size();
+        int res = INT_MIN;
+        int dict[256] = {0};
+        int i = 0, j = 0;
+        int len = s.size();
+        int distinct = 0;
+        
+        for(; j < len; ++j){
+            if(dict[s[j]] == 0){
+                distinct++;
+            }
+            dict[s[j]]++;
+            
+            if(distinct <= k) res = max(res, j - i + 1);
+            
+            while(i < len && distinct > k){
+                dict[s[i]] --;
+                if(dict[s[i]] == 0)
+                    distinct--;
+                i++;
+            }
+        }
+        
+        return res;
+    }
+};
+
+
