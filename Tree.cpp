@@ -3078,3 +3078,32 @@ public:
         return false;
     }
 };
+
+
+//298. Binary Tree Longest Consecutive Sequence
+//https://leetcode.com/problems/binary-tree-longest-consecutive-sequence/
+class Solution {
+private:
+    int maxPossible = INT_MIN;
+    void helper(TreeNode* node, int preVal, int cnt){
+        if(!node) return;
+        int res = 0;
+        if(preVal == node->val){
+            res = 1 + cnt;
+        }else{
+            res = 1;
+        }
+        maxPossible = max(maxPossible, res);
+        
+        helper(node->left, node->val+1, res);
+        helper(node->right, node->val+1, res);
+    }
+public:
+    int longestConsecutive(TreeNode* root) {
+        if(!root) return 0;
+        int cnt = 0;
+        helper(root, root->val, cnt);
+        return maxPossible;
+    }
+};
+
