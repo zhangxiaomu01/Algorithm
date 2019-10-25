@@ -3634,3 +3634,29 @@ public:
 };
 
 
+
+//266. Palindrome Permutation
+//https://leetcode.com/problems/palindrome-permutation/
+//Implemented by me
+class Solution {
+public:
+    bool canPermutePalindrome(string s) {
+        int dict[256] = {0};
+        for(int i = 0; i < s.size(); ++i){
+            dict[s[i]]++;
+        }
+        bool isOdd = s.size() % 2;
+        bool hasOne = false;
+        
+        for(int i = 0; i < 256; ++i){
+            if(dict[i] % 2 == 1 && !isOdd) return false;
+            else if(dict[i] % 2 == 1 && isOdd){
+                if(hasOne) return false;
+                if(!hasOne) hasOne = true;
+            }
+        }
+        return true;
+    }
+};
+
+
