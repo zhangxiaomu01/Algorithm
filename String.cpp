@@ -3544,3 +3544,54 @@ public:
 };
 
 
+//358. Rearrange String k Distance Apart
+//https://leetcode.com/problems/rearrange-string-k-distance-apart/
+//O(n) solution, very interesting!
+//Not easy to come up with this idea during the interview.
+//The general idea is to use two arrays, one stores the count of the 
+//characters from the string, another one record the previous position that
+//we place for current character. Then we can easily check whether current
+//character is within the k range
+//https://leetcode.com/problems/rearrange-string-k-distance-apart/discuss/83193/Java-15ms-Solution-with-Two-auxiliary-array.-O(N)-time.
+class Solution {
+private:
+    int getCandidate(vector<int>& dict, vector<int>& prePos, int index){
+        int candidate = -1;
+        int maxCnt = INT_MIN;
+        for(int i = 0; i < 26; ++i){
+            //prePos stores the current valid position of i+'a'
+            //Note this will be the lower bound since we add k position 
+            //when we update prePos array.
+            if(dict[i] > 0 && dict[i] > maxCnt && index >= prePos[i]){
+                maxCnt = dict[i];
+                candidate = i;
+            }
+        }
+        return candidate;
+    }
+    
+public:
+    string rearrangeString(string s, int k) {
+        int len = s.size();
+        if(len <= 1) return s;
+        if(len <= k) return "";
+        
+        string res;
+        vector<int> prePos(26, 0);
+        vector<int> dict(26, 0);
+        
+        for(char c : s){
+            dict[c-'a']++;
+        }
+        
+        for(int i = 0; i < len; ++i){
+            int index = getCandidate(dict, prePos, i);
+            if(index == -1) return "";
+            res.push_back(index + 'a');
+            dict[index] --;
+            prePos[index] = i + k;
+        }
+        return res;
+    }
+};
+
