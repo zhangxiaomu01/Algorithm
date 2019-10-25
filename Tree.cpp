@@ -3107,3 +3107,66 @@ public:
     }
 };
 
+
+
+//250. Count Univalue Subtrees
+//https://leetcode.com/problems/count-univalue-subtrees/
+//The implementation is tricky! Be caureful.
+class Solution {
+private:
+    int cnt = 0;
+    bool helper(TreeNode* node, int preVal){
+        if(!node) return true;
+        
+        //If the left or the right subtree is not univalue tree, then we 
+        //return false. Because for current node, it is impossible to be 
+        //a Uni-value tree
+        //We need to use | instead of || here because | will check both 
+        //sides even if the first statement is true
+        if(!helper(node->left, node->val) | !helper(node->right, node->val))
+            return false;
+        
+        cnt++;
+        //we return the its parent and tell the parent whether this is a 
+        //valid subtree (one of the two trees)
+        return node->val == preVal;
+    }
+public:
+    int countUnivalSubtrees(TreeNode* root) {
+        if(!root) return 0;
+        helper(root, root->val);
+        return cnt;
+    }
+};
+
+
+//366. Find Leaves of Binary Tree
+//https://leetcode.com/problems/find-leaves-of-binary-tree/
+//Implemented by me, took somewhile
+class Solution {
+private:
+    int helper(TreeNode* node, vector<vector<int>>& res){
+        if(!node) return 0;
+        
+        int leftLevel = helper(node->left, res);
+        int rightLevel = helper(node->right, res);
+        
+        int level = max(leftLevel, rightLevel);
+        if(level >= res.size()){
+            vector<int> temp(1, node->val);
+            res.emplace_back(temp);
+        }else{
+            res[level].push_back(node->val);
+        }
+        return level+1;
+    }
+public:
+    vector<vector<int>> findLeaves(TreeNode* root) {
+        vector<vector<int>> res;
+        if(!root) return res;
+        helper(root, res);
+        return res;
+    }
+};
+
+
