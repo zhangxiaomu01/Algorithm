@@ -3209,3 +3209,30 @@ public:
 };
 
 
+//510. Inorder Successor in BST II
+//https://leetcode.com/problems/inorder-successor-in-bst-ii/
+class Solution {
+public:
+    Node* inorderSuccessor(Node* node) {
+        if(!node) return nullptr;
+        //I did not get this if statement on my own. Note we need to 
+        //traverse up until we find a node which is the left child of parent
+        //node, that node will be the target node or nullptr
+        if(!node->right) {
+            //node is the right child of its parent
+            //we need to go up
+            //[5,3,6,2,4,null,null,1] with target to be 4
+            //Try it yourself
+            while(node->parent && node == node->parent->right)
+                node = node->parent;
+            return node->parent;
+        }
+        else{
+            Node* temp = node->right;
+            while(temp->left){
+                temp = temp->left;
+            }
+            return temp;
+        }
+    }
+};
