@@ -114,7 +114,7 @@ public:
                 cur = cur->left;
             }
             else{
-                //We need to update cur. because currentlt it's nullptr
+                //We need to update cur. because current it's nullptr
                 cur = st.top();
                 res.push_back(cur->val);
                 st.pop();
@@ -3166,6 +3166,45 @@ public:
         if(!root) return res;
         helper(root, res);
         return res;
+    }
+};
+
+
+
+//285. Inorder Successor in BST
+//https://leetcode.com/problems/inorder-successor-in-bst/
+//Using a flag is key to success
+//For this problem, we cannot use recursive version. It will be hard to
+//track the right node.
+class Solution {
+public:
+    TreeNode* inorderSuccessor(TreeNode* root, TreeNode* p) {
+        if(!root || !p) return nullptr;
+        stack<TreeNode*> st;
+        TreeNode* pre = nullptr, *cur = root;
+        bool isFoundP = false;
+
+        while(cur || !st.empty()){
+            while(cur){
+                st.push(cur);
+                cur = cur->left;
+            }
+            cur = st.top();
+            st.pop();
+            
+            if(isFoundP) return cur;
+            if(cur->val == p->val) isFoundP = true;
+            
+            //We need to move right now
+            if(cur->right && cur->right != pre){
+                //if(cur->val == p->val) return cur->right;
+                cur = cur->right;
+            }else{
+                pre = cur;
+                cur = nullptr;
+            }
+        }
+        return nullptr;
     }
 };
 
