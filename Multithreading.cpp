@@ -138,3 +138,50 @@ public:
         }
     }
 };
+
+
+//1226. The Dining Philosophers
+//https://leetcode.com/problems/the-dining-philosophers/
+//Not easy to get the solution. Hard to understand the problem!
+class DiningPhilosophers {
+private:
+    mutex mu_[5];
+public:
+    DiningPhilosophers() {
+        
+    }
+
+    void wantsToEat(int philosopher,
+                    function<void()> pickLeftFork,
+                    function<void()> pickRightFork,
+                    function<void()> eat,
+                    function<void()> putLeftFork,
+                    function<void()> putRightFork) {
+		int l = philosopher;
+        int r = (philosopher + 1) % 5;
+        //the person with even index always grab right fork first
+        if(philosopher % 2 == 0){
+            mu_[r].lock();
+            mu_[l].lock();
+            pickRightFork();
+            pickLeftFork();
+            eat();
+            putLeftFork();
+            putRightFork();
+            mu_[l].unlock();
+            mu_[r].unlock();
+            
+        }else{
+            mu_[l].lock();
+            mu_[r].lock();
+            pickLeftFork();
+            pickRightFork();
+            eat();
+            putRightFork();
+            putLeftFork();
+            mu_[r].unlock();
+            mu_[l].unlock();
+        } 
+        
+    }
+};
