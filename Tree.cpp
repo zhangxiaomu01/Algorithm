@@ -3236,3 +3236,30 @@ public:
         }
     }
 };
+
+
+//270. Closest Binary Search Tree Value
+//https://leetcode.com/problems/closest-binary-search-tree-value/
+//Naive approach is to use an extra array and do in-order traversal
+//then find the closest element and return in a sorted array.
+//Actually, we can do binary search and keep the closest element updated.
+class Solution {
+public:
+    int closestValue(TreeNode* root, double target) {
+        int res = root->val;
+        double closest = DBL_MAX;
+        TreeNode* ptr = root;
+        while(ptr){
+            double diff = abs(double(ptr->val) - target);
+            if(diff < closest){
+                closest = diff;
+                res = ptr->val;
+            }
+            ptr = ptr->val > target ? ptr->left : ptr->right;
+        }
+        return res;
+    }
+};
+
+
+
