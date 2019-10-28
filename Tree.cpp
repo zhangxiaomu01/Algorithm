@@ -3262,4 +3262,57 @@ public:
 };
 
 
+//272. Closest Binary Search Tree Value II
+//https://leetcode.com/problems/closest-binary-search-tree-value-ii/
+// O(n)
+//The general idea is to maintain a queue with size k, whenever we visit a 
+//new element and the queue has k elements, then we compare the distance 
+//between the new element with the distance between the first element. 
+//If the distance is smaller, then we need to pop the first element, because
+//this one is the smallest element (largest distance with target), and push
+//this new element. If the current distance is larger, we can safely break!
+//(because the distance will become larger and larger!)
+class Solution {
+public:
+    vector<int> closestKValues(TreeNode* root, double target, int k) {
+        vector<int> res;
+        if(!root || k <= 0) return res;
+        
+        stack<TreeNode*> st;
+        TreeNode* pre = nullptr, *cur = root;
+        deque<int> dq;
+        
+        while(cur || !st.empty()){
+            while(cur){
+                st.push(cur);
+                cur = cur->left;
+            }
+            cur = st.top();
+            st.pop();
+            if(dq.size() < k){
+                dq.push_back(cur->val);
+            }else{
+                double diff = abs(double(cur->val) - target);
+                double diff2 = abs(double(dq.front()) - target);
+                if(diff < diff2){
+                    dq.pop_front();
+                    dq.push_back(cur->val);
+                }else{
+                    break;
+                }
+            }
+            if(cur->right && cur->right != pre){
+                cur = cur->right;
+            }else{
+                pre = cur;
+                cur = nullptr;
+            }
+        }
+        
+        for(auto it = dq.begin(); it != dq.end(); ++it){
+            res.push_back(*it);
+        }
+        return res;
+    }
+};
 
