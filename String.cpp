@@ -3660,3 +3660,68 @@ public:
 };
 
 
+
+//214. Shortest Palindrome
+//https://leetcode.com/problems/shortest-palindrome/
+//Interesting problem. Hard to get it right.
+class Solution {
+public:
+    string shortestPalindrome(string s) {
+        int len = s.size();
+        if(len <= 1) return s;
+        
+        int i = 0;
+        //In this step, we are trying to ignore the Palindrome prefix.
+        //Suppose we have a string "abbacdexfg", after the for loop, we will
+        //ignore the potential palindrome prefix, and safely conclude we 
+        //we need to append reversed suffix [i..len] to the front.
+        //Note [0..i] does not necessarily to be a Palindrome at all, imagine
+        //"xabbacdexfg", however, we can always make sure we can catch the 
+        //palindrome (it's a much tolerent situation). And we recursively
+        //solve [0..i] substring.
+        for(int j = len-1; j >= 0; --j){
+            if(s[i] == s[j])
+                i++;
+        }
+        //s is a palindrome!
+        if(i == len) return s;
+        //extract the suffix
+        string rem = s.substr(i);
+        string rev_rem(rem.rbegin(), rem.rend());
+    
+        return rev_rem + shortestPalindrome(s.substr(0, i)) + rem;
+    }
+};
+
+//KMP solution!
+class Solution {
+public:
+    string shortestPalindrome(string s) {
+        string rev(s.rbegin(), s.rend());
+        //We need to calculate the longest possible Palindrome start from 
+        //the beginning. Then we can simplily add the reversed remaining 
+        //string to the beginning of our original string s and get the 
+        //answer.
+        string tempStr = s + '-' + rev;
+        
+        //We can use KMP to determine the longest prefix which equals to the
+        //suffix. Since we have reversed the s, so this longest prefix must
+        //be the palindrome string
+        int len = tempStr.size();
+        int A[len] = {0};
+        for(int j = 1; j < len; ++j){
+            int i = A[j-1];
+            //trace back
+            while(i > 0 && tempStr[i] != tempStr[j])
+                i = A[i-1];
+            
+            if(tempStr[i] == tempStr[j]) i++;
+            
+            A[j] = i;
+        }
+        //A[len-1] record the longest matching prefix ending at A[len-1].
+        //Exclusive
+        return rev.substr(0, rev.size() - A[len-1]) + s;
+    }
+};
+
