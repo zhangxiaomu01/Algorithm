@@ -3316,3 +3316,47 @@ public:
     }
 };
 
+
+//314. Binary Tree Vertical Order Traversal
+//https://leetcode.com/problems/binary-tree-vertical-order-traversal/
+//Level order traversal and keep track of each column and its corresponding
+//nodes. We can utilize a hash table to do this and keep track of the lower
+//bound and upperbound of the column.
+class Solution {
+public:
+    vector<vector<int>> verticalOrder(TreeNode* root) {
+        vector<vector<int>> res;
+        if(!root) return res;
+        int lo = 0, hi = 0;
+        //Q saves the current node and its coresponding column.
+        queue<pair<TreeNode*, int>> Q;
+        //uMap saves the corresponding column and the nodes belong to the 
+        //coresponding column.
+        unordered_map<int, vector<int>> uMap;
+        Q.push({root, 0});
+        while(!Q.empty()){
+            TreeNode* node = Q.front().first;
+            int col = Q.front().second;
+            lo = min(lo, col);
+            hi = max(hi, col);
+            Q.pop();
+            uMap[col].push_back(node->val);
+            if(node->left){
+                Q.push({node->left, col-1});
+            }
+            if(node->right){
+                Q.push({node->right, col+1});
+            }
+        }
+        for(int i = lo; i <= hi; ++i){
+            if(uMap.count(i) > 0)
+                res.emplace_back(uMap[i]);
+        }
+        return res;
+        
+    }
+};
+
+
+
+
