@@ -100,7 +100,7 @@ public:
 
 //261. Graph Valid Tree
 //https://leetcode.com/problems/graph-valid-tree/
-//Union Find approach
+//Union Find approach: implemented by me!
 class Solution {
 private:
     int totalComp;
