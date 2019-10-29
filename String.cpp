@@ -3725,3 +3725,36 @@ public:
     }
 };
 
+
+//692. Top K Frequent Words
+//https://leetcode.com/problems/top-k-frequent-words/
+class Solution {
+private:
+    struct myComp{
+        bool operator()(pair<int, string>& p1, pair<int, string>& p2){
+            return p1.first > p2.first || (p1.first == p2.first && p1.second < p2.second);
+        }
+    };
+public:
+    vector<string> topKFrequent(vector<string>& words, int k) {
+        //Store the key and frequency
+        unordered_map<string, int> uMap;
+        for(auto& s : words){
+            uMap[s] ++;
+        }
+        priority_queue<pair<int, string>, vector<pair<int, string>>, myComp> pq;
+        for(auto it = uMap.begin(); it != uMap.end(); ++it){
+            pq.push({it->second, it->first});
+            if(pq.size() > k) 
+                pq.pop();
+        }
+        
+        vector<string> res(k);
+        for(int i = k-1; i >= 0; --i){
+            res[i] = pq.top().second;
+            pq.pop();
+        }
+        return res;
+    }
+};
+
