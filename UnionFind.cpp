@@ -150,3 +150,44 @@ public:
         return isTree && totalComp == 1;
     }
 };
+
+
+//323. Number of Connected Components in an Undirected Graph
+//https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/
+class Solution {
+private:
+    int numOfComp;
+    int FindOP(int* UF, int n, int x){
+        if(UF[x] == x) return x;
+        
+        int curP = UF[x];
+        UF[x] = FindOP(UF, n, curP);
+        return UF[x];
+    }
+    void UnionOP(int* UF, int n, int x, int y){
+        int pX = FindOP(UF, n, x);
+        int pY = FindOP(UF, n, y);
+        
+        if(pX != pY) {
+            UF[pX] = pY;
+            numOfComp--;
+        }
+    }
+public:
+    int countComponents(int n, vector<vector<int>>& edges) {
+        if(n <= 0) return 0;
+        int UF[n];
+        numOfComp = n;
+        for(int i = 0; i < n; ++i){
+            UF[i] = i;
+        }
+        for(auto& e : edges){
+            int start = e[0];
+            int end = e[1];
+            if(FindOP(UF, n, start) != FindOP(UF, n, end)){
+                UnionOP(UF, n, start, end);
+            }
+        }
+        return numOfComp;
+    }
+};
