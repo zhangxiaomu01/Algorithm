@@ -97,3 +97,56 @@ public:
     }
 };
 
+
+//261. Graph Valid Tree
+//https://leetcode.com/problems/graph-valid-tree/
+//Union Find approach
+class Solution {
+private:
+    int totalComp;
+    bool isTree;
+    
+    int FindOp(int* UF, int n, int x){
+        if(UF[x] == x) return UF[x];
+        
+        int curP = UF[x];
+        UF[x] = FindOp(UF, n, curP);
+        
+        return UF[x];
+    }
+    void UnionOp(int* UF, int n, int x, int y){
+        int pX = FindOp(UF, n, x);
+        int pY = FindOp(UF, n, y);
+        
+        //Make UF[pX] = pY not UF[x] here
+        //We need to guarantee that the parent of pX points to pY
+        if(pX != pY) {
+            UF[pX] = pY;
+            totalComp--;
+        }
+        
+    }
+public:
+    bool validTree(int n, vector<vector<int>>& edges) {
+        if(n <= 0) return false;
+        totalComp = n;
+        isTree = true;
+        
+        int UF[n];
+        for(int i = 0; i < n; ++i){
+            UF[i] = i;
+        }
+        
+        for(auto& e : edges){
+            int start = e[0];
+            int end = e[1];
+            if(FindOp(UF, n, start) != FindOp(UF, n, end))
+                UnionOp(UF, n, start, end);
+            else // We have a cycle here
+                isTree = false;
+        }
+        //This two conditions must be satified both
+        //One for cycle detection, one for one component
+        return isTree && totalComp == 1;
+    }
+};
