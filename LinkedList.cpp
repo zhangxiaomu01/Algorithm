@@ -664,4 +664,31 @@ public:
 
 
 
+//369. Plus One Linked List
+//https://leetcode.com/problems/plus-one-linked-list/
+class Solution {
+private:
+    int helper(ListNode* node){
+        if(!node) return 0;
+        
+        int carry = helper(node->next);
+        int val = node->val + carry;
+        if(node->next == nullptr){
+            val += 1;
+        }
+        node->val = val % 10;
+        carry = val / 10;
+        return carry;
+    }
+public:
+    ListNode* plusOne(ListNode* head) {
+        ListNode* addOn = new ListNode(0);
+        addOn->next = head;
+        helper(addOn);
+        if(addOn->val > 0) return addOn;
+        delete addOn;
+        return head;
+    }
+};
+
 
