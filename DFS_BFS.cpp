@@ -1718,3 +1718,70 @@ public:
         return res;
     }
 };
+
+
+
+//364. Nested List Weight Sum II
+//https://leetcode.com/problems/nested-list-weight-sum-ii/
+//The same API as the above question
+//BFS version, brilliant idea. We sum the same value multiple times based on
+//layers
+class Solution {
+public:
+    int depthSumInverse(vector<NestedInteger>& nestedList) {
+        queue<NestedInteger> Q;
+        for(auto& item : nestedList){
+            Q.push(item);
+        }
+        int unweightSum = 0, totalSum = 0;
+        while(!Q.empty()){
+            int lenQ = Q.size();
+            for(int i = 0; i < lenQ; ++i){
+                auto it = Q.front();
+                Q.pop();
+                if(it.isInteger()){
+                    unweightSum += it.getInteger();
+                }else{
+                    auto v = it.getList();
+                    for(auto& item : v){
+                        Q.push(item);
+                    }
+                }
+            }
+            totalSum += unweightSum;
+        }
+        return totalSum;
+    }
+};
+
+
+//DFS. We first calculate the sum based on different levels, first integer
+//corresponds to the first level. Then we reverse the condition.
+//The idea is to deduct number depth - level times.
+//For example, 1x + 2y + 3z = (3 + 1) * (x + y + z) - (3x + 2y + z);
+class Solution {
+private:
+    int maxDepth = 1;
+    //numSum records the sum of all numbers. x+y+z...
+    //[[1,1],2,[1,1]] will be 5
+    int numSum = 0;
+    int depthSum(vector<NestedInteger>& nList, int depth){
+        maxDepth = max(maxDepth, depth);
+        int dSum = 0;
+        for(auto& it : nList){
+            if(it.isInteger()){
+                numSum += it.getInteger();
+                dSum += it.getInteger() * depth;
+            }else{
+                dSum += depthSum(it.getList(), depth+1);
+            }
+        }
+        return dSum;
+    }
+public:
+    int depthSumInverse(vector<NestedInteger>& nestedList) {
+        int dSum = depthSum(nestedList, 1);
+        return numSum * (maxDepth+1) - dSum;
+    }
+};
+
