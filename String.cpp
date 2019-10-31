@@ -3758,3 +3758,25 @@ public:
     }
 };
 
+
+//1181. Before and After Puzzle
+//https://leetcode.com/problems/before-and-after-puzzle/
+//Same idea, however, code is not implemented by me. Slow.
+class Solution {
+public:
+    vector<string> beforeAndAfterPuzzles(vector<string>& phrases) {
+      unordered_map<string, set<string>> first, last;
+      set<string> res;
+      for (auto p : phrases) {
+        auto fp = p.find(' '), lp = p.rfind(' ');
+        fp = fp == string::npos ? p.size() : fp;
+        lp = lp == string::npos ? 0 : lp + 1;
+        for (auto pp : first[p.substr(lp)]) res.insert(p + pp);
+        for (auto pp : last[p.substr(0, fp)]) res.insert(pp + p);
+        first[p.substr(0, fp)].insert(p.substr(fp));
+        last[p.substr(lp)].insert(p.substr(0, lp));
+      }
+      return vector<string>(begin(res), end(res));
+    }
+};
+
