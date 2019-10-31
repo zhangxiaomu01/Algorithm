@@ -1998,3 +1998,57 @@ public:
  * bool param_1 = obj->query(letter);
  */
 
+
+//362. Design Hit Counter
+//https://leetcode.com/problems/design-hit-counter/
+//Since we only care about the last 5 minutes, we can allocate an array of 
+//300 slots, one for one second
+class HitCounter {
+private:
+    int times[300] = {0};
+    int hits[300] = {0};
+public:
+    /** Initialize your data structure here. */
+    HitCounter() {
+
+    }
+    
+    /** Record a hit.
+        @param timestamp - The current timestamp (in seconds granularity). */
+    void hit(int timestamp) {
+        //Whenever time exceeds the 300 seconds, we still need to get the
+        //correct index
+        int index = timestamp % 300;
+        if(times[index] != timestamp){
+            //The previous index expires, so we need to reset the current 
+            //hit to be 1 hit, and record that current index represent 
+            //timestamp
+            times[index] = timestamp;
+            hits[index] = 1;
+        }else{
+            //hit at the same time
+            hits[index]++;
+        }
+        
+    }
+    
+    /** Return the number of hits in the past 5 minutes.
+        @param timestamp - The current timestamp (in seconds granularity). */
+    int getHits(int timestamp) {
+        int totalHit = 0;
+        for(int i = 0; i < 300; ++i){
+            //within 5 minute period
+            if(timestamp - times[i] < 300)
+                totalHit += hits[i];
+        }
+        return totalHit;
+    }
+};
+
+/**
+ * Your HitCounter object will be instantiated and called as such:
+ * HitCounter* obj = new HitCounter();
+ * obj->hit(timestamp);
+ * int param_2 = obj->getHits(timestamp);
+ */
+
