@@ -5733,3 +5733,47 @@ public:
     }
 };
 
+
+
+
+//1057. Campus Bikes
+//https://leetcode.com/problems/campus-bikes/
+//Excellent bucket sort solution! We know that distance between workers and
+//bikes can be at most 2000, so we can utilize this observation and build the
+//distance one by one
+class Solution {
+public:
+    vector<int> assignBikes(vector<vector<int>>& workers, vector<vector<int>>& bikes) {
+        int lenW = workers.size();
+        int lenB = bikes.size();
+        //pair represent the worker i and bike j, each entry represents the 
+        //distance. Since we start from i equals 0 and j equals 0, so we are
+        //guaranteed to have worker with smaller index goes first
+        vector<vector<pair<int, int>>> dict(2001);
+        for(int i = 0; i < lenW; ++i){
+            for(int j = 0; j < lenB; ++j){
+                int dist = abs(workers[i][0] - bikes[j][0]) + abs(workers[i][1] - bikes[j][1]);
+                
+                dict[dist].push_back({i, j});
+                
+            }
+        }
+        
+        //Record whether bike[j] has been used
+        bool isBike[lenB] = {0};
+        vector<int> res(lenW, -1);
+        for(int p = 0; p <= 2000; ++p){
+            for(int q = 0; q < dict[p].size(); ++q){
+                
+                //We can still get access to the bike and current worker 
+                //still needs the bike
+                if(res[dict[p][q].first] == -1 && !isBike[dict[p][q].second] ){
+                    res[dict[p][q].first] = dict[p][q].second;
+                    isBike[dict[p][q].second] = true;
+                }
+            }
+        }
+        
+        return res;
+    }
+};
