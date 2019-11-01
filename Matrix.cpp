@@ -1105,3 +1105,53 @@ public://1035
         return 4 * count - 2 * repeat;
     }
 };
+
+
+//498. Diagonal Traverse
+//https://leetcode.com/problems/diagonal-traverse/
+//We iterate through the diagonal and calculate the coresponding entry one by 
+//one. Brute force approach. Very clear!
+//O((m+n)^2)
+class Solution {
+public:
+    vector<int> findDiagonalOrder(vector<vector<int>>& matrix) {
+        int m = matrix.size();
+        int n = m ? matrix[0].size() : 0;
+        int numD = m + n - 2;
+        vector<int> res;
+        //sum of i and j equals to the diagonal index. Critical observation!
+        for(int s = 0; s <= numD; ++s){
+            for(int k = 0; k <= s; ++k){
+                int i = k;
+                int j = s - k;
+                //change direction
+                if(s % 2 == 0) swap(i, j);
+                if(i >= m || j >= n) continue;
+                res.push_back(matrix[i][j]);
+            }
+        }
+        return res;
+    }
+};
+
+
+//Optimized version of bruteforce. We shrink the search space from O((m+n)^2)
+//to O(mn)
+class Solution {
+public:
+    vector<int> findDiagonalOrder(vector<vector<int>>& matrix) {
+    
+        if (matrix.size() == 0 || matrix[0].size() == 0) return {};
+        int m = matrix.size(), n = matrix[0].size();
+
+        vector<int> res;
+        for (int i = 0; i < m+n-1; i++) {
+            int begin_pos = res.size();
+            for (int row = max(0, i-n+1), col = min(i, n-1); col >= 0 && row < m; row++, col--)
+                res.push_back(matrix[row][col]);
+            if (i % 2 == 0) reverse(res.begin() + begin_pos, res.end());
+        }
+
+        return res;
+    }
+};
