@@ -2376,3 +2376,58 @@ public:
         return res;
     }
 };
+
+
+//1046. Last Stone Weight
+//https://leetcode.com/problems/last-stone-weight/
+//This is not DP, just for the follow up question
+class Solution {
+public:
+    int lastStoneWeight(vector<int>& stones) {
+        priority_queue<int> pq(stones.begin(), stones.end());
+        while(pq.size() > 1){
+            int s1 = pq.top();
+            pq.pop();
+            int s2 = pq.top();
+            pq.pop();
+            if(s2 < s1){
+                pq.push(s1 - s2);
+            }
+        }
+        return pq.empty() ? 0 : pq.top();
+    }
+};
+
+
+//1049. Last Stone Weight II
+//https://leetcode.com/problems/last-stone-weight-ii/
+//Understand how to convert it to a coin change problem is the key to success.
+//This problem can be seen as find two groups, which sum of group A minus 
+//sum of group B is smallest. Then we use DP to first check whether we can
+//find a sum close to totalSum / 2, then we can get the best possible result.
+class Solution {
+public:
+    int lastStoneWeightII(vector<int>& stones) {
+        int len = stones.size();
+        //dp[i] = 1 means that we can have the sum of stone weight to be i
+        //The total stone weight range is [0, 3000]
+        bool dp[1501] = {0};
+        //Without any stone, we will have weight of 0
+        dp[0] = 1;
+        int sum = 0;
+        for(auto s : stones){
+            sum += s;
+            for(int i = min(1500, sum); i >= s; --i){
+                dp[i] = dp[i] || dp[i - s];
+            }
+        }
+        
+        for(int i = sum / 2; i >= 0; --i){
+            //sum - i means the group B, i means the sum of group A
+            //sum - i - i means the difference;
+            if(dp[i]) return sum - i - i;
+        }
+        return 0;
+    }
+};
+
