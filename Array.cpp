@@ -2446,6 +2446,50 @@ public:
 };
 
 
+//1054. Distant Barcodes
+//https://leetcode.com/problems/distant-barcodes/
+//This problem can be easilt solved using a priority_queue with frequency as 
+//the key, we always make sure those element with the highest frequency 
+//are settled down to the odd or even positions. The further observation is
+//that we only need to first settle down the elements with the maximum 
+//frequency, then we can handle other situations arbitrarily.
+//This algorithm is very efficient!
+class Solution {
+public:
+    vector<int> rearrangeBarcodes(vector<int>& barcodes) {
+        //count the number of element i
+        int uMap[10001] = {0};
+        int len = barcodes.size();
+        vector<int> res(len, 0);
+        int maxCnt = -1;
+        int maxFreq = 0;
+        for(int e : barcodes){
+            uMap[e]++;
+            if(uMap[e] > maxCnt){
+                maxCnt = uMap[e];
+                maxFreq = e;
+            }
+        }
+        
+        int pos = 0;
+        int count = 0;
+        for(int i = 0; i <= 10000; ++i){
+            int element = i == 0 ? maxFreq : i;
+            while(uMap[element] > 0){
+                res[pos] = element;
+                count ++;
+                //When pos is go out of boundry, reset it to odd entry
+                pos = pos + 2 < len ? pos+2 : 1;
+                uMap[element]--;
+            }
+            if(count == len) return res;
+
+        }
+        return res;
+    }
+};
+
+
 //327. Count of Range Sum
 //https://leetcode.com/problems/count-of-range-sum/
 /* Binary search solution! Hard to get it right! Take a close look at later! */
