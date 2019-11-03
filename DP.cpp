@@ -2482,5 +2482,36 @@ public:
 };
 
 
+//In general, slower than DFS with memorization method.
+//Note that in DFS version, we do not need to sort the array.
+class Solution {
+public:
+    int longestStrChain(vector<string>& words) {
+        //string with shorter length goes before string with longer length
+        //We need the sorting to guarantee that string with shorter length
+        //will be handled first. String with length 0 is the base case!
+        auto myComp = [](string& s1, string& s2){
+            return s1.size() < s2.size();
+        };
+        sort(words.begin(), words.end(), myComp);
+        
+        unordered_map<string, int> uMap;
+        
+        int res = 0;
+        for(auto& w : words){
+            int best = 0;
+            for(int i = 0; i < w.size(); ++i){
+                string next = w.substr(0, i) + w.substr(i+1);
+                best = max(best, uMap[next] + 1);
+            }
+            uMap[w] = best;
+            //Keep track of the maximum length on the fly
+            res = max(res, best);
+        }
+        return res;
+    }
+};
+
+
 
 
