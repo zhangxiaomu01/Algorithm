@@ -2431,3 +2431,56 @@ public:
     }
 };
 
+
+
+//1048. Longest String Chain
+//https://leetcode.com/problems/longest-string-chain/
+//A very good problem. I failed to formulate the DFS formula after the first
+//try. Note we need to check each word from the words list and calculate the
+//local max count for each word. We also need to maintain a maximum cnt for 
+//our final result.
+class Solution {
+private:
+    int helper(string& w, unordered_set<string>& uSet, unordered_map<string, int>& uMap){
+        //When w reaches size of 0, we need to return 0 here
+        if(w.size() == 0) return 0;
+        //Memorization
+        if(uMap.count(w) > 0) return uMap[w];
+        
+        int cnt = 1;
+        for(int i = 0; i < w.size(); ++i){
+            string next = w.substr(0, i) + w.substr(i+1);
+            //Since we find the next word in our word list, then we need to 
+            //add 1 to next level of search
+            if(uSet.count(next) > 0) 
+                cnt = max(cnt, 1 + helper(next, uSet, uMap));
+        }
+        
+        uMap[w] = cnt;
+        return cnt;
+    }
+public:
+    int longestStrChain(vector<string>& words) {
+        //Put all words to a set for fast check!
+        unordered_set<string> uSet;
+        //Memorize the temporary result for current word w
+        unordered_map<string, int> uMap;
+        
+        for(auto& w : words){
+            uSet.insert(w);
+        }
+        
+        //Note it might be better if we start search from the longest word.
+        //However, we still need to do the full search because the longest 
+        //chain may not start with the longest word
+        int ans = 0;
+        for(auto& w : words){
+            ans = max(ans, helper(w, uSet, uMap));
+        }
+        return ans;
+    }
+};
+
+
+
+
