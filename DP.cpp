@@ -2514,4 +2514,76 @@ public:
 
 
 
+//871. Minimum Number of Refueling Stops
+//https://leetcode.com/problems/minimum-number-of-refueling-stops/
+//Excellent question! 
+//DP solution. I did not get this, dp[i] represents the maximum miles we can
+//travel if we refuel i times. We need to make sure that within the maximum 
+//distance we can travel, we need to fuel at the station with maximum gas 
+//possible. dp[len] means we refuel at each gas station!
+//Very very tricky dp implementation!! Not easy to get it right!
+class Solution {
+public:
+    int minRefuelStops(int target, int startFuel, vector<vector<int>>& stations) {
+        //We need to initialize the dp[i] with startFuel, because the base 
+        //case is that for each entry, we at least to have startFuel oils.
+        int len = stations.size();
+        long dp[len+1] = {startFuel};
+        
+        for(int i = 0; i < len; ++i){
+            //We need to make sure that we can still reach station i and we 
+            //calculate the maximum possible fuel solution for dp[j+1] (we 
+            //fuel j+1 times based on dp[j] and dp[j+1]). Once we get the dp
+            //array, we can easily derive the result by checking the smallest
+            //possible j that max dp[j] >= target
+            //Note here we must start with int j = i because when we update
+            //dp[j+1], we need the value of dp[j].
+            for(int j = i; j >= 0 && dp[j] >= stations[i][0]; --j){
+                dp[j+1] = max(dp[j+1], dp[j] + stations[i][1]);
+            }
+        }
+        
+        for(int j = 0; j <= len; ++j){
+            //Calculate the smallest possible j that makes dp[j] >= target
+            if(dp[j] >= target) return j;
+        }
+        return -1;
+        
+    }
+};
+
+
+//Greedy solution with priority queue. A tricky implementation as well.
+//We always keep track of maximum potential oil we can fuel with the 
+//reachable distance, whenever we find that we cannot reach some station i,
+//we need to include more oils from other stations. O(nlogn)
+//Elegant approach!
+class Solution {
+public:
+    int minRefuelStops(int target, int startFuel, vector<vector<int>>& stations) {
+        int curMaxDist = startFuel;
+        if(curMaxDist >= target) return 0;
+        //pq will store the potential maximum gas within a rechable distance
+        priority_queue<int> pq;
+        int len = stations.size();
+        int res = 0;
+        int i = 0;
+        //Assume that stations are sorted based by the distance 
+        while(curMaxDist < target){
+            while(i < len && curMaxDist >= stations[i][0])
+                pq.push(stations[i++][1]);
+            
+            if(pq.empty()) return -1;
+            
+            //Note if we cannot reach station[i], then we need to fuel more
+            //from the previous station, and always fuel from the station 
+            //with maximum fuel. We also need to increase the res to indicate
+            //that we need one more time to fuel.
+            curMaxDist += pq.top();
+            pq.pop();
+            res++;
+        }
+        return curMaxDist >= target ? res : -1;
+    }
+};
 
