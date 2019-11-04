@@ -5863,3 +5863,33 @@ public:
     }
 };
 
+
+//Not implemented by me (modified by me). Similar idea, but much faster and 
+//more elegant.
+//Note sometimes, we can stick to one pointer to do the sliding window.
+//simply i - X to get the left boundry!
+class Solution {
+public:
+    int maxSatisfied(vector<int>& customers, vector<int>& grumpy, int X) {
+        int happyCustomers = 0;
+        int trickSum =0;
+        int sol=0;           
+
+        for(int i=0;i<customers.size();i++)
+        {
+
+            trickSum -= i - X >= 0 ? (customers[i-X]*grumpy[i-X]) : 0;
+            happyCustomers += customers[i]*(1-grumpy[i]);
+            trickSum += customers[i]*grumpy[i];
+            if(trickSum > sol)
+            {
+                sol = trickSum;                        
+            }
+
+        }
+
+      return (happyCustomers + sol);
+        
+    }
+};
+
