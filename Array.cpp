@@ -5821,3 +5821,45 @@ public:
         return res;
     }
 };
+
+
+//1052. Grumpy Bookstore Owner
+//https://leetcode.com/problems/grumpy-bookstore-owner/
+//Flag + sliding window
+//Implemented by me
+class Solution {
+public:
+    int maxSatisfied(vector<int>& customers, vector<int>& grumpy, int X) {
+        int len = customers.size();
+        for(int i = 0; i < len; ++i){
+            if(grumpy[i] == 1) customers[i] = -1 * customers[i];
+        }
+        
+        int l = 0;
+        int minCust = INT_MAX, startIndex = -1;
+        int custAffected = 0;
+        //sliding window approach
+        for(int r = 0; r < len; ++r){
+            if(r >= X){
+                custAffected -= customers[l] < 0 ? customers[l] : 0;
+                l++;
+            }
+            custAffected += customers[r] < 0 ? customers[r] : 0;
+            if(custAffected < minCust) {
+                minCust = custAffected;
+                startIndex = l;
+            }
+        }
+        
+        for(int i = startIndex; i < startIndex + X; ++i){
+            if(customers[i] < 0) customers[i] = -1 * customers[i];
+        }
+        
+        int res = 0;
+        for(int i = 0; i < len; ++i){
+            res += customers[i] > 0 ? customers[i] : 0;
+        }
+        return res;
+    }
+};
+
