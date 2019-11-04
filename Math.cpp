@@ -563,3 +563,31 @@ public:
 
 
 
+//1041. Robot Bounded In Circle
+//https://leetcode.com/problems/robot-bounded-in-circle/
+//The critical observation is that after one iteration, if the robot goes
+//back to origin or does not face towards north, then it can form a cycle.
+class Solution {
+public:
+    bool isRobotBounded(string instructions) {
+        //define the four directions.
+        const vector<vector<int>> dir = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+        //indicate the currect direction is dir[0] == {0, 1}
+        int curDir = 0;
+        int pos[2] = {0, 0};
+        for(int i = 0; i < instructions.size(); ++i){
+            if(instructions[i] == 'R')
+                curDir = (curDir + 1) % 4;
+            else if(instructions[i] == 'L')
+                curDir = (curDir + 3) % 4;
+            else{
+                pos[0] += dir[curDir][0];
+                pos[1] += dir[curDir][1];
+            }
+                
+        }
+        //If the robot return to the origin and it does not face to the north
+        return (pos[0] == 0 && pos[1] == 0) || curDir != 0;
+    }
+};
+
