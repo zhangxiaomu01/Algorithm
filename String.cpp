@@ -3780,3 +3780,58 @@ public:
     }
 };
 
+
+//1047. Remove All Adjacent Duplicates In String
+//https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string/
+//Brute force approach, implemented by me!
+class Solution {
+public:
+    string removeDuplicates(string S) {
+        string tempS = S;
+        string temp;
+        while(true){
+            for(int i = 0; i < tempS.size(); ++i){
+                //skip two duplicate characters and keep moving forward
+                if(i < tempS.size() - 1 && tempS[i] == tempS[i+1]) {
+                    i++; continue;
+                }
+                temp.push_back(tempS[i]);
+            }
+            if(tempS.size() == temp.size()) return tempS;
+            swap(tempS, temp);
+            //in general, O(1) for clear() method
+            temp.clear();
+        }
+        return tempS;
+    }
+};
+
+
+//Excellent two pointers solution, impossible to implement during the 
+//interview. Tricky!
+class Solution {
+public:
+    string removeDuplicates(string S) {
+        int i = 0;
+        for(char c : S){
+            //decrement i if we find the duplicate pairs
+            if(i == 0 || S[i-1] != c) S[i++] = c;
+            else i--;
+        }
+        S.resize(i);
+        return S;
+    }
+};
+
+//Stack, a much intuitive approach!
+class Solution {
+public:
+    string removeDuplicates(string S) {
+        string ans = "";
+        for (const char &c : S) {
+            if (ans.back() == c) ans.pop_back();
+            else ans.push_back(c);
+        }
+        return ans;
+    }
+};
