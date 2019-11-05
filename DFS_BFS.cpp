@@ -1872,3 +1872,59 @@ public:
 };
 
 
+//Similar idea, with BFS implementation
+class Solution {
+private:
+    struct Hash{
+      size_t operator()(const pair<int, int>& p) const {
+          return hash<long long>()(((long long)p.first << 32) ^ ((long long)p.second));
+      }  
+    };
+    unordered_set<pair<int, int>, Hash> uBlocks;
+    const int offset[5] = {-1, 0, 1, 0, -1};
+    const int boundry = 1e6;
+    
+    bool BFS(vector<int>& src, vector<int>& tar, int maxArea){
+        unordered_set<pair<int, int>, Hash> visited;
+        queue<pair<int, int>> Q;
+        if(src[0] == tar[0] && src[1] == tar[1]) return true;
+        Q.push({src[0], src[1]});
+        visited.insert({src[0], src[1]});
+        
+        while(!Q.empty()){
+            auto grid = Q.front();
+            Q.pop();
+
+            for(int i = 0; i < 4; ++i){
+                int x = grid.first + offset[i];
+                int y = grid.second + offset[i+1];
+                
+                //get rid of invalid indices!
+                if(x < 0 || x >= boundry || y < 0 || y >= boundry || visited.count({x, y}) > 0 || uBlocks.count({x, y}) > 0)
+                    continue;
+                
+                if(x == tar[0] && y == tar[1]) return true;
+                Q.push({x, y});
+                visited.insert({x, y});
+            }
+            
+            if(visited.size() > maxArea) 
+                return true;
+        }
+        
+        return false;
+    }
+    
+public:
+    bool isEscapePossible(vector<vector<int>>& blocked, vector<int>& source, vector<int>& target) {
+        int len = blocked.size();
+        if(len <= 1) return true;
+        int maxArea = len * (len - 1) / 2;
+        for(auto& b : blocked){
+            uBlocks.insert({b[0], b[1]});
+        }
+        
+        return BFS(source, target, maxArea) && BFS(target, source, maxArea);
+        
+    }
+};
