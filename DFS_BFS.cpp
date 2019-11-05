@@ -1785,3 +1785,90 @@ public:
     }
 };
 
+
+//1036. Escape a Large Maze
+//https://leetcode.com/problems/escape-a-large-maze/
+//Initially, I think this problem might be a good fit for A* algorithm. 
+//However, it seems that even A* might be too expensive for this problem.
+//Note that we only have at most 200 blocks in our blocked array. Then under
+//what situation that we can never escape the maze? It must be either source 
+//or target is beseiged by the blocks. Then our solution will be convert to
+//start from s and t, and using limited DFS or BFS to see whether source or
+//target is surrounded by blocks! We can calculate the area when we start 
+//exploring the source or target, and if the calculated area is greater than
+//the maximum area the blocks can form, we can say that source / target is not
+//surrounded by the blocks. Then what is the maximum area the blocks can form?
+//it will be placing all 200 blocks in a diagonal (45 degrees) of a triangle. 
+/*
+0th     _________________________       
+         |-------------------- X            
+         |-------------------X
+         |                .
+         |             .
+         .           . 
+         .        X
+         .    X
+200      | X
+
+The sum of the area available equals 1+2+3+4+5+...+198+199 =(1+199)*199/2 = 19900 (trapezoid sum) 
+which means we only need to limite the search by 20000 steps, or |B|*(|B-1|)/2 + 1 steps.
+
+Now let's first implement DFS.
+*/
+
+struct Hash{
+    //we must include const before pair<int, int>& p
+  size_t operator()(const pair<int, int>& p) const {
+      return hash<long long>()(((long long)p.first << 32) ^ ((long long)p.second));
+  }  
+};
+
+class Solution {
+private:
+    const int offset[5] = {-1, 0, 1, 0, -1};
+    int boundry = 1e6;
+    int maxArea = 0;
+    
+    bool DFS(unordered_set<pair<int, int>, Hash>& visited, unordered_set<pair<int, int>, Hash>& blocks, vector<int>& t, int i, int j){
+        if(i < 0 || i >= boundry || j < 0 || j >= boundry || visited.count(make_pair(i, j)) > 0 || blocks.count(make_pair(i, j)) > 0) 
+            return false;
+        
+        visited.insert({i, j});
+        
+        //visited.size() record the current explored area
+        if((i == t[0] && j == t[1]) || visited.size() > maxArea) 
+            return true;
+        
+        bool res = false;
+        for(int p = 0; p < 4; ++p){
+            res = res || DFS(visited, blocks, t, i + offset[p], j + offset[p+1]);
+            if(res) return true;
+        }
+        
+        return res;
+    }
+public:
+    bool isEscapePossible(vector<vector<int>>& blocked, vector<int>& source, vector<int>& target) {
+        if(blocked.size() <= 1) return true;
+        unordered_set<pair<int, int>, Hash> visited;
+        unordered_set<pair<int, int>, Hash> blocks;
+        for(int i = 0; i < blocked.size(); ++i){
+            blocks.insert({blocked[i][0], blocked[i][1]});
+        }
+        int len = blocks.size();
+        //maximum potential area for the closed space that blocks can form
+        //We can also choose maxArea to be the maximum possible outcome:
+        //19900
+        maxArea = len * (len-1) / 2;
+        
+        bool res = DFS(visited, blocks, target, source[0], source[1]);
+        visited.clear();
+        res = res && DFS(visited, blocks, source, target[0], target[1]);
+
+        
+        return  res;
+  
+    }
+};
+
+
