@@ -591,3 +591,36 @@ public:
     }
 };
 
+
+//789. Escape The Ghosts
+//https://leetcode.com/problems/escape-the-ghosts/
+//A tricky problem which is not easy to get the intuition.
+/*
+Your distance to target is abs(t[0]) + abs(t[1]).
+For every ghost g, distance to target is abs(t[0] - g[0]) + abs(t[1] - g[1]).
+You need to be closer to target than any ghost to escape.
+
+A short proof why this works:
+1. If the ghost's distance to target is shorter, it can move to target and 
+stay there.
+2. If the ghost's distance to target is longer, the ghost should never reach 
+the player.
+Let's say the player simply moves towards the target, and the ghost also move 
+towards the target (obviously the ghost can never reach the player if it moves 
+away from target), both the ghosts and player's distance to target should 
+reduce 1 per every step, and if the ghost reaches the player, means their 
+distances to the target become equal, which is not possible in this case.
+
+*/
+class Solution {
+public:
+    bool escapeGhosts(vector<vector<int>>& ghosts, vector<int>& target) {
+        int playerDist = abs(target[0]) + abs(target[1]);
+        for(auto& g : ghosts){
+            int ghostDist = abs(g[0] - target[0]) + abs(g[1] - target[1]);
+            if(ghostDist <= playerDist) return false;
+        }
+        return true;
+    }
+};
+
