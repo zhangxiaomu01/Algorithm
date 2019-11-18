@@ -1155,3 +1155,36 @@ public:
         return res;
     }
 };
+
+
+//1072. Flip Columns For Maximum Number of Equal Rows
+//https://leetcode.com/problems/flip-columns-for-maximum-number-of-equal-rows/
+//A very clever solution. We need to calculate the maximum possible relatively
+//ordering rows we have, then we know we can easily flip the corresponding 
+//columns to make the rows to have the equal values.
+//https://leetcode.com/problems/flip-columns-for-maximum-number-of-equal-rows/discuss/303847/Simple-C%2B%2B-Solution-with-comments
+class Solution {
+public:
+    int maxEqualRowsAfterFlips(vector<vector<int>>& matrix) {
+        unordered_map<string, int> uMap;
+        for(auto& row : matrix){
+            string temp = "";
+            int top = row[0];
+            for(int i = 0; i < row.size(); ++i){
+                if(row[i] == top)
+                    temp.push_back('1');
+                else
+                    temp.push_back('0');
+            }
+            uMap[temp] ++;
+        }
+        
+        int res = 0;
+        for(auto it = uMap.begin(); it != uMap.end(); ++it){
+            res = max(res, it->second);
+        }
+        return res;
+    }
+};
+
+
