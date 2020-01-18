@@ -1092,7 +1092,7 @@ public:
         unordered_set<string> bset, eset, *set1, *set2;
         bset.insert(start), eset.insert(end);
         int step = 0, n = start.size();
-        while (!bset.empty() and !eset.empty()) {
+        while (!bset.empty() && !eset.empty()) {
             if (bset.size() <= eset.size())
                 set1 = &bset, set2 = &eset;
             else set2 = &bset, set1 = &eset;

@@ -2596,3 +2596,47 @@ public:
     }
 };
 
+
+//639. Decode Ways II
+//https://leetcode.com/problems/decode-ways-ii/
+// Code is slow. Which is potentially because we have to many substring calls
+class Solution {
+private:
+    int helper(string s){
+        if(s.size() == 1){
+            if(s[0] == '*') return 9;
+            else return s[0] == '0' ? 0 : 1;
+        }
+        
+        //We need to consider to decode the string with two digits
+        //Note '**' is 15 because * can not be interpreted as 0
+        //11-19 and 21-26
+        if(s == "**") return 15; 
+        else if(s[0] == '*'){
+            return s[1] <= '6' ? 2 : 1;
+        }
+        else if(s[1] == '*'){
+            if(s[0] == '0' || s[0] > '2') return 0;
+            if(s[0] == '1') return 9;
+            if(s[0] == '2') return 6;
+        }
+        else
+            return stoi(s) >= 10 && stoi(s) <= 26 ? 1 : 0;
+        
+        return 0;
+    }
+public:
+    int numDecodings(string s) {
+        int len = s.size(), p = 1000000007;
+        // Base case
+        long f1 = 1;
+        long f2 = helper(s.substr(0,1));
+        for(int i = 1; i < len; ++i){
+            long temp = f2 * helper(s.substr(i, 1)) + f1 * helper(s.substr(i-1, 2));
+            f1 = f2;
+            f2 = temp % p;
+        }
+        
+        return f2;
+    }
+};
