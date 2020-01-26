@@ -1,3 +1,21 @@
+#include<windows.h>
+#include<iostream>
+#include<algorithm>
+#include<vector>
+#include<array>
+#include<cmath>
+#include<random>
+#include<sstream>
+#include<unordered_map>
+#include<numeric>
+#include<iterator>
+#include<unordered_set>
+#include<queue>
+#include<set>
+#include<map>
+
+using namespace std;
+
 //310. Minimum Height Trees
 //https://leetcode.com/problems/minimum-height-trees/
 /* 
@@ -651,3 +669,90 @@ public:
 //Very good problem for practicing Dijkstra algorithm. 
 
 
+//1334. Find the City With the Smallest Number of Neighbors at a Threshold Distance
+//https://leetcode.com/contest/weekly-contest-173/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/
+//Problem from weekly contest 173th, you did not get it right in the contest because you are not 
+//familiar with Dijkstra any more. You almost get it right though.
+class Solution {
+    int numOfNeighbouring(vector<vector<pair<int, int>>>& G, int city, int dT){
+        auto myComp = [](pair<int, int> p1, pair<int, int> p2){
+            return p1.second < p2.second;  
+        };
+        priority_queue<pair<int, int>, vector<pair<int, int>>, decltype(myComp)> Q(myComp);
+        int len = G.size();
+        int res = 0;
+        vector<int> visited(len, 0);
+        Q.push({city, dT});
+        
+        while(!Q.empty()){
+            pair<int, int> C = Q.top();
+            Q.pop();
+            
+            if(visited[C.first] == 1) continue;
+            else{
+                visited[C.first] = 1;
+                res++;
+            }
+            for(int j = 0; j < G[C.first].size(); ++j){
+                //Note we should not put visited[G[C.first][j].first] = 1 here, because potentially we still need to revisit
+                //this node. We defer the judgement to the beginning of the next while loop
+                //You get this wrong during the contest
+                if(visited[G[C.first][j].first] == 0 && G[C.first][j].second <= C.second ){
+                    Q.push({G[C.first][j].first, C.second - G[C.first][j].second});
+                    //visited[G[C.first][j].first] = 1;
+                    //res++;
+                }
+            }
+        }
+        return res;
+    }
+    
+public:
+    int findTheCity(int n, vector<vector<int>>& edges, int distanceThreshold) {
+        vector<vector<pair<int, int>>> adjGraph(n);
+        for(int i = 0; i < edges.size(); ++i){
+            adjGraph[edges[i][0]].push_back({edges[i][1], edges[i][2]});
+            adjGraph[edges[i][1]].push_back({edges[i][0], edges[i][2]});
+        }
+        int toTal = n-1;
+        int res = n-1;
+        
+        for(int i = n-1; i >= 0; --i){
+            int k = numOfNeighbouring(adjGraph, i, distanceThreshold);
+            if(k == 0) return i;
+            if(toTal > k){
+                toTal = k;
+                res = i;
+            } 
+        }
+        
+        return res;
+    }
+};
+
+
+//A celever solution you know, but you forget how to implement Floyd-Warshall algorithm.
+//The following code is a variant of Floyd-Warshall algorithm
+class Solution {
+public:
+    int findTheCity(int n, vector<vector<int>>& edges, int distanceThreshold) {
+        vector<int>ranks(n,0);
+        for(int i=0;i<n;++i){
+            vector<int>costs(n,1e7);
+            costs[i]=0;
+            for(int j=0;j<n-1;++j){
+                for(auto&e:edges){
+                    int u = e[0], v = e[1], w = e[2];
+                    costs[v]=min(costs[v],costs[u]+w);
+                    costs[u]=min(costs[u],costs[v]+w);
+                }
+            }
+            for(int c:costs)    ranks[i] += c<=distanceThreshold;
+        }
+        int r = *min_element(begin(ranks),end(ranks));
+        for(int i=n-1;i>-1;--i){
+            if(ranks[i]==r) return i;
+        }
+        return 0;
+    }
+};

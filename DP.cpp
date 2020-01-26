@@ -2640,3 +2640,73 @@ public:
         return f2;
     }
 };
+
+
+//1335. Minimum Difficulty of a Job Schedule
+//https://leetcode.com/problems/minimum-difficulty-of-a-job-schedule/
+//DP problem...
+//Find a good solution from here:
+//https://leetcode.com/problems/minimum-difficulty-of-a-job-schedule/discuss/490256/C%2B%2B-DP-solution-with-explanation
+//DP[d][j] means the minimum possible difficulties we get if we still have d days left and we have finished the
+//[0...j) jobs. 
+
+class Solution {
+    int maxquery(int i,int j, const vector<int>& v) {  //return the maximum value of arr[i,j]
+        int maxi = -1;
+        for (int k = i; k <= j; k++) maxi = max(maxi,v[k]);
+        return maxi;
+    }
+public:
+    int minDifficulty(vector<int>& jobDifficulty, int d) {
+        int len = jobDifficulty.size();
+        //Too many days left
+        if(len < d) return -1;
+        
+        int dp[d+1][len+1];
+        
+        for (int i = 0; i <= d; i++) {
+            for (int j = 0; j <= len; j++) dp[i][j] = 1e6;  //initialize the array with INF
+        }
+        
+        for (int j = 0; j < len; ++j) dp[1][j] = maxquery(j, len-1, jobDifficulty);  //base case
+        
+        
+        /*
+        Now, consider the state conversion:
+
+        dp[d][i] = minimum of ( maximum value between arr[i,j] + dp[d-1][j+1] ); in which j is from [i, n].
+
+        Explanation: We can use current day to finish many tasks, so we discuss them one by one.
+        If we just finish one task today, then dp[d][i] = arr[i] + dp[d-1][i+1]
+        If we finish two tasks today, then dp[d][i] = max(arr[i], arr[i+1]) + dp[d-1][i+2] and so on...
+        */
+        //We have covered i == 1
+        for(int i = 2; i <= d; ++i){
+            for(int j = 0; j < len; ++j){
+                if(len - j < i ){ // Too many days left
+                    dp[i][j] = 1e6;
+                    continue;
+                }
+                
+                for(int k = j; k < len; ++k)
+                        dp[i][j] = min(dp[i][j], maxquery(j, k, jobDifficulty) + dp[i-1][k+1]);
+                
+                /*
+                //Still cannot understand why the following code fails. For me, it's equivalent.
+                if(len - j >= i){
+                    for(int k = j; k < len; ++k)
+                        dp[i][j] = min(maxquery(j, k, jobDifficulty) + dp[i-1][k+1], dp[i][j]);
+                }
+                else if(len - j < i){
+                    dp[i][j] = 0x3f3f3f3f;
+                    continue;
+                }
+                */
+            }
+        }
+        
+        //We have d days left and we have finished 0 jobs. This is the final case
+        //A little bit weird here...
+        return dp[d][0];
+    }
+};
