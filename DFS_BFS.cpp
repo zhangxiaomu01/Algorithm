@@ -1938,3 +1938,90 @@ public:
         
     }
 };
+
+
+//1344. Jump Game V
+//https://leetcode.com/problems/jump-game-v/
+//You solved it during the contest. Your solution is exremely slow though...
+class Solution {
+    unordered_map<int, int> uMap;
+    
+    int maxIndex = INT_MIN;
+    
+    int calMaxStep(int start, int d, vector<int>& arr){
+        if(uMap.find(start) != uMap.end())
+            return uMap[start];
+        
+        int res = 1;
+        
+        int len = arr.size();
+        bool exL = true, exR = true;
+        vector<int> validIndex;
+        for(int i = 1; i <= d; ++i){
+            if(exL){
+                int next1 = start - i;
+                if(next1 >= 0 && arr[next1] < arr[start]){
+                    validIndex.push_back(next1);
+                }else{
+                    exL = false;
+                }
+            }
+            
+            if(exR){
+                int next2 = start + i;
+                if(next2 < len && arr[next2] < arr[start]){
+                    validIndex.push_back(next2);
+                }else{
+                    exR = false;
+                }
+            }
+        }
+        
+        int maxNext = 0;
+        for(int e : validIndex){
+            maxNext = max(maxNext, calMaxStep(e, d, arr));
+        }
+        res += maxNext;
+        uMap[start] = res;
+        return res;
+    }
+    
+public:
+    int maxJumps(vector<int>& arr, int d) {
+        int res = 0;
+        for(int i = 0; i < arr.size(); ++i){
+            int localRes = calMaxStep(i, d, arr);
+            if(localRes > res)
+                res = localRes;
+        }
+        return res;
+    }
+};
+
+//We have a clever DP solution!
+//Similar idea, however, much more clever and reduce a lot of repetitive search!
+int memo[100000];
+class Solution {
+public:
+    int d;
+    int dp(vector<int>& arr,int index)
+    {
+        if(memo[index]!=-1)                                       //Return the cached value if exists.
+            return memo[index];
+        memo[index]=0;
+        for(int i=index+1;i<arr.size()&&arr[i]<arr[index]&&i<=index+d;i++)     //Check the indices on the right while storing Max.
+            memo[index]=max(memo[index],1+dp(arr,i));
+        for(int i=index-1;i>=0&&arr[i]<arr[index]&&i>=index-d;i--)                 //Check the indices on the left while storing Max.
+            memo[index]=max(memo[index],1+dp(arr,i));
+        return memo[index];                                                         //Return the maximum of all checked indices.
+    }
+    int maxJumps(vector<int>& arr, int d) 
+    {
+        memset(memo,-1,sizeof memo);
+        int result=0;
+        this->d=d;
+        for(int i=0;i<arr.size();i++)                     //Check for all indices as starting point.
+            result=max(result,1+dp(arr,i));
+        return result;
+    }
+};
