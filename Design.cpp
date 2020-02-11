@@ -1,3 +1,20 @@
+#include<windows.h>
+#include<iostream>
+#include<algorithm>
+#include<vector>
+#include<array>
+#include<cmath>
+#include<random>
+#include<sstream>
+#include<unordered_map>
+#include<numeric>
+#include<iterator>
+#include<unordered_set>
+#include<queue>
+#include<set>
+#include<map>
+
+using namespace std;
 /* Design pattern principles:
 This is one of the most important, as well as overlooked, topics in software 
 engineering.  Tech focuses a lot more on the "Patterns" during this talk than 
@@ -2052,3 +2069,115 @@ public:
  * int param_2 = obj->getHits(timestamp);
  */
 
+
+//1348. Tweet Counts Per Frequency
+//https://leetcode.com/contest/weekly-contest-175/problems/tweet-counts-per-frequency/
+//My implementation is not efficient! I do a linear scan. Actually, we can do binary search
+class TweetCounts {
+private:
+    //First is time line, second string is the tweet name, the last one is frequency.
+    map<int, map<string, int>> dict;
+public:
+    TweetCounts() {
+        
+    }
+    
+    void recordTweet(string tweetName, int time) {
+        dict[time][tweetName]++;
+    }
+    
+    vector<int> getTweetCountsPerFrequency(string freq, string tweetName, int startTime, int endTime) {
+        int interval = 60;
+        if(freq == "hour") interval = 3600;
+        else if(freq == "day") interval = 43200;
+        
+        int numGaps = (endTime - startTime) / interval + 1;
+        if(startTime == endTime) numGaps = 0;
+        
+        vector<int> res;
+        
+        if(numGaps == 0){
+            if(dict.find(startTime) == dict.end() || dict[startTime].find(tweetName) == dict[startTime].end())
+                res.push_back(0);
+            else
+                res.push_back(dict[startTime][tweetName]);
+            return res;
+        }
+        
+        for(int i = 0; i < numGaps; ++i){
+            int localFreq = 0;
+            int j = startTime + i * interval;
+            
+            for(; j < min(startTime + (i+1) * interval, endTime + 1); ++j){
+                
+                if(dict.find(j) != dict.end() && dict[j].find(tweetName) != dict[j].end())
+                    localFreq += dict[j][tweetName];
+            }
+            res.push_back(localFreq);
+        }
+        
+        return res;
+        
+    }
+};
+
+/**
+ * Your TweetCounts object will be instantiated and called as such:
+ * TweetCounts* obj = new TweetCounts();
+ * obj->recordTweet(tweetName,time);
+ * vector<int> param_2 = obj->getTweetCountsPerFrequency(freq,tweetName,startTime,endTime);
+ */
+
+//Binary search: reviewed version
+class TweetCounts {
+private:
+    //First is time line, second string is the tweet name, the last one is frequency.
+    map<int, map<string, int>> dict;
+public:
+    TweetCounts() {
+        
+    }
+    
+    void recordTweet(string tweetName, int time) {
+        dict[time][tweetName]++;
+        //cout << time << " " << tweetName << " " << dict[time][tweetName] << endl;
+    }
+    
+    vector<int> getTweetCountsPerFrequency(string freq, string tweetName, int startTime, int endTime) {
+        int interval = 60;
+        if(freq == "hour") interval = 3600;
+        else if(freq == "day") interval = 43200;
+        
+        int numGaps = (endTime - startTime) / interval + 1;
+        if(startTime == endTime) numGaps = 0;
+        
+        vector<int> res;
+        
+        if(numGaps == 0){
+            if(dict.find(startTime) == dict.end() || dict[startTime].find(tweetName) == dict[startTime].end())
+                res.push_back(0);
+            else
+                res.push_back(dict[startTime][tweetName]);
+            return res;
+        }
+        
+        
+        for(int i = 0; i < numGaps; ++i){
+            int delta = i * interval;
+            auto itBegin = dict.lower_bound(startTime + delta);
+            auto itEnd = dict.upper_bound(min(endTime, startTime + delta + interval-1));
+            
+            int localFreq = 0;
+            for(auto it = itBegin; it != itEnd; ++it){
+                if((it->second).find(tweetName) != (it->second).end()){
+                    localFreq += (it->second)[tweetName];
+                }
+            }
+            cout << localFreq << endl;
+            res.push_back(localFreq);
+        }
+        
+        return res;
+        
+    }
+};
