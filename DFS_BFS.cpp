@@ -2025,3 +2025,79 @@ public:
         return result;
     }
 };
+
+
+//1349. Maximum Students Taking Exam
+//https://leetcode.com/problems/maximum-students-taking-exam/
+//During algorithm contest, you did not make it. 
+//It's an elegant solution here.
+class Solution {
+    private:
+    //Using this for memorization
+    unordered_map<int, int> uMap;
+    
+    //Determine whether student can sit in {x, y}
+    bool canSit(vector<vector<char>>& S, int x, int y){
+        //Note x >= S.size() and y >= S[0].size() are not suitable here
+        //if(x < 0 || y < 0 || x >= S.size() || y >= S[0].size() || S[x][y] != '.') return false;
+        if(S[x][y] != '.') return false;
+        
+        if(x > 0 && y > 0 && S[x-1][y-1] == 's') return false;
+        if(x > 0 && y < S[0].size()-1 && S[x-1][y+1] == 's') return false;
+        
+        if(y > 0 && S[x][y-1] == 's') return false;
+        if(y < S[0].size()-1 && S[x][y+1] == 's') return false;
+        return true;
+    }
+    
+    //Cur means sitting configuaration of current row
+    //Pre means sitting configuaration of previous row
+    //We need this information to calculate the unique configuaration key
+    int DFS(int x, int y, int cur, int pre, vector<vector<char>>& S){
+        //cout << x << " " << y << endl;
+        //We have scanned all the rows
+        if(x == S.size()) return 0;
+        if(y == 0){
+            pre = cur;
+            cur = 0;
+        }
+        
+        //Calculate the next possible seat
+        //Note how we handle the corner case
+        int nX = x;
+        int nY = y + 1;
+        if(nY == S[0].size()){
+            nX = nX + 1;
+            nY = 0;
+        }
+        
+        //Encode all possible information into a single int digit
+        //We know that 0 << cur, pre << 64 (2^6); 0 <= x,y <= 8 (2^3)
+        int hashKey = (pre << 16) | (cur << 8) | (x << 4) | y;
+        if(uMap.find(hashKey) != uMap.end()) return uMap[hashKey];
+        
+        //S1 - We donot let student sit in position nX, nY. (Skip this pos no matter it's valid or not)
+        int S1 = DFS(nX, nY, cur, pre, S);
+        int S2 = 0; 
+        
+        //Check whether student can sit in current pos
+        if(canSit(S, x, y)){
+            //We have a new student sit in row nX now
+            cur |= (1 << y);
+            S[x][y] = 's';
+            //We have one more student here, check next possible seat
+            S2 = DFS(nX, nY, cur, pre, S) + 1;
+            //Backtracking stage
+            S[x][y] = '.';
+        }
+        
+        return (uMap[hashKey] = max(S1, S2));
+    }
+    
+public:
+    int maxStudents(vector<vector<char>>& seats) {
+        
+        return DFS(0, 0, 0, 0, seats);
+        
+    }
+};
