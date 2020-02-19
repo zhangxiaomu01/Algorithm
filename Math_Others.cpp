@@ -1,3 +1,13 @@
+#include<iostream>
+#include<vector>
+#include<string>
+#include<algorithm>
+#include<unordered_set>
+#include<unordered_map>
+#include<queue>
+#include<stack>
+using namespace std;
+
 //479. Largest Palindrome Product
 //https://leetcode.com/problems/largest-palindrome-product/
 /*
@@ -624,3 +634,97 @@ public:
     }
 };
 
+
+
+//1354. Construct Target Array With Multiple Sums
+//https://leetcode.com/problems/construct-target-array-with-multiple-sums/
+//A very hard problem, tricky and not easy to deal with!
+//This is essentially a math problem! It's not easy to identify the rules
+//Let's say the total sum of array is sum, and the max element is eMax,
+//Then eMax must be the value from last iteration, and the value before
+//we replace eMax to is eMax - (sum - eMax). Note sum - eMax is the previous
+//sum of all the other elements aside from the element located at eMax. 
+//In order to improve the overall efficiency, we need to replace 
+//eMax - (sum - eMax) to eMax % (sum - eMax). A simple proof is:
+/*
+Let's say [mx, a1,a2,..,an]
+other=a1+a2+...+an
+sm=other+mx
+if mx-other>other, there must be multiple(mx//other) times operations, and previous value of mx is mx%other
+for instance, [10,3], mx=10, other=3, prev=1(10%3)
+[1,3] => [4,3] => [7,3] => [10,3]
+you keep adding other to the element whose index is mx's, 3(10//3) times, and then 1 becomes 10
+*/
+//Since the value will be large, we promote int to long to solve this issue.
+//A good explanation:
+//https://leetcode.com/problems/construct-target-array-with-multiple-sums/discuss/510214/JavaC%2B%2B-O(n)-Solution-(Reaching-Points)
+class Solution {
+public:
+    bool isPossible(vector<int>& target) {
+        long sum = 0;
+        long curMax = 0;
+        //We maintain a max heap to get the largest element efficiently
+        priority_queue<long> pq;
+        for(int e : target){
+            pq.push(e);
+            sum += e;
+        }
+        
+        while(pq.top() != 1 && sum != 1){
+            curMax = pq.top();
+            pq.pop();
+            
+            //[n, 1] => [n-1, 1] => ... => [2, 1] => [1, 1]
+            if(sum - curMax == 1) return true;
+            
+            if(curMax <= sum / 2) return false;
+            
+            if(sum - curMax == 0) return false;
+            
+            long preMax = curMax % (sum - curMax);
+            pq.push(preMax);
+            //curMax - preMax >= 0
+            sum = sum - (curMax - preMax);
+            
+        }
+        
+        return sum == 1 || sum == target.size();
+    }
+};
+
+
+//A much more intuitive way to solve it. However, much slower because we get rid of the 
+//module trick!
+//A much more intuitive way to solve it. However, much slower because we get rid of the 
+//module trick!
+class Solution {
+public:
+    bool isPossible(vector<int>& target) {
+        long sum = 0;
+        long curMax = 0;
+        //We maintain a max heap to get the largest element efficiently
+        priority_queue<long> pq;
+        for(int e : target){
+            pq.push(e);
+            sum += e;
+        }
+        
+        while(pq.top() != 1 && sum != 1){
+            curMax = pq.top();
+            pq.pop();
+            
+            //[n, 1] => [n-1, 1] => ... => [2, 1] => [1, 1]
+            if(sum - curMax == 1) return true;
+            
+            if(curMax <= sum / 2 || sum - curMax == 0) return false;
+            //Much slower here, and cannot pass OJ
+            long preMax = curMax - (sum - curMax);
+            pq.push(preMax);
+            //curMax - preMax >= 0
+            sum = sum - (curMax - preMax);
+            
+        }
+        
+        return sum == 1 || sum == target.size();
+    }
+};
