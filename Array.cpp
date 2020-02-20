@@ -8,6 +8,7 @@
 #include<unordered_map>
 #include<numeric>
 #include<iterator>
+#include<iostream>
 
 using namespace std;
 
@@ -5892,4 +5893,93 @@ public:
         
     }
 };
+
+
+//1352. Product of the Last K Numbers
+//https://leetcode.com/problems/product-of-the-last-k-numbers/
+//My implementation during algorithm contest. Not very efficient!
+class ProductOfNumbers {
+private:
+    vector<vector<int>> numList;
+    bool hasZero;
+public:
+    ProductOfNumbers() {
+        hasZero = false;
+    }
+    
+    void add(int num) {
+        int len = numList.size();
+        if(num == 0){
+            numList.push_back({0, 1, len});
+            hasZero = true;
+            return;
+        }
+        
+        if(len == 0){
+            numList.push_back({num, 0, len});
+            //cout << num << " " << len << endl;
+            return;
+        }
+        
+        if(len > 0){
+            auto& pre = numList[len-1];
+            if(pre[0] == 0){
+                numList.push_back({num, 1, pre[2]});
+                
+            }else{
+                numList.push_back({num * pre[0], 0, pre[2]});
+            }  
+        }
+        
+        
+    }
+    
+    int getProduct(int k) {
+        int len = numList.size();
+        int range = len - k;
+        if(numList[len-1][2] >= range && hasZero){
+            return 0;
+        }
+        
+        if(len - k >= 1 && numList[len - k -1][0] > 0 && numList[len-1][2] < range)
+            return numList[len-1][0] / numList[len - k - 1][0];
+        
+        if(len - k == 0)
+            return numList[len-1][0];
+        
+        if(len -k >= 1 &&  numList[len - k -1][0] == 0 && numList[len-1][2] < range)
+            return numList[len-1][0];
+            
+        return numList[len-1][0];
+    }
+};
+
+/**
+ * Your ProductOfNumbers object will be instantiated and called as such:
+ * ProductOfNumbers* obj = new ProductOfNumbers();
+ * obj->add(num);
+ * int param_2 = obj->getProduct(k);
+ */
+
+
+//Optimal solution. It's amazing!
+class ProductOfNumbers {
+private:
+    vector<int> p1;
+public:
+    ProductOfNumbers() {
+        p1 = vector<int>({1});
+    }
+    
+    void add(int num) {
+        if(num == 0) p1 = {1};
+        else p1.push_back(num * p1.back());
+    }
+    
+    int getProduct(int k) {
+        if(k >= p1.size()) return 0;
+        return p1.back() / p1[p1.size() - k - 1];
+    }
+};
+
 
