@@ -5983,3 +5983,47 @@ public:
 };
 
 
+//1358. Number of Substrings Containing All Three Characters
+//https://leetcode.com/contest/biweekly-contest-20/problems/number-of-substrings-containing-all-three-characters/
+//This solution is based on counting how many valid sliding window we have.
+//It's elegant! O(n)
+//You did not get it during the contest.
+class Solution {
+public:
+    int numberOfSubstrings(string s) {
+        int len = s.size();
+        //k will record how many valid sliding window we have.
+        //Note we add one more valid character, we will have k + 1 characters
+        //we will also have k+1 valid combinations
+        int k = 0;
+        int A[3] = {0, 0, 0};
+        int res = 0;
+        for(int i = 0; i < len; ++i){
+            A[s[i] - 'a'] ++;
+            while(A[0] > 0 && A[1] > 0 && A[2] > 0){
+                -- A[s[k++] - 'a'];
+            }
+            res += k;
+        }
+        return res;
+    }
+};
+
+//Very clever idea. Always record the minimum valid index which 
+//contains all 3 characters.
+class Solution {
+public:
+    int numberOfSubstrings(string s) {
+        int len = s.size();
+        int res = 0;
+        //Need to be -1, since we need to cancel + 1 at the very beginning
+        int A[3] = {-1, -1, -1};
+        
+        for(int i = 0; i < len; ++i){
+            A[s[i] - 'a'] = i;
+            res += 1 + min(min(A[0], A[1]), A[2]);
+        }
+        return res;
+    }
+};
+

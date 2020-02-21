@@ -136,3 +136,72 @@ public:
     }
 };
 
+
+
+//1356. Sort Integers by The Number of 1 Bits
+//https://leetcode.com/contest/biweekly-contest-20/problems/sort-integers-by-the-number-of-1-bits/
+//My solution, not efficient! Each loop, we need 32 iterations.
+class Solution {
+    int getNumBits(unsigned int x){
+        int cnt = 0;
+        if(x == 0) return cnt;
+        int i = 0;
+        while(i < 32){
+            if((x & (1 << i)) != 0)
+                cnt ++;
+            i++;
+        }
+        return cnt;
+    }
+public:
+    vector<int> sortByBits(vector<int>& arr) {
+        vector<pair<int, int>> A;
+        
+        auto comp = [](pair<int, int>& p1, pair<int, int>& p2){
+            if(p1.first == p2.first) return p1.second < p2.second;
+            return p1.first < p2.first;
+        };
+        for(int e : arr){
+            int numBit = getNumBits(e);
+            A.push_back({numBit, e});
+            //cout << numBit << " " << e << endl;
+        }
+        sort(A.begin(), A.end(), comp);
+        
+        for(int i = 0; i < A.size(); ++i){
+            arr[i] = A[i].second;
+        }
+        return arr;
+        
+    }
+};
+
+//Actually, we can utilize the bit operation, x = x & (x - 1) to flip the lowest bit from 1 to 0. 
+//This greatly reduce the loop.
+class Solution {
+public:
+    vector<int> sortByBits(vector<int>& A) {
+        auto myComp = [](int a, int b)
+        {
+            int ca = 0, cb = 0;
+            int a_ = a, b_ = b;
+            while(a_ > 0)
+            {
+                a_ = a_ & (a_ - 1);
+                ca++;
+            }
+            while(b_ > 0)
+            {
+                b_ = b_ & (b_ - 1);
+                cb++;
+            }
+
+            if(ca == cb)
+                return a <= b;
+            return ca < cb;
+        };
+        sort(A.begin(), A.end(), myComp);
+        return A;
+    }
+};
+

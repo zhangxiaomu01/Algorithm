@@ -728,3 +728,26 @@ public:
         return sum == 1 || sum == target.size();
     }
 };
+
+
+//1359. Count All Valid Pickup and Delivery Options
+//1359. Count All Valid Pickup and Delivery Options
+//A pure math problem. A great explanation from lee
+//https://leetcode.com/problems/count-all-valid-pickup-and-delivery-options/discuss/516968/JavaC%2B%2BPython-Easy-and-Concise
+//O(n), space O(1)
+class Solution {
+public:
+    int countOrders(int n) {
+        long res = 1;
+        int mod = 1e9 + 7;
+        
+        for(int i = 1; i <= n; ++i){
+            //Note when we insert i th pair, we will have 
+            //(2 * i - 1) * 2 * i / 2 choices! For the rest of 
+            //i - 1 pairs, we already have res number of permutations.
+            res = res * (2 * i - 1) * i % mod;
+        }
+        
+        return int(res);
+    }
+};
