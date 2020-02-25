@@ -751,3 +751,67 @@ public:
         return int(res);
     }
 };
+
+
+//1360. Number of Days Between Two Dates
+//https://leetcode.com/problems/number-of-days-between-two-dates/
+//A tricky problem! Note how we check the leap year!
+class Solution {
+public:
+    int daysBetweenDates(string date1, string date2) {
+        if(date1 == date2) return 0;
+        
+        int dict[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+        int y1 = 0, y2 = 0, m1 = 0, m2 = 0, d1 = 0, d2 = 0;
+        y1 = stoi(date1.substr(0, 4));
+        m1 = stoi(date1.substr(5, 2));
+        d1 = stoi(date1.substr(8, 2));
+        
+        y2 = stoi(date2.substr(0, 4));
+        m2 = stoi(date2.substr(5, 2));
+        d2 = stoi(date2.substr(8, 2));
+        
+        //cout << y1 << " " << m1 << " " << d1 << endl;
+        
+        vector<int> fD = {y1, m1, d1}, sD = {y2, m2, d2};
+        
+        //Make sure smaller dates goes before large date
+        if(fD[0] > sD[0])
+            swap(fD, sD);
+        else if(fD[0] == sD[0] && fD[1] > sD[1])
+            swap(fD, sD);
+        else if(fD[0] == sD[0] && fD[1] == sD[1] && fD[2] > sD[2])
+            swap(fD, sD);
+        
+        int res = 0;
+        
+        //Calculate the number of days from the epoch. From the first day of the smallest year to
+        //current date of both years. Then we substract the larger with the smaller.
+        int nDay1 = 0, nDay2 = 0;
+        int diffMonth = fD[1] - 1; 
+        for(int i = 0; i < diffMonth; ++i){
+            nDay1 += dict[i];
+        }
+        //Handles the leap year
+        if((((fD[0] % 4 == 0) && (fD[0] % 100 != 0)) || (fD[0] % 400 == 0)) && fD[1] > 2) nDay1 += 1;
+        nDay1 += fD[2];
+        //cout << nDay1 << endl;
+
+        for(int i = fD[0]; i < sD[0]; ++i){
+            if(i % 4 == 0) nDay2 += 366;
+            else
+                nDay2 += 365;
+        }
+        for(int i = 0; i < sD[1] - 1; ++i){
+            nDay2 += dict[i];
+        }
+        //Handles the leap year
+        if((((sD[0] % 4 == 0) && (sD[0] % 100 != 0)) || (sD[0] % 400 == 0)) && sD[1] > 2) nDay2 += 1;
+        nDay2 += sD[2];
+        
+        res = nDay2 - nDay1;
+        return res;
+    }
+};
+
+
