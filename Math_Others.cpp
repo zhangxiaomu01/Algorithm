@@ -815,3 +815,208 @@ public:
 };
 
 
+//1363. Largest Multiple of Three
+//https://leetcode.com/problems/largest-multiple-of-three/
+//This is my trial, unfortunately, it does not work! It's pretty close to the final answer
+/*
+class Solution {
+public:
+    string largestMultipleOfThree(vector<int>& digits) {
+        int dict[10] = {0};
+        for(int c : digits){
+            dict[c] ++;
+        }
+        
+        string res = "";
+        
+        for(int i = 9; i >= 0; --i){
+            while (i == 9 && dict[i] > 0) {
+                res.push_back('9');
+                dict[i] --;
+            }
+            
+            while(i == 8 && dict[i] > 0){
+                if(dict[7] > 0){
+                    res.push_back('8');
+                    res.push_back('7');
+                    dict[i] --;
+                    dict[7] --;
+                }else if(dict[4] > 0){
+                    res.push_back('8');
+                    res.push_back('4');
+                    dict[i] --;
+                    dict[4] --;
+                }else if(dict[1] > 0){
+                    res.push_back('8');
+                    res.push_back('1');
+                    dict[i] --;
+                    dict[1] --;
+                }else
+                    break;
+            }
+            
+            while(i == 7 && dict[i] > 0){
+                if(dict[5] > 0){
+                    res.push_back('7');
+                    res.push_back('5');
+                    dict[i] --;
+                    dict[5] --;
+                }else if(dict[3] > 0){
+                    res.push_back('7');
+                    res.push_back('2');
+                    dict[i] --;
+                    dict[2] --;
+                }else
+                    break;
+            }
+            
+            while(i == 6 && dict[i] > 0){
+                res.push_back('6');
+                dict[i] --;
+            }
+            
+            while(i == 5 && dict[i] > 0){
+                if(dict[4] > 0){
+                    res.push_back('5');
+                    res.push_back('4');
+                    dict[i] --;
+                    dict[4] --;
+                }else if(dict[1] > 0){
+                    res.push_back('5');
+                    res.push_back('1');
+                    dict[i] --;
+                    dict[1] --;
+                }else
+                    break;
+            }
+            
+            while(i == 4 && dict[i] > 0){
+                if(dict[2] > 0){
+                    res.push_back('4');
+                    res.push_back('2');
+                    dict[i] --;
+                    dict[2] --;
+                }else
+                    break;
+            }
+            
+            while(i == 3 && dict[i] > 0){
+                res.push_back('3');
+                dict[i] --;
+            }
+            
+            while(i == 2 && dict[i] > 0){
+                if(dict[1] > 0){
+                    res.push_back('2');
+                    res.push_back('1');
+                    dict[i] --;
+                    dict[1] --;
+                }else
+                    break;
+            }
+            
+            while(i == 1 && dict[i] >= 3){
+                res.push_back('1');
+                res.push_back('1');
+                res.push_back('1');
+                dict[i] -= 3;
+            }
+            
+            while(i == 0 && dict[i] > 0){
+                res.push_back('0');
+                dict[i] --;
+            }
+            
+        }
+        
+        int k = 0;
+        while(k < res.size() - 1 && res[k] == '0'){
+            k++;
+        }
+        //cout << k << endl;
+        res =res.substr(k, res.size() - k);
+        return res;
+    }
+};
+
+*/
+
+//Actually, this is a pure math problem!
+/*
+Basic Math
+999....999 % 3 == 0
+1000....000 % 3 == 1
+a000....000 % 3 == a % 3
+abcdefghijk % 3 == (a+b+c+..+i+j+k) % 3
+
+
+Explanation
+Calculate the sum of digits total = sum(A)
+If total % 3 == 0, we got it directly
+If total % 3 == 1 and we have one of 1,4,7 in A:
+we try to remove one digit of 1,4,7
+If total % 3 == 2 and we have one of 2,5,8 in A:
+we try to remove one digit of 2,5,8
+If total % 3 == 2:
+we try to remove two digits of 1,4,7
+If total % 3 == 1:
+we try to remove two digits of 2,5,8
+Submit
+
+Complexity
+We can apply counting sort, so it will be O(n)
+Space O(sort)
+
+This excellent solution is from lee:
+https://leetcode.com/problems/largest-multiple-of-three/discuss/517628/Python-Basic-Math
+*/
+class Solution {
+    string toStr(vector<int>& A){
+        string res;
+        for(int i = 9; i >= 0; --i){
+            while(A[i] > 0){
+                res.push_back(i + '0');
+                A[i] --;
+            }
+        }
+        return res;
+    }
+    
+    bool getRightAns(vector<int>& A, int t, int& Sum){
+        if(A[t] > 0) {
+            A[t] --;
+            Sum -= t;
+        }
+        if(Sum % 3 == 0) return true;
+        return false;
+    }
+    
+public:
+    string largestMultipleOfThree(vector<int>& digits) {
+        int sum = 0;
+        vector<int> Arry(10, 0);
+        for(int e : digits){
+            Arry[e] ++;
+            sum += e;
+        }
+        
+        string res = "";
+        
+        if(sum % 3 == 0)
+            res = toStr(Arry);
+        else if(sum % 3 == 1 && (getRightAns(Arry, 1, sum) || getRightAns(Arry, 4, sum) || getRightAns(Arry, 7, sum))){
+            res = toStr(Arry);
+        }
+        else if(sum% 3 == 2 && (getRightAns(Arry, 2, sum) || getRightAns(Arry, 5, sum) || getRightAns(Arry, 8, sum))){
+            res = toStr(Arry);
+        }
+        else if(sum% 3 == 2 && (getRightAns(Arry, 1, sum) || getRightAns(Arry, 1, sum)|| getRightAns(Arry, 4, sum) || getRightAns(Arry, 4, sum) || getRightAns(Arry, 7, sum) || getRightAns(Arry, 7, sum)))
+            res = toStr(Arry);
+        else if(sum% 3 == 1 && (getRightAns(Arry, 2, sum) || getRightAns(Arry, 2, sum)|| getRightAns(Arry, 5, sum) || getRightAns(Arry, 5, sum) || getRightAns(Arry, 8, sum) || getRightAns(Arry, 8, sum)))
+            res = toStr(Arry);
+        
+        if(res == "") return "";
+        
+        return res[0] == '0' ? "0" : res;
+    }
+};
