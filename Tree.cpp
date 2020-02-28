@@ -1,3 +1,16 @@
+ #include<windows.h>
+#include<algorithm>
+#include<vector>
+#include<array>
+#include<cmath>
+#include<random>
+#include<sstream>
+#include<unordered_map>
+#include<numeric>
+#include<iterator>
+#include<iostream>
+using namespace std;
+
  //144. Binary Tree Preorder Traversal
  //https://leetcode.com/problems/binary-tree-preorder-traversal/
  /*
@@ -3359,4 +3372,23 @@ public:
 
 
 
+//1367. Linked List in Binary Tree
+//https://leetcode.com/contest/weekly-contest-178/problems/linked-list-in-binary-tree/
+//You did not get it right during the contest, what a shame!
+class Solution {
+private:
+    bool isValid(ListNode* head, TreeNode* root){
+        if(!head) return true;
+        if(!root) return false;
+        
+        return head->val == root->val && (isValid(head->next, root->left) || isValid(head->next, root->right));
+    }
+public:
+    bool isSubPath(ListNode* head, TreeNode* root) {
+        //Tree can potentially be empty, especially we put it into recursive form
+        if(!root) return false;
+        
+        return isValid(head, root) || isSubPath(head, root->left) || isSubPath(head, root->right);
+    }
+};
 

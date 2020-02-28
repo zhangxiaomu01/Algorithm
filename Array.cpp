@@ -6027,3 +6027,85 @@ public:
     }
 };
 
+
+//1366. Rank Teams by Votes
+//https://leetcode.com/problems/rank-teams-by-votes/
+/*
+You did not get this done during the contest, what a shame!
+Utilize the lambda expression.
+*/
+class Solution {
+public:
+    string rankTeams(vector<string>& votes) {
+        vector<int> nTeams;
+        int numOfTeams = votes[0].size();
+        int len = votes.size();
+        
+        string res(votes[0]);
+        
+        if(numOfTeams == 1) return votes[0];
+        
+        //row: each number
+        //col: counter of corresponding ranking
+        vector<vector<int>> sDict(26, vector<int>(26, 0));
+        
+        //Can be optimized a little bit. The vector comparison may be optimized 
+        //by compier and faster
+        auto myComp = [&](const char& x, const char& y){
+             for(int i = 0; i < numOfTeams; ++i){
+                 if(sDict[x - 'A'][i] > sDict[y - 'A'][i])
+                     return true;
+                 else if(sDict[x - 'A'][i] < sDict[y - 'A'][i])
+                     return false;
+             }
+            return x < y;
+        };
+
+        for(int i = 0; i < len; ++i){
+            for(int j = 0; j < numOfTeams; ++j){
+                sDict[votes[i][j] - 'A'][j]++;
+            }
+        }
+        sort(res.begin(), res.end(), myComp);
+        return res;
+    }
+};
+
+//Exact the same idea, utilize the vector comparison now
+class Solution {
+public:
+    string rankTeams(vector<string>& votes) {
+        vector<int> nTeams;
+        int numOfTeams = votes[0].size();
+        int len = votes.size();
+        
+        string res(votes[0]);
+        
+        if(numOfTeams == 1) return votes[0];
+        
+        //row: each number
+        //col: counter of corresponding ranking
+        vector<vector<int>> sDict(26, vector<int>(26, 0));
+        
+        //Can be optimized a little bit. The vector comparison may be optimized 
+        //by compier and faster
+        auto myComp = [&](const char& x, const char& y){
+             if(sDict[x - 'A'] > sDict[y - 'A'])
+                 return true;
+             else if(sDict[x - 'A'] < sDict[y - 'A'])
+                 return false;
+
+            return x < y;
+        };
+
+        for(int i = 0; i < len; ++i){
+            for(int j = 0; j < numOfTeams; ++j){
+                sDict[votes[i][j] - 'A'][j]++;
+            }
+        }
+        
+        sort(res.begin(), res.end(), myComp);
+        return res;
+    }
+};
+
