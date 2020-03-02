@@ -6109,3 +6109,71 @@ public:
     }
 };
 
+
+
+//1371. Find the Longest Substring Containing Vowels in Even Counts
+//https://leetcode.com/contest/biweekly-contest-21/problems/find-the-longest-substring-containing-vowels-in-even-counts/
+//You almost get it right! Your insight is correct.
+//But you did not get the idea that how to encode the hash key for quick 
+//override the previous index! 
+//This is a 
+class Solution {
+    unordered_map<char, int> uMap;
+public:
+    int findTheLongestSubstring(string s) {
+        //You can using a string to do the hash key. It should be exactly
+        //the same as the int.
+        //We will encode first 5 bits of the key to represents whether we have
+        //meet the requirements. If we have even number of 'aeiou', then we set
+        //corresponding bit to 1.
+        //'a' - bit 1 etc.
+        //Only if key == 0, then we meet all the conditions!
+        int key = 0;
+        
+        //Map the key with the value
+        //Note bit 0 is reserved for other value
+        uMap['a'] = 1;
+        uMap['e'] = 2;
+        uMap['i'] = 3;
+        uMap['o'] = 4;
+        uMap['u'] = 5;
+        
+        //key - index pair
+        unordered_map<int, int> uPreIndex;
+        
+        int len = s.size();
+        int res = 0;
+        
+        //Handle other values other than 'aeiou'
+        uPreIndex[0] = -1;
+        
+        for(int i = 0; i < len; ++i){
+            if(uMap.find(s[i]) != uMap.end()){
+                int offset = uMap[s[i]];
+                
+                //Encode current character to our key
+                key = key ^ (1 << offset);
+                
+                //A very tricky part is here: we only update key if we have the same pattern
+                //e.g. 011000 again, then we know current index - uPreIndex[key] will always
+                //give us the longest value.
+                //We will never update uPreIndex[0], by default it means our key changes to 0
+                //which means we can include all the characters so far
+                if(uPreIndex.find(key) == uPreIndex.end())
+                    uPreIndex[key] = i;
+            }
+            
+            int previousValidKey = (uMap.find(s[i]) == uMap.end() ? 0 : uPreIndex[key]);
+            
+            //We can directly do i - uPreIndex[key] here, since the previous one must be 
+            //an invalid combination like 010000 or 111000. If it's a valid combination,
+            //then we always have 000000. Then we do not need to offset by 1 for 010000
+            //or 111000 cases, we directly offset by 1 if we get 000000, since uPreIndex[0] = -1
+            res = max(res, i - uPreIndex[key]);
+            
+        }
+        return res;
+    }
+};
+
+

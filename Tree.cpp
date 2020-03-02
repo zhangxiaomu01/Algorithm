@@ -3392,3 +3392,75 @@ public:
     }
 };
 
+
+//1372. Longest ZigZag Path in a Binary Tree
+//https://leetcode.com/problems/longest-zigzag-path-in-a-binary-tree/
+//You did not make it during bContest 21st
+//Execellent solution, still a little bit confusing!
+class Solution {
+    //calZigZag will return the current valid nodes we can visit starting from
+    //node
+    
+    //preLeft - previous comes from left branch
+    //curMax - current max number of valid nodes starting from this node, 
+    //since we do post order traversal. It will be 
+    //updated when we search left and right node
+    int calZigZag(TreeNode* node, bool preLeft, int& curMax){
+        if(!node) return 0;
+        //leftMax means explore the left branch of node. We plus 1 to include node!
+        int leftMax = calZigZag(node->left, true, curMax) + 1;
+        int rightMax = calZigZag(node->right, false, curMax) + 1;
+        
+        curMax = max(curMax, max(leftMax, rightMax));
+        
+        return preLeft ? rightMax : leftMax;
+        
+    }
+public:
+    int longestZigZag(TreeNode* root) {
+        if(!root) return 0;
+        int maxLen = 0;
+        //This is a confusing staff, imagine we have a virtual node comes from 
+        //left of root, actually, true or false does not really matter. Since they
+        //will be the same!
+        calZigZag(root, false, maxLen);
+        
+        //We need to -1 according to the definition
+        return maxLen - 1;
+        
+    }
+};
+
+
+// Another perspective, much slower!
+class Solution {
+    //return value has 3 components:
+    //0 - first Max
+    //1 - current Max
+    //2 - right Max
+    vector<int> calZigZag(TreeNode* node){
+        if(!node) return vector<int>({-1, -1, -1});
+        
+        vector<int> leftMax = calZigZag(node->left);
+        vector<int> rightMax = calZigZag(node->right);
+        
+        vector<int> res (3, 0);
+        //leftMax[2] represents the right optimal solution for left child,
+        //we need to add 1 to include left child node. Node in order to make
+        //sure that we are still in a chain, we need to gurantee include the 
+        //sub-tree node by adding 1 here
+        res[0] = leftMax[2] + 1;
+        //final optimal solution!
+        res[1] = max(max(leftMax[2], rightMax[0]) + 1, max(leftMax[1], rightMax[1]));
+        //the optisite compared with above left
+        res[2] = rightMax[0] + 1;
+        
+        return res;
+    }
+public:
+    int longestZigZag(TreeNode* root) {
+        if(!root) return 0;
+        return calZigZag(root)[1];
+    }
+};
+

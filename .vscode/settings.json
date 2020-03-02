@@ -3,6 +3,8 @@
         "vector": "cpp",
         "utility": "cpp",
         "cmath": "cpp",
-        "xstring": "cpp"
+        "xstring": "cpp",
+        "deque": "cpp",
+        "list": "cpp"
     }
 }
