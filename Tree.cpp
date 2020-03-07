@@ -3464,3 +3464,74 @@ public:
     }
 };
 
+
+//1373. Maximum Sum BST in Binary Tree
+//https://leetcode.com/problems/maximum-sum-bst-in-binary-tree/
+//You did not make it during the biweekly contest 21
+// Post order traversal, however, you need some intuition to get
+// it right! The idea is we first check all the children, if they
+// are valid BST and with current node, they can still form a valid
+// BST, then we can update our maximum sub tree sum.
+class Solution {
+private:
+    int res;
+    
+    //The return value will always be a vector with 3 elements, the first
+    //one is the maximum value from the tree, the second one is the 
+    //smallest from the tree. Since we do a post order traversal, we
+    //need to always maintain the BST property for all the sub tree.
+    vector<int> checkValidBST(TreeNode* node){
+        //As for the empty node, we always denote the sum of the tree to be 0
+        //Null node is always a valid BST
+        if(!node) return vector<int>({INT_MIN, INT_MAX, 0});
+        
+        auto left = checkValidBST(node->left);
+        auto right = checkValidBST(node->right);
+        
+        //With the node, we can not form a valid BST any more
+        if(left.empty() || right.empty() || left[0] >= node->val || right[1] <= node->val)
+            return vector<int>();
+        
+        //If we do have a BST
+        int curSum = node->val + left[2] + right[2];
+        res = max(res, curSum);
+        
+        //Note we have always maintain the correct return value. 
+        //right[0] is the maximum value from the right sub tree
+        //left[1] is the minimum value from the left sub tree
+        return vector<int>({max(right[0], node->val), min(left[1], node->val), curSum});
+        
+    }
+public:
+    int maxSumBST(TreeNode* root) {
+        res = 0;
+        
+        checkValidBST(root);
+        //We have all negative nodes
+        return max(0, res);
+        
+    }
+};
+
+
+//Note the above solution is slow because of too many vector construction.
+//Same idea but much simper data structure
+class Solution {
+    int dfs(TreeNode *root) {
+        if (!root) return 0;
+        int l = dfs(root->left), r = dfs(root->right);
+        if (l == INT_MIN || r == INT_MIN || root->left && root->left->val >= root->val
+            || root->right && root->right->val <= root->val)
+            return INT_MIN;
+        int sum = l + r + root->val;
+        mx = max(mx, sum);
+        return sum;
+    }
+    int mx;
+public:
+    int maxSumBST(TreeNode* root) {
+        mx = 0;
+        dfs(root);
+        return mx;
+    }
+};
