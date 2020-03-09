@@ -6,5 +6,6 @@
         "xstring": "cpp",
         "deque": "cpp",
         "list": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }

@@ -756,3 +756,141 @@ public:
         return 0;
     }
 };
+
+
+
+//1368. Minimum Cost to Make at Least One Valid Path in a Grid
+//https://leetcode.com/problems/minimum-cost-to-make-at-least-one-valid-path-in-a-grid/
+//You did not make it in the contest! It should not be a hard problem!
+//Classic Graph problem, note we can consider each grid as a node in our graph,
+//with at most 4 edges connect to other grid, if the sign pointing to another node,
+//then that edge will have weight 0, else, we have edge weight 1. We want to know, 
+//what will be the optimal solution if we want to move from (0, 0) to (m-1, n-1).
+//We need to greedily explore all the nodes with the smallest cost then 1 cost higher
+//We can do it either by BFS or DFS.
+//BFS implementation!
+class Solution {
+private:
+    bool isValid(int x, int y, int m, int n){
+        return x >= 0 && x < m && y >= 0 && y < n;
+    }
+    
+public:
+    int minCost(vector<vector<int>>& grid) {
+        const int m = grid.size();
+        const int n = m ? grid[0].size() : 0;
+        
+        // vector<0> - x
+        // vector<1> - y
+        // vector<2> - cost
+        deque<vector<int>> dQ;
+        
+        int nRow[4] = {0, 0, 1, -1};
+        int nCol[4] = {1, -1, 0, 0};
+        //Record current visited nodes
+        int visited[m][n];
+        
+        //I am not so sure why
+        //int visted[m][n] = {0} cannot initialize all 2D array with 0 any more
+        for(int i = 0; i < m; ++i){
+            for(int j = 0; j < n; ++j)
+                visited[i][j] = 0;
+        }
+
+        dQ.push_back({0, 0, 0});
+        
+        
+        while (!dQ.empty()){
+            auto it = dQ.front();
+            dQ.pop_front();
+            visited[it[0]][it[1]] = 1;
+
+            if (it[0] == m-1 && it[1] == n-1) return it[2];
+            
+            int dir = grid[it[0]][it[1]] - 1;
+            
+            for (int i = 0; i < 4; ++i){
+                int nX = it[0] + nRow[i];
+                int nY = it[1] + nCol[i];
+                
+                //Valid and not visited!
+                if (isValid(nX, nY, m, n) && !visited[nX][nY]){
+                    //We cannot set visited[nX][nY] to be 1 here because we will potentially
+                    //lose some possible conditions!
+                    //visited[nX][nY] = 1;
+                    if (nX == it[0] + nRow[dir] && nY == it[1] + nCol[dir]){
+                        // Note we push the smaller weight to the front of the queue
+                        dQ.push_front({nX, nY, it[2]}); 
+                    }    
+                    else{
+                        // And we push the larger weight to the back of the queue
+                        // which ensure us to always examine the cost of 0 first, then cost 
+                        // of 1, 2, 3, ... k.
+                        dQ.push_back({nX, nY, it[2] + 1});
+                    }
+                        
+                }
+            
+            }
+        }
+        return -1;
+        
+    }
+};
+
+
+//DFS implementation! Much trickier!
+//With early termination, this approach is a little bit faster!
+class Solution {
+private:
+    int dir[4][2] = {{0, 1}, {0, -1}, {1, 0}, { -1, 0}};
+    
+    void dfs(vector<vector<int>>& dp, int curX, int curY, queue<vector<int>>& Q, int cost, vector<vector<int>>& grid){
+        int m = dp.size();
+        int n = dp[0].size();
+        //note for dp[x][y], we always update the optimal solution. Because our cost is built from 0
+        if(curX < 0 || curX >= m || curY < 0 || curY >= n || dp[curX][curY] != INT_MAX) return;
+        dp[curX][curY] = cost;
+        Q.push({curX, curY});
+        int nextDir = grid[curX][curY] - 1;
+        dfs(dp, curX + dir[nextDir][0], curY + dir[nextDir][1], Q, cost, grid);
+    }
+    
+public:
+    int minCost(vector<vector<int>>& grid) {
+        int m = grid.size();
+        int n = grid[0].size();
+        int cost = 0;
+        
+        vector<vector<int>> dp(m, vector<int>(n, INT_MAX));
+        
+        //0 - x, 1 - y
+        queue<vector<int>> Q;
+        //We need to call dfs first to get all the nodes with cost 0 to get there
+        dfs(dp, 0, 0, Q, cost, grid);
+        
+        while(!Q.empty()){
+            int lenQ = Q.size();
+            cost ++;
+            
+            for(int i = 0; i < lenQ; ++i){
+                auto v = Q.front();
+                Q.pop();
+                //Early termination!
+                if(dp[m-1][n-1] != INT_MAX) return dp[m-1][n-1];
+                
+                for(int j = 0; j < 4; ++j){
+                    int nextX = v[0] + dir[j][0];
+                    int nextY = v[1] + dir[j][1];
+                    //We already increment cost right now!
+                    dfs(dp, nextX, nextY, Q, cost, grid);
+                }
+
+            }
+        }
+        
+        return dp[m-1][n-1];
+        
+    }
+};
+
