@@ -144,3 +144,50 @@ public:
         
     }
 };
+
+
+
+//1383. Maximum Performance of a Team
+//https://leetcode.com/problems/maximum-performance-of-a-team/
+// You almost got it right during the contest!
+// Greedy
+class Solution {
+private:
+    const int mV = 1000000007;
+    
+public:
+    int maxPerformance(int n, vector<int>& speed, vector<int>& efficiency, int k) {
+        vector<vector<int>> Eng(n, vector<int>(2, 0));
+        for(int i = 0; i < n; ++i){
+            Eng[i][1] = speed[i];
+            Eng[i][0] = efficiency[i];
+        }
+        
+        //min heap
+        priority_queue<int, vector<int>, greater<int>> pq;
+        
+        auto myComp1 = [](vector<int>& v1, vector<int>& v2){
+            if(v1[0] == v2[0]) return v1[1] < v2[1];
+            else return v1[0] < v2[0];
+        };
+        
+        sort(Eng.begin(), Eng.end(), myComp1);
+        
+        long long curMax = 0;
+        long long res = 0;
+        
+        for(int i = n-1; i >= 0; --i){
+            pq.push(Eng[i][1]);
+            curMax += Eng[i][1];
+            
+            if(i < n-k){
+                //If it exceeds k elements, we pop smallest out of pq
+                curMax -= pq.top();
+                pq.pop();
+            }
+            res = max(res, curMax * Eng[i][0]);
+        }
+        return int(res % mV);  
+    }
+};
+
