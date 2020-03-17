@@ -894,3 +894,55 @@ public:
     }
 };
 
+
+//1377. Frog Position After T Seconds
+//https://leetcode.com/problems/frog-position-after-t-seconds/
+//You did not make it during contest 179th 
+//This clever solution is from: 
+//https://leetcode.com/problems/frog-position-after-t-seconds/discuss/532571/JavaC%2B%2BPython-DFS
+class Solution {
+private:
+    double dfs(int t, int target, int cur, vector<vector<int>>& G, vector<int> visited){
+        if(t < 0) return 0.0;
+        // We found target that we return maximum possibility
+        //This condition is very tricky! You tried several times but failed!
+        //Test case: 3 [[2,1],[3,2]] 1 2
+        //if(cur == target && t >= 0) return 1.0;
+        //else if(cur != 1 && G[cur].size() == 1 && t >= 0) return 0.0;
+        
+        //Handle leaf node or time is over
+        //Note we need to return cur == target, make sure that we can find this value.
+        //This is neat and clever!
+        if(cur != 1 && G[cur].size() == 1 || t == 0)
+            return cur == target;
+        
+        double res = 0.0;
+        visited[cur] = 1;
+        for(int i = 0; i < G[cur].size(); ++i){
+            if(visited[G[cur][i]] == 0)
+                res += dfs(t-1, target, G[cur][i], G, visited);
+        }
+
+        // For node aside from 1
+        return res * (1.0 / double(int(G[cur].size()) - int(cur != 1)));
+    }
+
+public:
+    double frogPosition(int n, vector<vector<int>>& edges, int t, int target) {
+        //Note this is wrong, the frog cannot stop jump if he can
+        //Test case: 4 [[2,1],[3,2],[4,1]] 4 1
+        //if(target == 1) return 1.0;
+        
+        if(n == 1) return 1.0;
+        vector<vector<int>> tree(n+1);
+        for(int i = 0; i < edges.size(); ++i){
+            int from = edges[i][0];
+            int to = edges[i][1];
+            tree[from].push_back(to);
+            tree[to].push_back(from);
+        }
+        
+        vector<int> visited(n+1, 0);
+        return dfs(t, target, 1, tree, visited);        
+    }
+};
