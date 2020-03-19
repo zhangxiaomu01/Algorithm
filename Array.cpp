@@ -6177,3 +6177,74 @@ public:
 };
 
 
+// 1387. Sort Integers by The Power Value
+// https://leetcode.com/problems/sort-integers-by-the-power-value/
+// A little bit tricky problem! you did not get it in bContest 22th
+// You should just do simulation!
+class Solution {
+    int calPower(int x){
+        if(x == 1) return 0;
+        int cnt = 0;
+        while(x != 1){
+            if(x % 2 == 0) x = x / 2;
+            else{
+                x = 3 * x + 1;
+            }
+            cnt ++;
+        }
+        return cnt;
+    }
+public:
+    int getKth(int lo, int hi, int k) {
+        // first int - power value, second int - actual value
+        vector<pair<int, int>> tempRes;
+        
+        for(int i = lo; i <= hi; ++i){
+            tempRes.push_back({calPower(i), i});
+        }
+        sort(tempRes.begin(), tempRes.end());
+        
+        return tempRes[k-1].second;
+        
+    }
+};
+
+//Optimization: instead of a full sort, we can do partial sort
+// A little bit tricky problem! you did not get it in bContest 22th
+// You should just do simulation!
+class Solution {
+    int calPower(int x){
+        if(x == 1) return 0;
+        int cnt = 0;
+        while(x != 1){
+            if(x % 2 == 0) x = x / 2;
+            else{
+                x = 3 * x + 1;
+            }
+            cnt ++;
+        }
+        return cnt;
+    }
+public:
+    int getKth(int lo, int hi, int k) {
+        // first int - power value, second int - actual value
+        vector<pair<int, int>> tempRes;
+        
+        for(int i = lo; i <= hi; ++i){
+            tempRes.push_back({calPower(i), i});
+        }
+        
+        auto myComp = [](pair<int, int>& p1, pair<int, int>& p2){
+            if(p1.first == p2.first){
+                return p1.second < p2.second;
+            }
+            return p1.first < p2.first;
+        };
+        
+        // Faster than do a full sort!
+        nth_element(tempRes.begin(), tempRes.begin() + (k-1), tempRes.end(), myComp);
+        
+        return tempRes[k-1].second;
+        
+    }
+};
