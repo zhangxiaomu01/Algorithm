@@ -6248,3 +6248,35 @@ public:
         
     }
 };
+
+
+//1400. Construct K Palindrome Strings
+//https://leetcode.com/problems/construct-k-palindrome-strings/
+//The key observation here is that the odd number of characters always occupy one slot among all k slots
+class Solution {
+public:
+    bool canConstruct(string s, int k) {
+        if(s.size() < k) return false;
+        unordered_map<char, int> uMap; 
+        for(char c : s){
+            uMap[c] ++;
+        }
+        if(uMap.size() == k) return true;
+        int numOfOdds = 0;
+        //Odd number of characters will always occupy 1 slot from k slots
+        for(auto it = uMap.begin(); it != uMap.end(); ++it){
+            //cout << it->first << " " << it->second << endl;
+            if(it->second % 2 == 1){
+                numOfOdds ++;
+            }
+        }
+        
+        // cout << numOfOdds << endl;
+        //If we have more odd number of characters, 
+        if(k - numOfOdds < 0) return false;
+        
+    
+        return true;
+    }
+};
+
