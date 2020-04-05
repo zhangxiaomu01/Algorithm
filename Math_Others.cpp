@@ -1020,3 +1020,30 @@ public:
         return res[0] == '0' ? "0" : res;
     }
 };
+
+
+// 1401. Circle and Rectangle Overlapping
+// https://leetcode.com/problems/circle-and-rectangle-overlapping/
+// A very clever idea from 
+//https://leetcode.com/problems/circle-and-rectangle-overlapping/discuss/563463/C%2B%2B-with-simple-explanation
+//Just move the center of the circle to the Origin (0, 0), so the problem becomes:
+//"is there a point (x, y) (x1 <= x <= x2, y1 <= y <= y2) satisfying x^2 + y^2 <= r^2".
+//Then we can compute the radius^2, and the minimum distance from the each verties. Since a rectangle is convex and 
+//each vertex is an extreme point.
+class Solution {
+public:
+    bool checkOverlap(int radius, int x_center, int y_center, int x1, int y1, int x2, int y2) {
+        // Recenter the circle to (0, 0)
+        x1 -= x_center;
+        y1 -= y_center;
+        x2 -= x_center;
+        y2 -= y_center;
+        
+        //if the triangle lies across axis, we know for this axis, the triangle will be intersect with circle
+        //Image it as some sort of 1-d projection
+        int minX = x1 * x2 > 0 ? min(x1 * x1, x2 * x2) : 0;
+        int minY = y1 * y2 > 0 ? min(y1 * y1, y2 * y2) : 0;
+        
+        return minX + minY <= radius * radius;
+    }
+};
