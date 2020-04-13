@@ -191,3 +191,36 @@ public:
     }
 };
 
+
+
+// 1405. Longest Happy String
+// https://leetcode.com/problems/longest-happy-string/
+// This greedy approach is so clever, we just always put two characters together from the longest
+// pile, if we cannot do this, then we put 1 such chracter from the longest pile. Then we select 1 or
+// 0 character from middle pile. We also need to swap the piles in order to make sure that longest pile
+// always comes first, then middle pile, then the last pile.
+// Here is the post:
+// https://leetcode.com/problems/longest-happy-string/discuss/564277/C%2B%2BJava-a-greater-b-greater-c
+// This solution is marvelous! 
+class Solution {
+public:
+    string longestDiverseString(int a, int b, int c, char aa = 'a', char bb = 'b', char cc = 'c') {
+        // if all the shorter chracters has been successfully inserted
+        // We also make sure that the longest chracter always goes first
+        if(b < c) 
+            return longestDiverseString(a, c, b, aa, cc, bb);
+        else if (a < b)
+            return longestDiverseString(b, a, c, bb, aa, cc);
+        // base case: string(min(a, 2), aa);
+        if(b == 0)
+            return string(min(a, 2), aa);
+        
+        int consumeA = min(a, 2);
+        // If we already consumes the A with consumeA times, then the rest is still greater than b, 
+        int consumeB = a - consumeA >= b ? 1 : 0; 
+        
+        string temp = string(consumeA, aa) + string(consumeB, bb);
+        return temp + longestDiverseString(a - consumeA, b - consumeB, c, aa, bb, cc);
+        
+    }
+};
