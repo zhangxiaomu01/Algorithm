@@ -224,3 +224,29 @@ public:
         
     }
 };
+
+
+// 1402. Reducing Dishes
+// https://leetcode.com/problems/reducing-dishes/
+// Greedy problem! Can be solved using dp + memorization
+// Two key observations here are we always need to make the most satisfied dishes
+// to the end; the second one is that 
+// total accumulate level (from largest to smallest) >= satisfaction[i], then we 
+// can safely include satisfaction[i] to our final result
+class Solution {
+public:
+    int maxSatisfaction(vector<int>& satisfaction) {
+        int len = satisfaction.size();
+        sort(satisfaction.begin(), satisfaction.end());
+        int accumulate = 0;
+        int res = 0;
+        for(int i = len-1; i >= 0 && satisfaction[i] > -accumulate; --i){
+            accumulate += satisfaction[i];
+            res += accumulate;
+        }
+        
+        return res;
+    }
+};
+
+

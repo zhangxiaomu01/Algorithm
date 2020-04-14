@@ -2769,3 +2769,66 @@ public:
 };
 
 
+// 1406. Stone Game III
+// https://leetcode.com/problems/stone-game-iii/
+// Lee's answer is always amazing!
+// https://leetcode.com/problems/stone-game-iii/discuss/564260/JavaC%2B%2BPython-DP-O(1)-Space
+/*
+    dp[i] means, if we ignore before A[i],
+    what's the highest score that Alex can win over the Bob？
+
+    There are three option for Alice to choose.
+    Take A[i], win take - dp[i+1]
+    Take A[i] + A[i+1], win take - dp[i+2]
+    Take A[i] + A[i+1] + A[i+2], win take - dp[i+3]
+    dp[i] equals the best outcome of these three solutions.
+*/
+class Solution {
+public:
+    string stoneGameIII(vector<int>& stoneValue) {
+        int len = stoneValue.size();
+        // Initialize the dp array with the minimum value
+        vector<int> dp(len, -1e9);
+        for(int i = len-1; i >= 0; --i){
+            for(int k = 0, take = 0; k < 3 && i + k < len; ++k){
+                // Take at most 3 stones
+                take += stoneValue[i + k];
+                // We need to remove the potential optimal solution from 
+                // [i + k + 1, ..) because we take the current stone value
+                dp[i] = max(dp[i], take - (i + k + 1 < len ? dp[i + k + 1] : 0));
+            }
+        }
+        
+        if(dp[0] > 0) return "Alice";
+        if(dp[0] < 0) return "Bob";
+        return "Tie";
+    }
+};
+
+// O(1) space
+class Solution {
+public:
+    string stoneGameIII(vector<int>& stoneValue) {
+        int len = stoneValue.size();
+        // We need to set the initial value to be 0 this time
+        // We update the initial value at run time
+        vector<int> dp(4, 0);
+        for(int i = len-1; i >= 0; --i){
+            dp[i % 4] = -1e9;
+            for(int k = 0, take = 0; k < 3 && i + k < len; ++k){
+                // Take at most 3 stones
+                take += stoneValue[i + k];
+                // We need to remove the potential optimal solution from 
+                // [i + k + 1, ..) because we take the current stone value
+                dp[i % 4] = max(dp[i % 4], take - (i + k + 1 < len ? dp[(i + k + 1) % 4] : 0));
+            }
+        }
+        
+        if(dp[0] > 0) return "Alice";
+        if(dp[0] < 0) return "Bob";
+        return "Tie";
+    }
+};
+
+
+
