@@ -3865,3 +3865,78 @@ public:
         return true;
     }
 };
+
+
+// 1392. Longest Happy Prefix
+// https://leetcode.com/problems/longest-happy-prefix/
+/*
+For this problem, a regular approach is KMP. 
+Very nice solution from Lee:
+https://leetcode.com/problems/longest-happy-prefix/discuss/547237/JavaPython-Rolling-Hash
+The general idea is to calculate the hash value for both prefix and suffix. If the values
+are the same, then we can safely increase the longest length by 1.
+*/
+class Solution {
+public:
+    string longestPrefix(string s) {
+        int len = s.size();
+        
+        int hashL = 0, hashR = 0;
+        // Hash integration for right side
+        int p = 1;
+        // In case the hash code gets overflow, we need to mod it by mod
+        int mod = 1e7 + 7;
+        int maxLen = 0;
+        
+        //We meed yp skip the last character, since a string itself can be considered as 
+        // prefix or suffix
+        for(int i = 0; i < len-1; ++i){
+            // You can choose any value here, no need to be 137
+            hashL = (hashL * 137 + s[i]) % mod;
+            // The tricky part is how to calculate the right hash code
+            hashR = (s[len - i - 1] * p + hashR) % mod;
+            
+            if(hashL == hashR) maxLen = i + 1;
+            // We need to have mod here, if you do a refactor of the hashR formula, you will
+            // notice it is a reversed version of the prefix formula
+            p = p * 137 % mod;            
+        }
+        
+        return s.substr(0, maxLen);
+    }
+};
+
+
+// KMP solution!
+// KMP solution
+// Get familiar with KMP please
+// It's still tricky though!
+// https://www.youtube.com/watch?v=GTJr8OvyEVQ
+class Solution {
+private:
+    vector<int> processKMP(string& s){
+        int len = s.size();
+        vector<int> lp(len, 0);
+        
+        int index = 0;
+        
+        for(int i = 1; i < len;){
+            if(s[i] == s[index]){
+                ++index;
+                lp[i] = index;
+                ++i;
+            }else{
+                if(index > 0)
+                    index = lp[index - 1];
+                else 
+                    ++i;
+            }
+        }
+        return lp;
+    }
+public:
+    string longestPrefix(string s) {
+        auto lp = processKMP(s);
+        return s.substr(0, lp.back());
+    }
+};
