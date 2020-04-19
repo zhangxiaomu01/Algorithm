@@ -191,3 +191,110 @@ public:
         return numOfComp;
     }
 };
+
+
+// 1391. Check if There is a Valid Path in a Grid
+// https://leetcode.com/problems/check-if-there-is-a-valid-path-in-a-grid/
+// Union Find approach 
+// This is also from Lee:
+// https://leetcode.com/problems/check-if-there-is-a-valid-path-in-a-grid/discuss/547229/Python-Union-Find
+/*
+The general idea is to put connected component to the same group, and in the end, we can check
+whether the first grid and the last grid have the same parent node
+
+The center of A[0][0] has coordinates [0, 0]
+The center of A[i][j] has coordinates [2i, 2j]
+The top edge of A[i][j] has coordinates [2i-1, 2j]
+The left edge of A[i][j] has coordinates [2i, 2j-1]
+The bottom edge of A[i][j] has coordinates [2i+1, 2j]
+The right edge of A[i][j] has coordinates [2i, 2j+1]
+
+Then we apply Union Find:
+if A[i][j] in [2, 5, 6]: connect center and top
+if A[i][j] in [1, 3, 5]: connect center and left
+if A[i][j] in [2, 3, 4]: connect center and bottom
+if A[i][j] in [1, 4, 6]: connect center and right
+
+Not very efficient though..
+*/
+class Solution {
+private:
+    vector<vector<pair<int, int>>> G;
+    pair<int, int> find(int x, int y){
+        if(G[x][y] == pair<int, int>({x, y})) return {x, y};
+        return G[x][y] = find(G[x][y].first, G[x][y].second);
+    }
+    
+    void merge(int x, int y, int dx, int dy){
+        auto p1 = find(x, y);
+        auto p2 = find(x + dx, y + dy);
+        //Include {x+dx, y+dy} to the {x, y}'s current parent node  
+        if(p1 != p2) G[p1.first][p1.second] = p2;
+    }
+    
+    
+public:
+    bool hasValidPath(vector<vector<int>>& grid) {
+        int m = grid.size();
+        int n = grid[0].size();
+        G = vector<vector<pair<int, int>>>(2*m + 2, vector<pair<int, int>>(2*n+2));
+        for(int i = 0; i < 2*m+2; ++i){
+            for(int j = 0; j < 2*n+2; ++j){
+                G[i][j] = {i, j};
+            }
+        }        
+        
+        //We meed to start from 1 ... m. Or merge will be overflow.
+        for(int i = 1; i <= m; ++i){
+            for(int j = 1; j <= n; ++j){
+                int cur = grid[i-1][j-1];
+                // This should be a bunch of if instead of if..else
+                // We have to handle cross situation
+                if (cur == 2 || cur == 5 || cur == 6) merge(i * 2, j * 2, -1, 0);
+                if (cur == 1 || cur == 3 || cur == 5) merge(i * 2, j * 2, 0, -1);
+                if (cur == 2 || cur == 3 || cur == 4) merge(i * 2, j * 2, 1, 0);
+                if (cur == 1 || cur == 4 || cur == 6) merge(i * 2, j * 2, 0, 1);
+            }
+        }
+        return find(G[2][2].first, G[2][2].second) == find(G[2*m][2*n].first, G[2*m][2*n].second);
+    }
+};
+
+// We can also have DFS solution, it's much more efficient. 
+// The implementation part is more trickier!
+class Solution {
+public:
+	bool help(int i,int j,int n,int m,vector<vector<int>> &dp,vector<vector<int>>& grid,char last)
+	{
+		if(i<0||i>=n||j<0||j>=m||dp[i][j])return false;//handling the corner cases, dp represents if a cell is visited or not
+		if(last=='l'&&(grid[i][j]==2||grid[i][j]==3||grid[i][j]==5))return false;
+		else if(last=='d'&&(grid[i][j]==1||grid[i][j]==3||grid[i][j]==4))return false;
+		else if(last=='r'&&(grid[i][j]==2||grid[i][j]==4||grid[i][j]==6))return false;
+		else if(last=='u'&&(grid[i][j]==1||grid[i][j]==5||grid[i][j]==6))return false;
+		//character last will tell us the direction from where we are reaching the current cell
+		//e.g, if last=='l' it means we are reching the current cell from the left cell
+		//above 4 conditions are checking whether it is possible to reach the current cell from the last cell or not
+		//e.g, if last=='l' and current cell is street 1 or 4 or 6 then only we can continue
+		else if(i==n-1&&j==m-1)return true;//we have reached the last cell and can return true
+		dp[i][j]=1;//marking current cell as visited
+		switch(grid[i][j])
+		{
+			case 1:return help(i,j-1,n,m,dp,grid,'l')||help(i,j+1,n,m,dp,grid,'r');
+			case 2:return help(i-1,j,n,m,dp,grid,'u')||help(i+1,j,n,m,dp,grid,'d');
+			case 3:return help(i,j-1,n,m,dp,grid,'l')||help(i+1,j,n,m,dp,grid,'d');
+			case 4:return help(i,j+1,n,m,dp,grid,'r')||help(i+1,j,n,m,dp,grid,'d');
+			case 5:return help(i,j-1,n,m,dp,grid,'l')||help(i-1,j,n,m,dp,grid,'u');
+			case 6:return help(i,j+1,n,m,dp,grid,'r')||help(i-1,j,n,m,dp,grid,'u');
+			default:return 0;
+		}
+		//there are always 2 possible ways to go from the current cell to any other cell which are being handled by above cases
+		//e.g, if we are currently on street 1 we can either go to left i.e, j-1 or to right i.e, j+1
+	}
+	bool hasValidPath(vector<vector<int>>& grid) 
+	{
+		int n=grid.size(),m=grid[0].size();
+		vector<vector<int>> dp(n,vector<int> (m,0));//mark a cell visited if we have visited the cell so as to avoid infinite loop
+		char last;
+		return help(0,0,n,m,dp,grid,last);
+	}
+};
