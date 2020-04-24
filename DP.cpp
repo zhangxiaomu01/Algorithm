@@ -2831,4 +2831,39 @@ public:
 };
 
 
+// 1416. Restore The Array
+// https://leetcode.com/problems/restore-the-array/
+/*
+A very intuitive dfs approach, it seems that you are always not ready to solve DFS problem.
+Especially dp problem which can be solved using dfs.
+Try to do it better next time.
+*/
+class Solution {
+private:
+    int dp[100001] = {};
+    
+    int dfs(const string& s, int i, int k){
+        if(i == s.size())
+            return 1;
+        
+        // We know that '0' cannot produce any further iteration because all the numbers
+        // are between [1, k]
+        if(s[i] == '0') return 0;
+        if(!dp[i]){
+            // should be <= s.size(), or it will just return 0
+            for(long j = 1, num = 0; j + i <= s.size(); ++j){
+                num = num * 10 + s[i + j - 1] - '0';
+                // You decide to return here, I think it should be  the same
+                if(num > k) return dp[i];
+
+                dp[i] = (dp[i] + dfs(s, i + j, k)) % 1000000007;
+            }
+        }
+        return dp[i];
+    }
+public:
+    int numberOfArrays(string s, int k) {
+        return dfs(s, 0, k);
+    }
+};
 
