@@ -2867,3 +2867,27 @@ public:
     }
 };
 
+/* 
+Bottomu up iterative version. 
+Slightly more efficient!
+*/
+class Solution {
+public:
+    int numberOfArrays(string s, int k) {
+        const int len = s.size();
+        vector<int> dp(len + 1, 0);
+        dp[s.size()] = 1;
+        for(int i = s.size() - 1; i >= 0; --i){
+            if(s[i] == '0')
+                continue;
+            
+            for(long sz = 1, num = 0; i + sz <= s.size(); ++sz){
+                num = 10 * num + s[i + sz - 1] - '0';
+                if(num > k) break;
+                dp[i] = (dp[i] + dp[i + sz]) % 1000000007;
+            }
+        }
+        return dp[0];
+        
+    }
+};

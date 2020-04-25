@@ -2101,3 +2101,51 @@ public:
         
     }
 };
+
+
+// 1388. Pizza With 3n Slices
+// https://leetcode.com/problems/pizza-with-3n-slices/
+/*
+Hard problem. Similar concept as house robbery II, but it's more challenging to 
+get the dp formula.
+Great Explanation from Lee: 
+https://leetcode.com/problems/pizza-with-3n-slices/discuss/546474/Python-Robber-n3-Houses-in-Cycle
+*/
+
+class Solution {
+private:
+    unordered_map<string, int> uMap;
+    // [s, e], n is the number left we need to pick up
+    // I am not so sure of why we need a cycle 
+    int dfs(vector<int>& slices, int s, int e, int n, int cycle){
+        string key = to_string(s) + '+' + to_string(e) + '+' 
+            + to_string(n) + '+' + to_string(cycle);
+        if(uMap.count(key) > 0) return uMap[key];
+        if(n == 1){
+            int max = INT_MIN;
+            for(int i = s; i <= e; ++i){
+                if(slices[i] > max) max = slices[i];
+            }
+            return uMap[key] = max;
+        }
+        
+        // This is the most confusing part. Note we need to make sure that we still
+        // have sufficient slices for other two players.  
+        if(e - s + 1 < 2 * n - 1) return uMap[key] = INT_MIN;
+        
+        //The second dfs means we do not pick the last slice from the pizza pool
+        int res = max(dfs(slices, s + cycle, e - 2, n-1, 0) + slices[e], 
+                     dfs(slices, s, e - 1, n, 0));
+        
+        return uMap[key] = res;
+        
+    }
+public:
+    int maxSizeSlices(vector<int>& slices) {
+        
+        return dfs(slices, 0, slices.size() - 1, slices.size() / 3, 1);
+    }
+};
+
+
+
