@@ -1188,3 +1188,36 @@ public:
 };
 
 
+// 1424. Diagonal Traverse II
+// https://leetcode.com/problems/diagonal-traverse-ii/
+/*
+A very clever idea to use the unordered_map to store the key of the diagonal, then 
+do another pass to copy the result back.
+*/
+class Solution {
+public:
+    vector<int> findDiagonalOrder(vector<vector<int>>& nums) {
+        unordered_map<int, vector<int>> uMap;
+        int maxKey = 0;
+        
+        int m = nums.size();
+        // Note we should start with m-1, since from the diagonal, the first element
+        // will be the bottom one...
+        for(int i = m-1; i >= 0; --i){
+            for(int j = 0; j < nums[i].size(); ++j){
+                uMap[i + j].push_back(nums[i][j]);
+                maxKey = max(maxKey, i + j);
+            }
+        }
+        
+        
+        vector<int> res;
+        for(int i = 0; i <= maxKey; ++i){
+            for(int k : uMap[i]){
+                res.push_back(k);
+            }
+        }
+        return res;
+        
+    }
+};
