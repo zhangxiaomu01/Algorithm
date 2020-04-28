@@ -6250,4 +6250,33 @@ public:
 };
 
 
-
+// 1425. Constrained Subsequence Sum
+// https://leetcode.com/problems/constrained-subsequence-sum/
+// A hard sliding window problem (similar to 239)
+// The solution is from Lee:
+// https://leetcode.com/problems/constrained-subsequence-sum/discuss/597751/JavaC%2B%2BPython-O(N)-Decreasing-Deque
+// It's a hard question though!
+class Solution {
+public:
+    int constrainedSubsetSum(vector<int>& nums, int k) {
+        deque<int> dq;
+        int res = nums[0];
+        
+        for(int i = 0; i < nums.size(); ++i){
+            // We utilize the same array to get the potential maximum value from [0 : i]
+            nums[i] += dq.size() ? dq.front() : 0;
+            res = max(res, nums[i]);
+            //No need to keep nums[0 : i-1] if we can get even larger nums[i]
+            while(dq.size() && nums[i] > dq.back())
+                dq.pop_back();
+            
+            if(nums[i] > 0) dq.push_back(nums[i]);
+            
+            // Make sure that j - i <= k is satified!
+            if(dq.size() && i >= k && dq.front() == nums[i-k])
+                dq.pop_front();
+        }
+        
+        return res;
+    }
+};
