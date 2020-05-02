@@ -6331,3 +6331,47 @@ public:
         return helper(n, m, k, 0, 0);
     }
 };
+
+// 1438. Longest Continuous Subarray With Absolute Diff Less Than or Equal to Limit
+// https://leetcode.com/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/
+// My implementation
+class Solution {
+public:
+    int longestSubarray(vector<int>& nums, int limit) {
+        int res = 0;
+        int len = nums.size();
+        
+        if(len == 1) return 1;
+        
+        int i = 0, j = 1;
+        map<int, list<int>> myMap;
+        // deque<pair<int, int>> dq;
+        myMap[nums[0]].push_back(0);
+        
+        for(; j < len; ++j){
+            myMap[nums[j]].push_back(j);
+            //dq.push_back({nums[j], j});
+            while(!myMap.empty() && myMap.rbegin()->first - myMap.begin()->first > limit){
+                // Get the last index
+                int index = min(myMap.begin()->second.back(), myMap.rbegin()->second.back());
+                
+                res = max(res, j - i);
+                
+                while(i < index + 1){
+                    int oldV = nums[i];
+                    myMap[oldV].erase(myMap[oldV].begin());
+                    if(myMap[oldV].empty()) myMap.erase(oldV);
+                    i++;
+                }
+                
+            }
+            
+            if(!myMap.empty() && myMap.rbegin()->first - myMap.begin()->first <= limit){
+                    res = max(res, j - i + 1);
+            }
+        }
+        
+        return res;
+    }
+};
+
