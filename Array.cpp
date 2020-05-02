@@ -6280,3 +6280,54 @@ public:
         return res;
     }
 };
+
+
+// 1420. Build Array Where You Can Find The Maximum Exactly K Comparisons
+// https://leetcode.com/problems/build-array-where-you-can-find-the-maximum-exactly-k-comparisons/
+// This clever approach is from votrubac
+// https://leetcode.com/problems/build-array-where-you-can-find-the-maximum-exactly-k-comparisons/discuss/586547/C%2B%2B-Top-Down-DP
+// A tough one!
+class Solution {
+private:
+    // dp table
+    // n | k | pos
+    int memo[51][101][51] = {};
+    
+    // Note the cost is how much cost we have used. We need to keep track of it during the
+    // DFS, because we need to make sure that we only return 1 when cost == k
+    int helper(int n, int m, int cost, int m_val, int pos){
+        if(pos == n)
+            return cost == 0;
+        
+        // We need to make sure cost == k in the end, if we do not have sufficient number to increase
+        // We can terminate earlier
+        if(cost < 0 || m - m_val < cost)
+            return 0;
+        
+        if(memo[pos][m_val][cost] > 0)
+            return memo[pos][m_val][cost] - 1;
+        
+        int res = 0;
+        for(int i = 1; i <= m; ++i){
+            // pass the maximum value we have encountered so far to the next round
+            // max(m_val, i)
+            // We need to pass pos + 1. Be careful here
+            res = (res + helper(n, m, cost - (m_val < i), max(m_val, i), pos + 1)) % 1000000007;
+        }
+        
+        memo[pos][m_val][cost] = res + 1;
+        return res;
+    }
+    
+public:
+    int numOfArrays(int n, int m, int k) {
+        /*
+        for(int i = 0; i <= 50; ++i){
+            for(int j = 0; j <=100; ++j){
+                for(int k = 0; k <= 50; ++k)
+                    memo[i][j][k] = 0;
+            }
+        } */
+        return helper(n, m, k, 0, 0);
+    }
+};
