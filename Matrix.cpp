@@ -1221,3 +1221,43 @@ public:
         
     }
 };
+
+
+// 1439. Find the Kth Smallest Sum of a Matrix With Sorted Rows
+// https://leetcode.com/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/
+/* 
+Rolling vector, which is brilliant!
+https://leetcode.com/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/discuss/609707/simple-solution-with-explanation-c%2B%2B-code-example
+Not that efficient though
+*/
+class Solution {
+public:
+    int kthSmallest(vector<vector<int>>& mat, int k) {
+        int m = mat.size();
+        int n = mat[0].size();
+        
+        vector<int> ans(1, 0);
+        
+        for(int i = 0; i < m; ++i){
+            vector<int> temp;
+            
+            for(int j = 0; j < n; ++j){
+                for(int k = 0; k < ans.size(); ++k)
+                    temp.push_back(mat[i][j] + ans[k]);
+            }
+            
+            sort(temp.begin(), temp.end());
+
+            int cutoff = min(k, int(temp.size()));
+            
+            ans.clear();
+            
+            for(int j = 0; j < cutoff; ++j)
+                ans.push_back(temp[j]);
+            
+        }
+        return ans[k-1];
+    }
+};
+
+
