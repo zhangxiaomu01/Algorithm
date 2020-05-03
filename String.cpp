@@ -3940,3 +3940,65 @@ public:
         return s.substr(0, lp.back());
     }
 };
+
+
+// 1397. Find All Good Strings
+// https://leetcode.com/problems/find-all-good-strings/
+// Really really hard problem! Not intuitive to get it right!
+// Double check later
+// This great solution is from:
+// https://leetcode.com/problems/find-all-good-strings/discuss/554862/C%2B%2B-DP-solution-(with-KMP)
+class Solution {
+    const int M = 1000000007;
+    void add(int &x, int y) {
+        if ((x += y) >= M) {
+            x -= M;
+        }
+    }
+    
+    int get(const string& evil, const vector<int>& next, const int k, const char c,  vector<vector<int>> &have) {
+        int& v = have[k][c - 'a'];
+        if (v >= 0) return v;
+        if (k > 0  && evil[k] != c) return v = get(evil, next, next[k], c, have);
+        return v = evil[k] == c ? (k + 1) : 0;
+    }
+ 
+public:
+    int findGoodStrings(int n, string s1, string s2, string evil) {
+        const int m = evil.length();
+        vector<int> next(m + 1);
+        next[0] = -1;
+        for (int i = 1; i <= m; ++i) {
+            int j;
+            for (j = next[i - 1]; j >= 0 && evil[i - 1] != evil[j]; j = next[j])
+            ;
+            next[i] = j + 1;
+        }
+        vector<vector<int>> have(evil.length(), vector<int>(26, -1));
+        vector<vector<vector<int>>> dp(n + 1, vector<vector<int>>(4, vector<int>(m)));
+        dp[0][0][0] = 1;
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < 4; ++j) {
+                const int j1 = j >> 1, j2 = j & 1;
+                const char mini = j1 ? 'a' : s1[i];
+                const char maxi = j2 ? 'z' : s2[i];
+                for (int k = 0; k < m; ++k) {
+                    if (dp[i][j][k] == 0) continue;
+                    for (char c = mini; c <= maxi; ++c) {
+                        const int kk = get(evil, next, k, c, have);
+                        if (kk < m) {
+                            add(dp[i + 1][((j1 || c > s1[i]) << 1) | (j2 || c < s2[i])][kk], dp[i][j][k]);
+                        }
+                    }
+                }
+            }
+        }
+        int r = 0;
+        for (int j = 0; j < 4; ++j) {
+            for (int k = 0; k < m; ++k) {
+                add(r, dp[n][j][k]);
+            }
+        }
+        return r;
+    }
+};
