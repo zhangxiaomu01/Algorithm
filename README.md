@@ -10,6 +10,6 @@ Categorize problems based on their types...
 
 Some really impressive problems:
 
-ID | Name | Solution
- ---- | ----------- | -------- 
-1397|Find All Good Strings|KMP + DP
+ID | Name | Difficulty | Solution
+ ---- | ----------- | -------- | ------
+1397|Find All Good Strings| Hard | KMP + DP
