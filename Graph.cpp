@@ -946,3 +946,38 @@ public:
         return dfs(t, target, 1, tree, visited);        
     }
 };
+
+
+// 1443. Minimum Time to Collect All Apples in a Tree
+// https://leetcode.com/contest/weekly-contest-188/problems/minimum-time-to-collect-all-apples-in-a-tree/
+// Post order traversal. My implementation.
+class Solution {
+    // post order traversal!
+    int dfs(vector<vector<int>>& G, int cur, vector<int>& visited, vector<bool>& hasApple){
+        if(G[cur].size() == 1 && visited[G[cur][0]] == 1){
+            return hasApple[cur] ? 2 : 0;
+        }
+        
+        int res = 0;
+        for(int i = 0; i < G[cur].size(); ++i){
+            if(visited[G[cur][i]] == 0){
+                visited[G[cur][i]] = 1;
+                res += dfs(G, G[cur][i], visited, hasApple);
+            }
+        }
+        if(cur == 0) return res; 
+        return res == 0 ? (hasApple[cur] ? 2 : 0) : res + 2;
+    }
+    
+public:
+    int minTime(int n, vector<vector<int>>& edges, vector<bool>& hasApple) {
+        vector<vector<int>> G(n);
+        vector<int> visited(n, 0);
+        for(int i = 0; i < edges.size(); ++i){
+            G[edges[i][0]].push_back(edges[i][1]);
+            G[edges[i][1]].push_back(edges[i][0]);
+        }
+        visited[0] = 1;
+        return dfs(G, 0, visited, hasApple);
+    }
+};
