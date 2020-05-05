@@ -9,4 +9,7 @@ Categorize problems based on their types...
 # Contest: 21
 
 Some really impressive problems:
-|1397|Find All Good Strings|KMP + DP|
+
+ID | Name | Solution
+ ---- | ----------- | -------- 
+1397|Find All Good Strings|KMP + DP
