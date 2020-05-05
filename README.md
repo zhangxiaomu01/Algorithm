@@ -6,7 +6,7 @@ Categorize problems based on their types...
 
 # Current progress: 569
 
-# Contest: 21
+# Contests: 21
 
 Some really impressive problems:
 
