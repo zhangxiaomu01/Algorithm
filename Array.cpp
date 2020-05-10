@@ -6375,3 +6375,50 @@ public:
     }
 };
 
+
+// 1452. People Whose List of Favorite Companies Is Not a Subset of Another List
+// https://leetcode.com/problems/people-whose-list-of-favorite-companies-is-not-a-subset-of-another-list/
+// This brilliant approach is from:
+// https://leetcode.com/problems/people-whose-list-of-favorite-companies-is-not-a-subset-of-another-list/discuss/636455/C%2B%2B-Bitset
+// Utilize the bitset to calculate the subset problem!
+class Solution {
+public:
+    vector<int> peopleIndexes(vector<vector<string>>& fC) {
+        int len = fC.size();
+        // Mark the total number of different companies we have!
+        int id = 1;
+        unordered_map<string, int> uMap;
+        for(auto& v : fC){
+            for(auto& s : v){
+                uMap[s] = id;
+                id++;
+            }
+        }
+        
+        vector<bitset<50001>> vSet;
+        for(const auto& v : fC){
+            bitset<50001> b;
+            for(auto& s : v){
+                b[uMap[s]] = 1;
+            }
+            vSet.push_back(b);
+        }
+        
+        
+        vector<int> res;
+        for(int i = 0; i < len; ++i){
+            // We need to have a flag to terminate the inner loop
+            // If we found that j is a subset of i, we can 
+            bool isNSubset = true;
+            for(int j = 0; j < len && isNSubset; ++j){
+                if(i == j) continue;
+                // This means we find i is a subset of j
+                // This is the key part!!!
+                if((vSet[i] & vSet[j]) == vSet[i]) isNSubset = false;
+            } 
+            if(isNSubset) res.push_back(i);
+        }
+        
+        return res;
+    }
+};
