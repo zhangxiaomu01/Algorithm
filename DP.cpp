@@ -2891,3 +2891,59 @@ public:
         
     }
 };
+
+
+// 1444. Number of Ways of Cutting a Pizza
+// https://leetcode.com/problems/number-of-ways-of-cutting-a-pizza/
+/*
+ * A tough one! 
+ * The greates solution is from:
+ * https://leetcode.com/problems/number-of-ways-of-cutting-a-pizza/discuss/623778/C%2B%2B-DP-with-explanation
+ * 2D dp, pay more attention
+*/
+class Solution {
+private:
+    void addRight(long& a, long& b){ a = (a + b) % long(1e9 + 7); }
+    
+public:
+    int ways(vector<string>& pizza, int K) {
+        int m = pizza.size();
+        int n = pizza[0].size();
+        
+        // Pre compute the cnt matrix - cnt[i][j] means how many apples we have from
+        // [i][j] to [m-1][n-1]
+        vector<vector<int>> cnt(m+1, vector<int>(n+1, 0));
+        for(int i = m-1; i >=0; --i){
+            int cumSum = 0;
+            for(int j = n-1; j >= 0; --j){
+                cumSum += (pizza[i][j] == 'A');
+                cnt[i][j] = cnt[i+1][j] + cumSum;
+            }
+        }
+        
+        // dp[i][j][k] means when we slice k pieces of pizza from [i][j] - [m-1][n-1], how many ways we can 
+        // have
+        vector<vector<vector<long>>> dp(m+1, vector<vector<long>>(n+1, vector<long>(K+1, 0)));
+        for(int i = m-1; i >= 0; --i){
+            for(int j = n-1; j >= 0; --j){
+                dp[i][j][1] = 1;
+                for(int k = 2; k <= K; ++k){
+                    for(int t = i+1; t < m; ++t){
+                        // We do not have valid partition here
+                        if(cnt[i][j] == cnt[t][j]) continue;
+                        if(cnt[t][j] == 0) break;
+                        addRight(dp[i][j][k], dp[t][j][k-1]);
+                    }
+                    
+                    for(int t= j+1; t < n; ++t){
+                        if(cnt[i][j] == cnt[i][t]) continue;
+                        if(cnt[i][t] == 0) break;
+                        addRight(dp[i][j][k], dp[i][t][k-1]);
+                    }
+                }
+            }
+        }
+        return dp[0][0][K];
+        
+    }
+};
