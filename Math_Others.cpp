@@ -1047,3 +1047,46 @@ public:
         return minX + minY <= radius * radius;
     }
 };
+
+
+// 1453. Maximum Number of Darts Inside of a Circular Dartboard
+// https://leetcode.com/problems/maximum-number-of-darts-inside-of-a-circular-dartboard/
+// Interesting idea:
+// https://leetcode.com/problems/maximum-number-of-darts-inside-of-a-circular-dartboard/discuss/636372/JavaC%2B%2BPython-POJ-1981
+// Not a good interview problem!
+class Solution {
+public:
+    int numPoints(vector<vector<int>>& points, int r) {
+        int len = points.size();
+        // We can at least cover 1 point since points is not null
+        int res = 1;
+        for(int i = 0; i < len; ++i){
+            for(int j = i + 1; j < len; ++j){
+                int x1 = points[i][0], y1 = points[i][1];
+                int x2 = points[j][0], y2 = points[j][1];
+                double dist = sqrt((x2 - x1) * (x2 - x1) + (y2- y1) * (y2 - y1));
+                // Impossible to form a circle with radius r!
+                if(dist > r*r) continue;
+                // Typically we need to consider circle center from both left and right side of two points
+                // However if we iterate all two pairs, and always make the circle stay on the same side
+                // We will capture all the possible solutions.
+                // Calculate the circle center from which goes through the two points
+                // This equation is a little bit tricky! Draw a picture!
+                double x0 = (x2 + x1) / 2.0 + (y2 - y1) * sqrt(r * r - dist * dist / 4.0) / dist;
+                double y0 = (y2 + y1) / 2.0 - (x2 - x1) * sqrt(r * r - dist * dist / 4.0) / dist;
+                int cnt = 0;
+                for(auto& p : points){
+                    int x = p[0], y = p[1];
+                    if((x - x0) * (x - x0) + (y - y0) * (y - y0) <= r * r + 0.0000001){
+                        cnt ++;
+                    }
+                }
+                res = max(res, cnt);
+            }
+        }
+        
+        return res;
+    }
+};
+
+
