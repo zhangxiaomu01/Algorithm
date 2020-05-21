@@ -2947,3 +2947,42 @@ public:
         
     }
 };
+
+
+// 1458. Max Dot Product of Two Subsequences
+// https://leetcode.com/problems/max-dot-product-of-two-subsequences/
+// This solution is from Yuchen
+// I want to do DFS during the contest, it's not that intuitive to make it right!
+class Solution {
+public:
+    int maxDotProduct(vector<int>& nums1, vector<int>& nums2) {
+        int len1 = nums1.size(), len2 = nums2.size();
+        vector<vector<int>> dp(len1, vector<int>(len2, 0));
+        for(int i = len1-1; i >= 0; --i){
+            // maxCur to keep track of the global max state when we examine all the elements 
+            // from nums2
+            int maxCur = INT_MIN;
+            for(int j = len2-1; j >= 0; --j){
+                int tempRes = nums1[i] * nums2[j];
+                int res;
+                if(i == len1 - 1){
+                    res = tempRes;
+                }else{
+                    // If we take nums1[i] and nms2[j]. We need to add it to the max possible result
+                    // from dp[i+1][j+1]
+                    // //It's possible that only the multiplication of the two elements is 
+                    // the largest sofar
+                    res = (j == len2 - 1) ? tempRes : max(tempRes, tempRes + dp[i+1][j+1]);
+                    // we also need to consider if we skip current nums1[i] element
+                    res = max(res, dp[i+1][j]);
+                }
+                maxCur = max(res, maxCur);
+                // We are guranteed that maxCur is the maximum we can find
+                dp[i][j] = maxCur;
+            }
+            
+        }
+        return dp[0][0];
+        
+    }
+};
