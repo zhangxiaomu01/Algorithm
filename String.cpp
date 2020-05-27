@@ -4002,3 +4002,34 @@ public:
         return r;
     }
 };
+
+
+// 1461. Check If a String Contains All Binary Codes of Size K
+// https://leetcode.com/problems/check-if-a-string-contains-all-binary-codes-of-size-k/
+/*
+The general idea is that we have 2^k possible combinations, we calculate all possible
+substring of length k from s, then save the result to a hash set. If we have the same number 
+of possible combinations, we return true, otherwise we return false.
+
+Note how we utilize the bit operation in order to simplify the calculation! Amazingly simple
+and elegant!
+*/
+class Solution {
+public:
+    bool hasAllCodes(string s, int k) {
+        if(s.size() < k) return false;
+        unordered_set<int> uSet;
+        int d = 0;
+        for(int i = 0; i < s.size(); ++i){
+            // since each s[i] is either '1' or '0'
+            d = (d << 1) | (s[i] - '0');
+            if(i >= k - 1){
+                uSet.insert(d);
+                // remove the highest end of digits
+                d -= (s[i- k + 1] - '0') << (k-1);
+            }
+        }
+        
+        return uSet.size() == (1 << k);
+    }
+};
