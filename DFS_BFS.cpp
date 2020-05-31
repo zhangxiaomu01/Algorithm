@@ -2149,3 +2149,52 @@ public:
 
 
 
+// 1462. Course Schedule IV
+// https://leetcode.com/problems/course-schedule-iv/
+// During the contest, you forgot memorization, so have a TLE
+class Solution {
+private:
+    unordered_map<long, bool> uMap;
+    
+    bool dfs(vector<unordered_set<int>>& G, long cur, long tar){
+        long key = (cur << 32 | tar);
+        if(uMap.find(key) != uMap.end()) return uMap[key];
+        if(G[cur].find(tar) != G[cur].end()) {
+            uMap[key] = true;
+            return true;
+        }
+        if(G[cur].empty()) {
+            uMap[key] = false;
+            return false;
+        }
+        for(auto it = G[cur].begin(); it != G[cur].end(); ++it){
+            bool res = dfs(G, *it, tar);
+            if(res) {
+                uMap[key] = true;
+                return true;
+            }
+        }
+        uMap[key] = false;
+        return false;
+    }
+    
+    
+public:
+    vector<bool> checkIfPrerequisite(int n, vector<vector<int>>& pre, vector<vector<int>>& que) {
+        vector<unordered_set<int>> G(n);
+        for(int i = 0; i < pre.size(); ++i){
+            G[pre[i][0]].insert(pre[i][1]);
+        }
+        
+        vector<bool> res;
+        for(int i = 0; i < que.size(); ++i){
+            int cur = que[i][0];
+            int tar = que[i][1];
+            // if(G[tar].empty()) continue;
+            bool t = dfs(G, cur, tar);
+            res.push_back(t);
+        }
+        
+        return res;
+    }
+};
