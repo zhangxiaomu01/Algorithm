@@ -1090,3 +1090,45 @@ public:
 };
 
 
+// 1467. Probability of a Two Boxes Having The Same Number of Distinct Balls
+// https://leetcode.com/problems/probability-of-a-two-boxes-having-the-same-number-of-distinct-balls/
+/*
+Math problem! This great solution is from:
+https://leetcode.com/problems/probability-of-a-two-boxes-having-the-same-number-of-distinct-balls/discuss/662154/C%2B%2B-24ms%3A-Permutations-of-Combination
+DFS approach. It's very hard to get it work! It's so brilliant!
+*/
+class Solution {
+private:
+    //since 1 <= ball[i] <= 6
+    const int fact[7] = {1, 1, 2, 6, 24, 120, 720};
+    double factorial(int n){
+        return n < 3 ? n : n * factorial(n-1);
+    }
+    double match = 0, all = 0;
+    // p indicates color
+    void dfs(vector<int>& balls, int p, int col1, int col2, int cnt1, int cnt2, double prm1, double prm2){
+        // both boxes have n balls
+        if(cnt1 == 0 && cnt2 == 0){
+            all += prm1 * prm2;
+            match += (col1 == col2) ? prm1 * prm2 : 0;
+        }else if(cnt1 >= 0 && cnt2 >= 0){ // Note here we must use >= because it's possible to have one box filled with n / 2 balls first
+            // Here we do not need to worry about p >= balls.size(), because if that happens, cnt1 and cnt2
+            // must be <=0
+            for(int b1 = 0, b2 = balls[p]; b2 >= 0; --b2, ++b1)
+                // if we add b number of balls of same color, the new prm should be prmOri / fact[b]
+                dfs(balls, p+1, col1 + (b1 > 0), col2 + (b2 > 0), cnt1 - b1, 
+                    cnt2 - b2, prm1 / fact[b1], prm2 / fact[b2]);
+        }
+    }
+    
+    
+public:
+    double getProbability(vector<int>& balls) {
+        int total = accumulate(balls.begin(), balls.end(), 0);
+        double totalPermutationForEachBag = factorial(total / 2);
+        dfs(balls, 0, 0, 0, total / 2, total / 2, totalPermutationForEachBag, totalPermutationForEachBag);
+        return match / all;
+    }
+};
+
+
