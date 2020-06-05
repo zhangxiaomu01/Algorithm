@@ -7,6 +7,9 @@
 
 using namespace std;
 
+// A good collection of DP problems:
+// https://leetcode.com/discuss/general-discussion/669996/greedy-for-beginners-problems-sample-solutions
+
 
 //1326. Minimum Number of Taps to Open to Water a Garden
 //https://leetcode.com/problems/minimum-number-of-taps-to-open-to-water-a-garden/
