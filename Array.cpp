@@ -6422,3 +6422,104 @@ public:
         return res;
     }
 };
+
+
+
+// 1471. The k Strongest Values in an Array
+// https://leetcode.com/problems/the-k-strongest-values-in-an-array/
+// My implementation, too slow! O(nlogn)
+class Solution {
+public:
+    vector<int> getStrongest(vector<int>& arr, int k) {
+        sort(arr.begin(), arr.end());
+        int len = arr.size();
+        int median = arr[(len-1)/2];
+        map<int, priority_queue<int, vector<int>, greater<int>>> Tmap;
+        
+        vector<int> res(k);
+        int lenM = 0;
+        for(int i = 0; i < len; ++i){
+            if(lenM < k){
+                Tmap[abs(arr[i] - median)].push(arr[i]);
+                lenM ++;
+                continue;
+            }
+            Tmap[(arr[i] - median)].push(arr[i]);
+            Tmap.begin()->second.pop();
+            if(Tmap.begin()->second.empty())
+                Tmap.erase(Tmap.begin());
+        }
+        
+        int j = 0;
+        for(auto it = Tmap.begin(); it!=Tmap.end(); ++it){
+            while(!it->second.empty()){
+                res[j] = it->second.top();
+                it->second.pop();
+                j++;
+            }
+        }
+        
+        return res;
+        
+    }
+};
+
+// Two pointer implementation, much simpler!!! much faster because of the simple data structure O(nlogn)
+class Solution {
+public:
+    vector<int> getStrongest(vector<int>& arr, int k) {
+        sort(begin(arr), end(arr));
+        int i = 0, j = arr.size() - 1;
+        int med = arr[(arr.size() - 1) / 2];
+        while (--k >= 0)
+            if (med - arr[i] > arr[j] - med)
+                ++i;  
+            else
+                --j;
+        arr.erase(begin(arr) + i, begin(arr) + j + 1);
+        return arr;
+    }
+};
+
+// quick select + partial sort solution O(nlogk)
+// Slower than the second solution, because of the customized comparable??
+class Solution {
+public:
+    vector<int> getStrongest(vector<int>& arr, int k) {
+        int len = arr.size();
+        // Get the median!
+        nth_element(arr.begin(), arr.begin() + (len - 1) / 2, arr.end());
+        int median = arr[(len-1)/2];
+        
+        partial_sort(arr.begin(), arr.begin() + k, arr.end(), [&median](int a, int b){
+            return abs(a - median) == abs(b - median) ? a > b : abs(a - median) > abs(b - median);
+        });
+        arr.resize(k);
+            
+        return arr;
+        
+    }
+};
+
+
+// quick select O(n)
+// Note how we select both pivots! 
+class Solution {
+public:
+    vector<int> getStrongest(vector<int>& arr, int k) {
+        int len = arr.size();
+        // Get the median!
+        nth_element(arr.begin(), arr.begin() + (len - 1) / 2, arr.end());
+        int median = arr[(len-1)/2];
+        
+        nth_element(arr.begin(), arr.begin() + k, arr.end(), [&median](int a, int b){
+            return abs(a - median) == abs(b - median) ? a > b : abs(a - median) > abs(b - median);
+        });
+        arr.resize(k);
+        
+        return arr;
+    }
+};
+
+
+
