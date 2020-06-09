@@ -2198,3 +2198,51 @@ public:
         return res;
     }
 };
+
+
+// 1473. Paint House III
+// https://leetcode.com/problems/paint-house-iii/
+// This nice approach is from Lee: 
+// https://leetcode.com/problems/paint-house-iii/discuss/674485/Python-Solution
+// A tough one!
+class Solution {
+private:
+    int memo[101][21][101];
+    int dfs(int pos, int color, int curTar, vector<int>& h, vector<vector<int>>& cost, int T){
+        // If curTar > T, we can terminate earlier
+        if(curTar > T) return 1e9;
+        if(pos == h.size())
+            return curTar == T ? 0 : 1e9;
+        if(memo[pos][color][curTar] != -1) return memo[pos][color][curTar];
+        // You cannot make this as INT_MAX, since in the main function, you will utilize
+        // 1e9 as a judgement
+        int minCost = 1e9;
+        
+        // If the house has not been painted!
+        if(h[pos] == 0){
+            for(int i = 0; i < cost[0].size(); ++i){
+                // We chose 1e9 instead of INT_MAX to avoid integer overflow
+                minCost = min(minCost, cost[pos][i] + dfs(pos+1, i+1, (i+1 == color) ? curTar : curTar+1, h, cost, T));
+            }
+        }else{
+            // If the house has been painted, we need to pass the current house color to dfs call
+            minCost = min(minCost, dfs(pos+1, h[pos], (color == h[pos]) ? curTar : curTar+1, h, cost, T));
+        }
+        memo[pos][color][curTar] = minCost;
+        return minCost;
+    }
+public:
+    int minCost(vector<int>& houses, vector<vector<int>>& cost, int m, int n, int target) {
+        // set memo to be -1
+        memset(memo, -1, sizeof(memo));
+        int res = dfs(0, 0, 0, houses, cost, target);
+        // Impossible to get target neighborhood
+        // 1e9 will be sufficient here because the maximum we could get is 1e6
+        if(res == int(1e9))
+            return -1;
+        else{
+            return res;
+        }
+            
+    }
+};
