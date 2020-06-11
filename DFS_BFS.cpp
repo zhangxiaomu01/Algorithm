@@ -2246,3 +2246,49 @@ public:
             
     }
 };
+
+
+// 1463. Cherry Pickup II
+// https://leetcode.com/problems/cherry-pickup-ii/
+// This great solution is from
+// https://leetcode.com/problems/cherry-pickup-ii/discuss/660562/JavaC%2B%2BPython-Top-Down-DP-Clean-code
+
+//Top down approach!
+class Solution {
+private:
+    // memo[i][j][k] means when two robots are at row i, robot 1 at [i][j] and robot 2
+    // at [i][k], the maximum possible cherries we can get
+    int memo[70][70][70];
+    
+    // This is a little bit like post order traversal
+    int dfs(vector<vector<int>>& G, int row, int j, int k){
+        //We reached the end
+        if(row == G.size()) return 0;
+        if(memo[row][j][k] != -1) return memo[row][j][k];
+        
+        // Set the ans is the tricky part!
+        int ans = 0;
+        for(int p = -1; p <= 1; ++p){
+            for(int q = -1; q <= 1; ++q){
+                int nJ = j + p;
+                int nK = k + q;
+                if(nJ >= 0 && nJ < G[0].size() && nK >= 0 && nK < G[0].size()){
+                    ans = max(ans, dfs(G, row+1, nJ, nK));
+                }
+            }
+        }
+        
+        int cherries = (j == k) ? G[row][j] : G[row][j] + G[row][k];
+        return memo[row][j][k] = cherries + ans;
+        
+    }
+public:
+    int cherryPickup(vector<vector<int>>& grid) {
+        memset(memo, -1, sizeof(memo));
+        // Note second robot is at the end of the first row
+        return dfs(grid, 0, 0, grid[0].size()-1);
+    }
+};
+
+
+// Bottom up
