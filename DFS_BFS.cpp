@@ -2252,6 +2252,7 @@ public:
 // https://leetcode.com/problems/cherry-pickup-ii/
 // This great solution is from
 // https://leetcode.com/problems/cherry-pickup-ii/discuss/660562/JavaC%2B%2BPython-Top-Down-DP-Clean-code
+// A very good question!
 
 //Top down approach!
 class Solution {
@@ -2292,3 +2293,50 @@ public:
 
 
 // Bottom up
+// Bottom up approach: Not easy to get it
+// Note this kind of DP problem utilize 3D array to represents two states' transfer
+// Unique
+// This approach is from:
+// https://leetcode.com/problems/cherry-pickup-ii/discuss/660536/C%2B%2B-with-explanation
+class Solution {
+public:
+    int cherryPickup(vector<vector<int>>& grid) {
+        int row = grid.size();
+        int col = grid[0].size();
+        int dp[row][col][col];
+        memset(dp, -1, sizeof(dp));
+        
+        dp[0][0][col-1] = grid[0][0] + grid[0][col-1];
+        int res = 0;
+        
+        for(int i = 1; i < row; ++i){
+            for(int j = 0; j < col; ++j){
+                for(int k = col-1; k >= 0; --k){
+                    // we are currently checking grid[i][j]
+                    int cherryPick = j == k ? grid[i][j] : grid[i][j] + grid[i][k];
+                    for(int p = -1; p <= 1; ++p){
+                        for(int q = -1; q <= 1; ++q){
+                            int preJ = j + p;
+                            int preK = k + q;
+                            // cout << preJ << " " << preK << endl;
+                            // Here we need to make that we can reach from the previous grid
+                            if(preJ >= 0 && preJ < col && preK >= 0 && preK < col 
+                               && dp[i-1][preJ][preK] != -1){
+                                // cout << preJ << " " << preK << endl;
+                                dp[i][j][k] = max(dp[i][j][k], dp[i-1][preJ][preK] + cherryPick);
+                            }
+                                
+                        }
+                    }
+                    // when we reach the end of the matrix, we need to get the max potential result
+                    if(i == row-1){
+                        res = max(res, dp[i][j][k]);
+                    }
+                }
+            }
+        }
+        
+        return res;
+        
+    }
+};
