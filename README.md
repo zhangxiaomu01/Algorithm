@@ -13,7 +13,7 @@ Some really impressive problems:
 ID | Name | Difficulty | Solution
  ---- | ----------- | -------- | ------
 1397|Find All Good Strings| Hard | KMP + DP
-1444|Number of Ways of Cutting a Pizza|hard| 2D dp
+1444|Number of Ways of Cutting a Pizza| Hard | 2D dp
 1452|People Whose List of Favorite Companies ...| Medium | bitset / subset problem
 1467|Probability of a Two Boxes Having ...| Hard | DFS / Probability
 1473|House Paint III | Hard | DFS + Memo
