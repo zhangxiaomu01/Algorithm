@@ -1242,3 +1242,23 @@ public:
     }
 };
 
+
+
+// 1475. Final Prices With a Special Discount in a Shop
+// https://leetcode.com/problems/final-prices-with-a-special-discount-in-a-shop/
+// O(N^2) is trivial! we need to do better with the stack approach!
+class Solution {
+public:
+    vector<int> finalPrices(vector<int>& prices) {
+        vector<int> st;
+        for(int i = 0; i < prices.size(); ++i){
+            while(!st.empty() && prices[st.back()] >= prices[i]){
+                prices[st.back()] -= prices[i];
+                st.pop_back();
+            }
+            st.push_back(i);
+        }
+        return prices;
+    }
+};
+
