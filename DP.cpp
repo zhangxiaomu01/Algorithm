@@ -2986,3 +2986,153 @@ public:
         
     }
 };
+
+
+// 741. Cherry Pickup
+// https://leetcode.com/problems/cherry-pickup/
+// It's an interesting problem and you need to solve it with some unique approach
+// This amazing solution is from 
+// https://leetcode.com/problems/cherry-pickup/discuss/109906/Annotated-C%2B%2B-DP-Solution
+// Note N is small
+class Solution {
+public:
+    int cherryPickup(vector<vector<int>>& grid) {
+        int len = grid.size();
+        // dp[i][j] when the two path with length K, and one arrives at [i][k-i] and 
+        // the other one arrives at [j][k-j]. It's not classic dp table!
+        vector<vector<int>> dp(len, vector<int>(len, -1));
+        dp[0][0] = grid[0][0];
+        // max path lenth
+        int maxLen = 2 * (len - 1);
+        for(int k = 1; k <= maxLen; ++k){
+            vector<vector<int>> curDP(len, vector<int>(len, -1));
+            
+            for(int i = 0; i < len && i <= k; ++i){
+                // Impossible to reach the destination [i][k-i]
+                if(k - i >= len) continue;
+                
+                for(int j = 0; j < len && j <= k; ++j){
+                    if(k - j >= len) continue;
+                    
+                    // No way to reach either of the grid, try another combination
+                    if(grid[i][k-i] < 0 || grid[j][k-j] < 0) continue;
+                    
+                    // This is the maximum cherries we can get when we have a k-1 length path 
+                    // Which represents grid[i][k-1-i] && grid[j][k-1-j]
+                    int val = dp[i][j];
+                    // This is the most confusing part! 
+                    // dp[i-1][j] represents previously, we reached grid[i-1, k-i] && grid[j][k-1-j]
+                    if(i > 0) val = max(val, dp[i-1][j]);
+                    if(j > 0) val = max(val, dp[i][j-1]);
+                    // dp[i-1][j-1] represents grid[i-1][k-i] && grid[j-1][k-j], respectively
+                    if(i > 0 && j > 0) val = max(val, dp[i-1][j-1]);
+                    
+                    // We have no way to reach those grids grid[i][k-i] && grid[j][k-j]
+                    // Because in the previous update, when we have length k-1, we cannot reach 
+                    // all those grid[i-1][k - i], grid[j-1][k-j], grid[i][k-1-i] && grid[j][k-1-j]
+                    if(val < 0) continue;
+                    
+                    curDP[i][j] = val + (i == j ? grid[i][k - i] : grid[i][k-i] + grid[j][k-j]);
+                    
+                }
+                
+            }
+            dp = move(curDP);
+        }
+        return max(dp[len-1][len-1], 0);
+    }
+};
+
+
+// 1463. Cherry Pickup II
+// https://leetcode.com/problems/cherry-pickup-ii/
+// This great solution is from
+// https://leetcode.com/problems/cherry-pickup-ii/discuss/660562/JavaC%2B%2BPython-Top-Down-DP-Clean-code
+// A very good question!
+
+//Top down approach!
+class Solution {
+private:
+    // memo[i][j][k] means when two robots are at row i, robot 1 at [i][j] and robot 2
+    // at [i][k], the maximum possible cherries we can get
+    int memo[70][70][70];
+    
+    // This is a little bit like post order traversal
+    int dfs(vector<vector<int>>& G, int row, int j, int k){
+        //We reached the end
+        if(row == G.size()) return 0;
+        if(memo[row][j][k] != -1) return memo[row][j][k];
+        
+        // Set the ans is the tricky part!
+        int ans = 0;
+        for(int p = -1; p <= 1; ++p){
+            for(int q = -1; q <= 1; ++q){
+                int nJ = j + p;
+                int nK = k + q;
+                if(nJ >= 0 && nJ < G[0].size() && nK >= 0 && nK < G[0].size()){
+                    ans = max(ans, dfs(G, row+1, nJ, nK));
+                }
+            }
+        }
+        
+        int cherries = (j == k) ? G[row][j] : G[row][j] + G[row][k];
+        return memo[row][j][k] = cherries + ans;
+        
+    }
+public:
+    int cherryPickup(vector<vector<int>>& grid) {
+        memset(memo, -1, sizeof(memo));
+        // Note second robot is at the end of the first row
+        return dfs(grid, 0, 0, grid[0].size()-1);
+    }
+};
+
+
+// Bottom up
+// Bottom up approach: Not easy to get it
+// Note this kind of DP problem utilize 3D array to represents two states' transfer
+// Unique
+// This approach is from:
+// https://leetcode.com/problems/cherry-pickup-ii/discuss/660536/C%2B%2B-with-explanation
+class Solution {
+public:
+    int cherryPickup(vector<vector<int>>& grid) {
+        int row = grid.size();
+        int col = grid[0].size();
+        int dp[row][col][col];
+        memset(dp, -1, sizeof(dp));
+        
+        dp[0][0][col-1] = grid[0][0] + grid[0][col-1];
+        int res = 0;
+        
+        for(int i = 1; i < row; ++i){
+            for(int j = 0; j < col; ++j){
+                for(int k = col-1; k >= 0; --k){
+                    // we are currently checking grid[i][j]
+                    int cherryPick = j == k ? grid[i][j] : grid[i][j] + grid[i][k];
+                    for(int p = -1; p <= 1; ++p){
+                        for(int q = -1; q <= 1; ++q){
+                            int preJ = j + p;
+                            int preK = k + q;
+                            // cout << preJ << " " << preK << endl;
+                            // Here we need to make that we can reach from the previous grid
+                            if(preJ >= 0 && preJ < col && preK >= 0 && preK < col 
+                               && dp[i-1][preJ][preK] != -1){
+                                // cout << preJ << " " << preK << endl;
+                                dp[i][j][k] = max(dp[i][j][k], dp[i-1][preJ][preK] + cherryPick);
+                            }
+                                
+                        }
+                    }
+                    // when we reach the end of the matrix, we need to get the max potential result
+                    if(i == row-1){
+                        res = max(res, dp[i][j][k]);
+                    }
+                }
+            }
+        }
+        
+        return res;
+        
+    }
+};
