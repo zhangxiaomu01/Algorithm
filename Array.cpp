@@ -6522,4 +6522,89 @@ public:
 };
 
 
+// 1477. Find Two Non-overlapping Sub-arrays Each With Target Sum
+// https://leetcode.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
+// This solution is from:
+// https://leetcode.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/discuss/685463/C%2B%2B-O(N)-solution-by-prefix-sum-and-DP
+// prefix sum + DP
+// The idea is to first calculate the prefix subsequence sum which equals to target
+// Each entry represents the current shortes possible length we have already find
+// so far. We do this from both left and right, then we do a linear scan and get the
+// shortest among the two arrays by checking [0...i] from fromL, and [i+1 ... len-1]
+// from fromR
+class Solution {
+private:
+    vector<int> calMinimumValidSubsequenceArray(vector<int>& arr, int t){
+        int len = arr.size();
+        vector<int> res;
+        unordered_map<int, int> uMap;
+        uMap[0] = -1;
+        
+        int preSum = 0;
+        for(int i = 0; i < len; ++i){
+            preSum += arr[i];
+            int subLen = len + 1;
+            if(uMap.find(preSum - t) != uMap.end()){
+                // We will guarantee to get the correct length, since 
+                // uMap[0] = -1
+                subLen = i - uMap[preSum - t];
+            }
+            // We can save the current preSum value with latest index i
+            uMap[preSum] = i;
+            res.push_back((i == 0 ? subLen : min(res.back(), subLen)));
+        }
+        return res;
+    }
+public:
+    int minSumOfLengths(vector<int>& arr, int target) {
+        int len = arr.size();
+        vector<int> fromL, fromR;
+        
+        fromL = calMinimumValidSubsequenceArray(arr, target);
+        reverse(arr.begin(), arr.end());
+        fromR = calMinimumValidSubsequenceArray(arr, target);
+        // Note in our fromL && fromR, the maximum value is len + 1
+        // If we cannot find any valid value, we will get something larger
+        // than len + 1
+        int res = len + 1;
+        
+        for(int i = 0; i < len - 1; ++i){
+            // We need to only involve ith element once!
+            res = min(res, fromL[i] + fromR[len - i - 2]);         
+        }
+        
+        return res == len + 1 ? -1 : res;
+        
+    }
+};
 
+
+// Two pointer solution: A little bit tricky! Not elegant!
+class Solution {
+public:
+    int minSumOfLengths(vector<int>& a, int target) {
+        if(a.size()<=1)return -1;
+        int m1=INT_MAX,m2=INT_MAX,l=0,sum=target,start=0,end=-1;
+        for(int i=0;i<a.size();i++){
+            if(sum==0){
+                if(l<m1){m2=m1;m1=l;end=i;}
+                else if(l<m2 && start>=end){m2=l;end=i;}
+                l--;
+                sum+=a[start++];
+            }
+           sum-=a[i];
+            l++;
+            if(sum<0){
+                while(sum<0){sum+=a[start++];l--;}
+            }
+
+        }
+         
+        if(sum==0){
+                if(l<m1 ){if(start>=end)m2=m1;m1=l;}
+                else if(l<m2 && start>=end){m2=l;}
+        }
+        if(m1==INT_MAX || m2==INT_MAX )return -1;
+        else return m1+m2;
+    }
+};
