@@ -123,3 +123,44 @@ public:
         
     }
 };
+
+
+// 1482. Minimum Number of Days to Make m Bouquets
+// https://leetcode.com/problems/minimum-number-of-days-to-make-m-bouquets/
+// Binary search problem!
+// This nice solution is from Lee:
+// https://leetcode.com/problems/minimum-number-of-days-to-make-m-bouquets/discuss/686316/JavaC%2B%2BPython-Binary-Search
+// Never expect this to be a binary search problem during the contest!
+class Solution {
+private:
+    int countValidBouquets(vector<int>& bD, int mid, int k){
+        int len = bD.size();
+        int res = 0, count = 0;
+        for(int i = 0; i < len; ++i){
+            if(bD[i] <= mid)
+                count ++;
+            else
+                count = 0;
+            if(count == k) {
+                count = 0;
+                res++;
+            }
+        }
+        return res;
+    }
+public:
+    int minDays(vector<int>& bloomDay, int m, int k) {
+        if(m * k > bloomDay.size()) return -1;
+        auto p = minmax_element(bloomDay.begin(), bloomDay.end());
+        int left = *p.first, right = *p.second;
+        while(left < right){
+            int mid = left + (right - left) / 2;
+            int mBouq = countValidBouquets(bloomDay, mid, k);
+            if(mBouq < m){
+                left = mid + 1;
+            }else
+                right = mid;
+        }
+        return left;
+    }
+};
