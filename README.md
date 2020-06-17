@@ -4,9 +4,9 @@ This is the repository for algorithm problems from leetcode...
 Categorize problems based on their types...
 
 
-# Current progress: 596
+# Current progress: 600
 
-# Contests: 28
+# Contests: 29
 
 Some really impressive problems:
 
@@ -19,3 +19,4 @@ ID | Name | Difficulty | Solution
 1473|House Paint III | Hard | DFS + Memo
 741|Cherry Pick| Hard | 2D dp / 2 states change / Tricky
 1463|Cherry Pick II| Hard | 3D dp / 2 states change
+1482|Minimum Number of ... | Medium | Bianry Search
