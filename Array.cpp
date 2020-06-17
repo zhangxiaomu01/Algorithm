@@ -6608,3 +6608,37 @@ public:
         else return m1+m2;
     }
 };
+
+// 1488. Avoid Flood in The City
+// https://leetcode.com/problems/avoid-flood-in-the-city/
+// Defer the update procedure, almost get it during the contest
+// You need to maintain a set in order to avoid dry the lake before it's actually filled
+// O(nlogn)
+class Solution {
+public:
+    vector<int> avoidFlood(vector<int>& rains) {
+        int len = rains.size();
+        vector<int> res(len, -1);
+        unordered_map<int, int> uMap;
+        set<int> indexSet;
+        for(int i = 0; i < len; ++i){
+            if(rains[i] == 0){
+                res[i] = 1;
+                // Maintein a sorted list of 
+                indexSet.insert(i);
+            }
+            else{
+                if(uMap.find(rains[i]) != uMap.end()){
+                    int lastRainDay = uMap[rains[i]];
+                    // Find a possible day which could dray rains[i]th lake
+                    auto it = indexSet.upper_bound(lastRainDay);
+                    if(it == indexSet.end()) return vector<int>();
+                    res[*it] = rains[i]; // we dry rains[i] lake at *it day
+                    indexSet.erase(it);
+                }
+                uMap[rains[i]] = i;
+            }
+        }
+        return res;
+    }
+};
