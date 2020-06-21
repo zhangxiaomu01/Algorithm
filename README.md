@@ -20,3 +20,4 @@ ID | Name | Difficulty | Solution
 741|Cherry Pick| Hard | 2D dp / 2 states change / Tricky
 1463|Cherry Pick II| Hard | 3D dp / 2 states change
 1488|Avoid Flood in The City|Medium|*Greedy 
+1482|Minimum Number of ... | Medium | Bianry Search

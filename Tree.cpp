@@ -3535,3 +3535,52 @@ public:
         return mx;
     }
 };
+
+
+// 1483. Kth Ancestor of a Tree Node
+// https://leetcode.com/problems/kth-ancestor-of-a-tree-node/
+// Very interesting idea
+// Concept of binary lifting
+// From: https://leetcode.com/problems/kth-ancestor-of-a-tree-node/discuss/686362/JavaC%2B%2BPython-Binary-Lifting
+// Interesting staff, good to know staff
+class TreeAncestor {
+private:
+    // For each entry, we save the parent of curent node. 
+    // v[i][0] means the parent of ith node, v[i][1] means the 2^1th parent of i
+    // v[i][j] means 2^jth parent node of i
+    vector<vector<int>> v;
+public:
+    TreeAncestor(int n, vector<int>& parent) {
+        vector<vector<int>> temp(n, vector<int>(20, -1));
+        for(int i = 0; i < parent.size(); ++i){
+            temp[i][0] = parent[i];
+        }
+        for(int k = 1; k < 20; ++k){
+            for(int i = 0; i < n; ++i){
+                if(temp[i][k-1] == -1) continue;
+                temp[i][k] = temp[temp[i][k-1]][k-1];
+            }
+        }
+        swap(v, temp);
+    }
+    
+    int getKthAncestor(int node, int k) {
+        // The most tricky part is node=temp[node][i]
+        // Note whenever we right shift 1 bit, we are actually moving 2^i steps up. 
+        // if we want to find next valid parent, which is v[node][i]
+        //
+        for(int i = 0; i < 20; ++i){
+            if((k >> i) & 1){
+                node = v[node][i];
+                if(node == -1) return -1;
+            }
+        }
+        return node;
+    }
+};
+
+/**
+ * Your TreeAncestor object will be instantiated and called as such:
+ * TreeAncestor* obj = new TreeAncestor(n, parent);
+ * int param_1 = obj->getKthAncestor(node,k);
+ */
