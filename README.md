@@ -4,9 +4,9 @@ This is the repository for algorithm problems from leetcode...
 Categorize problems based on their types...
 
 
-# Current progress: 603
+# Current progress: 604
 
-# Contests: 29
+# Contests: 30
 
 Some really impressive problems:
 
@@ -21,3 +21,4 @@ ID | Name | Difficulty | Solution
 1463|Cherry Pick II| Hard | 3D dp / 2 states change
 1488|Avoid Flood in The City|Medium|*Greedy 
 1482|Minimum Number of ... | Medium | Bianry Search
+1483|Kth Ancestor of a Tree Node| Hard | Binary Lifting
