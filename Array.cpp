@@ -6642,3 +6642,43 @@ public:
         return res;
     }
 };
+
+
+// 1497. Check If Array Pairs Are Divisible by k
+// https://leetcode.com/problems/check-if-array-pairs-are-divisible-by-k/
+// The test case for this problem is too weak!
+class Solution {
+public:
+    bool canArrange(vector<int>& arr, int k) {
+        unordered_map<int, int> uMap;
+        for(int i = 0; i < arr.size(); ++i){
+            // inspired by yuchen. Note how we handle the negative numbers and
+            // calculate the corresponding mode
+            // We cannot omit the %k in the right clause, since we need to make 
+            // sure that we only shift negative number to the smallest possible 
+            // none negative mod (test case [-10, 10] k = 2)
+            int mod = arr[i] >= 0 ?( arr[i] % k) : (k - (abs(arr[i]) % k)) % k;
+            // We do not care about mode equals 0, since we have 2 * n elements, 
+            // if some
+            if(mod == 0) continue;
+            uMap[mod] ++;
+        }
+        
+        while(!uMap.empty()){
+            auto it = uMap.begin();
+            int cur = it->first;
+            uMap[cur]--;
+            if(uMap[cur] == 0) uMap.erase(cur);
+            int possible = k - cur;
+            if(uMap.find(possible) != uMap.end()){
+                uMap[possible] --;
+                if(uMap[possible] == 0) uMap.erase(possible);
+            }else{
+                return false;
+            }
+        }
+        
+        return true;
+    }
+};
+
