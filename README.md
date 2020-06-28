@@ -4,7 +4,7 @@ This is the repository for algorithm problems from leetcode...
 Categorize problems based on their types...
 
 
-# Current progress: 604
+# Current progress: 607
 
 # Contests: 30
 
@@ -22,3 +22,5 @@ ID | Name | Difficulty | Solution
 1488|Avoid Flood in The City|Medium|*Greedy 
 1482|Minimum Number of ... | Medium | Bianry Search
 1483|Kth Ancestor of a Tree Node| Hard | Binary Lifting
+1497|Check If Array Pairs Are...| Medium | Negative Mod
+1489|Find Critical and Pseudo-Critical Edges.. | Hard | MST (BF)
