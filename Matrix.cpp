@@ -1261,3 +1261,88 @@ public:
 };
 
 
+// 1504. Count Submatrices With All Ones
+// https://leetcode.com/problems/count-submatrices-with-all-ones/
+// Running histogram: inspired by Yuchen
+// O(M*N*N) solution, nice and clean, but not efficient!
+class Solution {
+public:
+    int numSubmat(vector<vector<int>>& mat) {
+        int m = mat.size();
+        int n = mat[0].size();
+        int res = 0;
+        
+        vector<int> arr(n, 0);
+        for(int i = 0; i < m; ++i){
+            for(int j = 0; j < n; ++j){
+                if(mat[i][j] == 1)
+                    arr[j]++;
+                else arr[j] = 0;
+                // We treat arr[j] as the bottom right corner of the histogram and 
+                // set a pointer to move left, each time, we update the minHeight
+                // and add the height to our result (This is the tricky part) 
+                // Since we update all rectangle from top to bottom, so we are guaranteed
+                // to cover all the results
+                int minHeight = arr[j];
+                for(int k = j; k >= 0 && minHeight > 0; --k){
+                    minHeight = min(minHeight, arr[k]);
+                    // Hard to get this right. You'd better review all the problems
+                    // solved before!
+                    res += minHeight;
+                }
+            }
+        }
+        return res;
+    }
+};
+
+
+// Optimized solution:
+// O(M*N) solution, nice and clean, but not efficient!
+// This is a really tricky solution and hard to get it right
+// For a more detailed reference, please visit:
+// https://leetcode.com/problems/count-submatrices-with-all-ones/discuss/720265/Java-Detailed-Explanation-From-O(MNM)-to-O(MN)-by-using-Stack
+// The image is the key!
+class Solution {
+public:
+    int numSubmat(vector<vector<int>>& mat) {
+        int m = mat.size();
+        int n = mat[0].size();
+        
+        int res = 0;
+        vector<int> arr(n, 0);
+        for(int i = 0; i < m; ++i){
+            // We utilize a stack to pop the impossible result earlier
+            // so we can reduce the search space
+            stack<pair<int, int>> st;
+            for(int j = 0; j < n; ++j){
+                if(mat[i][j] == 1)
+                    arr[j]++;
+                else arr[j] = 0;
+                
+                int sum = 0;
+                while(!st.empty() && arr[st.top().first] >= arr[j]) st.pop();
+                if(!st.empty()){
+                    // This part is tricky, we need to include the rectangle with the
+                    // potential minimum height + our current arr[j], because for now
+                    // arr[j] is the maximum among all the heights from stack, which 
+                    // also means arr[j] can form a matrix with all the poped bars
+                    // We need to include the st.top().second here because we need to 
+                    // include top shorter bar that covers all the prvious value
+                    sum = (j - st.top().first) * arr[j] + st.top().second;
+                }
+                else{
+                    // arr[j] is the minimum now, since no other bars are in the stack
+                    sum = (j + 1) * arr[j];
+                }
+                // Here is another tricky part, we need to push the current sum to the 
+                // stack, imagine that when we still have elements in the stack, we need
+                // to include all the previous sum of the top shorter one to our result
+                st.push({j, sum});
+                res += sum;
+            }
+        }
+        return res;
+    }
+};
+

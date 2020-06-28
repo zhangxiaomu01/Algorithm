@@ -4,7 +4,7 @@ This is the repository for algorithm problems from leetcode...
 Categorize problems based on their types...
 
 
-# Current progress: 607
+# Current progress: 610
 
 # Contests: 30
 
@@ -24,3 +24,4 @@ ID | Name | Difficulty | Solution
 1483|Kth Ancestor of a Tree Node| Hard | Binary Lifting
 1497|Check If Array Pairs Are...| Medium | Negative Mod
 1489|Find Critical and Pseudo-Critical Edges.. | Hard | MST (BF)
+1504|Count Submatrices With All Ones | Medium | Histogram counting (interesting)
