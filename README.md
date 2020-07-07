@@ -24,4 +24,5 @@ ID | Name | Difficulty | Solution
 1483|Kth Ancestor of a Tree Node| Hard | Binary Lifting
 1497|Check If Array Pairs Are...| Medium | Negative Mod
 1489|Find Critical and Pseudo-Critical Edges.. | Hard | MST (BF)
-1504|Count Submatrices With All Ones | Medium | Histogram counting (interesting)
+1504|Count Submatrices With All Ones | Medium | Histogram counting (I)
+1498|Number of Subsequences That Satisfy | Medium | 2 sum equivalent (I)

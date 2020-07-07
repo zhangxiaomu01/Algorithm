@@ -6682,3 +6682,34 @@ public:
     }
 };
 
+
+// 1498. Number of Subsequences That Satisfy the Given Sum Condition
+// https://leetcode.com/problems/number-of-subsequences-that-satisfy-the-given-sum-condition/
+// Great solution from Lee:
+// https://leetcode.com/problems/number-of-subsequences-that-satisfy-the-given-sum-condition/discuss/709227/JavaC%2B%2BPython-Two-Sum
+// A very brilliant idea
+// We do not care each sub-sequence, we only care about the # of sub-sequences
+class Solution {
+public:
+    int numSubseq(vector<int>& nums, int target) {
+        const int mod = 1e9 + 7;
+        int res = 0;
+        int len = nums.size();
+        int l = 0, r = len-1;
+        // A table to reduce the computation of power of 2
+        vector<int> power(len, 1);
+        for(int i = 1; i < len; ++i)
+            power[i] = (power[i-1] * 2) % mod;
+        
+        sort(nums.begin(), nums.end());
+        
+        while(l <= r){
+            if(nums[l] + nums[r] > target) r--;
+            else{
+                res = (res + power[r - l++]) % mod;
+            }
+        }
+        return res;
+        
+    }
+};
