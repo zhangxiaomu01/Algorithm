@@ -6713,3 +6713,56 @@ public:
         
     }
 };
+
+
+// 1499. Max Value of Equation
+// https://leetcode.com/problems/max-value-of-equation/
+// Because xi < xj when i < j, so we will have 
+// yi + yj + |xi - xj| = yi - xi + yj + xj 
+// For each point, yj + xj is fixed, then we only need to find
+// yi - xi
+// Priority queue solution O(nlogn)
+class Solution {
+public:
+    int findMaxValueOfEquation(vector<vector<int>>& points, int k) {
+        // by default, pq is the max heap
+        priority_queue<pair<int, int>> pq;
+        int res = INT_MIN;
+        
+        for(int i = 0; i < points.size(); ++i){
+            int sum = points[i][0] + points[i][1];
+            while(!pq.empty() && points[i][0] - points[pq.top().second][0] > k) pq.pop();
+            if(!pq.empty()) res= max(res, sum + pq.top().first);
+            pq.push({points[i][1] - points[i][0], i});
+        }        
+        
+        return res;
+    }
+};
+
+
+// O(n) solution, we do not need pq, we can use deque
+// my implementation
+class Solution {
+public:
+    int findMaxValueOfEquation(vector<vector<int>>& points, int k) {
+        int i = 0, j = 0;
+        // we need to maintain a valid set of points in dq, which satisfy all 
+        // the requirement. Like |xi - xj| <= k && yi - xi is the maximum one
+        deque<int> dq;
+        int res = INT_MIN;
+        for(int i = 0; i < points.size(); ++i){
+            int sum = points[i][0] + points[i][1];
+            while(!dq.empty() && points[i][0] - points[dq.front()][0] > k) 
+                dq.pop_front();
+            if(!dq.empty()) 
+                res = max(res, sum + points[dq.front()][1] - points[dq.front()][0]);
+            while(!dq.empty() 
+                  && points[i][1] - points[i][0] >
+                  points[dq.back()][1] - points[dq.back()][0]) dq.pop_back();
+            dq.push_back(i);
+        }
+        
+        return res;
+    }
+};
