@@ -4,9 +4,9 @@ This is the repository for algorithm problems from leetcode...
 Categorize problems based on their types...
 
 
-# Current progress: 611
+# Current progress: 616
 
-# Contests: 30
+# Contests: 32
 
 Some really impressive problems:
 
@@ -26,3 +26,4 @@ ID | Name | Difficulty | Solution
 1489|Find Critical and Pseudo-Critical Edges.. | Hard | MST (BF)
 1504|Count Submatrices With All Ones | Medium | Histogram counting (I)
 1498|Number of Subsequences That Satisfy | Medium | 2 sum equivalent (I)
+1515|Best Position for a Service Centre | Hard | Simulation or geometric median

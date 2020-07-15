@@ -1210,3 +1210,50 @@ public:
     }
 };
 
+
+// 1519. Number of Nodes in the Sub-Tree With the Same Label
+// https://leetcode.com/problems/number-of-nodes-in-the-sub-tree-with-the-same-label/
+// My implementation. Not so bad.
+class Solution {
+public:
+    vector<int> countSubTrees(int n, vector<vector<int>>& edges, string labels) {
+        vector<unordered_set<int>> G(n);
+        for(int i = 0; i < edges.size(); ++i){
+            G[edges[i][0]].insert(edges[i][1]);
+            G[edges[i][1]].insert(edges[i][0]);
+        }
+        
+        queue<int> Q;
+        vector<vector<int>> dict(n, vector<int>(26, 0));
+        vector<int> res(n, 0);
+        
+        // We know root is 0, we cannot include here, incase the root has only one child
+        for(int i = 1; i < n; ++i){
+            if(G[i].size() == 1)
+                Q.push(i);
+        }
+        
+        while(!Q.empty()){
+            int cur = Q.front();
+            Q.pop();
+            dict[cur][labels[cur] - 'a'] ++;
+            // cout << cur << ' ' << dict[cur][labels[cur] - 'a'] << endl;
+            res[cur] = dict[cur][labels[cur] - 'a'];
+            int parent = *G[cur].begin();
+            for(int j = 0; j < 26; ++j){
+                 dict[parent][j] += dict[cur][j];
+            }
+            
+            G[cur].erase(parent);
+            G[parent].erase(cur);
+            if(G[parent].size() == 1 && parent != 0) Q.push(parent);
+        }
+        // Corner case
+        dict[0][labels[0] - 'a'] ++;
+        res[0] = dict[0][labels[0] - 'a'];
+        
+        return res;
+        
+    }
+};
+
