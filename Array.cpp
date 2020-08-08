@@ -6766,3 +6766,116 @@ public:
         return res;
     }
 };
+
+
+// 1537. Get the Maximum Score
+// https://leetcode.com/contest/weekly-contest-200/problems/get-the-maximum-score/
+// TEL: All test cases passed, but it takes too long
+class Solution {
+public:
+    int maxSum(vector<int>& nums1, vector<int>& nums2) {
+        int maxVal = 0;
+        int mod = 1e9+7;
+        // optimized
+        unordered_set<int> a;
+        unordered_set<int> b;
+        
+        for(int i = 0; i < nums1.size(); ++i) {a.insert(nums1[i]); maxVal = max(maxVal, nums1[i]);}
+        for(int j = 0; j < nums2.size(); ++j) {b.insert(nums2[j]); maxVal = max(maxVal, nums2[j]);}
+        
+        long long int res1 = 0, res2 = 0;
+        
+        // We iterate each possible nums.
+        for(int i = 1; i <= maxVal; ++i){
+            if(a.count(i) > 0) res1 += i;
+            if(b.count(i) > 0) res2 += i;
+            if(a.count(i) > 0 && b.count(i) > 0){
+                res1 = max(res1, res2) % mod;
+                res2 = res1;
+            }
+        }
+        
+        return max(res1, res2) % mod;
+    }
+};
+
+
+// Two pointer solution: from Lee:
+// https://leetcode.com/problems/get-the-maximum-score/discuss/767987/JavaC%2B%2BPython-Two-Pointers-O(1)-Space
+class Solution {
+public:
+    int maxSum(vector<int>& nums1, vector<int>& nums2) {
+        int i = 0, j = 0, len1 = nums1.size(), len2 = nums2.size();
+        long long int sum1 = 0, sum2 = 0, ans = 0;
+        int mod = 1e9+7;
+        
+        while(i < len1 && j < len2) {
+            // this will work because the arrays are sorted! 
+            if(nums1[i] < nums2[j])
+                sum1 += nums1[i++];
+            else if(nums1[i] > nums2[j])
+                sum2 += nums2[j++];
+            else {
+                // we are guranteed that we won't miss nums1[i] == nums2[j]
+                // because the arrays are sorted
+                ans = max(sum1, sum2) + ans + nums1[i];
+                sum1 = 0;
+                sum2 = 0;
+                i++;
+                j++;
+            }
+        }
+        
+        
+        while(i < len1) sum1 += nums1[i++];
+        while(j < len2) sum2 += nums2[j++];
+        
+        ans = (ans + max(sum1, sum2)) % mod;
+        return static_cast<int>(ans);
+    }
+};
+
+// DFS: my initial thought, but did not get it correct during the contest!
+// https://leetcode.com/problems/get-the-maximum-score/discuss/775013/C%2B%2B-DFS%2Bmemo
+class Solution {
+private:
+    // return the maximum possible result if we chose cur node. One of the 
+    // important observation: we will always chose the duplicate element
+    long long int dfs(unordered_map<int, vector<int>>& uMap, int cur, unordered_map<int, long long int>& memo) {
+        // We reach the last element of the one of the lists
+        if (uMap.count(cur) == 0) return cur;
+        
+        if (memo.count(cur) > 0) return memo[cur];
+        
+        long long int nextMax = 0;
+        for(int i = 0; i < uMap[cur].size(); ++i){
+            nextMax = max(dfs(uMap, uMap[cur][i], memo), nextMax);
+        }
+        
+        nextMax += cur;
+        memo[cur] = nextMax;
+        
+        return nextMax;
+        
+    }
+public:
+    int maxSum(vector<int>& nums1, vector<int>& nums2) {
+        const int mod = 1e9 + 7;
+        // uMap saves the possible next element
+        unordered_map<int, vector<int>> uMap;
+        // saves the explored states. Be careful with the integer overflow
+        unordered_map<int, long long int> memo;
+        // The last element does not have any next element, so we remove it
+        // For the duplicate elements, we will have two possible out comes
+        // We merge the two lists into one map to make things easier.
+        for(int i = 0; i < nums1.size() - 1; ++i) {
+            uMap[nums1[i]].push_back(nums1[i+1]);
+        }
+        
+        for(int i = 0; i < nums2.size() - 1; ++i){
+            uMap[nums2[i]].push_back(nums2[i+1]);
+        }
+        
+        return max(dfs(uMap, nums1[0], memo) % mod, dfs(uMap, nums2[0], memo) % mod);
+    }
+};
