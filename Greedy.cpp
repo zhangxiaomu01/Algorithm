@@ -253,3 +253,51 @@ public:
 };
 
 
+// 1520. Maximum Number of Non-Overlapping Substrings
+// https://leetcode.com/problems/maximum-number-of-non-overlapping-substrings/
+// I got the similar idea during the contest, but did not figure it out!
+// A very good greedy problem!
+// From: https://leetcode.com/problems/maximum-number-of-non-overlapping-substrings/discuss/743223/C%2B%2BJava-Greedy-O(n)
+class Solution {
+private:
+    int getNewRight(string& s, int cur, vector<int>& l, vector<int>& r){
+        int right = r[s[cur] - 'a'];
+        for(int i = cur; i <= right; ++i){
+            // We should have examined this one before! No need to double check
+            if(l[s[i]-'a'] < cur) return -1;
+            right = max(right, r[s[i] - 'a']);
+        }
+        return right;
+    }
+public:
+    vector<string> maxNumOfSubstrings(string s) {
+        int len = s.size();
+        // Get the maximum interval for each character. At most 26 possible outcomes
+        vector<int> l(26, INT_MAX);
+        vector<int> r(26, INT_MIN);
+        for(int i = 0; i < len; ++i){
+            l[s[i] - 'a'] = min(l[s[i]-'a'], i);
+            r[s[i] - 'a'] = i;
+        }
+        
+        vector<string> res;
+        int right = -1;
+        for(int i = 0; i < len; ++i){
+            // We need to make sure s[i] appears the first time, then we do the 
+            // following computation
+            if(i == l[s[i] - 'a']){
+               int newRight = getNewRight(s, i, l, r);
+                if(newRight != -1){
+                    // If newRight is not -1, then newRight must < right
+                    if(i > right)
+                        res.push_back("");
+                    right = newRight;
+                    res.back() = s.substr(i, right - i + 1);
+                } 
+            }
+ 
+        }
+        return res;
+    }
+};
+

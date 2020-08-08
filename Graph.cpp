@@ -1116,3 +1116,144 @@ private:
     }
 };
 
+
+// 1514. Path with Maximum Probability
+// https://leetcode.com/problems/path-with-maximum-probability/
+// My implementation, pretty slow because of the priority queue.
+class Solution {
+public:
+    double maxProbability(int n, vector<vector<int>>& edges, vector<double>& sP, int start, int end) {
+        vector<vector<pair<int, double>>> G(n);
+        for(int i = 0; i < edges.size(); ++i){
+            G[edges[i][0]].push_back({edges[i][1], sP[i]});
+            G[edges[i][1]].push_back({edges[i][0], sP[i]});
+        }
+        
+        vector<int> visited(n, 0);
+        vector<double> nodeP(n, 0.0);
+
+        priority_queue<pair<double, int>> Q;
+        Q.push({1.0, start});
+        // visited[start] = 1;
+        int cnt = 0;
+        while(!Q.empty()){
+            int cur = Q.top().second;
+            double curP = Q.top().first;
+            // cout << cur << " " << visited[cur] << endl;
+            Q.pop();
+            if(visited[cur] == 1) continue;
+            cnt ++;
+            visited[cur] = 1;
+            // cout << G[cur].size() << endl;
+            for(int i = 0; i < G[cur].size(); ++i){
+                if(visited[G[cur][i].first]) continue;
+                // visited[G[cur][i].first] = 1;
+                if(curP * G[cur][i].second > nodeP[G[cur][i].first]) {
+                    // cout << G[cur][i].first << " " << curP * G[cur][i].second << endl;
+                    nodeP[G[cur][i].first] = curP * G[cur][i].second;
+                }
+                    
+                Q.push({curP * G[cur][i].second, G[cur][i].first});
+            }
+        }
+        
+        if(nodeP[end] == 0.0) return 0.0; // We cannot reach the end
+        return nodeP[end];
+        
+    }
+};
+
+
+// Optimized the solution.
+// Utilize the inq array to query whether a node has already pushed
+// to the queue, we only push the node to the queue when we find
+// a bigger possibility to reach this node (a node can be pushed 
+// multiple times). 
+// Note we are guaranteed to get an empty queue in the end, because
+// each time when we calculate the probabilities, the pro will be
+// smaller and smaller.
+class Solution {
+public:
+    double maxProbability(int n, vector<vector<int>>& edges, vector<double>& succProb, int start, int end) {
+        vector<vector<pair<int,double>>> G(n, vector<pair<int,double>>());
+        int m = edges.size();
+        for(int i=0; i<m; i++) {
+            int u = edges[i][0], v = edges[i][1];
+            double p = succProb[i];
+            G[u].push_back(make_pair(v, p));
+            G[v].push_back(make_pair(u, p));
+        }
+        vector<double> dst(n, 0.0);
+        vector<bool> inq(n, false);
+        queue<int> q;
+        dst[start] = 1.0;
+        inq[start] = true;
+        q.push(start);
+        while(!q.empty()) {
+            int now = q.front();
+            //cout << now << " " << dst[now] << endl;
+            q.pop();
+            for(auto edge: G[now]) {
+                int v = edge.first;
+                double p = edge.second;
+                if(dst[now]*p > dst[v]) {
+                    dst[v] = dst[now]*p;
+                    if(!inq[v]) {
+                        inq[v] = true;
+                        q.push(v);
+                    }
+                }
+            }
+            inq[now] = false;
+        }
+        return dst[end];
+    }
+};
+
+
+// 1519. Number of Nodes in the Sub-Tree With the Same Label
+// https://leetcode.com/problems/number-of-nodes-in-the-sub-tree-with-the-same-label/
+// My implementation. Not so bad.
+class Solution {
+public:
+    vector<int> countSubTrees(int n, vector<vector<int>>& edges, string labels) {
+        vector<unordered_set<int>> G(n);
+        for(int i = 0; i < edges.size(); ++i){
+            G[edges[i][0]].insert(edges[i][1]);
+            G[edges[i][1]].insert(edges[i][0]);
+        }
+        
+        queue<int> Q;
+        vector<vector<int>> dict(n, vector<int>(26, 0));
+        vector<int> res(n, 0);
+        
+        // We know root is 0, we cannot include here, incase the root has only one child
+        for(int i = 1; i < n; ++i){
+            if(G[i].size() == 1)
+                Q.push(i);
+        }
+        
+        while(!Q.empty()){
+            int cur = Q.front();
+            Q.pop();
+            dict[cur][labels[cur] - 'a'] ++;
+            // cout << cur << ' ' << dict[cur][labels[cur] - 'a'] << endl;
+            res[cur] = dict[cur][labels[cur] - 'a'];
+            int parent = *G[cur].begin();
+            for(int j = 0; j < 26; ++j){
+                 dict[parent][j] += dict[cur][j];
+            }
+            
+            G[cur].erase(parent);
+            G[parent].erase(cur);
+            if(G[parent].size() == 1 && parent != 0) Q.push(parent);
+        }
+        // Corner case
+        dict[0][labels[0] - 'a'] ++;
+        res[0] = dict[0][labels[0] - 'a'];
+        
+        return res;
+        
+    }
+};
+

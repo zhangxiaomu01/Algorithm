@@ -1132,3 +1132,61 @@ public:
 };
 
 
+// 1515. Best Position for a Service Centre
+// https://leetcode.com/problems/best-position-for-a-service-centre/
+// A great solution from:
+// https://leetcode.com/problems/best-position-for-a-service-centre/discuss/731606/C%2B%2B-Simulated-Annealing
+// Not very efficient though. The idea is interesting and worth investing sometime to get it.
+class Solution {
+private:
+    double calNorm(vector<int>& p1, vector<double>& p2){
+        return sqrt((p1[0] - p2[0]) * (p1[0] - p2[0]) + (p1[1] - p2[1]) * (p1[1] - p2[1]));
+    }
+    
+    double sumDist(vector<vector<int>>& pos, vector<double> C){
+        double res = 0.0;
+        for(int i = 0; i < pos.size(); ++i){
+            res += calNorm(pos[i], C);
+        }
+        return res;
+    }
+public:
+    double getMinDistSum(vector<vector<int>>& pos) {
+        int len = pos.size();
+        const int dir[5] = {-1, 0, 1, 0, -1};
+        
+        // We start from the origin
+        vector<double> C = {0, 0};
+        //pos[i][0] && pos[i][1] is between [0, 100]
+        double step = 100.0;
+        double res = sumDist(pos, C);
+        // double preRes = 0.0;
+        double gap = 1e-6;
+        // At first, I tried abs(res - preRes) here, but I will get TLE error
+        // The issue is because we may not update the preRes timely, so when we
+        // happen get a curSum pretty close to res, then we might end up with never 
+        // getting achance to go to the if(curSum < res) statement and cause an infinite
+        // loop. We only need to make sure our step is smaller than gap. So we know each
+        // time, our points update will be sufficiently smaller to capture the final res
+        // while(abs(res - preRes) > gap){
+        while(step > gap){
+            bool isSmaller = false;
+            for(int i = 0; i < 4; ++i){
+                vector<double> newC = {C[0] + dir[i] * step, C[1] + dir[i+1] * step};
+                double curSum = sumDist(pos, newC);
+                // Once we find a smaller sum, we can update our 
+                if(curSum < res){
+                    // preRes = res; 
+                    res = curSum;
+                    isSmaller = true;
+                    C= newC;
+                    break;
+                }
+            }
+            // This is the tricky part, if we cannot find a smaller sum during for all 
+            // 4 directions, we need to shrink step
+            if(!isSmaller) step /= 2.0;
+        }
+        return res;
+    }
+};
