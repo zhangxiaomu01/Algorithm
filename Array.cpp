@@ -6879,3 +6879,61 @@ public:
         return max(dfs(uMap, nums1[0], memo) % mod, dfs(uMap, nums2[0], memo) % mod);
     }
 };
+
+
+// 1535. Find the Winner of an Array Game
+// https://leetcode.com/problems/find-the-winner-of-an-array-game/
+// My implementation: Naive
+class Solution {
+public:
+    int getWinner(vector<int>& arr, int k) {
+        auto maxValIt = max_element(arr.begin(), arr.end());
+        int pos = maxValIt - arr.begin();
+        if(k > pos + 1) return *maxValIt;
+        if(k == 1) return max(arr[0], arr[1]);
+        
+        deque<int> dQ;
+        for(int i = 0; i <= pos; ++i){
+            dQ.push_back(arr[i]);
+        }
+        int target = 0;
+        unordered_map<int, int> wins;
+        while(!dQ.empty() && dQ.front() != *maxValIt){
+            target = dQ.front();
+            dQ.pop_front();
+            while(!dQ.empty() && dQ.front() != *maxValIt){
+                int c = dQ.front();
+                dQ.pop_front();
+                if(c > target){
+                    dQ.push_front(c);
+                    wins[c] ++;
+                    break;
+                }
+                else {
+                    wins[target]++;
+                    if(wins[target] == k) return target;
+                }
+            }
+        }
+        
+        return *maxValIt;
+    }
+};
+
+
+// Optimized version
+// If we cannot find the correct ans in one pass, the winner will be the max element.
+class Solution {
+public:
+    int getWinner(vector<int>& A, int k) {
+        int cur = A[0], win = 0;
+        for (int i = 1; i < A.size(); ++i) {
+            if (A[i] > cur) {
+                cur = A[i];
+                win = 0;
+            }
+            if (++win == k) break;
+        }
+        return cur;
+    }
+};
