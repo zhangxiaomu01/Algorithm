@@ -29,3 +29,4 @@ ID | Name | Difficulty | Solution
 1515|Best Position for a Service Centre | Hard | Simulation or geometric median
 1520|Maximum Number of Non-Overlapping Substrings | Medium | Greedy
 1537|Get the Maximum Score| Hard | 2 pointers / DFS
+1545|Find Kth Bit in Nth Binary String| Medium | Recursion

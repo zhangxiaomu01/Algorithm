@@ -2247,3 +2247,31 @@ public:
     }
 };
 
+
+// 1545. Find Kth Bit in Nth Binary String
+// https://leetcode.com/problems/find-kth-bit-in-nth-binary-string/
+// You did not get it right in the contest!
+// This is a great question to practice recursion. This great solution is:
+// https://leetcode.com/problems/find-kth-bit-in-nth-binary-string/discuss/780976/C%2B%2B-Simple-Recursion-with-Explanation
+class Solution {
+private:
+    char recursive(const int len, int n, int k) {
+        if(n == 1) return '0';
+        if(k == len / 2 + 1) return '1';
+        if(k < len / 2 + 1) return recursive(len / 2, n-1, k);
+        int i = k - (len / 2) - 1;
+        
+        // This is the most tricky part. You almost get it during the contest.
+        // If you want to find the ith element from the right half of list, it's
+        // equivalent to find the len/2 -i + 1th element from the right side of the 
+        // right half list (the right side of list is the inverse / reversed version of
+        // the S(n-1). So we need to inverse the result back to the right one
+        return recursive(len / 2, n-1, len / 2 - i + 1) == '0' ? '1' : '0';
+        
+    }
+public:
+    char findKthBit(int n, int k) {
+        int len = pow(2, n) - 1;
+        return recursive(len, n, k);
+    }
+};
