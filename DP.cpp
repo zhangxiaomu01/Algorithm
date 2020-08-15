@@ -3136,3 +3136,74 @@ public:
         
     }
 };
+
+
+// 1546. Maximum Number of Non-Overlapping Subarrays With Sum Equals Target
+// https://leetcode.com/problems/maximum-number-of-non-overlapping-subarrays-with-sum-equals-target/
+// You did not make it during the contest! This is a classical problem, and you did not get
+// the approach to solve it.
+// https://leetcode.com/problems/maximum-number-of-non-overlapping-subarrays-with-sum-equals-target/discuss/790186/Simple-Solution-Using-Unordered-Map-C%2B%2B
+class Solution {
+public:
+    int maxNonOverlapping(vector<int>& nums, int target) {
+        int len = nums.size();
+        vector<int> res(len+1, 0);
+        // uMap records the target sum and corresponding index. We always override the index
+        // with the largest one, which will give us shortest valid interval
+        unordered_map<int, int> uMap;
+        // Make sure that we can always find the sum == target 
+        uMap[0] = -1;
+        int sum = 0;
+        
+        for(int i = 0; i < len; ++i){
+            sum += nums[i];
+            if(uMap.count(sum - target) > 0) {
+                if(uMap[sum - target] >= 0) {
+                    // This is the tricky part. We need to get the last potential valid
+                    // numbers + 1 here. Since uMap[sum - target] will give the largest 
+                    // possible index J, so res[uMap[sum - target]] will get the maximum 
+                    // possible res for index J
+                    res[i] = res[uMap[sum - target]] + 1;
+                } else
+                    res[i] = 1;
+            }
+            uMap[sum] = i;
+            // Update the res[i] with res[i-1], since for res[i], we only add 1 more 
+            // element here
+            if(i > 0) 
+                res[i] = max(res[i], res[i-1]);
+        }
+        return res[len-1];
+    }
+};
+
+
+// A more intuitive implementation, but slower
+class Solution {
+public:
+        int maxNonOverlapping(vector<int>& nums, int target) {
+        if (nums.empty()) {
+            return 0;
+        }
+
+        int res = 0;
+        int prefixSum = 0;
+        int n = nums.size();
+        std::unordered_set<int> dict;
+        for (int i = 0; i < n; ++i) {
+            if (dict.empty()) {
+                dict.insert(0);
+            }
+            prefixSum += nums[i];
+            int findNum = prefixSum - target;
+            if(dict.find(findNum) != dict.end()) {
+                ++res;
+                prefixSum = 0;
+                dict.clear();
+            } else {
+                dict.insert(prefixSum);
+            }
+        }
+        return res;
+    }
+};
