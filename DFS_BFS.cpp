@@ -2275,3 +2275,29 @@ public:
         return recursive(len, n, k);
     }
 };
+
+// 1553. Minimum Number of Days to Eat N Oranges
+// https://leetcode.com/problems/minimum-number-of-days-to-eat-n-oranges/
+// Brilliant solution:
+// https://leetcode.com/problems/minimum-number-of-days-to-eat-n-oranges/discuss/794162/C%2B%2BJavaPython-5-lines
+class Solution {
+private:
+    int eatDFS(int n, unordered_map<int, int>& memo) {
+        if(n <= 1) return n;
+        if(memo.count(n) > 0) return memo[n];
+        
+        // We do not need to consider eatDFS(n-1, memo) + 1,  because it makes more sense just to 
+        // increase 1 or decrease 1 to make n divisible by either 2 or 3, we need to swallow as many
+        // as possible to get the final result. n % 2 will be 1 if it is odd, which means we need to 
+        // add / substract by 1 to get n % 2 == 0. The same thing works for n % 3.
+        int res = 1 + min(n % 2 + eatDFS(n / 2, memo), n % 3 + eatDFS(n / 3, memo));
+        memo[n] = res;
+        return res;
+    }
+public:
+    int minDays(int n) {
+        unordered_map<int, int> memo;
+        
+        return eatDFS(n, memo);
+    }
+};
