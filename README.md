@@ -4,9 +4,9 @@ This is the repository for algorithm problems from leetcode...
 Categorize problems based on their types...
 
 
-# Current progress: 625
+# Current progress: 631
 
-# Contests: 35
+# Contests: 36
 
 Some really impressive problems:
 
@@ -30,3 +30,4 @@ ID | Name | Difficulty | Solution
 1520|Maximum Number of Non-Overlapping Substrings | Medium | Greedy
 1537|Get the Maximum Score| Hard | 2 pointers / DFS
 1545|Find Kth Bit in Nth Binary String| Medium | Recursion
+1552|Magnetic Force Between Two Balls | Medium | Binary Search

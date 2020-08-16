@@ -164,3 +164,41 @@ public:
         return left;
     }
 };
+
+// 1552. Magnetic Force Between Two Balls
+// https://leetcode.com/problems/magnetic-force-between-two-balls/
+// Did not get it right during the contest
+// Binary search - We meed to binary search the valid force. If we cannot form maxForce valid minimum 
+// force, we need to shrink maxForce, else we increase it.
+// Double check here: 
+// https://leetcode.com/problems/magnetic-force-between-two-balls/discuss/794103/C%2B%2B-Binary-Search-with-explanation-(with-other-binary-answer-problems)
+class Solution {
+private:
+    bool checkValid(vector<int>& pos, int m, int maxForce) {
+        int start = pos[0];
+        for(int i = 1; i < pos.size(); ++i) {
+            if(pos[i] - start >= maxForce){
+                start = pos[i];
+                --m;
+            }    
+        }
+        // We already have one in the pos[0], so either m == 1 or m == 0 works
+        return m < 2;
+    }
+public:
+    int maxDistance(vector<int>& pos, int m) {
+        sort(pos.begin(), pos.end());
+        if(m == 2) return pos.back() - pos[0];
+        int l = 0; 
+        int r = pos.back();
+        while(l < r) {
+            int mid = l + (r - l + 1) / 2;
+            if(checkValid(pos, m, mid)) {
+                l = mid;
+            } else
+                r = mid - 1;
+        }
+        return l;
+        
+    }
+};
