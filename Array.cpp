@@ -6937,3 +6937,35 @@ public:
         return cur;
     }
 };
+
+
+// 1567. Maximum Length of Subarray With Positive Product
+// https://leetcode.com/contest/weekly-contest-204/problems/maximum-length-of-subarray-with-positive-product/
+class Solution {
+public:
+    int getMaxLen(vector<int>& nums) {
+        int res = 0;
+        int firstNegIndex = -1;
+        int firstZeroIndex = -1; // We need to take index[0] == 0 into account
+        int cntNeg = 0;
+        for(int i = 0; i < nums.size(); ++i) {
+            if(nums[i] < 0) {
+                cntNeg ++;
+                if(firstNegIndex == -1) firstNegIndex = i;
+            }
+            // If 0, we cannot use previous subsequence anymore, we need to reset the state
+            if (nums[i] == 0) { 
+                cntNeg = 0;
+                firstZeroIndex = i;
+                firstNegIndex = -1;
+            } else { // Even nums[i] < 0, we need to check the length
+                // we either never encounter any negative number or we encounter the even number of negatives
+                // We only need to take care of the zero situation.
+                if (cntNeg % 2 == 0) res = max(res, i - firstZeroIndex);
+                else res = max(res, i - firstNegIndex);
+            }
+        }
+        
+        return res;
+    }
+};
