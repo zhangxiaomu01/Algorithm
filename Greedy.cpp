@@ -301,3 +301,29 @@ public:
     }
 };
 
+
+
+// 1647. Minimum Deletions to Make Character Frequencies Unique
+// https://leetcode.com/problems/minimum-deletions-to-make-character-frequencies-unique/
+// Did not get it right during the contest!
+class Solution {
+public:
+    int minDeletions(string s) {
+        int f[26] = {0};
+        for(int i = 0; i < s.size(); ++i) {
+            f[s[i] - 'a'] ++;
+        }
+        
+        unordered_set<int> frequency;
+        int res = 0;
+        for(int i = 0; i < 26; ++i) {
+            int freq = f[i];
+            while(freq != 0 && frequency.find(freq) != frequency.end()){
+                freq--;
+                res ++;
+            }
+            frequency.insert(freq);
+        }
+        return res;
+    }
+};
