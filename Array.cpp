@@ -6969,3 +6969,30 @@ public:
         return res;
     }
 };
+
+
+// 1818. Minimum Absolute Sum Difference
+// https://leetcode.com/problems/minimum-absolute-sum-difference/
+class Solution {
+public:
+    int minAbsoluteSumDiff(vector<int>& nums1, vector<int>& nums2) {
+        int mod = 1e9 + 7;
+        set<int> s(nums1.begin(), nums1.end());
+        long result = 0; 
+        int gain = 0;
+        for (int i = 0; i < nums1.size(); ++i) {
+            int gap = abs(nums1[i] - nums2[i]);
+            result += gap;
+            if (gap > gain) {
+                auto it = s.lower_bound(nums2[i]);
+                if (it != s.end()) {
+                    gain = max(gain, gap - abs(*it - nums2[i]));
+                }
+                if (it != s.begin()) {
+                    gain = max(gain, gap - abs(*prev(it) - nums2[i]));
+                }
+            }
+        }
+        return (result - gain) % mod;
+    }
+};
