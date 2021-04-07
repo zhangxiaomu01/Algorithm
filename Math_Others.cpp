@@ -1190,3 +1190,38 @@ public:
         return res;
     }
 };
+
+
+// 1819. Number of Different Subsequences GCDs
+// https://leetcode.com/problems/number-of-different-subsequences-gcds/
+// An interesting problem with an excellent solution.
+/*
+The general idea is that we need to iterate from 1 to maximum possible numbers 200000, and 
+figure out whether this number can be a common GCD of the subsequence, whenever we find one,
+we include it to the final count.
+*/
+class Solution {
+public:
+    int countDifferentSubsequenceGCDs(vector<int>& nums) {
+        bool set[200001] = {false};
+        int max_value = 0;
+        for (int i = 0; i < nums.size(); ++i) {
+            set[nums[i]] = true;
+            max_value = max(max_value, nums[i]);
+        }
+        int cnt = 0;
+        // i is the possible divisor, we start from the smallest 1, once it's included, we 
+        // increase it by 1 and keep iterating.
+        for (int i = 1; i <= 200000; ++i) {
+            int commonDivisor = 0;
+            // if x is from nums, then i must be a common divisor of some number in nums.
+            for (int x = i; x <= max_value && commonDivisor != i; x += i) {
+                if (set[x]) commonDivisor = gcd(commonDivisor, x);
+            }
+            // If we break the earlier loop with commonDivisor == i, then it's the GCD of
+            // some subsequence.
+            if (commonDivisor == i) cnt ++;
+        }
+        return cnt;
+    }
+};
