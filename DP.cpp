@@ -3207,3 +3207,43 @@ public:
         return res;
     }
 };
+
+
+// 1824. Minimum Sideway Jumps
+// https://leetcode.com/problems/minimum-sideway-jumps/
+/* Almost get it right during the contest. This is a good one.
+
+We can use DP to solve this problem. dp[i][r] means the minimum jumps when the frog gets to point i lane r (0-index).
+
+The base cases are:
+
+dp[0][0], dp[0][1], dp[0][2] = 1, 0, 1
+dp[i][r] = inf when there's obstacle at (i, r) or (i+1, r)
+
+And the transition function is:
+
+dp[i][r] = min([dp[i-1][r], dp[i-1][(r+1)%3] + 1, dp[i-1][(r+2)%3] + 1]) for r = 0, 1, 2
+*/
+
+class Solution {
+public:
+    int minSideJumps(vector<int>& obstacles) {
+        // we start from line 2. Set the dp[0] / dp[2] to 1 to indicate that position 1 has
+        // an obstacle.
+        int dp[3] = {1, 0, 1};
+        
+        for (int e : obstacles) {
+            // If the current position has an obstacle, we mark it with a large value
+            if (e > 0) 
+                dp[e-1] = 1e6;
+            for (int i = 0; i < 3; ++i) {
+                // If no obstacle, we will update all 3 lines, if there is an obstacle, we 
+                // already update it.
+                if (e != i + 1) {
+                    dp[i] = min (dp[i], min(dp[(i+1) % 3] + 1, dp[(i+2) % 3] + 1));
+                }
+            }
+        }
+        return min(dp[0], min(dp[1], dp[2]));
+    }
+};
