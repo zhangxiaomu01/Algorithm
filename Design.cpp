@@ -2209,3 +2209,102 @@ public:
  * obj->updateSubrectangle(row1,col1,row2,col2,newValue);
  * int param_2 = obj->getValue(row,col);
  */
+
+
+// 1825. Finding MK Average
+// https://leetcode.com/problems/finding-mk-average/
+class MKAverage {
+private:
+    int m, k;
+    long sum = 0;
+    // We meed to keep bottom and top set has exactly k elements, which bot reppresents the 
+    // smallest k elements, while top represents the largest.
+    multiset<int> bot, mid, top;
+    queue<int> Q;
+public:
+    MKAverage(int m, int k):m(m), k(k) {
+        
+    }
+    
+    void addElement(int num) {
+        if (Q.size() < m) {
+            mid.insert(num);
+        }
+        Q.push(num);
+        // Begin rebalance
+        if (Q.size() == m) {
+            for (int i = 0; i < k; ++i) {
+                bot.insert(*mid.begin());
+                top.insert(*mid.rbegin());
+                mid.erase(mid.begin());
+                mid.erase(prev(mid.end()));
+            }
+            for (auto it = mid.begin(); it != mid.end(); ++it) {
+                sum += *it;
+            }
+        } else if (Q.size() > m) {
+            // First adds the element to the right place, and make sure we balance the mid.
+            int elementToBeRemoved = Q.front();
+            Q.pop();
+            if (num < *bot.rbegin()) {
+                bot.insert(num);
+                int value = *bot.rbegin();
+                bot.erase(prev(bot.end()));
+                mid.insert(value);
+                sum += value;
+            } else if (num > *top.begin()) {
+                top.insert(num);
+                int value = *top.begin();
+                top.erase(top.begin());
+                mid.insert(value);
+                sum += value;
+            } else {
+                mid.insert(num);
+                sum += num;
+            }
+            
+            auto it_bot = bot.find(elementToBeRemoved);
+            if (it_bot != bot.end()) {
+                bot.erase(it_bot);
+            } else {           
+                auto it_mid = mid.find(elementToBeRemoved);
+                if (it_mid != mid.end()) {
+                    sum -= elementToBeRemoved;
+                    mid.erase(it_mid);
+                } else {
+                    top.erase(top.find(elementToBeRemoved));
+                }
+            }
+            
+            if (bot.size() < k) {
+                auto it = mid.begin();
+                int value = *it;
+                mid.erase(it);
+                sum -= value;
+                bot.insert(value);
+            } else if (top.size() < k) {
+                auto it = mid.rbegin();
+                int value = *it;
+                mid.erase(prev(mid.end()));
+                sum -= value;
+                top.insert(value);
+            }
+        }
+        
+        
+    }
+    
+    int calculateMKAverage() {
+        if (Q.size() < m) {
+            return -1;
+        }
+        return sum / (m - 2*k);
+    }
+};
+
+/**
+ * Your MKAverage object will be instantiated and called as such:
+ * MKAverage* obj = new MKAverage(m, k);
+ * obj->addElement(num);
+ * int param_2 = obj->calculateMKAverage();
+ */
