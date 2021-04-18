@@ -6996,3 +6996,85 @@ public:
         return (result - gain) % mod;
     }
 };
+
+
+// 1834. Single-Threaded CPU
+// https://leetcode.com/problems/single-threaded-cpu/
+// My implementation. Slow.
+class Solution {
+private:
+    struct myComp{
+        bool operator()(vector<int>& v1, vector<int>& v2){
+            if (v1[1] > v2[1]) return true;
+            else if (v1[1] == v2[1] && v1[0] > v2[0]) return true;
+            else return false;
+        }
+    };
+    struct sortComp{
+        bool operator()(vector<int>& v1, vector<int>& v2){
+            return v1[0] < v2[0];
+        }
+    } mySort;
+public:
+    vector<int> getOrder(vector<vector<int>>& tasks) {
+        vector<int> res;
+        priority_queue<vector<int>, vector<vector<int>>, myComp> pQ;
+        
+        for (int i = 0; i < tasks.size(); ++i) {
+            tasks[i].push_back(i);
+        }
+        
+        sort(tasks.begin(), tasks.end(), mySort);
+        
+        int i = 0;
+        int currentExistingTime = 0;
+        for(; i < tasks.size(); ) {
+            if(pQ.empty()) {
+                int currentEnqueueTime = tasks[i][0];
+                currentExistingTime = currentExistingTime < currentEnqueueTime ? currentEnqueueTime : currentExistingTime;
+                while (i < tasks.size() && tasks[i][0] == currentEnqueueTime) {
+                    pQ.push(vector<int>({tasks[i][2], tasks[i][1]}));
+                    i ++;
+                }
+            }
+            while (i < tasks.size() && currentExistingTime >= tasks[i][0]) {
+                pQ.push(vector<int>({tasks[i][2], tasks[i][1]}));
+                i++;
+            }
+            auto nextTask = pQ.top();
+            res.push_back(nextTask[0]);
+            currentExistingTime += nextTask[1];
+            pQ.pop();
+        }
+        
+        while (!pQ.empty()) {
+            auto nextTask = pQ.top();
+            res.push_back(nextTask[0]);
+            pQ.pop();
+        }
+        
+        return res;
+    }
+};
+
+// Much better implementation. Neat and concise. Note how we make the priority queue to be min queue by pushing negative value
+// in the queue. And how we use idx to store the index and sort based on the tasks enque time.
+vector<int> getOrder(vector<vector<int>>& tasks) {
+    vector<int> res, idx(tasks.size());
+    priority_queue<pair<int, int>> pq;
+    iota(begin(idx), end(idx), 0);
+    sort(begin(idx), end(idx), [&](int i, int j) { return tasks[i][0] < tasks[j][0]; });
+    for (long i = 0, time = 1; i < idx.size() || !pq.empty();) {
+        for (; i < idx.size() && tasks[idx[i]][0] <= time; ++i)
+            pq.push({-tasks[idx[i]][1], -idx[i]});
+        if (!pq.empty()) {
+            auto [procTime, j] = pq.top(); pq.pop();
+            time -= procTime;
+            res.push_back(-j);
+        }
+        else
+            time = tasks[idx[i]][0];
+    }
+    return res;
+}
+
