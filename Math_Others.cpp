@@ -1225,3 +1225,38 @@ public:
         return cnt;
     }
 };
+
+
+// 1835. Find XOR Sum of All Pairs Bitwise AND
+// https://leetcode.com/problems/find-xor-sum-of-all-pairs-bitwise-and/
+/*
+We all know the distributive property that (a1+a2)*(b1+b2) = a1*b1 + a1*b2 + a2*b1 + a2*b2
+
+Now focus on each bit,
+for example the last bit of A[i] and B[j],
+and think how it works and affect the result.
+
+
+Explanation
+Distributive property is similar for AND and XOR here.
+(a1^a2) & (b1^b2) = (a1&b1) ^ (a1&b2) ^ (a2&b1) ^ (a2&b2)
+(I wasn't aware of this at first either)
+
+
+Complexity
+Time O(A + B)
+Space O(1)
+
+I think if I spent a little bit more time on this one, I can get it.
+*/
+
+class Solution {
+public:
+    int getXORSum(vector<int>& arr1, vector<int>& arr2) {
+        int XorA = 0, XorB = 0;
+        for (int a: arr1) XorA ^= a;
+        for (int b: arr2) XorB ^= b;
+        return XorA & XorB;
+    }
+};
+
