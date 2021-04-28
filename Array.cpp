@@ -7078,3 +7078,81 @@ vector<int> getOrder(vector<vector<int>>& tasks) {
     return res;
 }
 
+
+// 1838. Frequency of the Most Frequent Element
+// https://leetcode.com/contest/weekly-contest-238/problems/frequency-of-the-most-frequent-element/
+/* My implementation, not that efficient */
+class Solution {
+public:
+    int maxFrequency(vector<int>& nums, int k) {
+        unordered_map<int, int> uMap;
+        int res = 0;
+        
+        for (int e: nums) {
+            uMap[e] ++;
+            res = max(res, uMap[e]);
+        }
+        
+        sort(nums.begin(), nums.end());
+        int i = nums.size() - 1;
+        int smallest = nums[0];
+        // cout << res;
+        while (nums[i] != smallest) {
+            int j = i-uMap[nums[i]];
+            int maximum = k;
+            int currentFreq = uMap[nums[i]];
+            while (j >= 0 && nums[j] != nums[i]) {
+                int gap = nums[i] - nums[j];
+                if (maximum >= gap) {
+                    maximum -= gap;
+                    currentFreq ++;
+                    res = max(res, currentFreq);
+                } else {
+                    break;
+                }
+                if (j == 0) {
+                    return res;
+                }
+                j--;
+            }
+            i = i-uMap[nums[i]];
+        }
+        return max(res, uMap[nums[0]]);
+    }
+};
+
+// Sliding window solution. Clever!
+/*
+Intuition
+Sort the input array A
+Sliding window prolem actually,
+the key is to find out the valid condition:
+k + sum >= size * max
+which is
+k + sum >= (j - i + 1) * A[j]
+
+
+Explanation
+For every new element A[j] to the sliding window,
+Add it to the sum by sum += A[j].
+Check if it'a valid window by
+sum + k < (long)A[j] * (j - i + 1)
+
+If not, removing A[i] from the window by
+sum -= A[i] and i += 1.
+
+Then update the res by res = max(res, j - i + 1).
+*/
+class Solution {
+public:
+    int maxFrequency(vector<int>& A, long k) {
+        int i = 0, j;
+        sort(A.begin(), A.end());
+        for (j = 0; j < A.size(); ++j) {
+            k += A[j];
+            if (k < (long)A[j] * (j - i + 1))
+                k -= A[i++];
+        }
+        return j - i;
+    }
+};
