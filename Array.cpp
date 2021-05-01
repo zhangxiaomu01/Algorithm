@@ -7078,3 +7078,43 @@ vector<int> getOrder(vector<vector<int>>& tasks) {
     return res;
 }
 
+
+// 1840. Maximum Building Height
+// https://leetcode.com/problems/maximum-building-height/
+/*
+A very tricky question.
+Here is the great explanation: https://leetcode.com/problems/maximum-building-height/discuss/1175269/C%2B%2B-with-picture-2-passes
+*/
+class Solution {
+private:
+    int process(vector<vector<int>>& R){
+        int max_res = 0;
+        for (int i = 0; i < R.size()-1; ++i) {
+            int h1 = R[i][1], h2 = R[i+1][1];
+            // Note we need to count gaps between R[i+1] and R[i], not every
+            // position is in R
+            int h = h1 + abs(R[i+1][0] - R[i][0]);
+            // The reason we divide by 2 is that if h > h2, we need to consider
+            // the highest possible height, which is some height between i and 
+            // i+1, and in the end decreased to h2
+            if (h > h2) 
+                h = h2 + (h - h2) / 2;
+            max_res = max(max_res, h);
+            R[i+1][1] = min(h, h2);
+        }
+        return max_res;
+    }
+public:
+    int maxBuilding(int n, vector<vector<int>>& restrictions) {
+        // Adds two sentinal at the beginning and the end
+        restrictions.push_back({1, 0});
+        // The maximum possible height is n-1, which means we start from 
+        // 2, we always increase the height by 1
+        restrictions.push_back({n, n-1});
+        sort(restrictions.begin(), restrictions.end());
+        process(restrictions);
+        // Process from right to left
+        reverse(restrictions.begin(), restrictions.end());
+        return process(restrictions);
+    }
+};
