@@ -4071,3 +4071,30 @@ public:
         return res;
     }
 };
+
+// Another list implementation. Theoretically, it should be faster. But it's not.
+// Much higher memory cost, and iterating is not as efficient as array.
+class Solution {
+public:
+    int getMinSwaps(string num, int k) {
+        list<char> ls1(num.begin(), num.end());
+        for (int i=0; i<k; ++i) {
+            next_permutation(num.begin(), num.end());
+        }
+        list<char> ls2(num.begin(), num.end());
+        auto it1 = ls1.begin();
+        int ret = 0;
+        while(it1!=ls1.end()) {
+            auto it2 = ls2.begin();
+            int cnt = 0;
+            while(*it2 != *it1) {
+                it2++;
+                cnt++;
+            }
+            ls2.erase(it2);
+            it1 = ls1.erase(it1);
+            ret+= cnt;
+        }
+        return ret;
+    }
+};
