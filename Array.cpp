@@ -7231,3 +7231,46 @@ public:
         return dfs(s, -1, 0, 0);
     }
 };
+
+
+// 1851. Minimum Interval to Include Each Query
+// https://leetcode.com/problems/minimum-interval-to-include-each-query/
+/*
+Amazing solution from 
+https://leetcode.com/problems/minimum-interval-to-include-each-query/discuss/1186817/JavaC%2B%2BPython-Priority-Queue-Solution
+*/
+class Solution {
+public:
+    vector<int> minInterval(vector<vector<int>>& intervals, vector<int>& queries) {
+        vector<int> Q = queries, res;
+        priority_queue<vector<int>> pq;
+        // maps each query with its possible smallest interval value
+        unordered_map<int, int> uMap;
+        
+        // Sort both intervals and queries, so when we check query[i], 
+        // we know all the previous intervals in the pq will be still 
+        // potential candidates.
+        sort(begin(intervals), end(intervals));
+        sort(begin(Q), end(Q));
+        
+        int i = 0, n = intervals.size();
+        for(int q : Q) {
+            while(i < n && q >= intervals[i][0]) {
+                int l = intervals[i][0];
+                int r = intervals[i][1];
+                // Here is the trick we use to inverse the max pq to min pq.
+                pq.push({l - r - 1, r});
+                i++;
+            }
+            
+            // q is beyond the range of this interval
+            while(!pq.empty() && pq.top()[1] < q) pq.pop();
+            uMap[q] = pq.empty() ? -1 : -1 * pq.top()[0];
+        }
+        
+        for (int q : queries) {
+            res.push_back(uMap[q]);
+        }
+        return res;
+    }
+};
