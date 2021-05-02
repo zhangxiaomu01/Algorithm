@@ -7196,3 +7196,38 @@ public:
         return j - i;
     }
 };
+
+// 1849. Splitting a String Into Descending Consecutive Values
+// https://leetcode.com/problems/splitting-a-string-into-descending-consecutive-values/
+/* I almost get it correct. The problem is that integer overflow.
+   We can just add an upper bound and check if the number exceeds the upper bound, then
+   everything should work. O(N^2)
+   
+   As the Max no of digits can be 20. Let x be of 11 then in the worst case when x = 
+   10000000000 value of next number would be 9999999999. But this is not an Apt division 
+   since the total no of digits are > 21 so the worst-case number can be 9999999999 which 
+   is 10 digits and also 9999999998 also 10 digits. So we decide the MX value to be 
+   9999999999.
+*/
+long long MX = 999999999999;
+class Solution {
+public:
+    bool dfs(string &s, long long prev, int idx, int cnt) {
+        if(idx == s.size() ) return cnt > 1;
+        long long num = 0;
+        for(int i = idx; i < s.size(); i++) {
+            num = num *  10l + s[i] - '0';
+            if(num > MX) break;
+            if(num == prev - 1 || prev == -1) {
+                if(dfs(s, num, i + 1, cnt + 1)) return true;
+            }
+            if(num > prev && prev != -1) break;
+        }
+        return false;
+    }
+    
+    bool splitString(string s) {
+        if(s.size() <= 1) return false;
+        return dfs(s, -1, 0, 0);
+    }
+};
