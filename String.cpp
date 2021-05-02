@@ -4035,3 +4035,39 @@ public:
 };
 
 
+// 1850. Minimum Adjacent Swaps to Reach the Kth Smallest Number
+// https://leetcode.com/problems/minimum-adjacent-swaps-to-reach-the-kth-smallest-number/
+/*
+Never used next_permutation() before. A good reference.
+It's a tricky solution though. We first use next_permutation(begin(), end())
+to calculate the kth permutation, then we calculate the distance.
+*/
+class Solution {
+public:
+    int getMinSwaps(string n, int k) {
+        string n1 = n;
+        while(k > 0) {
+            next_permutation(n1.begin(), n1.end());
+            k--;
+        }
+        int res = 0;
+        for (int i = 0; i < n.size(); ++i) {
+            // Where we permutate
+            if (n[i] != n1[i]) {
+                for (int j = i + 1; j < n.size(); ++j) {
+                    // This is where we swapped original n[i] to n1[j]
+                    if (n[i] == n1[j]) {
+                        res += j - i;
+                        // We just swap n1[j] to the position it should be, so for the 
+                        // next iteration, we will process the correct order.
+                        for (auto z = j; z > i; --z) {
+                            swap(n1[z], n1[z-1]);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        return res;
+    }
+};
