@@ -7274,3 +7274,44 @@ public:
         return res;
     }
 };
+
+// 1855. Maximum Distance Between a Pair of Values
+// https://leetcode.com/problems/maximum-distance-between-a-pair-of-values/
+/* My implementation. */
+class Solution {
+public:
+    int maxDistance(vector<int>& nums1, vector<int>& nums2) {
+        vector<int> rev = nums2;
+        reverse(rev.begin(), rev.end());
+        int res = 0;
+        for (int i = 0; i < nums1.size(); ++i) {
+            int n1 = nums1[i];
+            int potentialLength = nums2.size() - i - 1;
+            auto it = lower_bound(rev.begin(), rev.begin() + potentialLength, n1);
+            if (it == rev.end()) {
+                continue;
+            } else {
+                res = max(res, int(potentialLength - (it - rev.begin())));
+            }
+        }
+        return res;
+    }
+};
+
+
+/* Two pointers. O(m + n) */
+class Solution {
+public:
+    int maxDistance(vector<int>& nums1, vector<int>& nums2) {
+        int len1 = nums1.size(), len2 = nums2.size();
+        int i = 0;
+        int res = 0;
+        for (int j = 0; j < len2; ++j) {
+            while (i < len1 && nums1[i] > nums2[j])
+                i ++;
+            res = max(res, j - i);
+            if (i == len1) break;
+        }
+        return res;
+    }
+};
