@@ -1257,3 +1257,105 @@ public:
     }
 };
 
+
+// 1857. Largest Color Value in a Directed Graph (***)
+// https://leetcode.com/problems/largest-color-value-in-a-directed-graph/
+/* 
+Great solution and analysis:
+https://leetcode.com/problems/largest-color-value-in-a-directed-graph/discuss/1200575/Topological-Sort-vs.-DFS-vs.-Dijkstra
+Good one.
+*/
+// Topological sorting solution
+class Solution {
+public:
+    int largestPathValue(string colors, vector<vector<int>>& edges) {
+        vector<vector<int>> G(colors.size()), cnt(colors.size(), vector<int>(26, 0));
+        vector<int> indegrees(colors.size(), 0);
+        int res = 0;
+        vector<int> zero;
+        int processed = 0;
+        for(int i = 0; i < edges.size(); ++i) {
+            G[edges[i][0]].push_back(edges[i][1]);
+            indegrees[edges[i][1]] ++;
+        }
+        
+        for (int i = 0; i < indegrees.size(); ++i) {
+            if (indegrees[i] == 0) {
+                zero.push_back(i);
+            }
+        }
+        
+        while(!zero.empty()) {
+            vector<int> newZero;
+            for (int i = 0; i < zero.size(); ++i) {
+                int cur_index = zero[i];
+                // If we there's no loop, then we will process every node in the graph.
+                processed ++;
+                int cur_color = (++ cnt[cur_index][colors[cur_index] - 'a']);
+                res = max(res, cur_color);
+                for (int j = 0; j < G[cur_index].size(); ++j) {
+                    int next_nodes = G[cur_index][j];
+                    
+                    for (int k = 0; k < 26; ++k) {
+                        // Update each field so we get all the 26 colors correct for each node.
+                        // Cannot omit.
+                        cnt[next_nodes][k] = 
+                            max(cnt[cur_index][k], cnt[next_nodes][k]);
+                    }
+                    --indegrees[next_nodes];
+                    if (indegrees[next_nodes] == 0) {
+                        newZero.push_back(next_nodes);
+                    }
+                }
+            }
+            swap(zero, newZero);
+        }
+        // cout << processed << endl;
+        return processed == colors.size() ? res : -1;
+    }
+};
+
+
+// DFS + memorization
+class Solution {
+private:
+    int dfs(int cur, string& C, vector<vector<int>>& G, vector<vector<int>>& cnt, vector<int>& visited) {
+        // Ignore the visited notes.
+        if (!visited[cur]) {
+            visited[cur] = 1;
+            for (int i = 0; i < G[cur].size(); ++i) {
+                int next = G[cur][i];
+                if (dfs(next, C, G, cnt, visited) == INT_MAX) {
+                    return INT_MAX;
+                }
+                
+                for (int k = 0; k < 26; ++k) {
+                    // Update the maximum possible color for each color slot.
+                    cnt[cur][k] = max(cnt[cur][k], cnt[next][k]);
+                }
+            }
+            // Note we update current value after we finalize all the other path
+            cnt[cur][C[cur] - 'a'] ++;
+            // Finsihed update the current node.
+            visited[cur] = 2;    
+        }
+        // we need this line to handle the circle. e.g. [0, 0]
+        return visited[cur] == 2 ? cnt[cur][C[cur] - 'a'] : INT_MAX;
+    }
+public:
+    int largestPathValue(string colors, vector<vector<int>>& edges) {
+        vector<vector<int>> G(colors.size()), cnt(colors.size(), vector<int>(26, 0));
+        vector<int> visited(colors.size(), 0);
+        int res = 0;
+        for(int i = 0; i < edges.size(); ++i) {
+            G[edges[i][0]].push_back(edges[i][1]);
+        }
+        
+        // Iterate each one
+        for (int i = 0; i < colors.size() && res != INT_MAX; ++i) {
+            res = max(res, dfs(i, colors, G, cnt, visited));
+        }
+        
+        return res == INT_MAX ? -1 : res;
+    }
+};
