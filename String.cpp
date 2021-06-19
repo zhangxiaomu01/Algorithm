@@ -4098,3 +4098,102 @@ public:
         return ret;
     }
 };
+
+
+// 1896. Minimum Cost to Change the Final Value of Expression
+// https://leetcode.com/problems/minimum-cost-to-change-the-final-value-of-expression/
+/*
+From https://leetcode.com/problems/minimum-cost-to-change-the-final-value-of-expression/discuss/1268245/Six-Cases
+Observation:
+Let's consider the basic expressions and what it takes to flip the result:
+
+1 & 0 == 0: we change & to | (cost is 1).
+1 & 1 == 1: we change either left or right
+0 & 0 == 0: we change & to | (cost is 1) and we change either left or right.
+1 | 0 == 1: we change | to & (1 operation).
+0 | 0 == 0: we change either left or right
+1 | 1 == 1: we change & to | (cost is 1) and we change either left or right.
+Now, the cost to change left or right is 1 in a simple case. But if we have nested expressions, the const to change that expression could be higher. Therefore, when computing the cost, we add min(cost(left), cost(right)) to flip either left or right.
+
+At this point, we can arrive at the recursive solution that computes nested expressions, and replaces them with their result, and the cost to change that result.
+*/
+// Did not fully understand this one. Hard to implement though.
+class Solution {
+public:
+    int minOperationsToFlip(string exp) {
+        stack<pair<char,int>> s;
+        char val1, val2, op; int cost1, cost2;;
+        pair<char,int> p;
+
+        for(int i=0; i<exp.size(); i++){
+            if(exp[i] == '(' || exp[i] == '&' || exp[i] == '|'){
+                s.push({exp[i], 0});
+            }
+            else{
+                if(exp[i] == ')'){
+                    p = s.top();
+                    s.pop();
+                    s.pop();
+                }
+                else{
+                    p = {exp[i], 1};
+                }
+                while(!s.empty() && (s.top().first == '&' || s.top().first == '|')){
+                    op = s.top().first;
+                    s.pop();
+                    val2 = p.first;
+                    cost2 = p.second;
+                    val1 = s.top().first;
+                    cost1 = s.top().second;
+                    s.pop();
+
+                    if(op == '&' && val1 == '1' && val2 == '1') p = {'1', min(cost1, cost2)};
+                    if(op == '&' && val1 == '1' && val2 == '0') p = {'0', 1};
+                    if(op == '&' && val1 == '0' && val2 == '1') p = {'0', 1};
+                    if(op == '&' && val1 == '0' && val2 == '0') p = {'0', min(1 + cost1, 1 + cost2)};
+
+                    if(op == '|' && val1 == '1' && val2 == '1') p = {'1', min(1 + cost1, 1 + cost2)};
+                    if(op == '|' && val1 == '1' && val2 == '0') p = {'1', 1};
+                    if(op == '|' && val1 == '0' && val2 == '1') p = {'1', 1};
+                    if(op == '|' && val1 == '0' && val2 == '0') p = {'0', min(cost1, cost2)};
+                }
+                s.push(p);
+            }
+        }
+        return s.top().second;
+    }
+};
+
+// Recursive implementation
+class Solution {
+public:
+    array<char, 2> eval(vector<array<char, 2>> &exp, int i) {
+        if (i == 0)
+            return exp[0];
+        auto left = eval(exp, i - 2), right = exp[i];
+        int v1 = left[0] - '0', v2 = right[0] - '0', cost = 1; 
+        if (exp[i - 1][0] == '|') {
+            if (v1 == v2)
+                cost = min(left[1], right[1]) + (v1 == 1);
+            return { v1 | v2 ? '1' : '0', (char)cost};
+        }
+        if (v1 == v2)
+            cost = min(left[1], right[1]) + (v1 == 0);
+        return { v1 & v2 ? '1' : '0', (char)cost};
+    }
+    int minOperationsToFlip(string expression) {
+        vector<vector<array<char, 2>>> st(1);
+        for (auto ch : expression) {
+            if (ch == '(')
+                st.push_back(vector<array<char, 2>>());
+            else if (ch == ')') {
+                auto val = eval(st.back(), st.back().size() - 1);
+                st.pop_back();
+                st.back().push_back(val);
+            }
+            else
+                st.back().push_back({ch, 1});
+        }
+        return eval(st.back(), st.back().size() - 1)[1];
+    }
+};
