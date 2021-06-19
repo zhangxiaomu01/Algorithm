@@ -1346,3 +1346,77 @@ public:
     }
 };
 
+// 1895. Largest Magic Square
+// https://leetcode.com/problems/largest-magic-square/
+// Problem may not be hard, but implementation is tricky!
+// Very tricky implementation, I do not think I can get it within 45 minutes
+// https://leetcode.com/problems/largest-magic-square/discuss/1267577/Four-Prefix-Sums
+class Solution {
+public:
+    int largestMagicSquare(vector<vector<int>>& grid) {
+        int m = grid.size();
+        int n = grid[0].size();
+        int res = 0;
+        vector<vector<int>> col(m+2, vector<int>(n+2, 0)), row(col), d1(col), d2(col);
+        // Precompute the prefix sum for col / row / diagonals
+        for (int i = 1; i <= m; ++i) {
+            for (int j = 1; j <= n; ++j) {
+                // These calculations are very tricky!!
+                row[i][j] += grid[i-1][j-1] + row[i-1][j];
+                col[i][j] += grid[i-1][j-1] + col[i][j-1];
+                d1[i][j] += grid[i-1][j-1] + d1[i-1][j-1];
+                d2[i][j] += grid[i-1][j-1] + d2[i-1][j+1];
+            }
+        }
+        
+        for (int i = 1; i <= m; ++i) {
+            for (int j = 1; j <= n; ++j) {
+                // k will always greater than res.
+                for (int k = min(m - i, n - j); k > res; --k) {
+                    // We first calculate the sum from two diagonals
+                    int sum = d1[i+k][j+k] - d1[i-1][j-1];
+                    // Another tricky part!
+                    bool match = (sum == d2[i+k][j] - d2[i-1][j+k+1]);
+                    // Check each row + col within each block of k size
+                    // Note l <= k, instead of l < k
+                    for (int l = 0; l <= k && match; l++) {
+                        match &= sum == (row[i+k][j+l] - row[i-1][j+l]);
+                        match &= sum == (col[i+l][j+k] - col[i+l][j-1]);
+                    }
+                    res = match ? k : res;
+                }
+            }
+        }
+        return res + 1;
+    }
+};
+
+
+// Slightly memory efficient approach
+// Very tricky implementation, I do not think I can get it within 45 minutes
+class Solution {
+public:
+    int largestMagicSquare(vector<vector<int>>& grid) {
+        int m = grid.size(), n = grid[0].size(), res = 0;
+        vector<vector<int>> rows(m + 2, vector<int>(n + 2)), cols(rows);
+        for (int i = 1; i <= m; ++i)
+            for (int j = 1; j <= n; ++j) {
+                rows[i][j] += grid[i - 1][j - 1] + rows[i][j - 1];
+                cols[i][j] += grid[i - 1][j - 1] + cols[i - 1][j];
+            }
+        for (int i = 1; i <= m; ++i)
+            for (int j = 1; j <= n; ++j)
+                for (int k = min(m - i, n - j); k > res; --k) {
+                    int sum = rows[i][j + k] - rows[i][j - 1], l = 0, d1 = 0, d2 = 0;
+                    for (; l <= k; ++l) {
+                        if (sum != rows[i + l][j + k] - rows[i + l][j - 1] 
+                            || sum != cols[i + k][j + l] - cols[i - 1][j + l])
+                            break;
+                        d1 += grid[i - 1 + l][j - 1 + l];
+                        d2 += grid[i - 1 + k - l][j - 1 + l];
+                    }
+                    res = l > k && d1 == sum && d2 == sum ? k : res;
+                }
+        return res + 1;
+    }
+};
