@@ -53,7 +53,34 @@ public:
     }
 };
 
+ /*
+    35. Search Insert Position
+    https://leetcode.com/problems/search-insert-position/
+ 
+    Given a sorted array of distinct integers and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order.
 
-
+    You must write an algorithm with O(log n) runtime complexity.
+ */
+// Solution 01: iterative binary search
+class Solution {
+public:
+    int searchInsert(vector<int>& nums, int target) {
+        int l = 0, r = nums.size() - 1;
+        int m = 0;
+        // We won't have l <= r here, because when that happens, we
+        // either found nums[l] == target, or not, which is the same
+        // index for us to insert the value.
+        while (l <= r) {
+            if (l == r) {
+                return nums[l] >= target ? l  : l + 1;
+            }
+            m = l + (r - l) / 2;
+            if (nums[m] == target) return m;
+            else if (nums[m] < target) l = m + 1;
+            else r = m - 1;
+        }
+        return l;
+    }
+};
 
 
