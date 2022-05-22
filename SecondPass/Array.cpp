@@ -176,3 +176,43 @@ public:
         return l;
     }
 };
+
+ /*
+    367. Valid Perfect Square
+    https://leetcode.com/problems/valid-perfect-square/
+ 
+    Given a positive integer num, write a function which returns True if num is a perfect square else False.
+
+    Follow up: Do not use any built-in library function such as sqrt.
+
+    
+
+    Example 1:
+
+    Input: num = 16
+    Output: true
+    Example 2:
+
+    Input: num = 14
+    Output: false
+    
+
+    Constraints:
+
+    1 <= num <= 2^31 - 1
+ */
+class Solution {
+public:
+    bool isPerfectSquare(int x) {
+        long l = 0, r = x;
+        long m = 0;
+        while (l < r) {
+            m = l + (r - l) / 2;
+            if (m * m == x) return true;
+            else if (m * m < x) l = m + 1;
+            else r = m - 1;
+        }
+        if (l * l > x) l = l - 1;
+        return l * l == x ? true : false;
+    }
+};
