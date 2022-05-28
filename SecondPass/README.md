@@ -9,4 +9,4 @@ ID | Name | Difficulty | Category
 69|[Sqrt(x)](https://leetcode.com/problems/sqrtx/)| Easy | Binary Search
 367|[Valid Perfect Square](https://leetcode.com/problems/valid-perfect-square/)| Easy | Binary Search
 27|[Remove Element](https://leetcode.com/problems/remove-element/)| Easy | Array: In-place element deletion
-27|[Remove Duplicates from Sorted Array](https://leetcode.com/problems/remove-duplicates-from-sorted-array/)| Easy | Array: In-place element deletion
+26|[Remove Duplicates from Sorted Array](https://leetcode.com/problems/remove-duplicates-from-sorted-array/)| Easy | Array: In-place element deletion
