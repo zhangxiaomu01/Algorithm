@@ -11,3 +11,4 @@ ID | Name | Difficulty | Category
 27|[Remove Element](https://leetcode.com/problems/remove-element/)| Easy | Array: In-place element deletion
 26|[Remove Duplicates from Sorted Array](https://leetcode.com/problems/remove-duplicates-from-sorted-array/)| Easy | Array: In-place element deletion
 283|[Move Zeroes](https://leetcode.com/problems/move-zeroes/)| Easy | Array: In-place element deletion
+844|[Backspace String Compare (Follow up)](https://leetcode.com/problems/backspace-string-compare/)| Easy | Array: In-place element deletion
