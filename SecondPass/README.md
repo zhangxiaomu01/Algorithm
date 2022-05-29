@@ -10,3 +10,4 @@ ID | Name | Difficulty | Category
 367|[Valid Perfect Square](https://leetcode.com/problems/valid-perfect-square/)| Easy | Binary Search
 27|[Remove Element](https://leetcode.com/problems/remove-element/)| Easy | Array: In-place element deletion
 26|[Remove Duplicates from Sorted Array](https://leetcode.com/problems/remove-duplicates-from-sorted-array/)| Easy | Array: In-place element deletion
+283|[Move Zeroes](https://leetcode.com/problems/move-zeroes/)| Easy | Array: In-place element deletion
