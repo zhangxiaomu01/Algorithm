@@ -486,3 +486,87 @@ public:
         return true;
     }
 };
+
+ /*
+    977. Squares of a Sorted Array (follow up)
+    https://leetcode.com/problems/squares-of-a-sorted-array/
+ 
+    Given an integer array nums sorted in non-decreasing order, return an array of the squares of 
+    each number sorted in non-decreasing order.
+
+    Example 1:
+    Input: nums = [-4,-1,0,3,10]
+    Output: [0,1,9,16,100]
+    Explanation: After squaring, the array becomes [16,1,0,9,100].
+    After sorting, it becomes [0,1,9,16,100].
+
+    Example 2:
+    Input: nums = [-7,-3,2,3,11]
+    Output: [4,9,9,49,121]
+    
+    Constraints:
+    1 <= nums.length <= 104
+    -104 <= nums[i] <= 104
+    nums is sorted in non-decreasing order.
+
+    Follow up: Squaring each element and sorting the new array is very trivial, could you find 
+    an O(n) solution using a different approach?
+ */
+class Solution {
+public:
+    vector<int> sortedSquares(vector<int>& nums) {
+        int index = -1;
+        int previous = abs(nums[0]);
+        vector<int> res(1, 0);
+        for (int i = 1; i < nums.size(); ++i) {
+            int num = abs(nums[i]);
+            if (num > previous) {
+                index = i - 1;
+                break;
+            }
+            previous = num;
+        }
+        index = index == -1 ? nums.size() - 1 : index;
+        res[0] = nums[index] * nums[index];
+        int l = index - 1, r = index + 1;
+        while (l >= 0 && r < nums.size()) {
+            if (abs(nums[l]) < nums[r]){
+                res.push_back(nums[l] * nums[l]);
+                l--;
+            } else {
+                res.push_back(nums[r] * nums[r]);
+                r++;
+            }
+        }
+        while (l >= 0) {
+            res.push_back(nums[l] * nums[l]);
+            l--;
+        }
+        
+        while(r < nums.size()) {
+            res.push_back(nums[r] * nums[r]);
+            r++;
+        }
+        return res;
+    }
+};
+
+// Similar idea, but more concise code
+class Solution {
+public:
+    vector<int> sortedSquares(vector<int>& nums) {
+        int previous = abs(nums[0]);
+        int i = 0, j = nums.size() - 1;
+        vector<int> res(nums.size(), 0);
+        for(int k=nums.size()-1; k >= 0; k--) {
+            if(abs(nums[i]) > abs(nums[j])) {
+                res[k] = nums[i] * nums[i];
+                i++;
+            } else {
+                res[k] = nums[j] * nums[j];
+                j--;
+            }
+        }
+        return res;
+    }
+};
