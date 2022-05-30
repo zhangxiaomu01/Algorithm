@@ -12,4 +12,4 @@ ID | Name | Difficulty | Category
 26|[Remove Duplicates from Sorted Array](https://leetcode.com/problems/remove-duplicates-from-sorted-array/)| Easy | Array: In-place element deletion
 283|[Move Zeroes](https://leetcode.com/problems/move-zeroes/)| Easy | Array: In-place element deletion
 844|[Backspace String Compare (Follow up)](https://leetcode.com/problems/backspace-string-compare/)| Easy | Array: In-place element deletion
-977|[Squares of a Sorted Array (follow up)](https://leetcode.com/problems/squares-of-a-sorted-array/)| Easy | Array: In-place element deletion
+977|[Squares of a Sorted Array (follow up)](https://leetcode.com/problems/squares-of-a-sorted-array/)| Easy | Array: Double pointer
