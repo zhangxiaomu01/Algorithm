@@ -13,3 +13,4 @@ ID | Name | Difficulty | Category
 283|[Move Zeroes](https://leetcode.com/problems/move-zeroes/)| Easy | Array: In-place element deletion
 844|[Backspace String Compare (Follow up)](https://leetcode.com/problems/backspace-string-compare/)| Easy | Array: In-place element deletion
 977|[Squares of a Sorted Array (follow up)](https://leetcode.com/problems/squares-of-a-sorted-array/)| Easy | Array: Double pointer
+209|[Minimum Size Subarray Sum](https://leetcode.com/problems/minimum-size-subarray-sum/)| Medium | Array: Double pointer

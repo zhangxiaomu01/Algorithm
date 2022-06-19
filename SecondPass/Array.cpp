@@ -570,3 +570,86 @@ public:
         return res;
     }
 };
+
+ /*
+    209. Minimum Size Subarray Sum
+    https://leetcode.com/problems/minimum-size-subarray-sum/
+ 
+    Given an array of positive integers nums and a positive integer target, return the minimal length 
+    of a contiguous subarray [numsl, numsl+1, ..., numsr-1, numsr] of which the sum is greater than 
+    or equal to target. If there is no such subarray, return 0 instead.
+
+    Example 1:
+
+    Input: target = 7, nums = [2,3,1,2,4,3]
+    Output: 2
+    Explanation: The subarray [4,3] has the minimal length under the problem constraint.
+    Example 2:
+
+    Input: target = 4, nums = [1,4,4]
+    Output: 1
+    Example 3:
+
+    Input: target = 11, nums = [1,1,1,1,1,1,1,1]
+    Output: 0
+    
+
+    Constraints:
+
+    1 <= target <= 109
+    1 <= nums.length <= 105
+    1 <= nums[i] <= 104
+ */
+// Two pointers
+class Solution {
+public:
+    int minSubArrayLen(int target, vector<int>& nums) {
+        int res = nums.size();
+        long long sum = 0;
+        int l = 0, r = 0;
+        
+        
+        while (l < nums.size()) {
+            if (r < nums.size()) {
+                sum += nums[r];
+                r++;
+            }
+            while (sum >= target) {
+                res = min(res, r - l);
+                if (r > l) {
+                    sum -= nums[l];
+                    l++;
+                }
+            }
+            if (r == nums.size() && sum < target) break;
+        }
+        // If we found that the sum of all elements is still less than target,
+        // return 0.
+        return l == 0 && sum < target ? 0 : res;
+    }
+};
+
+// More concise version
+class Solution {
+public:
+    int minSubArrayLen(int s, vector<int>& nums) {
+        int len = nums.size();
+        if(len == 0) return 0;
+        int count = 0;
+        int minC = INT_MAX;
+        int sum = 0;
+        int j = 0;
+        for(int i = 0; i < len; ++i){
+            sum += nums[i];
+            count++;
+            while(sum >= s){
+                minC = min(minC, count);
+                sum -= nums[j++];
+                count --;
+            }
+            
+        }
+        return minC == INT_MAX ? 0 : minC;
+    }
+};
+
