@@ -19,3 +19,8 @@ ID | Name | Difficulty | Category
 76|[Minimum Window Substring](https://leetcode.com/problems/minimum-window-substring/)| Hard | Sliding window
 54|[Spiral Matrix](https://leetcode.com/problems/spiral-matrix/)| Medium | Simulation
 59|[Spiral Matrix II](https://leetcode.com/problems/spiral-matrix-ii/)| Medium | Simulation
+
+## LinkedList
+ID | Name | Difficulty | Category
+ ---- | ------------- | -------- | ------
+203|[Remove Linked List Elements](https://leetcode.com/problems/remove-linked-list-elements/)| Easy | Deletion
