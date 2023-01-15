@@ -747,3 +747,83 @@ public:
         return j - i;
     }
 };
+
+ /*
+    76. Minimum Window Substring
+    https://leetcode.com/problems/minimum-window-substring/
+ 
+    Given two strings s and t of lengths m and n respectively, return the minimum window 
+    substring
+    of s such that every character in t (including duplicates) is included in the window. If there is no such substring, return the empty string "".
+
+    The testcases will be generated such that the answer is unique.
+
+    
+
+    Example 1:
+
+    Input: s = "ADOBECODEBANC", t = "ABC"
+    Output: "BANC"
+    Explanation: The minimum window substring "BANC" includes 'A', 'B', and 'C' from string t.
+    Example 2:
+
+    Input: s = "a", t = "a"
+    Output: "a"
+    Explanation: The entire string s is the minimum window.
+    Example 3:
+
+    Input: s = "a", t = "aa"
+    Output: ""
+    Explanation: Both 'a's from t must be included in the window.
+    Since the largest window of s only has one 'a', return empty string.
+    
+
+    Constraints:
+
+    m == s.length
+    n == t.length
+    1 <= m, n <= 105
+    s and t consist of uppercase and lowercase English letters.
+    
+
+    Follow up: Could you find an algorithm that runs in O(m + n) time?
+ */
+// My solution
+class Solution {
+public:
+    string minWindow(string s, string t) {
+        if (s.size() < t.size()) return "";
+        unordered_map<int, int> uMap;
+        for (char c : t) {
+            uMap[c] ++;
+        }
+        int meetExp = uMap.size();
+        int i = 0, j = 0;
+        int res = s.size() + 1;
+        int minStartIndex = -1;
+        cout << meetExp << endl;
+        while(i <= j && j < s.size()) {
+            if (uMap.find(s[j]) != uMap.end()) {
+                uMap[s[j]]--;
+                if (uMap[s[j]] == 0) meetExp--;
+                while (meetExp == 0 && i <= j) {
+                    if (uMap.find(s[i]) != uMap.end()) {
+                        uMap[s[i]]++;
+                        if (uMap[s[i]] > 0) {
+                            meetExp++;
+                            if (res > j - i + 1) {
+                                res = j - i + 1;
+                                minStartIndex = i;
+                            }
+                            i++;
+                            break;
+                        }
+                    }
+                    i++;
+                }
+            }
+            j++;
+        }
+        return minStartIndex == -1 ? "" : s.substr(minStartIndex, res);
+    }
+};

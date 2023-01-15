@@ -15,3 +15,4 @@ ID | Name | Difficulty | Category
 977|[Squares of a Sorted Array (follow up)](https://leetcode.com/problems/squares-of-a-sorted-array/)| Easy | Array: Double pointer
 209|[Minimum Size Subarray Sum](https://leetcode.com/problems/minimum-size-subarray-sum/)| Medium | Array: Double pointer
 904|[Fruit Into Baskets](https://leetcode.com/problems/fruit-into-baskets/)| Medium | Array: Sliding window
+76|[Minimum Window Substring](https://leetcode.com/problems/minimum-window-substring/)| Hard | Array: Sliding window
