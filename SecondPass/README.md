@@ -1,7 +1,7 @@
 # AlgorithmProblem Second Pass
 Categorize problems based on their categories (e.g., binary search, dp etc.).
 
-#Array
+## Array
 ID | Name | Difficulty | Category
  ---- | ------------- | -------- | ------
 704|[Binary Search](https://leetcode.com/problems/binary-search/)| Easy | Binary Search
