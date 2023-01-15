@@ -16,3 +16,5 @@ ID | Name | Difficulty | Category
 209|[Minimum Size Subarray Sum](https://leetcode.com/problems/minimum-size-subarray-sum/)| Medium | Array: Double pointer
 904|[Fruit Into Baskets](https://leetcode.com/problems/fruit-into-baskets/)| Medium | Array: Sliding window
 76|[Minimum Window Substring](https://leetcode.com/problems/minimum-window-substring/)| Hard | Array: Sliding window
+54|[Spiral Matrix](https://leetcode.com/problems/spiral-matrix/)| Medium | Simulation
+59|[Spiral Matrix II](https://leetcode.com/problems/spiral-matrix-ii/)| Medium | Simulation

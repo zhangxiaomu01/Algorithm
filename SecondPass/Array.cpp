@@ -827,3 +827,103 @@ public:
         return minStartIndex == -1 ? "" : s.substr(minStartIndex, res);
     }
 };
+
+ /*
+    54. Spiral Matrix
+    https://leetcode.com/problems/spiral-matrix/
+ 
+    Given an m x n matrix, return all elements of the matrix in spiral order.
+
+    Example 1:
+    Input: matrix = [[1,2,3],[4,5,6],[7,8,9]]
+    Output: [1,2,3,6,9,8,7,4,5]
+
+    Example 2:
+    Input: matrix = [[1,2,3,4],[5,6,7,8],[9,10,11,12]]
+    Output: [1,2,3,4,8,12,11,10,9,5,6,7]
+    
+    Constraints:
+
+    m == matrix.length
+    n == matrix[i].length
+    1 <= m, n <= 10
+    -100 <= matrix[i][j] <= 100
+ */
+// Simulation
+class Solution {
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        int m = matrix.size();
+        int n = m ? matrix[0].size() : 0;
+        int l = 0, r = n - 1, u = 0, b = m - 1;
+        vector<int> res;
+        while (true) {       
+            for(int col = l; col <= r; col++) res.push_back(matrix[u][col]);
+            if(++u > b) break;
+           
+            for(int row = u; row <= b; row++) res.push_back(matrix[row][r]);
+            if(--r < l) break;
+
+            for(int col = r; col >= l; col--) res.push_back(matrix[b][col]);
+            if(--b < u) break;
+            
+            for(int row = b; row >= u; row--) res.push_back(matrix[row][l]);
+            if(++l > r) break;
+             
+        }
+        return res;
+    }
+};
+
+ /*
+    59. Spiral Matrix II
+    https://leetcode.com/problems/spiral-matrix-ii/
+ 
+    Given a positive integer n, generate an n x n matrix filled with elements from 1 to n2 in spiral order.
+
+    Example 1:
+    Input: n = 3
+    Output: [[1,2,3],[8,9,4],[7,6,5]]
+
+    Example 2:
+    Input: n = 1
+    Output: [[1]]
+    
+
+    Constraints:
+    1 <= n <= 20
+ */
+// Simulation: same idea!
+class Solution {
+public:
+    vector<vector<int>> generateMatrix(int n) {
+        vector<vector<int>> finalRes (n, vector<int>(n));
+        int res = 1;
+        int l = 0, r = n-1, u = 0, d = n-1; 
+        while(true){
+            for(int col = l; col <= r; col++ ) {
+                finalRes[l][col] = res;
+                res++;
+            }
+            if(++u > d) break;;
+            for(int row = u; row <= d; row++) {
+                finalRes[row][r] = res;
+                res++;
+            }
+            if(--r < l) break;
+            for(int col = r; col >= l; col --){
+                finalRes[d][col] = res;
+                res++;
+            }
+            if(--d < u) break;
+            for(int row = d; row>= u; row --){
+                finalRes[row][l] = res;
+                res++;
+            }
+            if(++l > r) break;
+        }
+        
+        return finalRes;
+    }
+};
+
