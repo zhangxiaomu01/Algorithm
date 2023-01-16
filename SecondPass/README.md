@@ -24,3 +24,4 @@ ID | Name | Difficulty | Category
 ID | Name | Difficulty | Category
  ---- | ------------- | -------- | ------
 203|[Remove Linked List Elements](https://leetcode.com/problems/remove-linked-list-elements/)| Easy | Deletion
+707|[Design Linked List](https://leetcode.com/problems/design-linked-list/)| Medium | Design
