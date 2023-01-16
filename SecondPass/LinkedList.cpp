@@ -278,3 +278,65 @@ public:
         return ptr;
     }
 };
+
+/*
+    24. Swap Nodes in Pairs
+    https://leetcode.com/problems/swap-nodes-in-pairs/
+ 
+    Given a linked list, swap every two adjacent nodes and return its head. You must solve the problem without modifying the values in the list's nodes (i.e., only nodes themselves may be changed.)
+
+    Example 1:
+    Input: head = [1,2,3,4]
+    Output: [2,1,4,3]
+
+    Example 2:
+    Input: head = []
+    Output: []
+
+    Example 3:
+    Input: head = [1]
+    Output: [1]
+    
+
+    Constraints:
+    The number of nodes in the list is in the range [0, 100].
+    0 <= Node.val <= 100
+ */
+// Iterative
+class Solution {
+public:
+    ListNode* swapPairs(ListNode* head) {
+        if(head == nullptr || head -> next == nullptr) return head;
+        ListNode* dummy = new ListNode(-1, head);
+        ListNode* ptr = head;
+        ListNode* next = head->next;
+        ListNode* prev = dummy;
+        while(next) {
+            ptr->next = next->next;
+            next->next = ptr;
+            swap(ptr, next);
+            prev->next = ptr;
+
+            // Move to the next pair
+            prev = next;
+            ptr = next->next;
+            if (ptr == nullptr || ptr->next == nullptr) break;
+            next = ptr->next;
+        }
+        return dummy->next;
+    }
+};
+
+// Recursive: not from me
+class Solution {
+public:
+    ListNode* swapPairs(ListNode* head) {
+        if(head == NULL || head->next == NULL){
+            return head;
+        }
+        ListNode *p = head->next;
+        head->next = swapPairs(head->next->next);
+        p->next = head;
+        return p;
+    }
+};
