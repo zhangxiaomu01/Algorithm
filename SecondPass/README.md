@@ -28,3 +28,4 @@ ID | Name | Difficulty | Category
 206|[Reverse Linked List](https://leetcode.com/problems/reverse-linked-list/)| Easy | List manipulation
 24|[Swap Nodes in Pairs](https://leetcode.com/problems/swap-nodes-in-pairs/)| Medium | List manipulation
 19|[Remove Nth Node From End of List](https://leetcode.com/problems/remove-nth-node-from-end-of-list/)| Medium | Two pointers
+160|[Intersection of Two Linked Lists](https://leetcode.com/problems/intersection-of-two-linked-lists/)| Medium | List manipulation
