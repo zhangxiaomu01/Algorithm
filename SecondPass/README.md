@@ -29,3 +29,4 @@ ID | Name | Difficulty | Category
 24|[Swap Nodes in Pairs](https://leetcode.com/problems/swap-nodes-in-pairs/)| Medium | List manipulation
 19|[Remove Nth Node From End of List](https://leetcode.com/problems/remove-nth-node-from-end-of-list/)| Medium | Two pointers
 160|[Intersection of Two Linked Lists](https://leetcode.com/problems/intersection-of-two-linked-lists/)| Medium | List manipulation
+142|[Linked List Cycle II](https://leetcode.com/problems/linked-list-cycle-ii/)| Medium | Two pointers
