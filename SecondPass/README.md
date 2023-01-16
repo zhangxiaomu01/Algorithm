@@ -20,7 +20,7 @@ ID | Name | Difficulty | Category
 54|[Spiral Matrix](https://leetcode.com/problems/spiral-matrix/)| Medium | Simulation
 59|[Spiral Matrix II](https://leetcode.com/problems/spiral-matrix-ii/)| Medium | Simulation
 
-## LinkedList
+## Linked List
 ID | Name | Difficulty | Category
  ---- | ------------- | -------- | ------
 203|[Remove Linked List Elements](https://leetcode.com/problems/remove-linked-list-elements/)| Easy | Deletion
@@ -30,3 +30,9 @@ ID | Name | Difficulty | Category
 19|[Remove Nth Node From End of List](https://leetcode.com/problems/remove-nth-node-from-end-of-list/)| Medium | Two pointers
 160|[Intersection of Two Linked Lists](https://leetcode.com/problems/intersection-of-two-linked-lists/)| Medium | List manipulation
 142|[Linked List Cycle II](https://leetcode.com/problems/linked-list-cycle-ii/)| Medium | Two pointers
+
+## Hash Map & Set
+ID | Name | Difficulty | Category
+ ---- | ------------- | -------- | ------
+242|[Valid Anagram](https://leetcode.com/problems/valid-anagram/)| Easy | Hash map
+49|[Group Anagrams](https://leetcode.com/problems/group-anagrams/)| Easy | Hash map / operation
