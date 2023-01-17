@@ -36,3 +36,4 @@ ID | Name | Difficulty | Category
  ---- | ------------- | -------- | ------
 242|[Valid Anagram](https://leetcode.com/problems/valid-anagram/)| Easy | Hash map
 49|[Group Anagrams](https://leetcode.com/problems/group-anagrams/)| Easy | Hash map / operation
+438|[Find All Anagrams in a String](https://leetcode.com/problems/find-all-anagrams-in-a-string/)| Medium | Hash calculation
