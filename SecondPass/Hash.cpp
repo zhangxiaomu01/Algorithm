@@ -149,3 +149,85 @@ public:
         return res;
     }
 };
+
+ /*
+    1002. Find Common Characters
+    https://leetcode.com/problems/find-common-characters/
+
+    Given a string array words, return an array of all characters that show up in all strings within the words (including duplicates). You may return the answer in any order.
+
+    Example 1:
+    Input: words = ["bella","label","roller"]
+    Output: ["e","l","l"]
+
+    Example 2:
+    Input: words = ["cool","lock","cook"]
+    Output: ["c","o"]
+    
+    Constraints:
+    1 <= words.length <= 100
+    1 <= words[i].length <= 100
+    words[i] consists of lowercase English letters.
+ */
+class Solution {
+public:
+    vector<string> commonChars(vector<string>& words) {
+        unordered_map<string, int> uMap;
+        vector<string> res;
+        for (int i = 0; i < words.size(); ++i) {
+            int uDict[26] = {0};
+            for (int j = 0; j < words[i].size(); ++j) {
+                uDict[words[i][j] - 'a'] ++;
+                string key = string(1, words[i][j]);
+                if (uDict[words[i][j] - 'a'] >= 1) {
+                    key += to_string(uDict[words[i][j] - 'a'] - 1);
+                }
+                uMap[key]++;
+            }
+        }
+        for (auto it = uMap.begin(); it != uMap.end(); ++it) {
+            if (it->second == words.size()) {
+                if (it->first.size() == 1) res.push_back(it->first);
+                else res.push_back(it->first.substr(0, 1));
+            }
+        }
+        return res;
+    }
+};
+
+// A more elegant solution from Leetcode: we do not need to save string in the map, we only care about how many characters
+// has appeared in all words.
+class Solution {
+public:
+    vector<string> commonChars(vector<string>& A) {
+        vector<string> result;
+        if (A.size() == 0) return result;
+        int hash[26] = {0}; // 用来统计所有字符串里字符出现的最小频率
+        for (int i = 0; i < A[0].size(); i++) { // 用第一个字符串给hash初始化
+            hash[A[0][i] - 'a']++;
+        }
+
+        int hashOtherStr[26] = {0}; // 统计除第一个字符串外字符的出现频率
+        for (int i = 1; i < A.size(); i++) {
+            memset(hashOtherStr, 0, 26 * sizeof(int));
+            for (int j = 0; j < A[i].size(); j++) {
+                hashOtherStr[A[i][j] - 'a']++;
+            }
+            // 更新hash，保证hash里统计26个字符在所有字符串里出现的最小次数
+            for (int k = 0; k < 26; k++) {
+                hash[k] = min(hash[k], hashOtherStr[k]);
+            }
+        }
+        // 将hash统计的字符次数，转成输出形式
+        for (int i = 0; i < 26; i++) {
+            while (hash[i] != 0) { // 注意这里是while，多个重复的字符
+                string s(1, i + 'a'); // char -> string
+                result.push_back(s);
+                hash[i]--;
+            }
+        }
+
+        return result;
+    }
+};
+
