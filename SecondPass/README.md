@@ -38,3 +38,4 @@ ID | Name | Difficulty | Category
 49|[Group Anagrams](https://leetcode.com/problems/group-anagrams/)| Easy | Hash map / operation
 438|[Find All Anagrams in a String](https://leetcode.com/problems/find-all-anagrams-in-a-string/)| Medium | Hash calculation
 1002|[Find Common Characters](https://leetcode.com/problems/find-common-characters/)| Easy | Hash calculation
+202|[Happy Number](https://leetcode.com/problems/happy-number/)| Easy | Hash set
