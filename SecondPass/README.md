@@ -39,3 +39,4 @@ ID | Name | Difficulty | Category
 438|[Find All Anagrams in a String](https://leetcode.com/problems/find-all-anagrams-in-a-string/)| Medium | Hash calculation
 1002|[Find Common Characters](https://leetcode.com/problems/find-common-characters/)| Easy | Hash calculation
 202|[Happy Number](https://leetcode.com/problems/happy-number/)| Easy | Hash set
+454|[4Sum II](https://leetcode.com/problems/4sum-ii/)| Medium | Hash set
