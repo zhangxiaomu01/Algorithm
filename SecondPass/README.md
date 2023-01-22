@@ -20,6 +20,7 @@ ID | Name | Difficulty | Category
 54|[Spiral Matrix](https://leetcode.com/problems/spiral-matrix/)| Medium | Simulation
 59|[Spiral Matrix II](https://leetcode.com/problems/spiral-matrix-ii/)| Medium | Simulation
 15|[3Sum](https://leetcode.com/problems/3sum/)| Medium | Two pointers
+18|[4Sum](https://leetcode.com/problems/4sum/)| Medium | Two pointers
 
 ## Linked List
 ID | Name | Difficulty | Category
