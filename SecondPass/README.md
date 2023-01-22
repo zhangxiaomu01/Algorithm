@@ -40,3 +40,4 @@ ID | Name | Difficulty | Category
 1002|[Find Common Characters](https://leetcode.com/problems/find-common-characters/)| Easy | Hash calculation
 202|[Happy Number](https://leetcode.com/problems/happy-number/)| Easy | Hash set
 454|[4Sum II](https://leetcode.com/problems/4sum-ii/)| Medium | Hash set
+15|[3Sum](https://leetcode.com/problems/3sum/)| Medium | Hash (tricky impl) / Two pointers
