@@ -19,6 +19,7 @@ ID | Name | Difficulty | Category
 76|[Minimum Window Substring](https://leetcode.com/problems/minimum-window-substring/)| Hard | Sliding window
 54|[Spiral Matrix](https://leetcode.com/problems/spiral-matrix/)| Medium | Simulation
 59|[Spiral Matrix II](https://leetcode.com/problems/spiral-matrix-ii/)| Medium | Simulation
+15|[3Sum](https://leetcode.com/problems/3sum/)| Medium | Two pointers
 
 ## Linked List
 ID | Name | Difficulty | Category
@@ -40,4 +41,4 @@ ID | Name | Difficulty | Category
 1002|[Find Common Characters](https://leetcode.com/problems/find-common-characters/)| Easy | Hash calculation
 202|[Happy Number](https://leetcode.com/problems/happy-number/)| Easy | Hash set
 454|[4Sum II](https://leetcode.com/problems/4sum-ii/)| Medium | Hash set
-15|[3Sum](https://leetcode.com/problems/3sum/)| Medium | Hash (tricky impl) / Two pointers
+15|[3Sum](https://leetcode.com/problems/3sum/)| Medium | Hash (tricky impl)
