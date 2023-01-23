@@ -27,7 +27,7 @@
     
 
     Constraints:
-    1 <= s.length <= 105
+    1 <= s.length <= 10^5
     s[i] is a printable ascii character.
  */
 class Solution {
@@ -39,6 +39,7 @@ public:
         }
     }
 };
+
 // Recursive way: which result space complexity to be O(n);
 class Solution {
 private:
@@ -50,5 +51,46 @@ private:
 public:
     void reverseString(vector<char>& s) {
         reverseS(s, 0, s.size()-1);
+    }
+};
+
+ /*
+    541. Reverse String II
+    https://leetcode.com/problems/reverse-string-ii/
+ 
+    Given a string s and an integer k, reverse the first k characters for every 2k characters counting from the start of the string.
+    If there are fewer than k characters left, reverse all of them. If there are less than 2k but greater than or equal to k characters, then reverse the first k characters and leave the other as original.
+    
+    Example 1:
+    Input: s = "abcdefg", k = 2
+    Output: "bacdfeg"
+
+    Example 2:
+    Input: s = "abcd", k = 2
+    Output: "bacd"
+    
+
+    Constraints:
+    1 <= s.length <= 10^4
+    s consists of only lowercase English letters.
+    1 <= k <= 10^4
+ */
+class Solution {
+private:
+    void reverseString(string& s, int start, int end) {
+        while(start <= end) {
+            swap(s[start++], s[end--]);
+        }
+    }
+public:
+    string reverseStr(string s, int k) {
+        for(int i = 0; i < s.size(); i += 2*k) {
+            if (s.size() - i < k) {
+                reverseString(s, i, s.size() - 1);
+            } else {
+                reverseString(s, i, i + k - 1);
+            }
+        }
+        return s;
     }
 };
