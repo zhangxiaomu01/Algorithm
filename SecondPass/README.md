@@ -44,3 +44,8 @@ ID | Name | Difficulty | Category
 454|[4Sum II](https://leetcode.com/problems/4sum-ii/)| Medium | Hash set
 15|[3Sum](https://leetcode.com/problems/3sum/)| Medium | Hash (tricky impl)
 383|[Ransom Note](https://leetcode.com/problems/ransom-note/)| Easy | Array as a hash set
+
+## String
+ID | Name | Difficulty | Category
+ ---- | ------------- | -------- | ------
+344|[Reverse String](https://leetcode.com/problems/reverse-string/)| Easy | Two pointers
