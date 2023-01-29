@@ -241,6 +241,7 @@ private:
     vector<int> constructPrefixDict(string& s) {
         // next[i] represents the maximum length of the common prefix which equals the suffix.
         vector<int> next(s.size(), 0);
+        // The prefix length happens to be the index of the first chracter after the given prefix.
         int prefixLength = 0, i = 1;
         while(i < s.size()) {
             while (prefixLength > 0 && s[prefixLength] != s[i]) {
@@ -271,5 +272,74 @@ public:
             }
         }
         return -1;
+    }
+};
+
+ /*
+    459. Repeated Substring Pattern
+    https://leetcode.com/problems/repeated-substring-pattern/
+ 
+    Given a string s, check if it can be constructed by taking a substring of it and appending multiple copies of the substring together.
+
+    Example 1:
+    Input: s = "abab"
+    Output: true
+    Explanation: It is the substring "ab" twice.
+
+    Example 2:
+    Input: s = "aba"
+    Output: false
+
+    Example 3:
+    Input: s = "abcabcabcabc"
+    Output: true
+    Explanation: It is the substring "abc" four times or the substring "abcabc" twice.
+    
+
+    Constraints:
+    1 <= s.length <= 104
+    s consists of lowercase English letters.
+ */
+// Interesting solution
+class Solution {
+public:
+    bool repeatedSubstringPattern(string s) {
+        if (s.empty()) return false;
+        string target = s + s;
+        target.erase(target.begin());
+        target.pop_back();
+        return target.find(s) != string::npos;
+    }
+};
+
+// KMP variant
+class Solution {
+private:
+    vector<int> constructPrefixDict(string& s) {
+        vector<int> next(s.size(), 0);
+        // i needs to start with 1.
+        int maxPrefixLength = 0, i = 1;
+        while (i < s.size()) {
+            while (maxPrefixLength > 0 && s[i] != s[maxPrefixLength]) {
+                maxPrefixLength = next[maxPrefixLength - 1];
+            }
+            if (s[i] == s[maxPrefixLength]) {
+                maxPrefixLength ++;
+            }
+            next[i] = maxPrefixLength;
+            i++;
+        }
+        return next;
+    }
+public:
+    bool repeatedSubstringPattern(string s) {
+        if (s.empty()) return false;
+        vector<int> next = constructPrefixDict(s);
+        // Note the max common prefix (suffix) is the common substring which can be 
+        // used to construct s. So we can get its size with s.size() - next[s.size() - 1]
+        // As long as it can be divided by the string s length, then we can safely return 
+        // true. A proof is here: 
+        // https://github.com/youngyangyang04/leetcode-master/blob/master/problems/0459.%E9%87%8D%E5%A4%8D%E7%9A%84%E5%AD%90%E5%AD%97%E7%AC%A6%E4%B8%B2.md#%E7%AE%80%E5%8D%95%E6%8E%A8%E7%90%86
+        return next[s.size() - 1] != 0 && (s.size() % (s.size() - next[s.size() - 1]) == 0);
     }
 };
