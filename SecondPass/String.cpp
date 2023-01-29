@@ -94,3 +94,92 @@ public:
         return s;
     }
 };
+
+ /*
+    151. Reverse Words in a String
+    https://leetcode.com/problems/reverse-words-in-a-string/
+ 
+    Given an input string s, reverse the order of the words.
+    A word is defined as a sequence of non-space characters. The words in s will be separated by at least one space.
+    Return a string of the words in reverse order concatenated by a single space.
+    Note that s may contain leading or trailing spaces or multiple spaces between two words. The returned string should only have a single space separating the words. Do not include any extra spaces.
+
+    
+
+    Example 1:
+    Input: s = "the sky is blue"
+    Output: "blue is sky the"
+
+    Example 2:
+    Input: s = "  hello world  "
+    Output: "world hello"
+    Explanation: Your reversed string should not contain leading or trailing spaces.
+
+    Example 3:
+    Input: s = "a good   example"
+    Output: "example good a"
+    Explanation: You need to reduce multiple spaces between two words to a single space in the reversed string.
+    
+
+    Constraints:
+    1 <= s.length <= 104
+    s contains English letters (upper-case and lower-case), digits, and spaces ' '.
+    There is at least one word in s.
+    
+
+    Follow-up: If the string data type is mutable in your language, can you solve it in-place with O(1) extra space?
+ */
+// NO extra space, O(n) solution.
+class Solution {
+private:
+    void removeExtraSpace(string& s) {
+        int slow = 0;
+        for(int i = 0; i < s.size(); ++i) {
+            if (s[i] != ' ') {
+                s[slow++] = s[i];
+            } else if (i > 0 && s[i] == ' ' && s[i-1] != ' ') {
+                s[slow++] = ' ';
+            }
+        }
+        if (slow > 0 && s[slow - 1] == ' ') s.resize(slow - 1);
+        else s.resize(slow);
+    }
+    void reverseString(string& s, int start, int end) {
+        while(start < end) {
+            swap(s[start ++], s[end --]);
+        }
+    }
+public:
+    string reverseWords(string s) {
+        removeExtraSpace(s);
+        reverseString(s, 0, s.size() - 1);
+        int nextStart = 0;
+        s.push_back(' ');
+        for(int i = 0; i < s.size(); ++i) {
+            if (s[i] == ' ') {
+                reverseString(s, nextStart, i - 1);
+                nextStart = i + 1;
+            }
+        }
+        s.pop_back();
+        return s;
+    }
+};
+
+// O(n) space, with istringstream, fancy.
+class Solution {
+public:
+    string reverseWords(string s) {
+        istringstream ss(s);
+        string word;
+        string res;
+        while(ss >> word){
+            word.push_back(' ');
+            reverse(word.begin(), word.end());
+            res.append(word);
+        }
+        reverse(res.begin(), res.end());
+        res.pop_back();
+        return res;
+    }
+};
