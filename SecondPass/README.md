@@ -51,3 +51,4 @@ ID | Name | Difficulty | Category
 344|[Reverse String](https://leetcode.com/problems/reverse-string/)| Easy | Two pointers
 541|[Reverse String II](https://leetcode.com/problems/reverse-string-ii/)| Easy | Two pointers
 151|[**Reverse Words in a String**](https://leetcode.com/problems/reverse-words-in-a-string/)| Medium | Two pointers for O(1) space
+796|[Rotate String](https://leetcode.com/problems/rotate-string/)| Easy | string match
