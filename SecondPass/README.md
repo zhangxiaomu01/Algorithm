@@ -61,3 +61,4 @@ ID | Name | Difficulty | Category
 232|[Implement Queue using Stacks](https://leetcode.com/problems/implement-queue-using-stacks/)| Easy | Stack operation
 225|[Implement Stack using Queues](https://leetcode.com/problems/implement-stack-using-queues/)| Easy | Queue operation
 20|[Valid Parentheses](https://leetcode.com/problems/valid-parentheses/)| Easy | Stack
+1047|[Remove All Adjacent Duplicates In String](https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string/)| Easy | Stack
