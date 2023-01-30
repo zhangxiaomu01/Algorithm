@@ -59,3 +59,4 @@ ID | Name | Difficulty | Category
 ID | Name | Difficulty | Category
  ---- | ------------- | -------- | ------
 232|[Implement Queue using Stacks](https://leetcode.com/problems/implement-queue-using-stacks/)| Easy | Stack operation
+225|[Implement Stack using Queues](https://leetcode.com/problems/implement-stack-using-queues/)| Easy | Queue operation
