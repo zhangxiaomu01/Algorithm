@@ -63,3 +63,4 @@ ID | Name | Difficulty | Category
 20|[Valid Parentheses](https://leetcode.com/problems/valid-parentheses/)| Easy | Stack
 1047|[Remove All Adjacent Duplicates In String](https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string/)| Easy | Stack
 150|[Evaluate Reverse Polish Notation](https://leetcode.com/problems/evaluate-reverse-polish-notation/)| Medium | Stack
+239|[Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/)| hard | maximum queue

@@ -350,3 +350,111 @@ public:
         return process[0];
     }
 };
+
+/*
+    239. Sliding Window Maximum
+    https://leetcode.com/problems/sliding-window-maximum/
+ 
+    You are given an array of integers nums, there is a sliding window of size k which is moving from the very left of the array to the very right. You can only see the k numbers in the window. Each time the sliding window moves right by one position.
+    Return the max sliding window.
+
+    
+
+    Example 1:
+    Input: nums = [1,3,-1,-3,5,3,6,7], k = 3
+    Output: [3,3,5,5,6,7]
+    Explanation: 
+    Window position                Max
+    ---------------               -----
+    [1  3  -1] -3  5  3  6  7       3
+    1 [3  -1  -3] 5  3  6  7       3
+    1  3 [-1  -3  5] 3  6  7       5
+    1  3  -1 [-3  5  3] 6  7       5
+    1  3  -1  -3 [5  3  6] 7       6
+    1  3  -1  -3  5 [3  6  7]      7
+
+    Example 2:
+    Input: nums = [1], k = 1
+    Output: [1]
+    
+
+    Constraints:
+    1 <= nums.length <= 105
+    -104 <= nums[i] <= 104
+    1 <= k <= nums.length
+ */
+// Maintain a maximum queue when sliding.
+class Solution {
+public:
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        // We need to maintain a sliding maximum queue during the iteration.
+        deque<int> maxQueue;
+        vector<int> res;
+        maxQueue.push_back(nums[0]);
+        if (k == 1) {
+            return nums;
+        }
+        for (int i = 1 ; i < nums.size(); ++i) {
+            // Always saves the maximum value in the queue
+            // Note: we need to check from the back, so we can get rid of any intermediate 
+            // previous next maximum value.
+            while (!maxQueue.empty() && maxQueue.back() < nums[i]) {
+                maxQueue.pop_back();
+            }
+            maxQueue.push_back(nums[i]);
+
+            if (i >= k - 1) {
+                res.push_back(maxQueue.front());
+            }
+            // The sliding window is longer than k and our maximum is equal to the first element
+            if (i >= k - 1 && maxQueue.front() == nums[i - (k-1)]) {
+                maxQueue.pop_front();
+            }
+        }
+        return res;
+    }
+};
+
+// A better implementation: define a specific maximum queue!
+// A data structure which maintains the running maximum during iteration.
+class maximumQueue {
+private:
+    deque<int> dq;
+
+public:
+    // Pushes the `val` to the queue, removes element smaller than val from the back before pushing.
+    void push(int val) {
+        while (!dq.empty() && dq.back() < val) dq.pop_back();
+        dq.push_back(val);
+    }
+
+    // Pops the front of queue if the value equals to `val`.
+    void pop(int val) {
+        if (!dq.empty() && dq.front() == val) dq.pop_front();
+    }
+
+    // Returns the maximum value in the queue.
+    int top() {
+        if (!dq.empty()) return dq.front();
+        return INT_MIN;
+    }
+};
+
+
+class Solution {
+public:
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        maximumQueue mQ;
+        vector<int> res;
+        for (int i = 0; i < k; ++i) mQ.push(nums[i]);
+        res.push_back(mQ.top());
+
+        for (int i = k; i < nums.size(); ++i) {
+            mQ.pop(nums[i-k]);
+            mQ.push(nums[i]);
+            res.push_back(mQ.top());
+        }
+        return res;
+    }
+};
+
