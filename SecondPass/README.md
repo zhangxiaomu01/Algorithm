@@ -65,3 +65,4 @@ ID | Name | Difficulty | Category
 150|[Evaluate Reverse Polish Notation](https://leetcode.com/problems/evaluate-reverse-polish-notation/)| Medium | Stack
 239|[Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/)| hard | maximum queue
 347|[Top K Frequent Elements](https://leetcode.com/problems/top-k-frequent-elements/)| Medium | priority queue
+71|[Simplify Path](https://leetcode.com/problems/simplify-path/)| Medium | stack + stringstream
