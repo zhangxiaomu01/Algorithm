@@ -72,3 +72,4 @@ ID | Name | Difficulty | Category
  ---- | ------------- | -------- | ------
 144|[Binary Tree Preorder Traversal](https://leetcode.com/problems/binary-tree-preorder-traversal/)| Ease | iterative / recursive
 145|[Binary Tree Postorder Traversal](https://leetcode.com/problems/binary-tree-postorder-traversal/)| Ease | iterative / recursive
+94|[Binary Tree Inorder Traversal](https://leetcode.com/problems/binary-tree-inorder-traversal/)| Ease | iterative / recursive

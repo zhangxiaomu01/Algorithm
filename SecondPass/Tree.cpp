@@ -149,3 +149,69 @@ public:
         return res;
     }
 };
+
+ /*
+    94. Binary Tree Inorder Traversal
+    https://leetcode.com/problems/binary-tree-inorder-traversal/
+    Given the root of a binary tree, return the inorder traversal of its nodes' values.
+ 
+
+    Example 1:
+    Input: root = [1,null,2,3]
+    Output: [1,3,2]
+
+    Example 2:
+    Input: root = []
+    Output: []
+
+    Example 3:
+    Input: root = [1]
+    Output: [1]
+    
+
+    Constraints:
+
+    The number of nodes in the tree is in the range [0, 100].
+    -100 <= Node.val <= 100
+    
+    Follow up: Recursive solution is trivial, could you do it iteratively?
+ */
+// Recursive
+class Solution {
+private:
+    void traversal(TreeNode* node, vector<int>& res) {
+        if (node == nullptr) return;
+        traversal(node->left, res);
+        res.push_back(node->val);
+        traversal(node->right, res);
+    }
+public:
+    vector<int> inorderTraversal(TreeNode* root) {
+        vector<int> res;
+        traversal(root, res);
+        return res;
+    }
+};
+
+// Iterative
+class Solution {
+public:
+    vector<int> inorderTraversal(TreeNode* root) {
+       TreeNode* cur = root;
+       stack<TreeNode*> st;
+       vector<int> res;
+       while (cur || !st.empty()) {
+           // Examine left first.
+           while (cur) {
+               st.push(cur);
+               cur = cur->left;
+           }
+           cur = st.top();
+           st.pop();
+           res.push_back(cur->val);
+           // Now examine the right.
+           cur = cur->right;
+       } 
+       return res;
+    }
+};
