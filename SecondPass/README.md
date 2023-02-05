@@ -66,3 +66,8 @@ ID | Name | Difficulty | Category
 239|[Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/)| hard | maximum queue
 347|[Top K Frequent Elements](https://leetcode.com/problems/top-k-frequent-elements/)| Medium | priority queue
 71|[Simplify Path](https://leetcode.com/problems/simplify-path/)| Medium | stack + stringstream
+
+## Tree
+ID | Name | Difficulty | Category
+ ---- | ------------- | -------- | ------
+144|[Binary Tree Preorder Traversal](https://leetcode.com/problems/binary-tree-preorder-traversal/)| Ease | iterative / recursive
