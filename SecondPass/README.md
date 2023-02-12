@@ -70,7 +70,8 @@ ID | Name | Difficulty | Category
 ## Tree
 ID | Name | Difficulty | Category
  ---- | ------------- | -------- | ------
-144|[Binary Tree Preorder Traversal](https://leetcode.com/problems/binary-tree-preorder-traversal/)| Ease | iterative / recursive
-145|[Binary Tree Postorder Traversal](https://leetcode.com/problems/binary-tree-postorder-traversal/)| Ease | iterative / recursive
-94|[Binary Tree Inorder Traversal](https://leetcode.com/problems/binary-tree-inorder-traversal/)| Ease | iterative / recursive
-102|[Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/)| Ease | iterative
+144|[Binary Tree Preorder Traversal](https://leetcode.com/problems/binary-tree-preorder-traversal/)| Easy | iterative / recursive
+145|[Binary Tree Postorder Traversal](https://leetcode.com/problems/binary-tree-postorder-traversal/)| Easy | iterative / recursive
+94|[Binary Tree Inorder Traversal](https://leetcode.com/problems/binary-tree-inorder-traversal/)| Easy | iterative / recursive
+102|[Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/)| Easy | iterative / recursive
+226|[Invert Binary Tree](https://leetcode.com/problems/invert-binary-tree/)| Easy | iterative / recursive

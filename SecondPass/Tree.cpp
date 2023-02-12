@@ -351,3 +351,63 @@ public:
         return res;
     }
 };
+
+ /*
+    226. Invert Binary Tree
+    https://leetcode.com/problems/invert-binary-tree/
+    Given the root of a binary tree, invert the tree, and return its root.
+
+    Example 1:
+    Input: root = [4,2,7,1,3,6,9]
+    Output: [4,7,2,9,6,3,1]
+
+    Example 2:
+    Input: root = [2,1,3]
+    Output: [2,3,1]
+
+    Example 3:
+    Input: root = []
+    Output: []
+    
+
+    Constraints:
+    The number of nodes in the tree is in the range [0, 100].
+    -100 <= Node.val <= 100
+ */
+// Recursive
+class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        if (!root) return nullptr;
+
+        TreeNode* left = root->left;
+        TreeNode* right = root->right;
+        root->right = invertTree(left);
+        root->left = invertTree(right);
+        return root;
+    }
+};
+
+// Iterative:
+class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        queue<TreeNode*> q;
+        if (!root) return root;
+        q.push(root);
+
+        while (!q.empty()) {
+            int level = q.size();
+            for (int i = 0; i < level; ++i) {
+                TreeNode* cur = q.front();
+                q.pop();
+                TreeNode* temp = cur->left;
+                cur->left = cur->right;
+                cur->right = temp;
+                if (cur->left) q.push(cur->left);
+                if (cur->right) q.push(cur->right);
+            }
+        }
+        return root;
+    }
+};
