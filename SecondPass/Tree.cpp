@@ -84,6 +84,31 @@ public:
     }
 };
 
+// Iterative alternative: more general format
+class Solution {
+public:
+    vector<int> preorderTraversal(TreeNode* root) {
+        stack<TreeNode*> st;
+        TreeNode* cur = root;
+        vector<int> res;
+        if (!root) return res;
+        while (cur || !st.empty()) {
+            while (cur) {
+                res.push_back(cur->val);
+                st.push(cur);
+                cur = cur->left;
+            }
+            // The node has been examined, and we will examnie right immediately.
+            // Safe to pop now.
+            cur = st.top();
+            st.pop();
+            // Already examined middle and left nodes, now go to the right.
+            cur = cur->right;
+        }
+        return res;
+    }
+};
+
  /*
     145. Binary Tree Postorder Traversal
     https://leetcode.com/problems/binary-tree-postorder-traversal/
