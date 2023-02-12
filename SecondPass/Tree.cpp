@@ -327,3 +327,27 @@ public:
         return res;
     }
 };
+
+// Recursive
+class Solution {
+private:
+    void traverse(TreeNode* node, vector<vector<int>>& v, int level) {
+        if (node == nullptr) return;
+
+        if (v.empty() || level > v.size() - 1) {
+            v.push_back(vector<int>());
+        }
+
+        v[level].push_back(node->val);
+
+        traverse(node->left, v, level + 1);
+        traverse(node->right, v, level + 1);
+    }
+
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        vector<vector<int>> res;
+        traverse(root, res, 0);
+        return res;
+    }
+};
