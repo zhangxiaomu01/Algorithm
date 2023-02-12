@@ -175,6 +175,45 @@ public:
     }
 };
 
+// Iterative impl: more general format.
+class Solution {
+public:
+    vector<int> postorderTraversal(TreeNode* root) {
+        stack<TreeNode*> st;
+        vector<int> res;
+        TreeNode* cur = root;
+        TreeNode* pre = nullptr;
+        if (!root) return res;
+
+        while(cur || !st.empty()) {
+            while (cur) {
+                st.push(cur);
+                cur = cur->left;
+            }
+
+            // We cannot pop up the node right now, given we still
+            // need to investigate the right side :)
+            cur = st.top();
+
+            if (cur->right && cur->right != pre) {
+                cur = cur->right;
+                continue;
+            }
+
+            res.push_back(cur->val);
+            st.pop();
+            // Make sure that we record the previous right node and `reset` cur node.
+            // The former to prevent we examine the right node multiple times;
+            // The later to ensure that totally discard the information of the right node,
+            // so we can skip the inner while loop at line 189.
+            pre = cur;
+            cur = nullptr;
+        }
+
+        return res;
+    }
+};
+
  /*
     94. Binary Tree Inorder Traversal
     https://leetcode.com/problems/binary-tree-inorder-traversal/
