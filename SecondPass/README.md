@@ -76,3 +76,5 @@ ID | Name | Difficulty | Category
 102|[Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/)| Easy | iterative / recursive
 226|[Invert Binary Tree](https://leetcode.com/problems/invert-binary-tree/)| Easy | iterative / recursive
 101|[Symmetric Tree](https://leetcode.com/problems/symmetric-tree/)| Easy | iterative / recursive
+572|[Subtree of Another Tree](https://leetcode.com/problems/subtree-of-another-tree/)| Easy | recursive
+
