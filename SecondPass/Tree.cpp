@@ -411,3 +411,73 @@ public:
         return root;
     }
 };
+
+ /*
+    101. Symmetric Tree
+    https://leetcode.com/problems/symmetric-tree/
+    Given the root of a binary tree, check whether it is a mirror of itself (i.e., symmetric around its center).
+
+    Example 1:
+    Input: root = [1,2,2,3,4,4,3]
+    Output: true
+
+    Example 2:
+    Input: root = [1,2,2,null,3,null,3]
+    Output: false
+    
+    Constraints:
+    The number of nodes in the tree is in the range [1, 1000].
+    -100 <= Node.val <= 100
+    
+    Follow up: Could you solve it both recursively and iteratively?
+ */
+// Recursive
+class Solution {
+private:
+    bool checkTrees(TreeNode* left, TreeNode* right) {
+        if ((!left && right) || (!right && left)) return false;
+        if (left == right && left == nullptr) return true;
+        if (left->val != right->val) return false;
+
+        // Note we need to check the left and right child trees and determine
+        // whether they are symmetric!
+        return checkTrees(left->left, right -> right) && checkTrees(left->right, right->left);
+
+    }
+public:
+    bool isSymmetric(TreeNode* root) {
+        if (!root) return true;
+        return checkTrees(root->left, root -> right);
+    }
+};
+
+class Solution {
+public:
+    bool isSymmetric(TreeNode* root) {
+        queue<TreeNode*> q;
+        if (!root) return true;
+
+        q.push(root->left);
+        q.push(root->right);
+
+        // This is not a level order traversal.
+        while (!q.empty()) {
+            TreeNode* left = q.front();
+            q.pop();
+            TreeNode* right = q.front();
+            q.pop();
+            // Reaches the leaf!
+            if (!left && !right) continue;
+            if (left && !right) return false;
+            if (!left && right) return false;
+            if (left->val != right->val) return false;
+            // Note how we orgnize the nodes in pairs!
+            q.push(left->left);
+            q.push(right->right);
+            q.push(left->right);
+            q.push(right->left);
+        }
+
+        return true;
+    }
+};
