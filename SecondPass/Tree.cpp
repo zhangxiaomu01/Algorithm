@@ -525,3 +525,138 @@ public:
         return checkTrees(root->left, root -> right);
     }
 };
+
+// Solution 2
+// Serialize the tree and apply the KMP to determine whether we can find the subtree
+// In the pattern. From the official solution.
+class Solution {
+public:
+    bool isSubtree(TreeNode* root, TreeNode* subRoot) {
+         // Serialize given Nodes
+        string r = "";
+        serialize(root, r);
+        string s = "";
+        serialize(subRoot, s);
+                 
+         // Check if s is in r
+         return kmp(s, r);
+     }
+    
+    // Function to serialize Tree
+    void serialize(TreeNode* node, string& treeStr) {
+        if (node == nullptr){
+            treeStr += "#";
+            return;
+        }
+
+        treeStr += "^";
+        treeStr += to_string(node->val);
+        serialize(node->left, treeStr);
+        serialize(node->right, treeStr);
+    }
+
+    // Knuth-Morris-Pratt algorithm to check if `needle` is in `haystack` or not
+    bool kmp(string needle, string haystack) {
+        int m = needle.length();
+        int n = haystack.length();
+        
+        if (n < m)
+            return false;
+        
+        // longest proper prefix which is also suffix
+        vector<int> lps(m);
+        // Length of Longest Border for prefix before it.
+        int prev = 0;
+        // Iterating from index-1. lps[0] will always be 0
+        int i = 1;
+        
+        while (i < m) {
+            if (needle[i] == needle[prev]) {
+                // Length of Longest Border Increased
+                prev += 1;
+                lps[i] = prev;
+                i += 1;
+            } else {
+                // Only empty border exist
+                if (prev == 0) {
+                    lps[i] = 0;
+                    i += 1;
+                } else {
+                    // Try finding longest border for this i with reduced prev
+                    prev = lps[prev-1];
+                }
+            }
+        }
+        
+        // Pointer for haystack
+        int haystackPointer = 0;
+        // Pointer for needle.
+        // Also indicates number of characters matched in current window.
+        int needlePointer = 0;
+        
+        while (haystackPointer < n) {
+            if (haystack[haystackPointer] == needle[needlePointer]) {
+                // Matched Increment Both
+                needlePointer += 1;
+                haystackPointer += 1;
+                // All characters matched
+                if (needlePointer == m)
+                    return true;                
+            } else {                
+                if (needlePointer == 0) {
+                    // Zero Matched
+                    haystackPointer += 1;                    
+                } else {
+                    // Optimally shift left needlePointer. Don't change haystackPointer
+                    needlePointer = lps[needlePointer-1];
+                }
+            }
+        }
+        
+        return false;
+    }
+};
+
+// Solution 3:
+// Iterate the tree and build the hash table to determine whether there is a sub-tree.
+// From official solution.
+class Solution {
+   public:
+    // CONSTANTS
+    const int MOD_1 = 1000000007;
+    const int MOD_2 = 2147483647;
+
+    // Hashing a Node
+    pair<unsigned long long, unsigned long long> hashSubtreeAtNode(TreeNode* node, bool needToAdd) {
+        if (node == nullptr) return {3, 7};
+
+        auto left = hashSubtreeAtNode(node->left, needToAdd);
+        auto right = hashSubtreeAtNode(node->right, needToAdd);
+
+        auto left1 = (left.first << 5) % MOD_1;
+        auto right1 = (right.first << 1) % MOD_1;
+        auto left2 = (left.second << 7) % MOD_2;
+        auto right2 = (right.second << 1) % MOD_2;
+
+        pair hashpair = {(left1 + right1 + node->val) % MOD_1,
+                         (left2 + right2 + node->val) % MOD_2};
+
+        if (needToAdd) memo.push_back(hashpair);
+
+        return hashpair;
+    }
+
+    // Vector to store hashed value of each node.
+    vector<pair<unsigned long long, unsigned long long>> memo;
+
+    bool isSubtree(TreeNode* root, TreeNode* subRoot) {
+        // Calling and adding hash to vector
+        hashSubtreeAtNode(root, true);
+
+        // Storing hashed value of subRoot for comparison
+        pair<unsigned long long, unsigned long long> s = hashSubtreeAtNode(subRoot, false);
+
+        // Check if hash of subRoot is present in memo
+        return find(memo.begin(), memo.end(), s) != memo.end();
+    }
+};
