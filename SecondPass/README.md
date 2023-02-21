@@ -81,4 +81,5 @@ ID | Name | Difficulty | Category
 111|[Minimum Depth of Binary Tree](https://leetcode.com/problems/minimum-depth-of-binary-tree/)| Easy | iterative / recursive
 222|[Count Complete Tree Nodes](https://leetcode.com/problems/count-complete-tree-nodes/)| Medium | complete binary tree
 110|[**Balanced Binary Tree**](https://leetcode.com/problems/balanced-binary-tree/)| Easy | Easy to mess up
+257|[**Binary Tree Paths**](https://leetcode.com/problems/binary-tree-paths/)| Easy | Iterative / Recursive
 

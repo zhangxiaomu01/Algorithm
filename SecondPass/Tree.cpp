@@ -887,3 +887,121 @@ public:
         return countHeight(root) == -1 ? false : true;
     }
 };
+
+ /*
+    257. Binary Tree Paths
+    https://leetcode.com/problems/binary-tree-paths/
+    Given the root of a binary tree, return all root-to-leaf paths in any order.
+    A leaf is a node with no children.
+
+    
+    Example 1:
+    Input: root = [1,2,3,null,5]
+    Output: ["1->2->5","1->3"]
+
+    Example 2:
+    Input: root = [1]
+    Output: ["1"]
+    
+
+    Constraints:
+    The number of nodes in the tree is in the range [1, 100].
+    -100 <= Node.val <= 100
+ */
+// Backtracking! Early impl:
+class Solution {
+private:
+
+    void traversal(TreeNode* cur, vector<int>& path, vector<string>& result) {
+        path.push_back(cur->val);
+        if (cur->left == NULL && cur->right == NULL) {
+            string sPath;
+            for (int i = 0; i < path.size() - 1; i++) {
+                sPath += to_string(path[i]);
+                sPath += "->";
+            }
+            sPath += to_string(path[path.size() - 1]);
+            result.push_back(sPath);
+            return;
+        }
+        if (cur->left) { // Left
+            traversal(cur->left, path, result);
+            path.pop_back(); // backtrack left node
+        }
+        if (cur->right) { // right
+            traversal(cur->right, path, result);
+            path.pop_back(); // backtrack right node
+        }
+    }
+
+public:
+    vector<string> binaryTreePaths(TreeNode* root) {
+        vector<string> result;
+        vector<int> path;
+        if (root == NULL) return result;
+        traversal(root, path, result);
+        return result;
+    }
+};
+
+// Slightly optimized code
+class Solution {
+private:
+    // Note we copy the path each time. This will "revert" our change to the path
+    // whenever we do the backtracking.
+    void buildPath(vector<string>& res, string path, TreeNode* node) {
+        if (!node) return;
+
+        path += to_string(node->val);
+        if (!node -> left && !node->right) {
+            res.push_back(path);
+            return;
+        }
+        buildPath(res, path + "->", node->left);
+        buildPath(res, path + "->", node->right);
+    }
+
+public:
+    vector<string> binaryTreePaths(TreeNode* root) {
+        vector<string> res;
+        string path = "";
+        buildPath(res, path, root);
+        return res;
+    }
+};
+
+// Iterative solution
+// Warning: trying to implement the general formmat iterative algorithm to solve this question
+// is super chanllenging!!!
+class Solution {
+public:
+    vector<string> binaryTreePaths(TreeNode* root) {
+        stack<TreeNode*> st;
+        stack<string> path;
+        vector<string> res;
+        if (!root) return res;
+        st.push(root);
+        path.push(to_string(root->val));
+
+        while (!st.empty()) {
+            TreeNode* cur = st.top();
+            string pre = path.top();
+            st.pop();
+            path.pop();
+
+            if (!cur->left && !cur->right) res.push_back(pre);
+            // Pre-order traversal!
+            if (cur->right) {
+                path.push(pre + "->" + to_string(cur->right->val));
+                st.push(cur->right);
+            }
+
+            if (cur->left) {
+                path.push(pre + "->" + to_string(cur->left->val));
+                st.push(cur->left);
+            }
+
+        }
+        return res;
+    }
+};
