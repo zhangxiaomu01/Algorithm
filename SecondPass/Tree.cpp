@@ -1094,3 +1094,89 @@ public:
         return sum;
     }
 };
+
+ /*
+    513. Find Bottom Left Tree Value
+    https://leetcode.com/problems/find-bottom-left-tree-value/
+    Given the root of a binary tree, return the leftmost value in the last row of the tree.
+
+
+    Example 1:
+    Input: root = [2,1,3]
+    Output: 1
+
+    Example 2:
+    Input: root = [1,2,3,4,null,5,6,null,null,7]
+    Output: 7
+    
+
+    Constraints:
+    The number of nodes in the tree is in the range [1, 104].
+    -231 <= Node.val <= 231 - 1
+ */
+// Recursive
+class Solution {
+public:
+    int maxDepth = INT_MIN;
+    int result;
+    void traversal(TreeNode* root, int depth) {
+        if (root->left == NULL && root->right == NULL) {
+            if (depth > maxDepth) {
+                maxDepth = depth;
+                result = root->val;
+            }
+            return;
+        }
+        if (root->left) {
+            depth++;
+            traversal(root->left, depth);
+            depth--; // backtracking
+        }
+        if (root->right) {
+            depth++;
+            traversal(root->right, depth);
+            depth--; // backtracking
+        }
+        return;
+    }
+    int findBottomLeftValue(TreeNode* root) {
+        traversal(root, 0);
+        return result;
+    }
+};
+
+// Iterative
+class Solution {
+private:
+
+    void traversal(TreeNode* cur, vector<int>& path, vector<string>& result) {
+        path.push_back(cur->val);
+        if (cur->left == NULL && cur->right == NULL) {
+            string sPath;
+            for (int i = 0; i < path.size() - 1; i++) {
+                sPath += to_string(path[i]);
+                sPath += "->";
+            }
+            sPath += to_string(path[path.size() - 1]);
+            result.push_back(sPath);
+            return;
+        }
+        if (cur->left) { // Left
+            traversal(cur->left, path, result);
+            path.pop_back(); // backtrack left node
+        }
+        if (cur->right) { // right
+            traversal(cur->right, path, result);
+            path.pop_back(); // backtrack right node
+        }
+    }
+
+public:
+    vector<string> binaryTreePaths(TreeNode* root) {
+        vector<string> result;
+        vector<int> path;
+        if (root == NULL) return result;
+        traversal(root, path, result);
+        return result;
+    }
+};
