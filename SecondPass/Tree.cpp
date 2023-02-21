@@ -1005,3 +1005,92 @@ public:
         return res;
     }
 };
+
+ /*
+    404. Sum of Left Leaves
+    https://leetcode.com/problems/sum-of-left-leaves/
+    Given the root of a binary tree, return the sum of all left leaves.
+    A leaf is a node with no children. A left leaf is a leaf that is the left child of another node.
+
+    
+    Example 1:
+    Input: root = [3,9,20,null,null,15,7]
+    Output: 24
+    Explanation: There are two left leaves in the binary tree, with values 9 and 15 respectively.
+
+    Example 2:
+    Input: root = [1]
+    Output: 0
+    
+
+    Constraints:
+    The number of nodes in the tree is in the range [1, 1000].
+    -1000 <= Node.val <= 1000
+ */
+// Recursive
+class Solution {
+private:
+
+    void traversal(TreeNode* cur, vector<int>& path, vector<string>& result) {
+        path.push_back(cur->val);
+        if (cur->left == NULL && cur->right == NULL) {
+            string sPath;
+            for (int i = 0; i < path.size() - 1; i++) {
+                sPath += to_string(path[i]);
+                sPath += "->";
+            }
+            sPath += to_string(path[path.size() - 1]);
+            result.push_back(sPath);
+            return;
+        }
+        if (cur->left) { // Left
+            traversal(cur->left, path, result);
+            path.pop_back(); // backtrack left node
+        }
+        if (cur->right) { // right
+            traversal(cur->right, path, result);
+            path.pop_back(); // backtrack right node
+        }
+    }
+
+public:
+    vector<string> binaryTreePaths(TreeNode* root) {
+        vector<string> result;
+        vector<int> path;
+        if (root == NULL) return result;
+        traversal(root, path, result);
+        return result;
+    }
+};
+
+// Iterative
+class Solution {
+public:
+    int sumOfLeftLeaves(TreeNode* root) {
+        stack<TreeNode*> st;
+        stack<bool> isLeft;
+        TreeNode* cur = root;
+        if (!root) return 0;
+        int sum = 0;
+        bool isRight = true;
+
+        // Inorder traversal.
+        while(cur || !st.empty()) {
+            while (cur) {
+                st.push(cur);
+                isLeft.push(isRight ? false : true);
+                isRight = false;
+                cur = cur->left;
+            }
+
+            cur = st.top();
+            st.pop();
+            if (isLeft.top() && !cur->left && !cur->right) sum += cur->val;
+            isLeft.pop();
+
+            cur = cur->right;
+            isRight = true;
+        }
+        return sum;
+    }
+};

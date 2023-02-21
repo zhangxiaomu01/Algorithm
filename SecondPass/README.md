@@ -82,4 +82,5 @@ ID | Name | Difficulty | Category
 222|[Count Complete Tree Nodes](https://leetcode.com/problems/count-complete-tree-nodes/)| Medium | complete binary tree
 110|[**Balanced Binary Tree**](https://leetcode.com/problems/balanced-binary-tree/)| Easy | Easy to mess up
 257|[**Binary Tree Paths**](https://leetcode.com/problems/binary-tree-paths/)| Easy | Iterative / Recursive
+404|[Sum of Left Leaves](https://leetcode.com/problems/sum-of-left-leaves/)| Easy | Iterative / Recursive
 
