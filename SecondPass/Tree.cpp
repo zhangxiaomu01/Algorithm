@@ -1256,3 +1256,104 @@ public:
         return false;
     }
 };
+
+ /*
+    113. Path Sum II
+    https://leetcode.com/problems/path-sum-ii/
+    Given the root of a binary tree and an integer targetSum, return all root-to-leaf paths where the sum of the node
+    values in the path equals targetSum. Each path should be returned as a list of the node values, not node references.
+    A root-to-leaf path is a path starting from the root and ending at any leaf node. A leaf is a node with no children.
+
+    
+    Example 1:
+    Input: root = [5,4,8,11,null,13,4,7,2,null,null,5,1], targetSum = 22
+    Output: [[5,4,11,2],[5,8,4,5]]
+    Explanation: There are two paths whose sum equals targetSum:
+    5 + 4 + 11 + 2 = 22
+    5 + 8 + 4 + 5 = 22
+
+    Example 2:
+    Input: root = [1,2,3], targetSum = 5
+    Output: []
+
+    Example 3:
+    Input: root = [1,2], targetSum = 0
+    Output: []
+    
+
+    Constraints:
+    The number of nodes in the tree is in the range [0, 5000].
+    -1000 <= Node.val <= 1000
+    -1000 <= targetSum <= 1000
+ */
+// Recursive
+class Solution {
+    void generateSum(TreeNode* node, int currentSum, int targetSum, vector<vector<int>>& res, vector<int>& path) {
+        if (!node) return;
+        if (!node->left && !node->right && currentSum + node->val == targetSum) {
+            path.push_back(node->val);
+            res.push_back(path);
+            // Backtracking.
+            path.pop_back();
+            return;
+        }
+
+        path.push_back(node->val);
+        generateSum(node->left, currentSum + node->val, targetSum, res, path);
+        generateSum(node->right, currentSum + node->val, targetSum, res, path);
+        path.pop_back(); // Backtracking
+    }
+public:
+    vector<vector<int>> pathSum(TreeNode* root, int targetSum) {
+        vector<vector<int>> res;
+        vector<int> path;
+        generateSum(root, 0, targetSum, res, path);
+        return res;
+    }
+};
+
+// Iterative
+class Solution {
+public:
+    vector<vector<int>> pathSum(TreeNode* root, int targetSum) {
+        vector<vector<int>> res;
+        stack<vector<int>> paths;
+        stack<TreeNode*> st;
+        stack<int> sums;
+        if (!root) return res;
+
+        st.push(root);
+        sums.push(root->val);
+        paths.push({ root->val });
+
+        while(!st.empty()) {
+            TreeNode* cur = st.top();
+            st.pop();
+            vector<int> path = paths.top();
+            paths.pop();
+            int curSum = sums.top();
+            sums.pop();
+
+            if (!cur->left && !cur->right && curSum == targetSum) res.push_back(path);
+
+            if (cur->left) {
+                st.push(cur->left);
+                path.push_back(cur->left->val);
+                paths.push(path);
+                path.pop_back();
+                sums.push(curSum + cur->left->val);
+            }
+
+            if (cur->right) {
+                st.push(cur->right);
+                path.push_back(cur->right->val);
+                paths.push(path);
+                path.pop_back();
+                sums.push(curSum + cur->right->val);
+            }
+        }
+        return res;
+    }
+};
+
+// Iterative: optimized. TBD
