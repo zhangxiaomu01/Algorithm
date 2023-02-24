@@ -84,4 +84,4 @@ ID | Name | Difficulty | Category
 257|[**Binary Tree Paths**](https://leetcode.com/problems/binary-tree-paths/)| Easy | Iterative / Recursive
 404|[Sum of Left Leaves](https://leetcode.com/problems/sum-of-left-leaves/)| Easy | Iterative / Recursive
 513|[Find Bottom Left Tree Value](https://leetcode.com/problems/find-bottom-left-tree-value/)| Medium | Iterative / Recursive
-
+112|[Path Sum](https://leetcode.com/problems/path-sum/)| Easy | Iterative / Recursive
