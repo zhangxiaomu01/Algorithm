@@ -1357,3 +1357,43 @@ public:
 };
 
 // Iterative: optimized. TBD
+class Solution {
+public:
+    vector<vector<int>> pathSum(TreeNode* root, int targetSum) {
+        stack<TreeNode*> st;
+        vector<int> path;
+        vector<vector<int>> res;
+        int curSum = 0;
+        if (!root) return res;
+        TreeNode* cur = root;
+        TreeNode* pre = nullptr;
+
+        while (cur || !st.empty()) {
+            while (cur) {
+                st.push(cur);
+                path.push_back(cur->val);
+                curSum += cur->val;
+                cur = cur->left;
+            }
+
+            cur = st.top();
+            // Examine the right
+            if (cur -> right && cur->right != pre) {
+                pre = cur;
+                cur = cur->right;
+                continue;
+            }
+            
+            if (!cur->left && !cur->right && curSum == targetSum) {
+                res.push_back(path);
+            }
+            pre = cur;
+            // Backtracking
+            curSum -= cur->val;
+            path.pop_back();
+            st.pop();
+            cur = nullptr;
+        }
+        return res;
+    }
+};
