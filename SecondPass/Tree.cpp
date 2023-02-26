@@ -1573,3 +1573,104 @@ public:
         return buildTree(nums, 0, nums.size());
     }
 };
+
+ /*
+    617. Merge Two Binary Trees
+    https://leetcode.com/problems/merge-two-binary-trees/
+    You are given two binary trees root1 and root2.
+    Imagine that when you put one of them to cover the other, some nodes of the two trees are overlapped
+    while the others are not. You need to merge the two trees into a new binary tree. The merge rule is
+    that if two nodes overlap, then sum node values up as the new value of the merged node. Otherwise, the
+    NOT null node will be used as the node of the new tree.
+
+    Return the merged tree.
+
+    Note: The merging process must start from the root nodes of both trees.
+
+    
+
+    Example 1:
+    Input: root1 = [1,3,2,5], root2 = [2,1,3,null,4,null,7]
+    Output: [3,4,5,5,4,null,7]
+
+    Example 2:
+    Input: root1 = [1], root2 = [1,2]
+    Output: [2,2]
+    
+
+    Constraints:
+    The number of nodes in both trees is in the range [0, 2000].
+    -104 <= Node.val <= 104
+ */
+// Recursive
+class Solution {
+public:
+    TreeNode* mergeTrees(TreeNode* root1, TreeNode* root2) {
+        if (!root1 && !root2) return nullptr;
+
+        TreeNode* cur = nullptr;
+        if (!root1) cur = root2;
+        else if (!root2) cur = root1;
+        else {
+            cur = new TreeNode(root1->val + root2->val);
+        }
+
+        cur->left = mergeTrees(root1 ? root1->left : nullptr, root2 ? root2->left : nullptr);
+        cur->right = mergeTrees(root1 ? root1->right : nullptr, root2 ? root2->right : nullptr);
+
+        return cur;
+    }
+};
+
+// Recursive: slightly optimized code
+class Solution {
+public:
+    TreeNode* mergeTrees(TreeNode* t1, TreeNode* t2) {
+        if (t1 == nullptr) return t2;
+        if (t2 == nullptr) return t1;
+        // 重新定义新的节点，不修改原有两个树的结构
+        TreeNode* root = new TreeNode(0);
+        root->val = t1->val + t2->val;
+        root->left = mergeTrees(t1->left, t2->left);
+        root->right = mergeTrees(t1->right, t2->right);
+        return root;
+    }
+};
+
+// Iterative: level order traversal!
+class Solution {
+public:
+    TreeNode* mergeTrees(TreeNode* t1, TreeNode* t2) {
+        if (t1 == NULL) return t2;
+        if (t2 == NULL) return t1;
+        queue<TreeNode*> que;
+        que.push(t1);
+        que.push(t2);
+        while(!que.empty()) {
+            TreeNode* node1 = que.front(); que.pop();
+            TreeNode* node2 = que.front(); que.pop();
+            node1->val += node2->val;
+
+
+            if (node1->left != NULL && node2->left != NULL) {
+                que.push(node1->left);
+                que.push(node2->left);
+            }
+
+            if (node1->right != NULL && node2->right != NULL) {
+                que.push(node1->right);
+                que.push(node2->right);
+            }
+
+            // Assign the subtree here is the key!
+            if (node1->left == NULL && node2->left != NULL) {
+                node1->left = node2->left;
+            }
+            // Assign the subtree here is the key!
+            if (node1->right == NULL && node2->right != NULL) {
+                node1->right = node2->right;
+            }
+        }
+        return t1;
+    }
+};
