@@ -1397,3 +1397,63 @@ public:
         return res;
     }
 };
+
+
+ /*
+    106. Construct Binary Tree from Inorder and Postorder Traversal
+    https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/
+    Given two integer arrays inorder and postorder where inorder is the inorder traversal of a binary tree and
+    postorder is the postorder traversal of the same tree, construct and return the binary tree.
+
+    Example 1:
+    Input: inorder = [9,3,15,20,7], postorder = [9,15,7,20,3]
+    Output: [3,9,20,null,null,15,7]
+
+    Example 2:
+    Input: inorder = [-1], postorder = [-1]
+    Output: [-1]
+    
+
+    Constraints:
+    1 <= inorder.length <= 3000
+    postorder.length == inorder.length
+    -3000 <= inorder[i], postorder[i] <= 3000
+    inorder and postorder consist of **unique** values.
+    Each value of postorder also appears in inorder.
+    inorder is guaranteed to be the inorder traversal of the tree.
+    postorder is guaranteed to be the postorder traversal of the tree.
+ */
+// Recursive
+// There is an interative solution which utilizes the unique value from the array, not general enough and hard
+// to understand at first glance. Ignored.
+class Solution {
+private:
+    TreeNode* construct(vector<int>& inorder, int inorderStart, int inorderEnd, vector<int>& postOrder, int postOrderStart, int postOrderEnd) {
+        if (postOrderStart >= postOrderEnd || postOrderEnd < 1) return nullptr;
+        
+        TreeNode* cur = new TreeNode(postOrder[postOrderEnd - 1]);
+
+        int newInorderEnd = 0;
+        for (int i = inorderStart; i < inorderEnd; ++i) {
+            if (inorder[i] == postOrder[postOrderEnd - 1]) {
+                newInorderEnd = i;
+                break;
+            }
+        }
+        int newPostOrderEnd = postOrderStart + (newInorderEnd - inorderStart);
+        // cout << "newInorderEnd: " << newInorderEnd << endl;
+        // cout << "newPostOrderEnd: " << newPostOrderEnd << endl;
+        cur->left = construct(inorder, inorderStart, newInorderEnd, postOrder, postOrderStart, newPostOrderEnd);
+        // Note we need to exclude the last element from postOrder array!
+        // We need to make sure the new post order start is exacly the same as `newPostOrderEnd`, because in postorder
+        // array, we do not have a `root` node sit in between left child and right child!
+        cur->right = construct(inorder, newInorderEnd + 1, inorderEnd, postOrder, newPostOrderEnd, postOrderEnd - 1);
+        return cur;
+    }
+
+public:
+    TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
+        return construct(inorder, 0, inorder.size(), postorder, 0, postorder.size());
+    }
+};
+
