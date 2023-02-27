@@ -90,3 +90,4 @@ ID | Name | Difficulty | Category
 105|[**Construct Binary Tree from Preorder and Inorder Traversal**](https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)| Medium | Recursive
 654|[Maximum Binary Tree](https://leetcode.com/problems/maximum-binary-tree/)| Medium | Recursive
 617|[Merge Two Binary Trees](https://leetcode.com/problems/merge-two-binary-trees/)| Easy | Recursive
+98|[**Validate Binary Search Tree**](https://leetcode.com/problems/validate-binary-search-tree/)| Medium | Recursive + Iterative

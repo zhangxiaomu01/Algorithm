@@ -1674,3 +1674,93 @@ public:
         return t1;
     }
 };
+
+ /*
+    98. Validate Binary Search Tree
+    https://leetcode.com/problems/validate-binary-search-tree/
+    Given the root of a binary tree, determine if it is a valid binary search tree (BST).
+
+    A valid BST is defined as follows:
+    The left subtreeof a node contains only nodes with keys less than the node's key.
+    The right subtree of a node contains only nodes with keys greater than the node's key.
+    Both the left and right subtrees must also be binary search trees.
+    
+
+    Example 1:
+    Input: root = [2,1,3]
+    Output: true
+
+    Example 2:
+    Input: root = [5,1,4,null,null,3,6]
+    Output: false
+    Explanation: The root node's value is 5 but its right child's value is 4.
+    
+
+    Constraints:
+    The number of nodes in the tree is in the range [1, 104].
+    -2^31 <= Node.val <= 2^31 - 1
+ */
+// Recursive: inorder traversal and see whether the visited nodes is ordered from small to large!
+class Solution {
+private:
+    TreeNode* pre = nullptr;
+public:
+    bool isValidBST(TreeNode* root) {
+        if (!root) return true;
+
+        bool res = isValidBST(root->left);
+        // Saves the previous node! Check that current is greater than previous one!
+        if (pre && pre->val >= root->val) return false;
+        pre = root;
+        return res && isValidBST(root->right);
+    }
+};
+
+// Recursive
+class Solution {
+private:
+    bool isBST(TreeNode* node, TreeNode* minNode, TreeNode* maxNode) {
+        if (!node) return true;
+
+        // Note we need to maintain the state of minNode & maxNode
+        // It's not sufficient to just validate that left child < parent 
+        // && right child > parent. Note all nodes from left subtree
+        // needs to be smaller than node->val, and from right subtree
+        // needs to be greater!
+        if (minNode && node->val <= minNode->val) return false;
+        if (maxNode && maxNode->val <= node->val) return false;
+
+        // If we go left, we need to make sure all the left nodes still greater than the previous minNode
+        // The same rule applies for the maxNode.
+        return isBST(node->left, minNode, node) && isBST(node->right, node, maxNode);
+    }
+public:
+    bool isValidBST(TreeNode* root) {
+        return isBST(root, nullptr, nullptr);
+    }
+};
+
+// Iterative
+class Solution {
+public:
+    bool isValidBST(TreeNode* root) {
+        stack<TreeNode*> st;
+        TreeNode* pre = nullptr;
+        TreeNode* cur = root;
+
+        while (cur || !st.empty()) {
+            while (cur) {
+                st.push(cur);
+                cur = cur->left;
+            }
+
+            // Inorder traversal, check whether current val > previous val.
+            cur = st.top();
+            if (pre && pre->val >= cur->val) return false;
+            st.pop();
+            pre = cur;
+            cur = cur->right;
+        }
+        return true;
+    }
+};
