@@ -1764,3 +1764,70 @@ public:
         return true;
     }
 };
+
+ /*
+    530. Minimum Absolute Difference in BST
+    https://leetcode.com/problems/minimum-absolute-difference-in-bst/
+    Given the root of a Binary Search Tree (BST), return the minimum absolute difference between the
+    values of any two different nodes in the tree.
+
+    Example 1:
+    Input: root = [4,2,6,1,3]
+    Output: 1
+
+    Example 2:
+    Input: root = [1,0,48,null,null,12,49]
+    Output: 1
+    
+
+    Constraints:
+    The number of nodes in the tree is in the range [2, 104].
+    0 <= Node.val <= 10^5
+ */
+// Recursive
+class Solution {
+private:
+    int result = INT_MAX;
+    TreeNode* pre = NULL;
+    void traversal(TreeNode* cur) {
+        if (cur == NULL) return;
+        traversal(cur->left); 
+        if (pre != NULL){      
+            result = min(result, cur->val - pre->val);
+        }
+        pre = cur; 
+        traversal(cur->right); 
+    }
+public:
+    int getMinimumDifference(TreeNode* root) {
+        traversal(root);
+        return result;
+    }
+};
+
+// Iterative
+class Solution {
+public:
+    int getMinimumDifference(TreeNode* root) {
+        stack<TreeNode*> st;
+        TreeNode* cur = root;
+        TreeNode* pre = nullptr;
+        int res = INT_MAX;
+
+        while(cur || !st.empty()) {
+            while(cur) {
+                st.push(cur);
+                cur = cur->left;
+            }
+
+            // In order traversal!
+            cur = st.top();
+            st.pop();
+            if (pre && abs(cur->val - pre->val) < res) res = abs(cur->val - pre->val);
+
+            pre = cur;
+            cur = cur->right;
+        }
+        return res;
+    }
+};

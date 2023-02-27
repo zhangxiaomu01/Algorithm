@@ -91,3 +91,4 @@ ID | Name | Difficulty | Category
 654|[Maximum Binary Tree](https://leetcode.com/problems/maximum-binary-tree/)| Medium | Recursive
 617|[Merge Two Binary Trees](https://leetcode.com/problems/merge-two-binary-trees/)| Easy | Recursive
 98|[**Validate Binary Search Tree**](https://leetcode.com/problems/validate-binary-search-tree/)| Medium | Recursive + Iterative
+530|[Minimum Absolute Difference in BST](https://leetcode.com/problems/minimum-absolute-difference-in-bst/)| Easy | Recursive + Iterative
