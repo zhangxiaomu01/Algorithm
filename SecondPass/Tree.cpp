@@ -1831,3 +1831,103 @@ public:
         return res;
     }
 };
+
+ /*
+    501. Find Mode in Binary Search Tree
+    https://leetcode.com/problems/find-mode-in-binary-search-tree/
+    Given the root of a binary search tree (BST) with duplicates, return all the mode(s)
+    (i.e., the most frequently occurred element) in it.
+    If the tree has more than one mode, return them in any order.
+
+    Assume a BST is defined as follows:
+    The left subtree of a node contains only nodes with keys less than or equal to the node's key.
+    The right subtree of a node contains only nodes with keys greater than or equal to the node's key.
+    Both the left and right subtrees must also be binary search trees.
+    
+
+    Example 1:
+    Input: root = [1,null,2,2]
+    Output: [2]
+
+    Example 2:
+    Input: root = [0]
+    Output: [0]
+    
+
+    Constraints:
+    The number of nodes in the tree is in the range [1, 104].
+    -10^5 <= Node.val <= 10^5
+    
+    Follow up: Could you do that without using any extra space? 
+    (Assume that the implicit stack space incurred due to recursion does not count).
+ */
+// Recursive: Applying extra space is trivial, the solutions are for follow up!
+class Solution {
+private:
+    int maxCount = -1;
+    int count = 0;
+    vector<int> res;
+    TreeNode* pre = nullptr;
+
+    void traverse(TreeNode* node) {
+        if (!node) return;
+        
+        traverse(node->left);
+        // Check whether the current val == previous val!
+        // Reset count when the values are different!
+        if (!pre || (pre->val != node->val)) count = 1;
+        else {
+            if (pre->val == node->val) count++;
+        }
+        if (count > maxCount) {
+            maxCount = count;
+            // The previous saved result is not based on the maximum count!
+            // Needs to be cleared first!
+            res.clear();
+            res.push_back(node->val);
+        } else if (count == maxCount) res.push_back(node->val);
+        pre = node;
+        traverse(node->right);
+    }
+public:
+    vector<int> findMode(TreeNode* root) {
+        traverse(root);
+        return res;
+    }
+};
+
+// Iterative
+class Solution {
+public:
+    vector<int> findMode(TreeNode* root) {
+        vector<int> res;
+        int maxCount = -1;
+        int count = 0;
+        TreeNode* pre = nullptr;
+        TreeNode* cur = root;
+        stack<TreeNode*> st;
+        // In order traversal!
+        while (cur || !st.empty()) {
+            while (cur) {
+                st.push(cur);
+                cur = cur -> left;
+            }
+
+            cur = st.top();
+            st.pop();
+            if (!pre || pre->val != cur->val) count = 1;
+            if (pre && pre->val == cur->val) ++count;
+            if (count == maxCount) res.push_back(cur->val);
+            else if (count > maxCount) {
+                res.clear();
+                maxCount = count;
+                res.push_back(cur->val);
+            }
+            pre = cur;
+
+            // Check right!
+            cur = cur->right;
+        }
+        return res;
+    }
+};
