@@ -1931,3 +1931,100 @@ public:
         return res;
     }
 };
+
+ /*
+    236. Lowest Common Ancestor of a Binary Tree
+    https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/
+    Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.
+    According to the definition of LCA on Wikipedia: “The lowest common ancestor is defined between
+    two nodes p and q as the lowest node in T that has both p and q as descendants 
+    (where we allow a node to be a descendant of itself).”
+
+    
+
+    Example 1:
+    Input: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1
+    Output: 3
+    Explanation: The LCA of nodes 5 and 1 is 3.
+
+    Example 2:
+    Input: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 4
+    Output: 5
+    Explanation: The LCA of nodes 5 and 4 is 5, since a node can be a descendant of itself according to the LCA definition.
+
+    Example 3:
+    Input: root = [1,2], p = 1, q = 2
+    Output: 1
+    
+
+    Constraints:
+    The number of nodes in the tree is in the range [2, 105].
+    -109 <= Node.val <= 109
+    All Node.val are unique.
+    p != q
+    p and q will exist in the tree.
+ */
+// Recursive
+class Solution {
+public:
+    // Return the node eqauls to either p or q, we will utilize that as a way to 
+    // determine whether we have detected p or q.
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if (!root || !q || !p) return nullptr;
+        
+        TreeNode* leftAncestor = lowestCommonAncestor(root->left, p, q);
+        TreeNode* rightAncestor = lowestCommonAncestor(root->right, p, q);
+
+        // We have detected either p or q or common ancestor.
+        // Note we can safely return root when we detect either p or q.
+        // There are two conditions:
+        // 1. If q (p) is a child of p (q) and root == p (q), then root is already the lowest common
+        // ancestor.
+        // 2. If both left & right ancestors are not null, then current root must be the lowest common
+        // ancestor. And once we backtrack, from another subtree, we must get a null return.
+        // Essentially, we will have the right aggregated to the final return!
+        if (root == p || root == q || (leftAncestor && rightAncestor)) return root;
+        if (!leftAncestor && rightAncestor) return rightAncestor;
+        if (leftAncestor && !rightAncestor) return leftAncestor;
+        return nullptr; // leftAncestor == nullptr && rightAncestor == nullptr
+    }
+};
+
+// Iterative: we need to build the path for that! Not very general.
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if(!root) return root;
+        //We allocate a map to store the ancestor of all child nodes
+        unordered_map<TreeNode*, TreeNode*> ancestor;
+        stack<TreeNode*> st;
+        ancestor.insert({root, nullptr});
+        st.push(root);
+        while(!ancestor.count(p) || !ancestor.count(q)){
+            TreeNode* node = st.top();
+            st.pop();
+            if(node->right){
+                ancestor[node->right] = node;
+                st.push(node->right);
+            }
+            if(node->left){
+                ancestor[node->left] = node;
+                st.push(node->left);
+            }
+        }
+        unordered_set<TreeNode*> ancestorP;
+        TreeNode* pCopy = p;
+        //Build the path from root to node p
+        while(pCopy){
+            ancestorP.insert(pCopy);
+            pCopy = ancestor[pCopy];
+        }
+        //Find the first common ancestor for both nodes p and q
+        TreeNode* qCopy = q;
+        while(!ancestorP.count(qCopy)){
+            ancestorP.insert(qCopy);
+            qCopy = ancestor[qCopy];
+        }
+        return qCopy;
+    }
+};

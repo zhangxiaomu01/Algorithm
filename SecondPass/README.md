@@ -92,4 +92,5 @@ ID | Name | Difficulty | Category
 617|[Merge Two Binary Trees](https://leetcode.com/problems/merge-two-binary-trees/)| Easy | Recursive
 98|[**Validate Binary Search Tree**](https://leetcode.com/problems/validate-binary-search-tree/)| Medium | Recursive + Iterative
 530|[Minimum Absolute Difference in BST](https://leetcode.com/problems/minimum-absolute-difference-in-bst/)| Easy | Recursive + Iterative
-501|[Find Mode in Binary Search Tree](https://leetcode.com/problems/find-mode-in-binary-search-tree/)| Easy | Recursive + Iterative
+501|[**Find Mode in Binary Search Tree**](https://leetcode.com/problems/find-mode-in-binary-search-tree/)| Easy | Recursive + Iterative
+236|[**Lowest Common Ancestor of a Binary Tree**](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/)| Medium | Recursive + Iterative
