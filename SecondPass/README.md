@@ -95,3 +95,4 @@ ID | Name | Difficulty | Category
 501|[**Find Mode in Binary Search Tree**](https://leetcode.com/problems/find-mode-in-binary-search-tree/)| Easy | Recursive + Iterative
 236|[**Lowest Common Ancestor of a Binary Tree**](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/)| Medium | Recursive + Iterative
 235|[Lowest Common Ancestor of a Binary Search Tree](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/)| Medium | Recursive + Iterative
+701|[**Insert into a Binary Search Tree**](https://leetcode.com/problems/insert-into-a-binary-search-tree/)| Medium | Recursive + Iterative
