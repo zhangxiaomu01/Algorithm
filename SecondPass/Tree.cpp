@@ -2297,3 +2297,41 @@ public:
     }
 };
 
+// Iterative:
+class Solution {
+private:
+    // Similar approach as recursive version.
+    TreeNode* deleteOneNode(TreeNode* target) {
+        if (target == nullptr) return target;
+        if (target->right == nullptr) return target->left;
+        TreeNode* cur = target->right;
+        while (cur->left) {
+            cur = cur->left;
+        }
+        cur->left = target->left;
+        return target->right;
+    }
+public:
+    TreeNode* deleteNode(TreeNode* root, int key) {
+        if (root == nullptr) return root;
+        TreeNode* cur = root;
+        TreeNode* pre = nullptr;
+        while (cur) {
+            if (cur->val == key) break;
+            pre = cur;
+            if (cur->val > key) cur = cur->left;
+            else cur = cur->right;
+        }
+        if (pre == nullptr) {
+            return deleteOneNode(cur);
+        }
+        if (pre->left && pre->left->val == key) {
+            pre->left = deleteOneNode(cur);
+        }
+        if (pre->right && pre->right->val == key) {
+            pre->right = deleteOneNode(cur);
+        }
+        return root;
+    }
+};
+
