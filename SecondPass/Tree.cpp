@@ -2251,8 +2251,6 @@ public:
 };
 
 // Recursive: O(h), much harder to implement.
-//Good explanation:
-//https://www.youtube.com/watch?v=gcULXE7ViZw&vl=en
 class Solution {
 private:
     TreeNode* findMin(TreeNode* root){
@@ -2286,16 +2284,16 @@ public:
                 delete temp;
             }//We have two sub trees
             else{
-                //We need to find the minimum value in right sub tree
-                //or we find the maximum value in left sub tree
+                // Put the left subtree under the minimum node of the right subtree.
                 TreeNode* temp = findMin(root->right);
-                //We set the our current root to be the minimum value
-                root->val = temp->val;
-                //Reduce to case 1 or 2
-                root->right = deleteNode(root->right, temp->val);
+                temp->left = root->left;
+                temp = root;
+                root = root->right;
+                delete temp;
                 
             }
         }
         return root;
     }
 };
+
