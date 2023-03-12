@@ -2112,7 +2112,6 @@ public:
     Notice that there may exist multiple valid ways for the insertion, as long as the tree remains a BST after
     insertion. You can return any of them.
 
-    
 
     Example 1:
     Input: root = [4,2,7,1,3], val = 5
@@ -2166,6 +2165,137 @@ public:
 
         if (pre->val > val) pre->left = new TreeNode(val);
         else pre->right = new TreeNode(val);
+        return root;
+    }
+};
+
+ /*
+    450. Delete Node in a BST
+    https://leetcode.com/problems/delete-node-in-a-bst/
+    Given a root node reference of a BST and a key, delete the node with the given key in the BST. Return the root node reference (possibly updated) of the BST.
+
+    Basically, the deletion can be divided into two stages:
+
+    Search for a node to remove.
+    If the node is found, delete the node.
+    
+
+    Example 1:
+    Input: root = [5,3,6,2,4,null,7], key = 3
+    Output: [5,4,6,2,null,null,7]
+    Explanation: Given key to delete is 3. So we find the node with value 3 and delete it.
+    One valid answer is [5,4,6,2,null,null,7], shown in the above BST.
+    Please notice that another valid answer is [5,2,6,null,4,null,7] and it's also accepted.
+
+    Example 2:
+    Input: root = [5,3,6,2,4,null,7], key = 0
+    Output: [5,3,6,2,4,null,7]
+    Explanation: The tree does not contain a node with value = 0.
+
+    Example 3:
+    Input: root = [], key = 0
+    Output: []
+    
+
+    Constraints:
+    The number of nodes in the tree is in the range [0, 104].
+    -10^5 <= Node.val <= 10^5
+    Each node has a unique value.
+    root is a valid binary search tree.
+    -10^5 <= key <= 10^5
+    
+
+    Follow up: Could you solve it with time complexity O(height of tree)?
+ */
+// Recursive: O(N)
+class Solution {
+public:
+    TreeNode* deleteNode(TreeNode* root, int key) {
+        if (!root) return root;
+
+        // If root is the leaf
+        if (root->val == key && !root->left && !root->right) {
+            delete root;
+            return nullptr;
+        }
+
+        // If right is null
+        if (root->val == key && !root->right) {
+            TreeNode* left = root->left;
+            delete root;
+            return left;
+        }
+
+        // If left is null
+        if (root->val == key && !root->left) {
+            TreeNode* right = root->right;
+            delete root;
+            return right;
+        }
+
+        // If root has two children!
+        if (root->val == key) {
+            // We need to put left sub tree under the leftmost node of right sub-tree.
+            TreeNode* ptr = root->right;
+            while (ptr->left) ptr = ptr->left;
+            ptr->left = root->left;
+            TreeNode* res = root->right;
+            delete root;
+            return res;
+        }
+
+        root->left = deleteNode(root->left, key);
+        root->right = deleteNode(root->right, key);
+        return root;
+    }
+};
+
+// Recursive: O(h), much harder to implement.
+//Good explanation:
+//https://www.youtube.com/watch?v=gcULXE7ViZw&vl=en
+class Solution {
+private:
+    TreeNode* findMin(TreeNode* root){
+        while(root->left){
+            root = root->left;
+        }
+        return root;
+    }
+public:
+    TreeNode* deleteNode(TreeNode* root, int key) {
+        //Corner case!
+        if(!root) return root;
+        //key is in right sub tree
+        else if (root->val < key) root->right = deleteNode(root->right, key);
+        else if (root->val > key) root->left = deleteNode(root->left, key);
+        //We find right node
+        else{
+            //If our node is a leaf
+            if(!root->left && !root->right){
+                delete root;
+                root = nullptr;
+            }//If only have right node
+            else if(!root->left){
+                TreeNode* temp = root;
+                root = root->right;
+                delete temp;
+            }
+            else if(!root->right){
+                TreeNode* temp = root;
+                root = root->left;
+                delete temp;
+            }//We have two sub trees
+            else{
+                //We need to find the minimum value in right sub tree
+                //or we find the maximum value in left sub tree
+                TreeNode* temp = findMin(root->right);
+                //We set the our current root to be the minimum value
+                root->val = temp->val;
+                //Reduce to case 1 or 2
+                root->right = deleteNode(root->right, temp->val);
+                
+            }
+        }
         return root;
     }
 };
