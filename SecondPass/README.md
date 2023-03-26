@@ -97,3 +97,4 @@ ID | Name | Difficulty | Category
 235|[Lowest Common Ancestor of a Binary Search Tree](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/)| Medium | Recursive + Iterative
 701|[**Insert into a Binary Search Tree**](https://leetcode.com/problems/insert-into-a-binary-search-tree/)| Medium | Recursive + Iterative
 450|[**Delete Node in a BST**](https://leetcode.com/problems/delete-node-in-a-bst/)| Medium | Recursive O(h) + Iterative
+669|[**Trim a Binary Search Tree**](https://leetcode.com/problems/trim-a-binary-search-tree/)| Medium | Recursive
