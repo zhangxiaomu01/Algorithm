@@ -2417,3 +2417,86 @@ public:
         return res;
     }
 };
+
+ /*
+    108. Convert Sorted Array to Binary Search Tree
+    https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/
+    Given an integer array nums where the elements are sorted in ascending order, convert it to a 
+    height-balanced
+    binary search tree.
+
+    
+
+    Example 1:
+    Input: nums = [-10,-3,0,5,9]
+    Output: [0,-3,9,-10,null,5]
+    Explanation: [0,-10,5,null,-3,null,9] is also accepted:
+
+    Example 2:
+    Input: nums = [1,3]
+    Output: [3,1]
+    Explanation: [1,null,3] and [3,1] are both height-balanced BSTs.
+    
+
+    Constraints:
+    1 <= nums.length <= 104
+    -104 <= nums[i] <= 104
+    nums is sorted in a strictly increasing order.
+ */
+// Recursive: O(N)
+class Solution {
+private:
+    TreeNode* buildTree(vector<int>& nums, int l, int r) {
+        if (l >= r) return nullptr;
+        int middle = l + (r - l) / 2;
+        TreeNode* res = new TreeNode(nums[middle]);
+        res->left = buildTree(nums, l, middle);
+        res->right = buildTree(nums, middle + 1, r);
+        return res;
+    }
+public:
+    TreeNode* sortedArrayToBST(vector<int>& nums) {
+        return buildTree(nums, 0, nums.size());
+    }
+};
+
+// Iterative
+class Solution {
+public:
+    TreeNode* sortedArrayToBST(vector<int>& nums) {
+        if (nums.size() == 0) return nullptr;
+
+        TreeNode* root = new TreeNode(0);   
+        queue<TreeNode*> nodeQue;           
+        queue<int> leftQue;                 
+        queue<int> rightQue;                
+        nodeQue.push(root);                
+        leftQue.push(0);                    
+        rightQue.push(nums.size() - 1);     
+
+        while (!nodeQue.empty()) {
+            TreeNode* curNode = nodeQue.front();
+            nodeQue.pop();
+            int left = leftQue.front(); leftQue.pop();
+            int right = rightQue.front(); rightQue.pop();
+            int mid = left + ((right - left) / 2);
+
+            curNode->val = nums[mid];      
+
+            if (left <= mid - 1) {          
+                curNode->left = new TreeNode(0);
+                nodeQue.push(curNode->left);
+                leftQue.push(left);
+                rightQue.push(mid - 1);
+            }
+
+            if (right >= mid + 1) {         
+                curNode->right = new TreeNode(0);
+                nodeQue.push(curNode->right);
+                leftQue.push(mid + 1);
+                rightQue.push(right);
+            }
+        }
+        return root;
+    }
+};

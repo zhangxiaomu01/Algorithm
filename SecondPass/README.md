@@ -98,3 +98,4 @@ ID | Name | Difficulty | Category
 701|[**Insert into a Binary Search Tree**](https://leetcode.com/problems/insert-into-a-binary-search-tree/)| Medium | Recursive + Iterative
 450|[**Delete Node in a BST**](https://leetcode.com/problems/delete-node-in-a-bst/)| Medium | Recursive O(h) + Iterative
 669|[**Trim a Binary Search Tree**](https://leetcode.com/problems/trim-a-binary-search-tree/)| Medium | Recursive + Iterative
+108|[Convert Sorted Array to Binary Search Tree](https://leetcode.com/problems/trim-a-binary-search-tree/)| Medium | Recursive
