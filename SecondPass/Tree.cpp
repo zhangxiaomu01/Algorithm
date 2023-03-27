@@ -2382,3 +2382,38 @@ public:
         return root;
     }
 };
+
+// Iterative
+class Solution {
+public:
+    TreeNode* trimBST(TreeNode* root, int low, int high) {
+        TreeNode* cur = root;
+        if (!root) return nullptr;
+
+        while (cur) {
+            if (cur -> val < low) cur = cur->right;
+            else if (cur -> val > high) cur = cur->left;
+            else break;
+        }
+        if (!cur) return nullptr;
+
+        TreeNode* res = cur;
+        // Process left child
+        while (cur && cur->left) {
+            // Reassign the right subchild to the current left.
+            // Here we need to rely on while loop instead of if to avoid the edge case that
+            // a leaf needs to be deleted.
+            // See an example: [3,1,4,null,2]
+            while (cur->left && cur->left->val < low) cur->left = cur->left->right;
+            cur = cur->left;
+        }
+
+        cur = res;
+        // Process right child
+        while (cur && cur->right) {
+            while (cur->right && cur->right->val > high) cur->right = cur->right->left;
+            cur = cur->right;
+        }
+        return res;
+    }
+};
