@@ -100,3 +100,8 @@ ID | Name | Difficulty | Category
 669|[**Trim a Binary Search Tree**](https://leetcode.com/problems/trim-a-binary-search-tree/)| Medium | Recursive + Iterative
 108|[Convert Sorted Array to Binary Search Tree](https://leetcode.com/problems/trim-a-binary-search-tree/)| Easy | Recursive + iterative
 538|[Convert BST to Greater Tree](https://leetcode.com/problems/convert-bst-to-greater-tree/)| Medium | Recursive + Iterative
+
+## Backtracking
+ID | Name | Difficulty | Category
+ ---- | ------------- | -------- | ------
+698|[Partition to K Equal Sum Subsets](https://leetcode.com/problems/partition-to-k-equal-sum-subsets/)| Medium | Backtracking + memorization
