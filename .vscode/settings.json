@@ -18,7 +18,8 @@
         "algorithm": "cpp",
         "ios": "cpp",
         "xiosbase": "cpp",
-        "limits": "cpp"
+        "limits": "cpp",
+        "xlocale": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

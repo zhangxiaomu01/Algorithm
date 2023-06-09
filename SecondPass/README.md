@@ -104,4 +104,5 @@ ID | Name | Difficulty | Category
 ## Backtracking
 ID | Name | Difficulty | Category
  ---- | ------------- | -------- | ------
-698|[Partition to K Equal Sum Subsets](https://leetcode.com/problems/partition-to-k-equal-sum-subsets/)| Medium | Backtracking + memorization
+698|[**Partition to K Equal Sum Subsets**](https://leetcode.com/problems/partition-to-k-equal-sum-subsets/)| Medium | Backtracking + memorization
+77|[Combinations](https://leetcode.com/problems/combinations/)| Medium | Backtracking + Optimization
