@@ -107,3 +107,4 @@ ID | Name | Difficulty | Category
 698|[**Partition to K Equal Sum Subsets**](https://leetcode.com/problems/partition-to-k-equal-sum-subsets/)| Medium | Backtracking + memorization
 77|[Combinations](https://leetcode.com/problems/combinations/)| Medium | Backtracking + Optimization
 216|[Combination Sum III](https://leetcode.com/problems/combination-sum-iii/)| Medium | Backtracking + Optimization
+17|[Letter Combinations of a Phone Number](https://leetcode.com/problems/letter-combinations-of-a-phone-number/)| Medium | Backtracking
