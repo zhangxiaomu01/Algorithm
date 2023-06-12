@@ -111,3 +111,4 @@ ID | Name | Difficulty | Category
 39|[Combination Sum](https://leetcode.com/problems/combination-sum/)| Medium | Backtracking
 40|[Combination Sum II](https://leetcode.com/problems/combination-sum-ii/)| Medium | Backtracking
 131|[Palindrome Partitioning](https://leetcode.com/problems/palindrome-partitioning/)| Medium | Backtracking
+93|[**Restore IP Addresses**](https://leetcode.com/problems/restore-ip-addresses/)| Medium | Backtracking - not easy to impl

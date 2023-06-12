@@ -524,3 +524,78 @@ public:
         
     }
 };
+
+ /*
+    93. Restore IP Addresses
+    https://leetcode.com/problems/restore-ip-addresses/
+    A valid IP address consists of exactly four integers separated by single dots.
+    Each integer is between 0 and 255 (inclusive) and cannot have leading zeros.
+
+    For example, "0.1.2.201" and "192.168.1.1" are valid IP addresses, but "0.011.255.245", 
+    "192.168.1.312" and "192.168@1.1" are invalid IP addresses.
+    Given a string s containing only digits, return all possible valid IP addresses that 
+    can be formed by inserting dots into s. You are not allowed to reorder or remove any 
+    digits in s. You may return the valid IP addresses in any order.
+
+    
+
+    Example 1:
+    Input: s = "25525511135"
+    Output: ["255.255.11.135","255.255.111.35"]
+
+    Example 2:
+    Input: s = "0000"
+    Output: ["0.0.0.0"]
+
+    Example 3:
+    Input: s = "101023"
+    Output: ["1.0.10.23","1.0.102.3","10.1.0.23","10.10.2.3","101.0.2.3"]
+    
+
+    Constraints:
+    1 <= s.length <= 20
+    s consists of digits only.
+ */
+class Solution {
+private:
+    bool isValid(string& s) {
+        if (s.empty()) return false;
+
+        if (s[0] == '0' && s.size() > 1) return false;
+
+        if (stoi(s) > 255) return false;
+        
+        return true;
+    }
+    void backtracking(string& s, vector<string>& res, string& valid, int next, int count) {
+        if (next > s.size() || count > 4) return;
+
+        if (next == s.size() && count == 4) {
+            if (!valid.empty()) valid.pop_back();
+            res.push_back(valid);
+            return;
+        }
+
+        string temp = "";
+        string tempValid = valid;
+        for (int i = next; i < s.size(); ++i) {
+            temp.push_back(s[i]);
+            if (isValid(temp)) {
+                valid+= temp;
+                valid.push_back('.');
+                backtracking(s, res, valid, i + 1, count + 1);
+                valid = tempValid;
+            } else {
+                valid = tempValid;
+                break;
+            }
+        }
+    }
+public:
+    vector<string> restoreIpAddresses(string s) {
+        vector<string> res;
+        string valid = "";
+        backtracking(s, res, valid, 0, 0);
+        return res;
+    }
+};
