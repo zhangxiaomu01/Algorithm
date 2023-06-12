@@ -110,3 +110,4 @@ ID | Name | Difficulty | Category
 17|[Letter Combinations of a Phone Number](https://leetcode.com/problems/letter-combinations-of-a-phone-number/)| Medium | Backtracking
 39|[Combination Sum](https://leetcode.com/problems/combination-sum/)| Medium | Backtracking
 40|[Combination Sum II](https://leetcode.com/problems/combination-sum-ii/)| Medium | Backtracking
+131|[Palindrome Partitioning](https://leetcode.com/problems/palindrome-partitioning/)| Medium | Backtracking

@@ -428,3 +428,99 @@ public:
         return res;
     }
 };
+
+ /*
+    131. Palindrome Partitioning
+    https://leetcode.com/problems/palindrome-partitioning/
+    Given a string s, partition s such that every 
+    substring of the partition is a palindrome.
+    . Return all possible palindrome partitioning of s.
+
+    
+
+    Example 1:
+    Input: s = "aab"
+    Output: [["a","a","b"],["aa","b"]]
+
+    Example 2:
+    Input: s = "a"
+    Output: [["a"]]
+    
+
+    Constraints:
+    1 <= s.length <= 16
+    s contains only lowercase English letters.
+ */
+class Solution {
+private:
+    bool isPalindrome(string& s) {
+        if (s.size() <= 1) return true;
+        int l = 0, r = s.size() - 1;
+        while (l < r) {
+            if (s[l++] != s[r--]) return false; 
+        }
+        return true;
+    }
+    void backtracking(string& s, vector<string>& combo, vector<vector<string>>& res, int next) {
+        if (next > s.size()) return;
+        if (next == s.size()) {
+            res.push_back(combo);
+            return;
+        }
+        string temp = "";
+
+        for (int i = next; i < s.size(); ++i) {
+            temp.push_back(s[i]);
+            if (isPalindrome(temp)) {
+                combo.push_back(temp);
+                backtracking(s, combo, res, i + 1);
+                combo.pop_back();
+            }
+        }
+    }
+public:
+    vector<vector<string>> partition(string s) {
+        vector<vector<string>> res;
+        vector<string> combo;
+        backtracking(s, combo, res, 0);
+        return res;
+    }
+};
+
+// Slightly optimized the palindrome calculation.
+class Solution {
+public:
+    vector<vector<string>> partition(string s) {
+        vector<vector<string>> res;
+        vector<string> temp;
+        int len = s.size();
+        if(len == 0) return res;
+        vector<vector<int>> dp(len, vector<int>(len, 0));
+        for(int i = 0; i < len; i++){
+            for(int j = 0; j <= i; j++){
+                //Note dp[j+1][i-1] means the sequence from j+1 to i-1.
+                if(s[i] == s[j] && (i-j <= 2 || dp[j+1][i-1] == 1))
+                    dp[j][i] = 1;
+            }
+        }
+        //cout<<dp[1][4] << " " << dp[2][3];
+        rec(s, res, temp, dp, 0, len);
+        return res;
+        
+        
+    }
+    void rec(string& s, vector<vector<string>>& res, vector<string>& temp, vector<vector<int>>& dp, int start, int len){
+        if(start == len){
+            res.push_back(temp);
+            return;
+        }
+        for(int i=start; i<len; i++){
+            if(dp[start][i] == 1){
+                temp.push_back(s.substr(start, i-start+1));
+                rec(s, res, temp, dp, i+1, len);
+                temp.pop_back();
+            }
+        }  
+        
+    }
+};
