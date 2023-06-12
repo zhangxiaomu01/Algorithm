@@ -109,3 +109,4 @@ ID | Name | Difficulty | Category
 216|[Combination Sum III](https://leetcode.com/problems/combination-sum-iii/)| Medium | Backtracking + Optimization
 17|[Letter Combinations of a Phone Number](https://leetcode.com/problems/letter-combinations-of-a-phone-number/)| Medium | Backtracking
 39|[Combination Sum](https://leetcode.com/problems/combination-sum/)| Medium | Backtracking
+40|[Combination Sum II](https://leetcode.com/problems/combination-sum-ii/)| Medium | Backtracking
