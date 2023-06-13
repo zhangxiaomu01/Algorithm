@@ -646,3 +646,25 @@ public:
         return res;
     }
 };
+
+/*
+This approach is more straightforward. We mimic the process of how to build a subsets. 
+A very good approach. Neat.
+*/
+class Solution {
+public:
+    vector<vector<int>> subsets(vector<int>& nums) {
+        vector<vector<int>> res(1, vector<int>());
+        int len = nums.size();
+        for(int i = 0; i < len; i++){
+            int n = res.size();
+            for(int j = 0; j < n; j++){
+                //We make a copy of the last element, and then insert nums[i] to the copy
+                //This is due to the nature of subsets.
+                res.push_back(res[j]);
+                res.back().push_back(nums[i]);
+            }
+        }
+        return res;
+    }
+};
