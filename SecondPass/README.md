@@ -112,3 +112,4 @@ ID | Name | Difficulty | Category
 40|[Combination Sum II](https://leetcode.com/problems/combination-sum-ii/)| Medium | Backtracking
 131|[Palindrome Partitioning](https://leetcode.com/problems/palindrome-partitioning/)| Medium | Backtracking
 93|[**Restore IP Addresses**](https://leetcode.com/problems/restore-ip-addresses/)| Medium | Backtracking - not easy to impl
+78|[Subsets](https://leetcode.com/problems/subsets/)| Medium | Backtracking
