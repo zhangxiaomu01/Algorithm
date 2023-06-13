@@ -648,8 +648,7 @@ public:
 };
 
 /*
-This approach is more straightforward. We mimic the process of how to build a subsets. 
-A very good approach. Neat.
+    We mimic the process of how to build a subsets. 
 */
 class Solution {
 public:
@@ -661,6 +660,77 @@ public:
             for(int j = 0; j < n; j++){
                 //We make a copy of the last element, and then insert nums[i] to the copy
                 //This is due to the nature of subsets.
+                res.push_back(res[j]);
+                res.back().push_back(nums[i]);
+            }
+        }
+        return res;
+    }
+};
+
+
+ /*
+    90. Subsets II
+    https://leetcode.com/problems/subsets-ii/
+    Given an integer array nums that may contain duplicates, return all possible 
+    subsets (the power set).
+
+    The solution set must not contain duplicate subsets. Return the solution in any order.
+
+
+    Example 1:
+    Input: nums = [1,2,2]
+    Output: [[],[1],[1,2],[1,2,2],[2],[2,2]]
+
+    Example 2:
+    Input: nums = [0]
+    Output: [[],[0]]
+    
+
+    Constraints:
+    1 <= nums.length <= 10
+    -10 <= nums[i] <= 10
+ */
+class Solution {
+private:
+    void backtracking(vector<int>& nums, vector<vector<int>>& res, vector<int>& set, int next) {
+        res.push_back(set);
+        if (next >= nums.size()) return;
+
+        for (int i = next; i < nums.size(); ++i) {
+            if (i > next && nums[i] == nums[i-1]) continue;
+            set.push_back(nums[i]);
+            backtracking(nums, res, set, i + 1);
+            set.pop_back();
+        }
+    }
+public:
+    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        vector<vector<int>> res;
+        vector<int> set;
+        backtracking(nums, res, set, 0);
+        return res;
+    }
+};
+
+// Simulation
+class Solution {
+public:
+    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+        vector<vector<int>> res(1, vector<int>());
+        int len = nums.size();
+        int n = 0;
+        sort(nums.begin(), nums.end());
+        for(int i = 0; i < len; i++){
+            int start = 0;
+            //If we need to get rid of the duplicates, we only need to insert the duplicated elements to the last inserted elements. Instead of the whole elements in res.
+            //Still a little bite tricky...
+            if(i >= 1 && nums[i] == nums[i-1]) start = n;
+            else start = 0;
+            //Since we only care about the elements inserted in last round, we need to keep track of starting index of last round.
+            n = res.size();
+            for(int j = start; j < n; j++){
                 res.push_back(res[j]);
                 res.back().push_back(nums[i]);
             }
