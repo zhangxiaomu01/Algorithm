@@ -842,4 +842,64 @@ public:
     }
 };
 
+ /*
+    47. Permutations II
+    https://leetcode.com/problems/permutations-ii/
+    Given a collection of numbers, nums, that might contain duplicates, return all
+    possible unique permutations in any order.
 
+
+    Example 1:
+    Input: nums = [1,1,2]
+    Output:
+    [[1,1,2],
+    [1,2,1],
+    [2,1,1]]
+
+    Example 2:
+    Input: nums = [1,2,3]
+    Output: [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+    
+
+    Constraints:
+    1 <= nums.length <= 8
+    -10 <= nums[i] <= 10
+ */
+class Solution {
+private:
+    void backtracking(vector<int>& nums, vector<vector<int>>& res, vector<int>& perm, vector<int>& used) {
+        if (perm.size() == nums.size()) {
+            res.push_back(perm);
+            return;
+        }
+        
+        for(int i = 0; i < nums.size(); ++i) {
+            // This is the tricky part!
+            // used[i-1] == true, which means the previous element is set in the traversal tree branch;
+            // used[i-1] == false, which means the previous element is set in the traversal tree level;
+            // We need to remove duplicates in the tree level, not the branch.
+            // note the i-1 here, not i.
+            if (i > 0 && nums[i] == nums[i-1] && used[i-1] == 0) continue;
+            
+            // Only updates the logic if the current value is not set!
+            if (used[i] == 0) {
+                used[i] = 1;
+                perm.push_back(nums[i]);
+                backtracking(nums, res, perm, used);
+                perm.pop_back();
+                used[i] = 0;
+            }
+        }
+    }
+public:
+    vector<vector<int>> permuteUnique(vector<int>& nums) {
+        vector<vector<int>> res;
+        vector<int> perm;
+        // Unlike problem 46, here we need to allocate the used array to store the state for each
+        // element in the nums.
+        vector<int> used(nums.size(), 0);
+        sort(nums.begin(), nums.end());
+        backtracking(nums, res, perm, used);
+        return res;
+    }
+};

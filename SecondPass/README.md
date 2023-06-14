@@ -116,3 +116,4 @@ ID | Name | Difficulty | Category
 90|[Subsets II](https://leetcode.com/problems/subsets-ii/)| Medium | Backtracking + simulation
 491|[**Non-decreasing Subsequences**](https://leetcode.com/problems/non-decreasing-subsequences/)| Medium | Backtracking
 46|[Permutations](https://leetcode.com/problems/permutations/)| Medium | Backtracking
+47|[**Permutations II**](https://leetcode.com/problems/permutations-ii/)| Medium | Backtracking
