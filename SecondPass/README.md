@@ -114,4 +114,5 @@ ID | Name | Difficulty | Category
 93|[**Restore IP Addresses**](https://leetcode.com/problems/restore-ip-addresses/)| Medium | Backtracking - not easy to impl
 78|[Subsets](https://leetcode.com/problems/subsets/)| Medium | Backtracking + simulation
 90|[Subsets II](https://leetcode.com/problems/subsets-ii/)| Medium | Backtracking + simulation
-491|[Non-decreasing Subsequences](https://leetcode.com/problems/non-decreasing-subsequences/)| Medium | Backtracking
+491|[**Non-decreasing Subsequences**](https://leetcode.com/problems/non-decreasing-subsequences/)| Medium | Backtracking
+46|[Permutations](https://leetcode.com/problems/permutations/)| Medium | Backtracking
