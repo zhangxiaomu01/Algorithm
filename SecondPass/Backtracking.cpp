@@ -738,3 +738,53 @@ public:
         return res;
     }
 };
+
+ /*
+    491. Non-decreasing Subsequences
+    https://leetcode.com/problems/non-decreasing-subsequences/
+    Given an integer array nums, return all the different possible non-decreasing subsequences 
+    of the given array with at least two elements. You may return the answer in any order.
+
+
+    Example 1:
+    Input: nums = [4,6,7,7]
+    Output: [[4,6],[4,6,7],[4,6,7,7],[4,7],[4,7,7],[6,7],[6,7,7],[7,7]]
+
+    Example 2:
+    Input: nums = [4,4,3,2,1]
+    Output: [[4,4]]
+    
+
+    Constraints:
+    1 <= nums.length <= 15
+    -100 <= nums[i] <= 100
+ */
+class Solution {
+private:
+    void backtracking(const vector<int>& nums, vector<vector<int>>& res, vector<int>& set, int next) {
+        if (set.size() >= 2) {
+            res.push_back(set);
+        }
+        if (next >= nums.size()) return;
+
+        // Note for this problem, we cannot sort the original nums. Thus we need an extra
+        // array / set to record whether we have used this element in the traversal tree level,
+        // and ignore the duplicates in this way.
+        int used[201] = {0};
+        for (int i = next; i < nums.size(); ++i) {
+            if ((!set.empty() && nums[i] < set.back()) || used[nums[i] + 100] == 1) continue;
+            used[nums[i] + 100] = 1;
+            set.push_back(nums[i]);
+            backtracking(nums, res, set, i + 1);
+            set.pop_back();
+
+        }
+    }
+public:
+    vector<vector<int>> findSubsequences(vector<int>& nums) {
+        vector<vector<int>> res;
+        vector<int> set;
+        backtracking(nums, res, set, 0);
+        return res;
+    }
+};
