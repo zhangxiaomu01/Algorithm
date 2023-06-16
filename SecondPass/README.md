@@ -118,3 +118,4 @@ ID | Name | Difficulty | Category
 46|[Permutations](https://leetcode.com/problems/permutations/)| Medium | Backtracking
 47|[**Permutations II**](https://leetcode.com/problems/permutations-ii/)| Medium | Backtracking
 332|[**Reconstruct Itinerary**](https://leetcode.com/problems/reconstruct-itinerary/)| Hard | DFS with backtracking
+51|[N-Queens](https://leetcode.com/problems/subsets/)| Hard | Backtracking
