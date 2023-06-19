@@ -128,6 +128,7 @@ ID | Name | Difficulty | Category
 70|[Climbing Stairs](https://leetcode.com/problems/climbing-stairs/)| Easy | DP
 746|[Min Cost Climbing Stairs](https://leetcode.com/problems/min-cost-climbing-stairs/)| Easy | DP
 62|[Unique Paths](https://leetcode.com/problems/unique-paths/)| Medium | DP
+63|[Unique Paths II](https://leetcode.com/problems/unique-paths-ii/)| Medium | DP
 
 ## Graph
 ID | Name | Difficulty | Category
