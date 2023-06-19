@@ -127,6 +127,7 @@ ID | Name | Difficulty | Category
 509|[Fibonacci Number](https://leetcode.com/problems/fibonacci-number/)| Easy | DP
 70|[Climbing Stairs](https://leetcode.com/problems/climbing-stairs/)| Easy | DP
 746|[Min Cost Climbing Stairs](https://leetcode.com/problems/min-cost-climbing-stairs/)| Easy | DP
+62|[Unique Paths](https://leetcode.com/problems/unique-paths/)| Medium | DP
 
 ## Graph
 ID | Name | Difficulty | Category
