@@ -294,3 +294,46 @@ public:
         return dp[n-1];
     }
 };
+
+
+ /*
+    343. Integer Break
+    https://leetcode.com/problems/integer-break/
+    Given an integer n, break it into the sum of k positive integers, where k >= 2, and maximize 
+    the product of those integers.
+
+    Return the maximum product you can get.
+
+    
+    Example 1:
+    Input: n = 2
+    Output: 1
+    Explanation: 2 = 1 + 1, 1 × 1 = 1.
+
+    Example 2:
+    Input: n = 10
+    Output: 36
+    Explanation: 10 = 3 + 3 + 4, 3 × 3 × 4 = 36.
+    
+    Constraints:
+    2 <= n <= 58
+ */
+class Solution {
+public:
+    int integerBreak(int n) {
+        // dp[i] represents the maximum possible product results of integer i.
+        // It also implies we at least divide i into 2 smaller integers.
+        vector<int> dp(n+1, 0);
+        dp[1] = 1;
+        dp[2] = 1;
+        for (int i = 3; i <= n; ++i) {
+            for (int j = 1; j <= i; ++j) {
+                // Given dp[i-j] represents the maximum possible product of i-j, it also means
+                // we divide i-j into at least 2 integers, so we need to check j*(i-j) to get final
+                // result.
+                dp[i] = max(dp[i], max(j*(i - j), j * dp[i-j]));
+            }
+        }
+        return dp[n];
+    }
+};
