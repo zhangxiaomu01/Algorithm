@@ -337,3 +337,42 @@ public:
         return dp[n];
     }
 };
+
+ /*
+    96. Unique Binary Search Trees
+    https://leetcode.com/problems/unique-binary-search-trees/
+    Given an integer n, return the number of structurally unique BST's (binary search trees) which 
+    has exactly n nodes of unique values from 1 to n.
+
+ 
+    Example 1:
+    Input: n = 3
+    Output: 5
+
+    Example 2:
+    Input: n = 1
+    Output: 1
+    
+
+    Constraints:
+    1 <= n <= 19
+ */
+class Solution {
+public:
+    int numTrees(int n) {
+        // Dp[i] means the maximum unique BST's with node number i.
+         vector<int> dp(n+1, 0);
+         // Initialize dp[0] = 1, so when we do dp[left] * dp[right], we won't get 0;
+         dp[0] = 1;
+         dp[1] = 1;
+
+         for (int i = 2; i <= n; ++i) {
+             // i represents the number of nodes from the left tree;
+             for (int j = 0; j <= i - 1; ++j) {
+                 dp[i] += dp[j] * dp[i-1-j];
+             }
+         }
+
+         return dp[n];
+    }
+};

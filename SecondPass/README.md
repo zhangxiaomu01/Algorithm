@@ -130,6 +130,7 @@ ID | Name | Difficulty | Category
 62|[Unique Paths](https://leetcode.com/problems/unique-paths/)| Medium | DP
 63|[Unique Paths II](https://leetcode.com/problems/unique-paths-ii/)| Medium | DP
 343|[Integer Break](https://leetcode.com/problems/integer-break/)| Medium | DP
+96|[Unique Binary Search Trees](https://leetcode.com/problems/unique-binary-search-trees/)| Medium | DP
 
 ## Graph
 ID | Name | Difficulty | Category
