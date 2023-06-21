@@ -131,6 +131,7 @@ ID | Name | Difficulty | Category
 63|[Unique Paths II](https://leetcode.com/problems/unique-paths-ii/)| Medium | DP
 343|[Integer Break](https://leetcode.com/problems/integer-break/)| Medium | DP
 96|[Unique Binary Search Trees](https://leetcode.com/problems/unique-binary-search-trees/)| Medium | DP
+152|[Maximum Product Subarray](https://leetcode.com/problems/maximum-product-subarray/)| Medium | DP + General solution
 
 ## Graph
 ID | Name | Difficulty | Category

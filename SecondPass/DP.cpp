@@ -376,3 +376,92 @@ public:
          return dp[n];
     }
 };
+
+ /*
+    152. Maximum Product Subarray
+    https://leetcode.com/problems/unique-binary-search-trees/
+    Given an integer array nums, find a 
+    subarray
+    that has the largest product, and return the product.
+
+    The test cases are generated so that the answer will fit in a 32-bit integer.
+
+    
+
+    Example 1:
+    Input: nums = [2,3,-2,4]
+    Output: 6
+    Explanation: [2,3] has the largest product 6.
+
+    Example 2:
+    Input: nums = [-2,0,-1]
+    Output: 0
+    Explanation: The result cannot be 2, because [-2,-1] is not a subarray.
+    
+
+    Constraints:
+    1 <= nums.length <= 2 * 104
+    -10 <= nums[i] <= 10
+    The product of any prefix or suffix of nums is guaranteed to fit in a 32-bit integer.
+ */
+// DP: Saves the previous minimum product and maximum product, then derive the results on the fly.
+class Solution {
+public:
+    int maxProduct(vector<int>& nums) {
+        // We need to save the previous minimum negative and maximum positive result,
+        // then we can derive the maximum with current nums[i].
+        int preMin = nums[0], preMax = nums[0];
+        int res = nums[0];
+        for (int i = 1; i < nums.size(); ++i) {
+            // Once we encounter 0, we need to reset state and start over again.
+            if (nums[i] == 0) {
+                res= max(nums[i], res);
+                preMin = 0; 
+                preMax = 0;
+            } else {
+                int curMin = INT_MAX, curMax = INT_MIN;
+                if (nums[i] > 0) {
+                    // Note once the current nums[i] is less than the preMin or greater than preMax,
+                    // we need to make sure to only include it.
+                    curMin = min(preMin * nums[i], nums[i]);
+                    curMax = max(preMax * nums[i], nums[i]);
+
+                } else {
+                    curMin = min(preMax * nums[i], nums[i]);
+                    curMax = max(preMin * nums[i], nums[i]);
+                }
+                res = max (res, curMax);
+                preMin = curMin;
+                preMax = curMax;
+            } 
+        }
+        return res;
+    }
+};
+
+// Find the invariance.
+/*
+We only need to consider 3 situations:
+There is no 0 in the array:
+1. if we contains even number of negative numbers, basically, the max product will be the product of all elements;
+2. If we have odd number of negative numbers, we need to consider whether we 
+drop the first negative number or the last.
+3.With 0, we only need to update the result to be 1 after comparison
+Then the general idea is to product from both end and handle 0 separately!
+*/
+class Solution {
+public:
+    int maxProduct(vector<int>& nums) {
+        int forwardProduct = 1, backwardProduct = 1;
+        int res = INT_MIN;
+        int len = nums.size();
+        for(int i = 0; i < len; ++i){
+            forwardProduct *= nums[i];
+            backwardProduct *= nums[len- 1 - i];
+            res = max(res, max(forwardProduct, backwardProduct));
+            forwardProduct = forwardProduct ? forwardProduct : 1;
+            backwardProduct = backwardProduct ? backwardProduct : 1;
+        }
+        return res;
+    }
+};
