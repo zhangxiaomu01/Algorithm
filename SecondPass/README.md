@@ -132,7 +132,7 @@ ID | Name | Difficulty | Category
 343|[Integer Break](https://leetcode.com/problems/integer-break/)| Medium | DP
 96|[Unique Binary Search Trees](https://leetcode.com/problems/unique-binary-search-trees/)| Medium | DP
 152|[**Maximum Product Subarray**](https://leetcode.com/problems/maximum-product-subarray/)| Medium | DP + General solution
-416|[**Partition Equal Subset Sum**](https://leetcode.com/problems/partition-equal-subset-sum/)| Medium | DP
+416|[**Partition Equal Subset Sum**](https://leetcode.com/problems/partition-equal-subset-sum/)| Medium | DP -> Needs extra attention.
 
 
 ## Graph
