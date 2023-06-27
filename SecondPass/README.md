@@ -137,6 +137,7 @@ ID | Name | Difficulty | Category
 494|[**Target Sum**](https://leetcode.com/problems/target-sum/)| Medium | DP / Combination
 474|[Ones and Zeroes](https://leetcode.com/problems/ones-and-zeroes/)| Medium | DP / a little tricky
 518|[**Coin Change II**](https://leetcode.com/problems/coin-change-ii/)| Medium | Complete knapsack
+322|[Coin Change](https://leetcode.com/problems/coin-change/)| Medium | Complete knapsack
 
 
 ## Graph
