@@ -135,6 +135,7 @@ ID | Name | Difficulty | Category
 416|[**Partition Equal Subset Sum**](https://leetcode.com/problems/partition-equal-subset-sum/)| Medium | DP / Knapsack
 1049|[Last Stone Weight II](https://leetcode.com/problems/last-stone-weight-ii/)| Medium | DP / Knapsack
 494|[**Target Sum**](https://leetcode.com/problems/target-sum/)| Medium | DP / Combination
+474|[Ones and Zeroes](https://leetcode.com/problems/ones-and-zeroes/)| Medium | DP / a little tricky
 
 
 ## Graph
