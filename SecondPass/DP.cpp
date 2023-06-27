@@ -638,6 +638,7 @@ public:
     0 <= sum(nums[i]) <= 1000
     -1000 <= target <= 1000
  */
+// We can also do backtracking, which will cause TLE.
 class Solution {
 public:
     int findTargetSumWays(vector<int>& nums, int target) {
