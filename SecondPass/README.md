@@ -136,6 +136,7 @@ ID | Name | Difficulty | Category
 1049|[Last Stone Weight II](https://leetcode.com/problems/last-stone-weight-ii/)| Medium | DP / Knapsack
 494|[**Target Sum**](https://leetcode.com/problems/target-sum/)| Medium | DP / Combination
 474|[Ones and Zeroes](https://leetcode.com/problems/ones-and-zeroes/)| Medium | DP / a little tricky
+518|[**Coin Change II**](https://leetcode.com/problems/coin-change-ii/)| Medium | Complete knapsack
 
 
 ## Graph

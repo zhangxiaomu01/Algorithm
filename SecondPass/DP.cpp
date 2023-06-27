@@ -755,3 +755,98 @@ public:
         return dp[m][n];
     }
 };
+
+ /*
+    518. Coin Change II
+    https://leetcode.com/problems/coin-change-ii/
+    You are given an integer array coins representing coins of different denominations and an 
+    integer amount representing a total amount of money.
+
+    Return the number of combinations that make up that amount. If that amount of money cannot 
+    be made up by any combination of the coins, return 0.
+
+    You may assume that you have an infinite number of each kind of coin.
+
+    The answer is guaranteed to fit into a signed 32-bit integer.
+
+    
+
+    Example 1:
+    Input: amount = 5, coins = [1,2,5]
+    Output: 4
+    Explanation: there are four ways to make up the amount:
+    5=5
+    5=2+2+1
+    5=2+1+1+1
+    5=1+1+1+1+1
+
+    Example 2:
+    Input: amount = 3, coins = [2]
+    Output: 0
+    Explanation: the amount of 3 cannot be made up just with coins of 2.
+
+    Example 3:
+    Input: amount = 10, coins = [10]
+    Output: 1
+    
+
+    Constraints:
+    1 <= coins.length <= 300
+    1 <= coins[i] <= 5000
+    All the values of coins are unique.
+    0 <= amount <= 5000
+ */
+class Solution {
+public:
+    int change(int amount, vector<int>& coins) {
+        vector<vector<int>> dp(coins.size() + 1, vector<int>(amount + 1, 0));
+        // If amount is 0, then we always have one way to make up it (pick nothing).
+        for (int i = 0; i < coins.size(); ++i) dp[i][0] = 1;
+
+        // The inner / outer loop order does not matter. Given we can get the correct dp[i-1][j].
+        // Please note, if we are using 1d array, the same dp function will be wrong. It will
+        // calculate the permutation instead of combination!!!
+        // for(int j = 0; j <= amount; ++j) {
+        //     for(int i = 1; i <= coins.size(); ++i) {
+        //         if (j < coins[i-1]) dp[i][j] = dp[i-1][j];
+        //         else dp[i][j] = dp[i-1][j] + dp[i][j-coins[i-1]];
+        //     }
+        // }
+
+        for(int i = 1; i <= coins.size(); ++i) {
+            for(int j = 0; j <= amount; ++j) {
+                if (j < coins[i-1]) dp[i][j] = dp[i-1][j];
+                // Please note we need to value from dp[i][j-coins[i-1]], not dp[i-1][j-coins[i-1]];
+                // It means that we have included coins[i-1] in the result multiple times.
+                // Which also means we can't reverse the iteration of order of amount when using 1d
+                // dp table.
+                else dp[i][j] = dp[i-1][j] + dp[i][j-coins[i-1]];
+            }
+        }
+        return dp[coins.size()][amount];
+    }
+};
+
+// Slightly optimized version
+class Solution {
+public:
+    int change(int amount, vector<int>& coins) {
+        vector<int> dp(amount + 1, 0);
+        // Always have one way to make up the amount to be 0.
+        dp[0] = 1;
+
+        // We cannot swap the inner / outer loop when using 1d dp table. If we swap it, we are 
+        // computing the permutation instead of combination!!!
+        for(int i = 1; i <= coins.size(); ++i) {
+            for(int j = 0; j <= amount; ++j) {
+                // Please note we need to value from dp[i][j-coins[i-1]], not dp[i-1][j-coins[i-1]];
+                // It means that we have included coins[i-1] in the result multiple times.
+                // Which also means we can't reverse the iteration of order of amount when using 1d
+                // dp table.
+                if (j >= coins[i-1]) dp[j]  = dp[j] + dp[j-coins[i-1]];
+            }
+        }
+        return dp[amount];
+    }
+};
+
