@@ -603,3 +603,94 @@ public:
     }
 };
 
+ /*
+    494. Target Sum
+    https://leetcode.com/problems/target-sum/
+    You are given an integer array nums and an integer target.
+
+    You want to build an expression out of nums by adding one of the symbols '+' and '-' before 
+    each integer in nums and then concatenate all the integers.
+
+    For example, if nums = [2, 1], you can add a '+' before 2 and a '-' before 1 and concatenate 
+    them to build the expression "+2-1".
+    Return the number of different expressions that you can build, which evaluates to target.
+
+    
+
+    Example 1:
+    Input: nums = [1,1,1,1,1], target = 3
+    Output: 5
+    Explanation: There are 5 ways to assign symbols to make the sum of nums be target 3.
+    -1 + 1 + 1 + 1 + 1 = 3
+    +1 - 1 + 1 + 1 + 1 = 3
+    +1 + 1 - 1 + 1 + 1 = 3
+    +1 + 1 + 1 - 1 + 1 = 3
+    +1 + 1 + 1 + 1 - 1 = 3
+
+    Example 2:
+    Input: nums = [1], target = 1
+    Output: 1
+    
+
+    Constraints:
+    1 <= nums.length <= 20
+    0 <= nums[i] <= 1000
+    0 <= sum(nums[i]) <= 1000
+    -1000 <= target <= 1000
+ */
+class Solution {
+public:
+    int findTargetSumWays(vector<int>& nums, int target) {
+        // We can put all positive expressions together, so we will try to calculate 
+        // Left subset - Right subset == target. We know that Left + Right = Sum, then
+        // we know we are trying to get Left = (target + sum) / 2. What we want to do
+        // is to figure how many possible ways we can get Left by picking the elements from
+        // nums.
+        int sum = 0;
+        for (int e : nums) sum += e;
+        // No way to get target. Note that target can be negative!
+        if (abs(target) > sum || (sum + target) % 2 != 0) return 0; 
+        int left = (sum + target) / 2;
+        vector<vector<int>> dp(nums.size() + 1, vector<int>(left + 1, 0));
+        dp[0][0] = 1;
+
+        for (int i = 1; i <= nums.size(); ++i) {
+            // Note we need to start with j = 0 to handle the situation we have multiple 0 in the array
+            // [0,0,0,0,0,0,0,0,1], target  = 1. In this case, dp[i][0] = dp[i-1][0] + dp[i-1][0-0].
+            // If we start with j = 1, we will not update j == 0 correctly!
+            for (int j = 0; j <= left; ++j) {
+                if (j < nums[i-1]) dp[i][j] = dp[i-1][j];
+                else dp[i][j] = dp[i-1][j] + dp[i-1][j-nums[i-1]];
+            }
+        }
+
+        return dp[nums.size()][left];
+    }
+};
+
+// Optimized version
+class Solution {
+public:
+    int findTargetSumWays(vector<int>& nums, int target) {
+        // We can put all positive expressions together, so we will try to calculate 
+        // Left subset - Right subset == target. We know that Left + Right = Sum, then
+        // we know we are trying to get Left = (target + sum) / 2. What we want to do
+        // is to figure how many possible ways we can get Left by picking the elements from
+        // nums.
+        int sum = 0;
+        for (int e : nums) sum += e;
+        // No way to get target. Note that target can be negative!
+        if (abs(target) > sum || (sum + target) % 2 != 0) return 0; 
+        int left = (sum + target) / 2;
+        vector<int> dp(left + 1, 0);
+        dp[0] = 1;
+
+        for (int i = 1; i <= nums.size(); ++i) {
+            for (int j = left; j >= nums[i-1]; --j) {
+                dp[j] = dp[j] + dp[j-nums[i-1]];
+            }
+        }
+
+        return dp[left];
+    }
+};

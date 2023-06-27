@@ -134,6 +134,7 @@ ID | Name | Difficulty | Category
 152|[**Maximum Product Subarray**](https://leetcode.com/problems/maximum-product-subarray/)| Medium | DP + General solution
 416|[**Partition Equal Subset Sum**](https://leetcode.com/problems/partition-equal-subset-sum/)| Medium | DP / Knapsack
 1049|[Last Stone Weight II](https://leetcode.com/problems/last-stone-weight-ii/)| Medium | DP / Knapsack
+494|[**Target Sum**](https://leetcode.com/problems/target-sum/)| Medium | DP / Combination
 
 
 ## Graph
