@@ -138,6 +138,7 @@ ID | Name | Difficulty | Category
 474|[Ones and Zeroes](https://leetcode.com/problems/ones-and-zeroes/)| Medium | DP / a little tricky
 518|[**Coin Change II**](https://leetcode.com/problems/coin-change-ii/)| Medium | Complete knapsack
 322|[Coin Change](https://leetcode.com/problems/coin-change/)| Medium | Complete knapsack
+377|[**Combination Sum IV**](https://leetcode.com/problems/combination-sum-iv/)| Medium | Check with 322 coin change II
 
 
 ## Graph

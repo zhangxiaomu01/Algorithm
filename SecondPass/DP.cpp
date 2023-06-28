@@ -922,3 +922,110 @@ public:
     }
 };
 
+ /*
+    377. Combination Sum IV
+    https://leetcode.com/problems/combination-sum-iv/
+    Given an array of distinct integers nums and a target integer target, return the number of 
+    possible combinations that add up to target.
+
+    The test cases are generated so that the answer can fit in a 32-bit integer.
+
+    
+
+    Example 1:
+    Input: nums = [1,2,3], target = 4
+    Output: 7
+    Explanation:
+    The possible combination ways are:
+    (1, 1, 1, 1)
+    (1, 1, 2)
+    (1, 2, 1)
+    (1, 3)
+    (2, 1, 1)
+    (2, 2)
+    (3, 1)
+    Note that different sequences are counted as different combinations.
+
+    Example 2:
+    Input: nums = [9], target = 3
+    Output: 0
+    
+
+    Constraints:
+    1 <= nums.length <= 200
+    1 <= nums[i] <= 1000
+    All the elements of nums are unique.
+    1 <= target <= 1000
+    
+
+    Follow up: What if negative numbers are allowed in the given array? 
+    How does it change the problem? 
+    What limitation we need to add to the question to allow negative numbers?
+ */
+// 2D dp solution! Please note the leetcode can't pass the solution because we got integer overflow
+// during the calculation!
+class Solution {
+public:
+    int combinationSum4(vector<int>& nums, int target) {
+        int n = nums.size();
+        // Note we need to use unsigned int to prevent integer overflow.
+        vector<vector<unsigned int>> dp(n+1, vector<unsigned int>(target+1, 0));
+        for (int i = 0; i <= n; ++i) dp[i][0] = 1;
+
+        for (int j = 0; j <= target; ++j) {
+            for(int i = 1; i <= n; ++i) {
+                if (j < nums[i-1]) dp[i][j] = dp[i-1][j];
+                // dp[n][j-nums[i-1]] is the tricky part. It means we have used all the coins to 
+                // get to j-nums[i-1] target. It will include all the possible permutations we 
+                // get to previous n, then we simply add one more to the result.
+                else dp[i][j] = dp[i-1][j] + dp[n][j-nums[i-1]];
+
+            }
+        }
+        return dp[n][target];
+    }
+};
+
+// Optimized 1d array
+class Solution {
+public:
+    int combinationSum4(vector<int>& nums, int target) {
+        int n = nums.size();
+        vector<unsigned int> dp(target+1, 0);
+        dp[0] = 1;
+
+        for (int j = 0; j <= target; ++j) {
+            for(int i = 1; i <= n; ++i) {
+                if (j >= nums[i-1])
+                    dp[j] += dp[j-nums[i-1]];
+            }
+        }
+        return dp[target];
+    }
+};
+
+// Top-down memorization solution
+class Solution {
+private:
+
+    int dfs(vector<int>& nums, int target, vector<int>& memo){
+        //Any invalid combination sum we return 0 to indicate it's invalid
+        //Else we find a new combination sum, we return 1
+        if(nums.empty() || target < 0) return 0;
+        if(target == 0) return 1;
+        if(memo[target]!= -1) return memo[target];
+        unsigned int count = 0;
+        for(int i = 0; i < nums.size(); i++){
+            //We are actually checking each possible combination, first we reduce nums[0], then nums[1]... and so on
+            count += dfs(nums, target - nums[i], memo);
+        }
+        return memo[target] = count;
+    }
+public:
+    int combinationSum4(vector<int>& nums, int target) {
+        vector<int> memo(target+1, -1);
+        return dfs(nums, target, memo);
+    }
+};
+
+
