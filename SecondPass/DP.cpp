@@ -1091,3 +1091,140 @@ public:
         return dp[n];
     }
 };
+
+ /*
+    139. Word Break
+    https://leetcode.com/problems/word-break/
+    Given a string s and a dictionary of strings wordDict, return true if s can be segmented into 
+    a space-separated sequence of one or more dictionary words.
+
+    Note that the same word in the dictionary may be reused multiple times in the segmentation.
+
+    
+
+    Example 1:
+    Input: s = "leetcode", wordDict = ["leet","code"]
+    Output: true
+    Explanation: Return true because "leetcode" can be segmented as "leet code".
+
+    Example 2:
+    Input: s = "applepenapple", wordDict = ["apple","pen"]
+    Output: true
+    Explanation: Return true because "applepenapple" can be segmented as "apple pen apple".
+    Note that you are allowed to reuse a dictionary word.
+
+    Example 3:
+    Input: s = "catsandog", wordDict = ["cats","dog","sand","and","cat"]
+    Output: false
+    
+
+    Constraints:
+    1 <= s.length <= 300
+    1 <= wordDict.length <= 1000
+    1 <= wordDict[i].length <= 20
+    s and wordDict[i] consist of only lowercase English letters.
+    All the strings of wordDict are unique.
+ */
+// Complete knapsack problem: we need to find the **permutation** from the wordDict to formulate s.
+class Solution {
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        int n = s.size();
+        vector<bool> dp(n+1, false);
+        dp[0] = true;
+
+        // Complete knapsack problem:
+        // We are checking the permutations from the wordDict here, so we need to iterate
+        // the knapsack value first, then the item (each word).
+        for (int i = 1; i <= s.size(); ++i) {
+            for(int j = 0; j < wordDict.size(); ++j) {  
+                string word = wordDict[j];
+                // Check whether we can formulate the sequence.
+                if (i >= word.size() && dp[i - word.size()] && word == s.substr(i-word.size(), word.size())) 
+                    dp[i] = true;
+            }
+        }
+        return dp[s.size()];
+    }
+};
+
+// 2D dp array: trickier to implement.
+// Important for us to fully unstand the problem.
+class Solution {
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        int n = wordDict.size();
+        vector<vector<bool>> dp(n+1, vector<bool>(s.size() + 1, false));
+        // Need to initialize the defaults.
+        for (int i = 0; i <= n; ++i) dp[i][0] = true;
+
+        // Complete backtrack
+        for (int j = 1; j <= s.size(); ++j) {
+            for(int i = 1; i <= n; ++i) {  
+                string word = wordDict[i-1];
+                // If j < word.size(), we will not pick up wordDict[i]. Please note that we are
+                // using 2d array, we need to manually set it. If we are using 1d dp table, we 
+                // can derive automatically from the previous update.
+                dp[i][j] = dp[i-1][j];
+                // We are checking dp[n][j-word.size()], which represents if we include all words,
+                // whether we can formulate string[0: j-word.size()]
+                if (j >= word.size() && dp[n][j-word.size()] && s.substr(j - word.size(), word.size()) == word)
+                    dp[i][j] = true;
+            }
+        }
+        return dp[n][s.size()];
+    }
+};
+
+// Another variation of the impl. I like the first one more.
+class Solution {
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        int n = s.size();
+        vector<bool> dp(n+1, false);
+        dp[0] = true;
+        unordered_set<string> uSet(wordDict.begin(), wordDict.end());
+
+        // Complete knapsack problem:
+        // We are checking the permutations from the wordDict here, so we need to iterate
+        // the knapsack value first, then the item (each word).
+        for (int i = 1; i <= s.size(); ++i) {
+            // We check each possible combinations and see whether we can find a good fit.
+            for(int j = 0; j < i; ++j) {  
+                string word = s.substr(j, i - j);
+                // Note we need to check dp[j] here given the word start with index j,
+                // dp[j] means the sequence before word[j, i).
+                if (uSet.count(word) > 0 && dp[j]) 
+                    dp[i] = true;
+            }
+        }
+        return dp[s.size()];
+    }
+};
+
+// Recursive + memo
+class Solution {
+private:
+    bool helper(string& s, unordered_set<string>& uSet, vector<int>& memo, int start) {
+        if (start >= s.size()) return true;
+
+        if (memo[start] != -1) return memo[start] == 0 ? false : true;
+
+        string word = "";
+        for (int i = start; i < s.size(); ++i) {
+            word.push_back(s[i]);
+            if (uSet.count(word) > 0 && helper(s, uSet, memo, i + 1)) return memo[start] = 1;
+        }
+        memo[start] = 0;
+        return false;
+    }
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        int n = s.size();
+        vector<int> memo(n, -1);
+        unordered_set<string> uSet(wordDict.begin(), wordDict.end());
+        return helper(s, uSet, memo, 0);
+    }
+};
+
+// BFS solution: omit.

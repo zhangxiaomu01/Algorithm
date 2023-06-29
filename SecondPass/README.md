@@ -140,6 +140,7 @@ ID | Name | Difficulty | Category
 322|[Coin Change](https://leetcode.com/problems/coin-change/)| Medium | Complete knapsack
 377|[**Combination Sum IV**](https://leetcode.com/problems/combination-sum-iv/)| Medium | Check with 322 coin change II
 279|[Perfect Squares](https://leetcode.com/problems/perfect-squares/)| Medium | DP + BFS
+139|[**Word Break**](https://leetcode.com/problems/word-break/)| Medium | complete knapsack
 
 
 ## Graph
