@@ -143,6 +143,7 @@ ID | Name | Difficulty | Category
 139|[**Word Break**](https://leetcode.com/problems/word-break/)| Medium | complete knapsack
 198|[House Robber](https://leetcode.com/problems/house-robber/)| Medium | 1d DP
 213|[House Robber II](https://leetcode.com/problems/house-robber-ii/)| Medium | 1d DP
+337|[**House Robber III**](https://leetcode.com/problems/house-robber-iii/)| Medium | post-order trevaersal + memo
 
 
 ## Graph

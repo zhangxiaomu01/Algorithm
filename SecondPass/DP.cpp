@@ -1365,3 +1365,90 @@ public:
         return max(dp[n-1], dp1[n]);
     }
 };
+
+ /*
+    337. House Robber III
+    https://leetcode.com/problems/house-robber-iii/
+    The thief has found himself a new place for his thievery again. There is only one entrance 
+    to this area, called root.
+
+    Besides the root, each house has one and only one parent house. After a tour, the smart thief 
+    realized that all houses in this place form a binary tree. It will automatically contact the 
+    police if two directly-linked houses were broken into on the same night.
+
+    Given the root of the binary tree, return the maximum amount of money the thief can rob without 
+    alerting the police.
+
+    
+
+    Example 1:
+    Input: root = [3,2,3,null,3,null,1]
+    Output: 7
+    Explanation: Maximum amount of money the thief can rob = 3 + 3 + 1 = 7.
+
+    Example 2:
+    Input: root = [3,4,5,1,3,null,1]
+    Output: 9
+    Explanation: Maximum amount of money the thief can rob = 4 + 5 = 9.
+    
+
+    Constraints:
+    The number of nodes in the tree is in the range [1, 104].
+    0 <= Node.val <= 104
+ */
+// Bruet force approach: we have a lot of duplicate calculations! Will get TLE in leetcode.
+class Solution {
+private:
+    // helper returns the maximum possible profit we have when starting with Node root 
+    int helper(TreeNode* root) {
+        if(!root) return 0;
+
+        // If we rob the parent
+        int robParent = root->val;
+        int left = 0, right = 0;
+        // Skip left & right children
+        if (root->left) left = helper(root->left->left) + helper(root->left->right);
+        if (root->right) right = helper(root->right->left) + helper(root->right->right);
+        // We need to add all the possible combination together.
+        robParent += left + right;
+
+        // If we skip the parent. Then we need to add both left & right.
+        int nRobParent = helper(root->left) + helper(root->right);
+
+        return max(robParent, nRobParent);
+    }
+public:
+    int rob(TreeNode* root) {
+        if (!root) return 0;
+
+        return helper(root);
+    }
+};
+
+// Using a pair to record the maximum possible outcome with / without robbing the node i.
+class Solution {
+private:
+    // The first element in the pair represents the maximum possible outcome 
+    // if we do not rob the child;
+    // The second element in the pair represents the maximum possible outcome if we do 
+    // rob the child.
+    pair<int, int> helper(TreeNode* root) {
+        if (!root) return {0, 0};
+
+        auto left = helper(root->left);
+        auto right = helper(root->right);
+
+        // Rob the current root, we need to include the maximum without robbing left / right
+        // children.
+        int robCurrent = root->val + left.first + right.first;
+        // Do not rob the current.
+        int nRobCurrent = max(left.first, left.second) + max(right.first, right.second);
+        
+        return {nRobCurrent, robCurrent};
+    }
+public:
+    int rob(TreeNode* root) {
+        auto res = helper(root);
+        return max(res.first, res.second);
+    }
+};
