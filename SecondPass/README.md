@@ -142,6 +142,7 @@ ID | Name | Difficulty | Category
 279|[Perfect Squares](https://leetcode.com/problems/perfect-squares/)| Medium | DP + BFS
 139|[**Word Break**](https://leetcode.com/problems/word-break/)| Medium | complete knapsack
 198|[House Robber](https://leetcode.com/problems/house-robber/)| Medium | 1d DP
+213|[House Robber II](https://leetcode.com/problems/house-robber-ii/)| Medium | 1d DP
 
 
 ## Graph
