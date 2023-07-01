@@ -1727,3 +1727,65 @@ public:
         return dp[n-1][2*k-1];
     }
 };
+
+ /*
+    309. Best Time to Buy and Sell Stock with Cooldown
+    https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/
+    You are given an array prices where prices[i] is the price of a given stock on the ith day.
+
+    Find the maximum profit you can achieve. You may complete as many transactions as you like 
+    (i.e., buy one and sell one share of the stock multiple times) with the following 
+    restrictions:
+
+    After you sell your stock, you cannot buy stock on the next day (i.e., cooldown one day).
+    Note: You may not engage in multiple transactions simultaneously (i.e., you must sell the 
+    stock before you buy again).
+
+    
+    Example 1:
+    Input: prices = [1,2,3,0,2]
+    Output: 3
+    Explanation: transactions = [buy, sell, cooldown, buy, sell]
+
+    Example 2:
+    Input: prices = [1]
+    Output: 0
+    
+
+    Constraints:
+    1 <= prices.length <= 5000
+    0 <= prices[i] <= 1000
+ */
+// DP
+class Solution {
+public:
+    int maxProfit(int k, vector<int>& prices) {
+        int n = prices.size();
+        // dp[i][k%2==0] represents the k+1 th trasaction while we hold stock;
+        // dp[i][k%2==1] represents the k+1 th trasaction while we do not hold stock.
+        vector<vector<int>> dp(n, vector<int>(2*k, INT_MIN));
+        for (int i = 0; i < 2*k; ++i) {
+            if (i % 2 == 0) {
+                dp[0][i] = -prices[0];
+            } else {
+                dp[0][i] = 0;
+            }
+        }
+
+        for (int i = 1; i < n; ++i) {
+            dp[i][0] = max(-prices[i], dp[i-1][0]);
+            dp[i][1] = max(dp[i-1][0] + prices[i], dp[i-1][1]);
+            for (int j = 2; j < 2 * k - 1; j += 2) {
+                // i + 1 the trasaction that we hold stock.
+                // For dp[i][j], we need to derive from dp[i][j-1], basically we only buy
+                // k+1 th stock after we have make sure that in the ith day, 
+                // we do not hold hay stocks && have sold kth stock.
+                dp[i][j] = max(dp[i][j-1] - prices[i], dp[i-1][j]);
+                dp[i][j+1] = max(dp[i-1][j] + prices[i], dp[i-1][j+1]);
+            }
+        }
+
+        // The maximum profit equals to the sell of **at most** k stocks.
+        return dp[n-1][2*k-1];
+    }
+};
