@@ -149,6 +149,7 @@ ID | Name | Difficulty | Category
 123|[Best Time to Buy and Sell Stock III](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii/)| Hard | 4 table DP
 188|[**Best Time to Buy and Sell Stock IV**](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iv/)| Hard | k table DP -> refer to problem 123
 309|[**Best Time to Buy and Sell Stock with Cooldown**](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/)| Hard | DP
+714|[Best Time to Buy and Sell Stock with Transaction Fee](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/)| Medium | DP, similar to 122
 
 
 
