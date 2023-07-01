@@ -144,6 +144,8 @@ ID | Name | Difficulty | Category
 198|[House Robber](https://leetcode.com/problems/house-robber/)| Medium | 1d DP
 213|[House Robber II](https://leetcode.com/problems/house-robber-ii/)| Medium | 1d DP
 337|[**House Robber III**](https://leetcode.com/problems/house-robber-iii/)| Medium | post-order trevaersal + memo
+121|[Best Time to Buy and Sell Stock](https://leetcode.com/problems/best-time-to-buy-and-sell-stock/)| Medium | 2 table DP + linear scan
+
 
 
 ## Graph
