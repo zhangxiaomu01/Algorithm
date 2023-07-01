@@ -161,3 +161,4 @@ ID | Name | Difficulty | Category
 463|[Island Perimeter](https://leetcode.com/problems/island-perimeter/)| Easy | BFS + Others
 841|[Keys and Rooms](https://leetcode.com/problems/keys-and-rooms/)| Medium | BFS + DFS
 127|[Word Ladder](https://leetcode.com/problems/word-ladder/)| Hard | BFS
+743|[Network Delay Time](https://leetcode.com/problems/network-delay-time/)| Medium | Dijkstra/Bellman-ford/SPFA/Floyd
