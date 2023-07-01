@@ -1595,3 +1595,71 @@ public:
         return maxP;
     }
 };
+
+ /*
+    123. Best Time to Buy and Sell Stock III
+    https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii/
+    You are given an array prices where prices[i] is the price of a given stock on the ith day.
+
+    Find the maximum profit you can achieve. You may complete at most two transactions.
+
+    Note: You may not engage in multiple transactions simultaneously (i.e., you must sell the 
+    stock before you buy again).
+
+    
+
+    Example 1:
+    Input: prices = [3,3,5,0,0,3,1,4]
+    Output: 6
+    Explanation: Buy on day 4 (price = 0) and sell on day 6 (price = 3), profit = 3-0 = 3.
+    Then buy on day 7 (price = 1) and sell on day 8 (price = 4), profit = 4-1 = 3.
+
+    Example 2:
+    Input: prices = [1,2,3,4,5]
+    Output: 4
+    Explanation: Buy on day 1 (price = 1) and sell on day 5 (price = 5), profit = 5-1 = 4.
+    Note that you cannot buy on day 1, buy on day 2 and sell them later, as you are engaging 
+    multiple transactions at the same time. You must sell before buying again.
+
+    Example 3:
+    Input: prices = [7,6,4,3,1]
+    Output: 0
+    Explanation: In this case, no transaction is done, i.e. max profit = 0.
+    
+
+    Constraints:
+    1 <= prices.length <= 10^5
+    0 <= prices[i] <= 10^5
+ */
+// DP
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int n = prices.size();
+        // dp[i][0] represents the max profit that the first time we hold a stock;
+        // dp[i][1] represents the max profit that the first time we do not hold 
+        // a stock (we may never buy any stock or we buy and sell only once);
+        // dp[i][2] represents the max profit the second time we hold a stcok;
+        // dp[i][3] represents the max profit that the second time we do not have a stock
+        vector<vector<int>> dp(n, vector<int>(4, INT_MIN));
+        dp[0][0] = -prices[0];
+        dp[0][1] = 0;
+        dp[0][2] = -prices[0];
+        dp[0][3] = 0;
+
+        for (int i = 1; i < n; ++i) {
+            // We either buy at day i or have the stock state from previous day;
+            dp[i][0] = max(-prices[i], dp[i-1][0]);
+            // We either sell at day i or have sold the stock before day i.
+            dp[i][1] = max(dp[i-1][0] + prices[i], dp[i-1][1]);
+            // We hold the stock at day i for the second time. Note we have to derive this
+            // from the dp[i][1], where we sold the stock once.
+            dp[i][2] = max(dp[i][1] - prices[i], dp[i-1][2]);
+            // We do not hold the stock at day i for the second time.
+            dp[i][3] = max(dp[i-1][2] + prices[i], dp[i-1][3]);
+        }
+
+        // Find the max of the two trasactions.
+        return max(dp[n-1][1], dp[n-1][3]);
+    }
+};
