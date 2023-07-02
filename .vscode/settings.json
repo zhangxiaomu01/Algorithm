@@ -22,7 +22,8 @@
         "xlocale": "cpp",
         "ranges": "cpp",
         "span": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "cstdlib": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

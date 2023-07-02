@@ -652,7 +652,7 @@ public:
     -106 <= xi, yi <= 106
     All pairs (xi, yi) are distinct.
  */
-// MST: Kruskal’s algorithm + Union Find with rank
+// MST: Kruskal’s algorithm + Union Find with rank O(E * logE) or O(E * logV) 
 class UnionSet {
 private:
     vector<int> parent;
@@ -743,7 +743,7 @@ public:
     }
 };
 
-// Prim's algorithm
+// Prim's algorithm O(E * logV) or O(V^2)
 class Solution {
 private:
     int getDist(vector<int>& p1, vector<int>& p2) {
