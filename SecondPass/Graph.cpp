@@ -336,7 +336,7 @@ public:
 // A good problem for Dijkstra/Bellman-ford/SPFA/Floyd.
 
 // Dijkstra impl: Dijkstra can only be used to detect the weighted graph with positive weights.
-// It can handle cycles (given every cycle the path weight will be longer).
+// It can handle cycles (given every cycle the path weight will be longer). O(|E| + |V|*log|V|)
 class Solution {
 private:
     vector<vector<pair<int, int>>> buildGraph(vector<vector<int>>& edges, int n) {
@@ -389,7 +389,11 @@ public:
     }
 };
 
-// Bellman-ford algorithm with adjacent list impl.
+// Bellman-ford algorithm with adjacent list impl. O(|V|*|E|)
+// Bellman-ford algorithm can work with directed weighted graph with negative weight. It can not
+// work with graph with negative cycles. Please note it does not work with un-directed graph with
+// negative weight as well, given un-directed graph with negative weight is considered a negative 
+// cycle by itself.
 class Solution {
 private:
     vector<vector<pair<int, int>>> buildGraph(vector<vector<int>>& edges, int n) {
@@ -503,6 +507,47 @@ public:
             cout << i << " the weight is: " << dist[i] << endl;
             res = max(res, dist[i]);
         }
+        return res == INT_MAX ? -1 : res;
+    }
+};
+
+// Floyd algorithm: It's a dp approach and works with graph with weighted edges.
+// If with negative weight, then the graph cannot have negative cycle.
+class Solution {
+public:
+    int networkDelayTime(vector<vector<int>>& times, int n, int k) {
+        // For floyd algorithm, it's easier to work with a matrix presentation.
+        vector<vector<int>> graph(n, vector<int>(n, INT_MAX));
+
+        for (auto& e : times) {
+            graph[e[0]-1][e[1]-1] = e[2];
+        }
+
+        // Floyd impl: it's a dp approach. We pick up a node k which sits between
+        // node source and target, and test whether it can formulate a shortest 
+        // path from source to target. We update the shortest path on the fly.
+        // After the execution, graph[i][j] saves the shortest path from i to j.
+        for (int k = 0; k < n; ++k) {
+            // Pick up the source
+            for (int i = 0; i < n; ++i) {
+                // Pick up the target
+                for (int j = 0; j < n; ++j) {
+                    // We can find a path from i to k and k to j.
+                    if (graph[i][k] != INT_MAX && graph[k][j] != INT_MAX
+                    && graph[i][j] > graph[i][k] + graph[k][j]) {
+                        graph[i][j] = graph[i][k] + graph[k][j];
+                    }
+                }
+            }
+        }
+        
+        int res = 0;
+        for (int j = 0; j < n; ++j) {
+            // Needs to skip the node k itself. 
+            // Or we can also initialize graph[i][i] to be 0.
+            if (res < graph[k-1][j] && j != k-1) res = max(res, graph[k-1][j]);
+        }
+
         return res == INT_MAX ? -1 : res;
     }
 };
