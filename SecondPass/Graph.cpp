@@ -333,7 +333,8 @@ public:
     0 <= wi <= 100
     All the pairs (ui, vi) are unique. (i.e., no multiple edges.)
  */
-// A good problem for Dijkstra/Bellman-ford/SPFA/Floyd.
+// A good problem for Dijkstra/Bellman-ford/SPFA/Floyd. Note how we save the path when running 
+// the algorithm!
 
 // Dijkstra impl: Dijkstra can only be used to detect the weighted graph with positive weights.
 // It can handle cycles (given every cycle the path weight will be longer). O(|E| + |V|*log|V|)
@@ -348,6 +349,17 @@ private:
         }
         return G;
     }
+
+    void printShortestPath(int currentIndex, const vector<int>& parent) {
+        if (currentIndex <= 0 || currentIndex >= parent.size()) return;
+        // Reaches the source.
+        if (parent[currentIndex] == -1) {
+            cout << currentIndex << endl;
+            return;
+        }
+        cout << currentIndex << " >> ";
+        printShortestPath(parent[currentIndex], parent);
+    }
 public:
     int networkDelayTime(vector<vector<int>>& times, int n, int k) {
         // We have no way to formulate send the signal to all nodes.
@@ -361,6 +373,10 @@ public:
         priority_queue<pair<int, int>, vector<pair<int, int>>, decltype(comp)> minQ(comp);
         vector<int> dist(n+1, INT_MAX);
         vector<bool> visited(n+1, false);
+        // Save the path if we need to print the path!
+        vector<int> parent(n+1, 0);
+        // Indicates the starting position.
+        parent[k] = -1;
 
         dist[k] = 0;
         minQ.push({k, dist[k]});
@@ -376,6 +392,8 @@ public:
                 int curDist = G[minNode.first][i].second;
                 if (dist[next] > distSofar + curDist) {
                     dist[next] = distSofar + curDist;
+                    // Saves the path information!
+                    parent[next] = minNode.first;
                     if(!visited[next]) minQ.push({next, dist[next]});
                 }
             }
@@ -385,6 +403,9 @@ public:
         for (int i = 1; i < dist.size(); ++i) {
             res = max(res, dist[i]);
         }
+
+        printShortestPath(n, parent);
+
         return res == INT_MAX ? -1 : res;
     }
 };
@@ -462,12 +483,28 @@ public:
 };
 
 // Bellman-ford algorithm with edge list impl.
+// Bellman-ford algorithm with edge list impl.
 class Solution {
+private:
+    void printShortestPath(int currentIndex, const vector<int>& parent) {
+        if (currentIndex <= 0 || currentIndex >= parent.size()) return;
+        // Reaches the source.
+        if (parent[currentIndex] == -1) {
+            cout << currentIndex << endl;
+            return;
+        }
+        cout << currentIndex << " >> ";
+        printShortestPath(parent[currentIndex], parent);
+    }
 public:
     int networkDelayTime(vector<vector<int>>& times, int n, int k) {
         // Note we creates n+1 nodes to make the index alignment easier.
         vector<int> dist(n+1, INT_MAX);
         dist[k] = 0;
+
+        // Saves the path
+        vector<int> parent(n+1, 0);
+        parent[k] = -1;
 
         // Relax all edges |V| - 1 times. A simple
         // shortest path from src to any other vertex can have
@@ -481,6 +518,8 @@ public:
                 if (dist[nodeSrc] != INT_MAX && 
                     dist[nodeDst] > dist[nodeSrc] + weight) {
                         dist[nodeDst] = dist[nodeSrc] + weight;
+                        // Saves the path
+                        parent[nodeDst] = nodeSrc;
                     }
             }
         }
@@ -501,10 +540,12 @@ public:
         //     }
         // }
 
+        // Print the path!
+        printShortestPath(n, parent);
+
         int res = 0;
         // The first node in dist is a dummy node. We will skip it.
         for (int i = 1; i < dist.size(); ++i) {
-            cout << i << " the weight is: " << dist[i] << endl;
             res = max(res, dist[i]);
         }
         return res == INT_MAX ? -1 : res;
@@ -514,13 +555,37 @@ public:
 // Floyd algorithm: It's a dp approach and works with graph with weighted edges.
 // If with negative weight, then the graph cannot have negative cycle.
 class Solution {
+private:
+    void printPath(int source, int target, vector<vector<int>>& next) {
+        // No path found!
+        if (next[source][target] == -1) return;
+        cout << source + 1 << "->";
+        int nextIndex = source;
+        while (nextIndex != -1) {
+            nextIndex = next[nextIndex][target];
+            cout << nextIndex + 1 << "->";
+        }
+    }
 public:
     int networkDelayTime(vector<vector<int>>& times, int n, int k) {
         // For floyd algorithm, it's easier to work with a matrix presentation.
         vector<vector<int>> graph(n, vector<int>(n, INT_MAX));
 
+        // Saves the path. -1 means that we do not have a path between i -> j.
+        vector<vector<int>> next(n, vector<int>(n, -1));
+
         for (auto& e : times) {
             graph[e[0]-1][e[1]-1] = e[2];
+        }
+
+        // Build path array!
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                // No valid path!
+                if (graph[i][j] == INT_MAX) continue;
+                // We can have one path from i to j.
+                next[i][j] = j;
+            }
         }
 
         // Floyd impl: it's a dp approach. We pick up a node k which sits between
@@ -536,6 +601,8 @@ public:
                     if (graph[i][k] != INT_MAX && graph[k][j] != INT_MAX
                     && graph[i][j] > graph[i][k] + graph[k][j]) {
                         graph[i][j] = graph[i][k] + graph[k][j];
+                        // Record the next index from i to k!!
+                        next[i][j] = next[i][k];
                     }
                 }
             }
@@ -547,6 +614,8 @@ public:
             // Or we can also initialize graph[i][i] to be 0.
             if (res < graph[k-1][j] && j != k-1) res = max(res, graph[k-1][j]);
         }
+
+        printPath(k-1, n-1, next);
 
         return res == INT_MAX ? -1 : res;
     }
