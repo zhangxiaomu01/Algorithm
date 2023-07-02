@@ -483,7 +483,6 @@ public:
 };
 
 // Bellman-ford algorithm with edge list impl.
-// Bellman-ford algorithm with edge list impl.
 class Solution {
 private:
     void printShortestPath(int currentIndex, const vector<int>& parent) {
@@ -808,3 +807,10 @@ public:
         return res;
     }
 };
+
+/*
+T01.A* algorithm: 
+Good implementation (with abstraction): https://github.com/daancode/a-star/blob/master/ReadMe.md;
+
+A good explanation: https://blog.csdn.net/qq826364410/article/details/79827915.
+*/
