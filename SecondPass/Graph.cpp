@@ -334,6 +334,9 @@ public:
     All the pairs (ui, vi) are unique. (i.e., no multiple edges.)
  */
 // A good problem for Dijkstra/Bellman-ford/SPFA/Floyd.
+
+// Dijkstra impl: Dijkstra can only be used to detect the weighted graph with positive weights.
+// It can handle cycles (given every cycle the path weight will be longer).
 class Solution {
 private:
     vector<vector<pair<int, int>>> buildGraph(vector<vector<int>>& edges, int n) {
@@ -380,6 +383,124 @@ public:
 
         int res = 0;
         for (int i = 1; i < dist.size(); ++i) {
+            res = max(res, dist[i]);
+        }
+        return res == INT_MAX ? -1 : res;
+    }
+};
+
+// Bellman-ford algorithm with adjacent list impl.
+class Solution {
+private:
+    vector<vector<pair<int, int>>> buildGraph(vector<vector<int>>& edges, int n) {
+        // The entry represents each node index, the pair.first is the neighbors index,
+        // the pair.second is the weight.
+        vector<vector<pair<int, int>>> G(n+1);
+        for (auto& e : edges) {
+            G[e[0]].push_back({e[1], e[2]});
+        }
+        return G;
+    }
+public:
+    int networkDelayTime(vector<vector<int>>& times, int n, int k) {
+        // We have no way to formulate send the signal to all nodes.
+        if (times.size() < n-1) return -1;
+        // Creates our graph
+        vector<vector<pair<int, int>>> G = buildGraph(times, n);
+        // Note we creates n+1 nodes to make the index alignment easier.
+        vector<int> dist(n+1, INT_MAX);
+        dist[k] = 0;
+
+        // Relax all edges |V| - 1 times. A simple
+        // shortest path from src to any other vertex can have
+        // at-most |V| - 1 edges
+        for (int v = 0; v < n - 1; ++v) {
+            // Iterate all edges!
+            for (int i = 1; i <= n; ++i) {
+                for (int j = 0; j < G[i].size(); ++j) {
+                    
+                    int nodeSrc = i; 
+                    int nodeDst = G[i][j].first;
+                    int weight = G[i][j].second;
+                    if (dist[nodeSrc] != INT_MAX && 
+                        dist[nodeDst] > dist[nodeSrc] + weight) {
+                            dist[nodeDst] = dist[nodeSrc] + weight;
+                        }
+                }
+            }
+        }
+
+        /* Detect the negative cycle. Not needed for this problem.
+        ** We run all the edges one more time, if we can still find even
+        ** shorter path weight, we know there is a negative cycle. */
+        // Iterate all edges!
+        // for (int i = 1; i <= G.size(); ++i) {
+        //     for (int j = 0; j < n; ++j) {
+        //         int nodeSrc = i;
+        //         int nodeDst = G[i][j].first;
+        //         int weight = G[i][j].second;
+        //         if (dist[nodeSrc] != INT_MAX && 
+        //             dist[nodeDst] < dist[nodeSrc] + weight) {
+        //                 cout << "We've detected a negative cycle!";
+        //                 return -1;
+        //             }
+        //     }
+        // }
+
+        int res = 0;
+        // The first node in dist is a dummy node. We will skip it.
+        for (int i = 1; i < dist.size(); ++i) {
+            cout << i << " the weight is: " << dist[i] << endl;
+            res = max(res, dist[i]);
+        }
+        return res == INT_MAX ? -1 : res;
+    }
+};
+
+// Bellman-ford algorithm with edge list impl.
+class Solution {
+public:
+    int networkDelayTime(vector<vector<int>>& times, int n, int k) {
+        // Note we creates n+1 nodes to make the index alignment easier.
+        vector<int> dist(n+1, INT_MAX);
+        dist[k] = 0;
+
+        // Relax all edges |V| - 1 times. A simple
+        // shortest path from src to any other vertex can have
+        // at-most |V| - 1 edges
+        for (int v = 0; v < n - 1; ++v) {
+            // Iterate all edges!
+            for (int i = 0; i < times.size(); ++i){
+                int nodeSrc = times[i][0]; 
+                int nodeDst = times[i][1];
+                int weight = times[i][2];
+                if (dist[nodeSrc] != INT_MAX && 
+                    dist[nodeDst] > dist[nodeSrc] + weight) {
+                        dist[nodeDst] = dist[nodeSrc] + weight;
+                    }
+            }
+        }
+
+        /* Detect the negative cycle. Not needed for this problem.
+        ** We run all the edges one more time, if we can still find even
+        ** shorter path weight, we know there is a negative cycle. */
+        // for (int v = 0; v < n - 1; ++v) {
+        //     for (int i = 0; i < times.size(); ++i){
+        //         int nodeSrc = times[i][0]; 
+        //         int nodeDst = times[i][1];
+        //         int weight = times[i][2];
+        //         if (dist[nodeSrc] != INT_MAX && 
+        //             dist[nodeDst] > dist[nodeSrc] + weight) {
+        //             cout << "We've detected a negative cycle!";
+        //             return -1;
+        //         }
+        //     }
+        // }
+
+        int res = 0;
+        // The first node in dist is a dummy node. We will skip it.
+        for (int i = 1; i < dist.size(); ++i) {
+            cout << i << " the weight is: " << dist[i] << endl;
             res = max(res, dist[i]);
         }
         return res == INT_MAX ? -1 : res;
