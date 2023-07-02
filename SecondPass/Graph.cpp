@@ -620,3 +620,191 @@ public:
         return res == INT_MAX ? -1 : res;
     }
 };
+
+ /*
+    1584. Min Cost to Connect All Points
+    https://leetcode.com/problems/min-cost-to-connect-all-points/
+    You are given an array points representing integer coordinates of some points on a 2D-plane, 
+    where points[i] = [xi, yi].
+
+    The cost of connecting two points [xi, yi] and [xj, yj] is the manhattan distance between 
+    them: |xi - xj| + |yi - yj|, where |val| denotes the absolute value of val.
+
+    Return the minimum cost to make all points connected. All points are connected if there is 
+    exactly one simple path between any two points.
+
+    
+
+    Example 1:
+    Input: points = [[0,0],[2,2],[3,10],[5,2],[7,0]]
+    Output: 20
+    Explanation: 
+    We can connect the points as shown above to get the minimum cost of 20.
+    Notice that there is a unique path between every pair of points.
+
+    Example 2:
+    Input: points = [[3,12],[-2,5],[-4,1]]
+    Output: 18
+    
+
+    Constraints:
+    1 <= points.length <= 1000
+    -106 <= xi, yi <= 106
+    All pairs (xi, yi) are distinct.
+ */
+// MST: Kruskal’s algorithm + Union Find with rank
+class UnionSet {
+private:
+    vector<int> parent;
+    vector<int> rank;
+
+public:
+    UnionSet(int n) {
+        parent = vector<int>(n, -1);
+        rank = vector<int>(n, 0);
+    }
+
+    // Return the parent of node v
+    int find(int v) {
+        if (parent[v] == -1) return v;
+
+        return find(parent[v]); 
+    }
+
+    void unite(int s, int t) {
+        int parentS = find(s);
+        int parentT = find(t);
+        // Already united
+        if (parentS == parentT) return;
+        
+        if (rank[parentS] > rank[parentT]) parent[parentT] = parentS;
+        else if (rank[parentS] < rank[parentT]) parent[parentS] = parentT;
+        else {
+            parent[parentT] = parentS;
+            rank[parentT] ++;
+        } 
+    }
+
+};
+
+class Solution {
+private:
+    int getDist(vector<int>& p1, vector<int>& p2) {
+        return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1]);
+    }
+public:
+    int minCostConnectPoints(vector<vector<int>>& points) {
+        int n = points.size();
+        // Build the graph with edge representation!
+        // [i, j, w]
+        // Note using vector<vector<int>> will cause TLE. Use array is much faster!
+        vector<array<int, 3>> edges;
+        for (int i = 0; i < n; ++i) {
+            for (int j = i + 1; j < n; ++j) {
+                edges.push_back({i, j, getDist(points[i], points[j])});
+            }
+        }
+
+        // Build Union set
+        UnionSet uSet(n);
+
+        auto comp = [](array<int, 3>& e1, array<int, 3>& e2) {
+            return e1[2] > e2[2];
+        };
+        priority_queue<array<int, 3>, vector<array<int, 3>>, decltype(comp)> minQ(comp);
+    
+        for(int i = 0; i < edges.size(); ++i) {
+            minQ.push(edges[i]);
+        }
+        int res = 0;
+        // Kruskal's algorithm:
+        /*
+        In Kruskal’s algorithm, sort all edges of the given graph in increasing order. 
+        Then it keeps on adding new edges and nodes in the MST if the newly added edge 
+        does not form a cycle. It picks the minimum weighted edge at first at the 
+        maximum weighted edge at last. Thus we can say that it makes a locally 
+        optimal choice in each step in order to find the optimal solution.
+        */
+        while(!minQ.empty()) {
+            // We always start with the edge of the minimum weight!
+            auto e = minQ.top();
+            minQ.pop();
+            
+            int s = e[0];
+            int t = e[1];
+            int w = e[2];
+            if (uSet.find(s) != uSet.find(t)) {
+                uSet.unite(s, t);
+                res += w;
+            }
+        }
+        
+        return res;
+    }
+};
+
+// Prim's algorithm
+class Solution {
+private:
+    int getDist(vector<int>& p1, vector<int>& p2) {
+        return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1]);
+    }
+public:
+    int minCostConnectPoints(vector<vector<int>>& points) {
+        int n = points.size();
+        
+        // pair.first is the weight, pair.second is the index
+        // We need to build a complete graph with both [i, j] & [j, i] to be the path.
+        vector<vector<pair<int, int>>> Graph(n);
+        for (int i = 0; i < n; ++i) {
+            for (int j = i + 1; j < n; ++j) {
+                Graph[i].push_back({getDist(points[i], points[j]), j});
+                Graph[j].push_back({getDist(points[i], points[j]), i});
+            }
+        }
+        // The master priority queue which maintains the next minimum distance.
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> minQ;
+        
+        vector<int> visited(n, false);
+        int next = 0;
+        int res = 0;
+        int count = 0;
+        // Here we need to construct n - 1 edges to form a MST.
+        while(count < n - 1) {
+            visited[next] = true;
+            count++;
+            
+
+            for (pair<int, int> e :  Graph[next]) {
+                // Only adds unvisited nodes to the set.
+                // With this for loop, we will include all the edges which connected with
+                // current set to the pq.
+                if (!visited[e.second])
+                    minQ.push(e);
+            }
+            // cout << count << endl;
+
+            // Remove cycles. Take the following graph as an example:
+            /*    / 1 - 3 - 4
+                0   |
+                  \ 2
+                If we first process 0, then we added 1 & 2, then let's say, we process
+                2, we will add 1 one more time. Given we need to find the minimum of the 
+                unvisited node, the next time when we visit 1, we will get the smallest
+                first, then we remove the duplicated 1 immediately!
+            */
+            while(!minQ.empty() && visited[minQ.top().second]) {
+                minQ.pop();
+            }
+            
+            auto nextElement = minQ.top();
+            // We can also define a parent[n] array to keep track of the path
+            // parent[nextElement.second] = next;
+            next = nextElement.second;
+            res += nextElement.first;
+            minQ.pop();
+        }
+
+        return res;
+    }
+};
