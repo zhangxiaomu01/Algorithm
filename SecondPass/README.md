@@ -22,6 +22,7 @@ ID | Name | Difficulty | Category
 15|[3Sum](https://leetcode.com/problems/3sum/)| Medium | Two pointers
 18|[4Sum](https://leetcode.com/problems/4sum/)| Medium | Two pointers
 1004|[Max Consecutive Ones III](https://leetcode.com/problems/max-consecutive-ones-iii/)| Medium | Sliding window
+56|[Merge Intervals](https://leetcode.com/problems/merge-intervals/)| Medium | Sort
 
 ## Linked List
 ID | Name | Difficulty | Category
