@@ -1821,9 +1821,9 @@ public:
     
 
     Constraints:
-    1 <= prices.length <= 5 * 104
-    1 <= prices[i] < 5 * 104
-    0 <= fee < 5 * 104
+    1 <= prices.length <= 5 * 10^4
+    1 <= prices[i] < 5 * 10^4
+    0 <= fee < 5 * 10^4
  */
 // DP
 class Solution {
@@ -1846,5 +1846,81 @@ public:
         }
 
         return dp[n-1][1];
+    }
+};
+
+ /*
+    1143. Longest Common Subsequence
+    https://leetcode.com/problems/longest-common-subsequence/
+    Given two strings text1 and text2, return the length of their longest common subsequence. 
+    If there is no common subsequence, return 0.
+
+    A subsequence of a string is a new string generated from the original string with some 
+    characters (can be none) deleted without changing the relative order of the remaining 
+    characters.
+
+    For example, "ace" is a subsequence of "abcde".
+    A common subsequence of two strings is a subsequence that is common to both strings.
+
+    
+    Example 1:
+    Input: text1 = "abcde", text2 = "ace" 
+    Output: 3  
+    Explanation: The longest common subsequence is "ace" and its length is 3.
+
+    Example 2:
+    Input: text1 = "abc", text2 = "abc"
+    Output: 3
+    Explanation: The longest common subsequence is "abc" and its length is 3.
+
+    Example 3:
+    Input: text1 = "abc", text2 = "def"
+    Output: 0
+    Explanation: There is no such common subsequence, so the result is 0.
+    
+
+    Constraints:
+    1 <= text1.length, text2.length <= 1000
+    text1 and text2 consist of only lowercase English characters.
+ */
+// DP + print path!
+class Solution {
+private:
+    void printLCS(string& s1, vector<vector<int>>& path, int i, int j) {
+        if (i < 0 || j < 0) return;
+
+        if (path[i][j] == 1) {
+            printLCS(s1, path, i-1, j-1);
+            cout << s1[i] << " ";
+        } else if (path[i][j] == 2) printLCS(s1, path, i, j-1);
+        else printLCS(s1, path, i-1, j);
+    }
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        int m = text1.size(), n = text2.size();
+        vector<vector<int>> dp(m+1, vector<int>(n+1, 0));
+        // We would like to print the sequence, we have to save the relationship in
+        // an array.
+        vector<vector<int>> path(m, vector<int>(n, 0));
+        
+        for(int i = 1; i <= m; ++i) {
+            for (int j = 1; j <= n; ++j) {
+                if (text1[i-1] == text2[j-1]) {
+                    dp[i][j] = dp[i-1][j-1] + 1;
+                    // Save path
+                    path[i-1][j-1] = 1;
+                }
+                else {
+                    dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+
+                    // Save path
+                    if (dp[i-1][j] < dp[i][j-1]) path[i-1][j-1] = 2;
+                    else path[i-1][j-1] = 3;
+                }
+            }
+        }
+        // Print the LCS.
+        printLCS(text1, path, m-1, n-1);
+        return dp[m][n];
     }
 };
