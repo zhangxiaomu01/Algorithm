@@ -165,3 +165,4 @@ ID | Name | Difficulty | Category
 743|[**Network Delay Time**](https://leetcode.com/problems/network-delay-time/)| Medium | Dijkstra/Bellman-ford/SPFA/Floyd
 1584|[**Min Cost to Connect All Points**](https://leetcode.com/problems/min-cost-to-connect-all-points/)| Medium | Kruskal’s algorithm + Union Find / Prim's algorithm
 T01|A* implementation| N/A | A* algorithm
+207|[**Course Schedule**](https://leetcode.com/problems/course-schedule/)| Medium | Topological sorting

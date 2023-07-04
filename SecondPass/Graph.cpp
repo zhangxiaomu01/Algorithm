@@ -814,3 +814,117 @@ Good implementation (with abstraction): https://github.com/daancode/a-star/blob/
 
 A good explanation: https://blog.csdn.net/qq826364410/article/details/79827915.
 */
+
+
+ /*
+    207. Course Schedule
+    https://leetcode.com/problems/course-schedule/
+    There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. 
+    You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must 
+    take course bi first if you want to take course ai.
+
+    For example, the pair [0, 1], indicates that to take course 0 you have to first take course 1.
+    Return true if you can finish all courses. Otherwise, return false.
+
+    
+    Example 1:
+    Input: numCourses = 2, prerequisites = [[1,0]]
+    Output: true
+    Explanation: There are a total of 2 courses to take. 
+    To take course 1 you should have finished course 0. So it is possible.
+
+    Example 2:
+    Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
+    Output: false
+    Explanation: There are a total of 2 courses to take. 
+    To take course 1 you should have finished course 0, and to take course 0 you should also have finished course 1. So it is impossible.
+    
+
+    Constraints:
+    1 <= numCourses <= 2000
+    0 <= prerequisites.length <= 5000
+    prerequisites[i].length == 2
+    0 <= ai, bi < numCourses
+    All the pairs prerequisites[i] are unique.
+ */
+// BFS - Topological sorting
+class Solution {
+public:
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        vector<vector<int>> G(numCourses);
+        vector<int> inDegree(numCourses, 0);
+        for (int i = 0; i < prerequisites.size(); ++i) {
+            G[prerequisites[i][1]].push_back(prerequisites[i][0]);
+            inDegree[prerequisites[i][0]] ++;
+        }
+
+        queue<int> Q;
+        int count = 0;
+        // Put all the courses which do not need prerequisites.
+        for(int i = 0; i < inDegree.size(); ++i) {
+            if (inDegree[i] == 0) {
+                Q.push(i);
+                count++;
+            }
+        }
+
+        if (Q.empty()) return false;
+
+        while(!Q.empty()) {
+            int course = Q.front();
+            Q.pop();
+
+            for (int i = 0; i < G[course].size(); ++i) {
+                int next = G[course][i];
+                inDegree[next] --;
+                if (inDegree[next] == 0) {
+                    count ++;
+                    // Note we only push next to the queue whenever its incoming
+                    // degree becomes 0. We can only take this course when the degree
+                    // is 0.
+                    Q.push(next);
+                }
+            }
+        }
+
+        return count == numCourses;
+    }
+};
+
+// DFS + topological sorting!
+class Solution {
+private:
+    bool dfs(vector<vector<int>>& G, int start, vector<bool>& isInCurrentPath, vector<bool>& isVisited) {
+        if (isInCurrentPath[start]) return false;
+        if (isVisited[start]) return true;
+
+        isInCurrentPath[start] = true;
+        isVisited[start] = true;
+        for (int i = 0; i < G[start].size(); ++i) {
+            int next = G[start][i];
+            if (!dfs(G, next, isInCurrentPath, isVisited)) return false; 
+        }
+        
+        isInCurrentPath[start] = false;
+        return true;
+    }
+public:
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        vector<vector<int>> G(numCourses);
+        vector<int> inDegree(numCourses, 0);
+        for (int i = 0; i < prerequisites.size(); ++i) {
+            G[prerequisites[i][1]].push_back(prerequisites[i][0]);
+            inDegree[prerequisites[i][0]] ++;
+        }
+
+        vector<bool> isInCurrentPath(numCourses, false);
+        vector<bool> visited(numCourses, false);
+        for (int i = 0; i < numCourses; ++i) {
+            // Skip the visited nodes! Please note that we cannot just iterate with the 
+            // nodes with 0 incoming degree (like BFS). Given there might be a cycle
+            // somewhere else which won't be evaluated!
+            if (!visited[i] && !dfs(G, i, isInCurrentPath, visited)) return false;
+        }
+        return true;
+    }
+};
