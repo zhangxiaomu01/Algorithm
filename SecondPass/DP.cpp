@@ -1924,3 +1924,69 @@ public:
         return dp[m][n];
     }
 };
+
+
+ /*
+    300. Longest Increasing Subsequence
+    https://leetcode.com/problems/longest-increasing-subsequence/
+    Given an integer array nums, return the length of the longest strictly increasing 
+    subsequence.
+
+
+    Example 1:
+    Input: nums = [10,9,2,5,3,7,101,18]
+    Output: 4
+    Explanation: The longest increasing subsequence is [2,3,7,101], therefore the length is 4.
+
+    Example 2:
+    Input: nums = [0,1,0,3,2,3]
+    Output: 4
+
+    Example 3:
+    Input: nums = [7,7,7,7,7,7,7]
+    Output: 1
+    
+
+    Constraints:
+    1 <= nums.length <= 2500
+    -104 <= nums[i] <= 104
+    
+
+    Follow up: Can you come up with an algorithm that runs in O(n log(n)) time complexity?
+ */
+// DP + print path!
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        int n = nums.size();
+        // dp[i] means the longest increasing subsequence util i.
+        vector<int> dp(n+1, 1);
+        dp[0] = 0;
+        int res = 1;
+        for (int i = 2; i <= nums.size(); ++i) {
+            for (int j = 1; j < i; ++j) {
+                if (nums[i - 1] > nums[j - 1]) {
+                    dp[i] = max(dp[i], dp[j] + 1);
+                }
+            }
+            res = max(res, dp[i]);
+        }
+        return res;
+    }
+};
+
+// O(nlogn) solution: not easy to figure it out.
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        int len = nums.size();
+        if(!len) return 0;
+        vector<int> dp;
+        for(int i = 0; i < len; ++i){
+            auto it = lower_bound(dp.begin(), dp.end(), nums[i]);
+            if(it == dp.end()) dp.push_back(nums[i]);
+            else *it = nums[i];
+        }
+        return dp.size();
+    }
+};
