@@ -154,6 +154,7 @@ ID | Name | Difficulty | Category
 714|[Best Time to Buy and Sell Stock with Transaction Fee](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/)| Medium | DP, similar to 122
 1143|[Longest Common Subsequence](https://leetcode.com/problems/longest-common-subsequence/)| Medium | DP + print path
 300|[Longest Increasing Subsequence](https://leetcode.com/problems/longest-increasing-subsequence/)| Medium | DP + O(nlogn) solution
+674|[Longest Continuous Increasing Subsequence](https://leetcode.com/problems/longest-continuous-increasing-subsequence/)| Easy | DP + Greedy
 
 
 
