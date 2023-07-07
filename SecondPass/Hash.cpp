@@ -116,7 +116,7 @@ public:
     The substring with start index = 2 is "ab", which is an anagram of "ab".
 
     Constraints:
-    1 <= s.length, p.length <= 3 * 104
+    1 <= s.length, p.length <= 3 * 10^4
     s and p consist of lowercase English letters.
  */
 class Solution {
@@ -154,7 +154,8 @@ public:
     1002. Find Common Characters
     https://leetcode.com/problems/find-common-characters/
 
-    Given a string array words, return an array of all characters that show up in all strings within the words (including duplicates). You may return the answer in any order.
+    Given a string array words, return an array of all characters that show up in all strings 
+    within the words (including duplicates). You may return the answer in any order.
 
     Example 1:
     Input: words = ["bella","label","roller"]

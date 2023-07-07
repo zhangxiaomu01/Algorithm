@@ -1855,7 +1855,7 @@ public:
     
 
     Constraints:
-    The number of nodes in the tree is in the range [1, 104].
+    The number of nodes in the tree is in the range [1, 10^4].
     -10^5 <= Node.val <= 10^5
     
     Follow up: Could you do that without using any extra space? 
@@ -1958,8 +1958,8 @@ public:
     
 
     Constraints:
-    The number of nodes in the tree is in the range [2, 105].
-    -109 <= Node.val <= 109
+    The number of nodes in the tree is in the range [2, 10^5].
+    -109 <= Node.val <= 10^9
     All Node.val are unique.
     p != q
     p and q will exist in the tree.
@@ -2338,26 +2338,25 @@ public:
  /*
     669. Trim a Binary Search Tree
     https://leetcode.com/problems/trim-a-binary-search-tree/
-    Given the root of a binary search tree and the lowest and highest boundaries as low and high, trim the tree so that all its elements lies in [low, high]. Trimming the tree should not change the relative structure of the elements that will remain in the tree (i.e., any node's descendant should remain a descendant). It can be proven that there is a unique answer.
+    Given the root of a binary search tree and the lowest and highest boundaries as low and high, 
+    trim the tree so that all its elements lies in [low, high]. Trimming the tree should not 
+    change the relative structure of the elements that will remain in the tree (i.e., any node's 
+    descendant should remain a descendant). It can be proven that there is a unique answer.
 
-    Return the root of the trimmed binary search tree. Note that the root may change depending on the given bounds.
-
+    Return the root of the trimmed binary search tree. Note that the root may change depending on 
+    the given bounds.
     
 
     Example 1:
-
-
     Input: root = [1,0,2], low = 1, high = 2
     Output: [1,null,2]
+
     Example 2:
-
-
     Input: root = [3,0,4,null,2,null,null,1], low = 1, high = 3
     Output: [3,2,null,1]
     
 
     Constraints:
-
     The number of nodes in the tree is in the range [1, 104].
     0 <= Node.val <= 10^4
     The value of each node in the tree is unique.

@@ -23,7 +23,9 @@
         "ranges": "cpp",
         "span": "cpp",
         "map": "cpp",
-        "cstdlib": "cpp"
+        "cstdlib": "cpp",
+        "atomic": "cpp",
+        "system_error": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

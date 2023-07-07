@@ -16,10 +16,10 @@ ID | Name | Difficulty | Category
 977|[Squares of a Sorted Array (follow up)](https://leetcode.com/problems/squares-of-a-sorted-array/)| Easy | Double pointer
 209|[Minimum Size Subarray Sum](https://leetcode.com/problems/minimum-size-subarray-sum/)| Medium | Double pointer
 904|[Fruit Into Baskets](https://leetcode.com/problems/fruit-into-baskets/)| Medium | Sliding window
-76|[Minimum Window Substring](https://leetcode.com/problems/minimum-window-substring/)| Hard | Sliding window
-54|[Spiral Matrix](https://leetcode.com/problems/spiral-matrix/)| Medium | Simulation
+76|[**Minimum Window Substring**](https://leetcode.com/problems/minimum-window-substring/)| Hard | Sliding window
+54|[**Spiral Matrix**](https://leetcode.com/problems/spiral-matrix/)| Medium | Simulation
 59|[Spiral Matrix II](https://leetcode.com/problems/spiral-matrix-ii/)| Medium | Simulation
-15|[3Sum](https://leetcode.com/problems/3sum/)| Medium | Two pointers
+15|[**3Sum**](https://leetcode.com/problems/3sum/)| Medium | Two pointers
 18|[4Sum](https://leetcode.com/problems/4sum/)| Medium | Two pointers
 1004|[Max Consecutive Ones III](https://leetcode.com/problems/max-consecutive-ones-iii/)| Medium | Sliding window
 56|[Merge Intervals](https://leetcode.com/problems/merge-intervals/)| Medium | Sort
@@ -39,11 +39,11 @@ ID | Name | Difficulty | Category
 ID | Name | Difficulty | Category
  ---- | ------------- | -------- | ------
 242|[Valid Anagram](https://leetcode.com/problems/valid-anagram/)| Easy | Hash map
-49|[Group Anagrams](https://leetcode.com/problems/group-anagrams/)| Easy | Hash map / operation
-438|[Find All Anagrams in a String](https://leetcode.com/problems/find-all-anagrams-in-a-string/)| Medium | Hash calculation
+49|[**Group Anagrams**](https://leetcode.com/problems/group-anagrams/)| Easy | Hash map / operation
+438|[**Find All Anagrams in a String**](https://leetcode.com/problems/find-all-anagrams-in-a-string/)| Medium | Hash calculation
 1002|[Find Common Characters](https://leetcode.com/problems/find-common-characters/)| Easy | Hash calculation
 202|[Happy Number](https://leetcode.com/problems/happy-number/)| Easy | Hash set
-454|[4Sum II](https://leetcode.com/problems/4sum-ii/)| Medium | Hash set
+454|[**4Sum II**](https://leetcode.com/problems/4sum-ii/)| Medium | Hash set
 15|[3Sum](https://leetcode.com/problems/3sum/)| Medium | Hash (tricky impl)
 383|[Ransom Note](https://leetcode.com/problems/ransom-note/)| Easy | Array as a hash set
 
@@ -65,7 +65,7 @@ ID | Name | Difficulty | Category
 20|[Valid Parentheses](https://leetcode.com/problems/valid-parentheses/)| Easy | Stack
 1047|[Remove All Adjacent Duplicates In String](https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string/)| Easy | Stack
 150|[Evaluate Reverse Polish Notation](https://leetcode.com/problems/evaluate-reverse-polish-notation/)| Medium | Stack
-239|[Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/)| hard | maximum queue
+239|[**Sliding Window Maximum**](https://leetcode.com/problems/sliding-window-maximum/)| hard | maximum queue
 347|[Top K Frequent Elements](https://leetcode.com/problems/top-k-frequent-elements/)| Medium | priority queue
 71|[Simplify Path](https://leetcode.com/problems/simplify-path/)| Medium | stack + stringstream
 
