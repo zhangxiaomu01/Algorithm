@@ -380,9 +380,8 @@ public:
  /*
     152. Maximum Product Subarray
     https://leetcode.com/problems/unique-binary-search-trees/
-    Given an integer array nums, find a 
-    subarray
-    that has the largest product, and return the product.
+    Given an integer array nums, find a subarray that has the largest product, and 
+    return the product.
 
     The test cases are generated so that the answer will fit in a 32-bit integer.
 
@@ -994,6 +993,7 @@ public:
         vector<unsigned int> dp(target+1, 0);
         dp[0] = 1;
 
+        // Please note we have to start with target as the outer loop.
         for (int j = 0; j <= target; ++j) {
             for(int i = 1; i <= n; ++i) {
                 if (j >= nums[i-1])
@@ -1759,34 +1759,33 @@ public:
 // DP
 class Solution {
 public:
-    int maxProfit(int k, vector<int>& prices) {
+    int maxProfit(vector<int>& prices) {
         int n = prices.size();
-        // dp[i][k%2==0] represents the k+1 th trasaction while we hold stock;
-        // dp[i][k%2==1] represents the k+1 th trasaction while we do not hold stock.
-        vector<vector<int>> dp(n, vector<int>(2*k, INT_MIN));
-        for (int i = 0; i < 2*k; ++i) {
-            if (i % 2 == 0) {
-                dp[0][i] = -prices[0];
-            } else {
-                dp[0][i] = 0;
-            }
-        }
+
+        vector<vector<int>> dp(n, vector<int>(4, INT_MIN));
+        // dp[i][0] represents the maximum profit while hold stock at day i.
+        // dp[i][1] represents the maximum profit while not hold stock from prevous day i-1.
+        // dp[i][2] represents the maximum profit while we sell stock at day i (special
+        // situation of dp[i][1]).
+        // dp[i][3] represents the maximum profit on cool down day i.
+        dp[0][0] = -prices[0];
+        dp[0][1] = 0;
+        dp[0][2] = 0;
+        dp[0][3] = 0;
 
         for (int i = 1; i < n; ++i) {
-            dp[i][0] = max(-prices[i], dp[i-1][0]);
-            dp[i][1] = max(dp[i-1][0] + prices[i], dp[i-1][1]);
-            for (int j = 2; j < 2 * k - 1; j += 2) {
-                // i + 1 the trasaction that we hold stock.
-                // For dp[i][j], we need to derive from dp[i][j-1], basically we only buy
-                // k+1 th stock after we have make sure that in the ith day, 
-                // we do not hold hay stocks && have sold kth stock.
-                dp[i][j] = max(dp[i][j-1] - prices[i], dp[i-1][j]);
-                dp[i][j+1] = max(dp[i-1][j] + prices[i], dp[i-1][j+1]);
-            }
+            // We either derive the same profit from previous hold day, or buy today.
+            dp[i][0] = max(max(dp[i-1][0], dp[i-1][1] - prices[i]), dp[i-1][3] - prices[i]);
+            // dp[i][1] is valid if we do not hold stock from previous day or we are at cool
+            // down state from previous day.
+            dp[i][1] = max(dp[i-1][1], dp[i-1][3]);
+            // We will sell stock at day i, only one situation
+            dp[i][2] = dp[i-1][0] + prices[i];
+            // We are at cool down state, so previous day we must have sold the stock.
+            dp[i][3] = dp[i-1][2];
         }
 
-        // The maximum profit equals to the sell of **at most** k stocks.
-        return dp[n-1][2*k-1];
+        return max(max(dp[n-1][1], dp[n-1][2]), dp[n-1][3]);
     }
 };
 
