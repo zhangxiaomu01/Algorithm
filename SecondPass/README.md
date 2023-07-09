@@ -157,6 +157,7 @@ ID | Name | Difficulty | Category
 300|[Longest Increasing Subsequence](https://leetcode.com/problems/longest-increasing-subsequence/)| Medium | DP + O(nlogn) solution
 674|[Longest Continuous Increasing Subsequence](https://leetcode.com/problems/longest-continuous-increasing-subsequence/)| Easy | DP + Greedy
 1035|[Uncrossed Lines](https://leetcode.com/problems/uncrossed-lines/)| Medium | DP / longest common subsequence
+53|[Maximum Subarray](https://leetcode.com/problems/maximum-subarray/)| Medium | DP / Greedy
 
 
 
