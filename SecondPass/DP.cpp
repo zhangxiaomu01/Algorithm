@@ -2161,7 +2161,6 @@ public:
     https://leetcode.com/problems/maximum-subarray/
     Given an integer array nums, find the subarray with the largest sum, and return its sum.
 
-    
 
     Example 1:
     Input: nums = [-2,1,-3,4,-1,2,1,-5,4]
@@ -2180,8 +2179,8 @@ public:
     
 
     Constraints:
-    1 <= nums.length <= 105
-    -104 <= nums[i] <= 104
+    1 <= nums.length <= 10^5
+    -10^4 <= nums[i] <= 10^4
  */
 // DP:
 class Solution {
@@ -2212,5 +2211,48 @@ public:
             if (sum < 0) sum = 0;
         }
         return res;
+    }
+};
+
+ /*
+    392. Is Subsequence
+    https://leetcode.com/problems/is-subsequence/
+    Given two strings s and t, return true if s is a subsequence of t, or false otherwise.
+    A subsequence of a string is a new string that is formed from the original string by 
+    deleting some (can be none) of the characters without disturbing the relative positions 
+    of the remaining characters. (i.e., "ace" is a subsequence of "abcde" while "aec" is not).
+
+    
+    Example 1:
+    Input: s = "abc", t = "ahbgdc"
+    Output: true
+
+    Example 2:
+    Input: s = "axc", t = "ahbgdc"
+    Output: false
+    
+    Constraints:
+    0 <= s.length <= 100
+    0 <= t.length <= 104
+    s and t consist only of lowercase English letters.
+ */
+// We could also rely on hash map for this problem. It's too trival to implement it. Omit.
+// DP:
+class Solution {
+public:
+    bool isSubsequence(string s, string t) {
+        if (s.size() > t.size()) return false;
+        // DP[i][j] means the maximum subsequence between s and t.
+        vector<vector<int>> dp(s.size() + 1, vector<int>(t.size() + 1, 0));
+        for (int i = 1; i <= s.size(); ++i) {
+            for (int j = 1; j <= t.size(); ++j) {
+                // If we find a match, then we need to incremental the dp[i][j] by one
+                if (s[i-1] == t[j-1]) dp[i][j] = dp[i-1][j-1] + 1;
+                // If we cannot find the correct match, we need to "delete" one character
+                // from t.
+                else dp[i][j] = dp[i][j-1];
+            }
+        }
+        return dp[s.size()][t.size()] == s.size();
     }
 };
