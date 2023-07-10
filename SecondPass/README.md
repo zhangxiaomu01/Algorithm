@@ -161,6 +161,7 @@ ID | Name | Difficulty | Category
 392|[Is Subsequence](https://leetcode.com/problems/is-subsequence/)| Easy | DP / Hashmap
 115|[Distinct Subsequences](https://leetcode.com/problems/distinct-subsequences/)| Medium | DP
 583|[Delete Operation for Two Strings](https://leetcode.com/problems/delete-operation-for-two-strings/)| Medium | DP
+72|[**Edit Distance**](https://leetcode.com/problems/edit-distance/)| Medium | DP
 
 
 
