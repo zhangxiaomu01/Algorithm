@@ -2256,3 +2256,49 @@ public:
         return dp[s.size()][t.size()] == s.size();
     }
 };
+
+ /*
+    115. Distinct Subsequences
+    https://leetcode.com/problems/distinct-subsequences/
+    Given two strings s and t, return the number of distinct 
+    subsequences of s which equals t.
+    The test cases are generated so that the answer fits on a 32-bit signed integer.
+
+    
+    Example 1:
+    Input: s = "rabbbit", t = "rabbit"
+    Output: 3
+
+    Example 2:
+    Input: s = "babgbag", t = "bag"
+    Output: 5
+    
+
+    Constraints:
+    1 <= s.length, t.length <= 1000
+    s and t consist of English letters.
+ */
+// DP:
+class Solution {
+public:
+    int numDistinct(string s, string t) {
+        int n = s.size(), m = t.size();
+        if (m > n) return 0;
+
+        // dp[i][j] means from t[0..i] and s[0..j], what is the maximum number of 
+        // distinct subsequence.
+        vector<vector<unsigned int>> dp(m+1, vector<unsigned int>(n+1, 0));
+        for (int i = 0; i <= n; ++i) dp[0][i] = 1;
+
+        for (int i = 1; i <= m; ++i) {
+            for (int j = 1; j <= n; ++j) {
+                // When s[j-1] == t[i-1], we can match this two character, we can also
+                // ignore this match.
+                if (s[j-1] == t[i-1]) dp[i][j] = dp[i-1][j-1] + dp[i][j-1];
+                else dp[i][j] = dp[i][j-1];
+            }
+        }
+
+        return dp[m][n];
+    }
+};

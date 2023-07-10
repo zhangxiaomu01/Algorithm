@@ -159,6 +159,7 @@ ID | Name | Difficulty | Category
 1035|[Uncrossed Lines](https://leetcode.com/problems/uncrossed-lines/)| Medium | DP / longest common subsequence
 53|[Maximum Subarray](https://leetcode.com/problems/maximum-subarray/)| Medium | DP / Greedy
 392|[Is Subsequence](https://leetcode.com/problems/is-subsequence/)| Easy | DP / Hashmap
+115|[Distinct Subsequences](https://leetcode.com/problems/distinct-subsequences/)| Medium | DP
 
 
 
