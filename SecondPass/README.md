@@ -162,7 +162,7 @@ ID | Name | Difficulty | Category
 115|[Distinct Subsequences](https://leetcode.com/problems/distinct-subsequences/)| Medium | DP
 583|[Delete Operation for Two Strings](https://leetcode.com/problems/delete-operation-for-two-strings/)| Medium | DP
 72|[**Edit Distance**](https://leetcode.com/problems/edit-distance/)| Medium | DP
-647|[**Palindromic Substrings**](https://leetcode.com/problems/palindromic-substrings/)| Medium | DP
+647|[**Palindromic Substrings**](https://leetcode.com/problems/palindromic-substrings/)| Medium | DP / Two pointers
 
 ## Graph
 ID | Name | Difficulty | Category

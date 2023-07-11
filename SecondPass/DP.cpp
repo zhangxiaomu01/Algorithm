@@ -2482,3 +2482,32 @@ public:
         return res;
     }
 };
+
+// Two pointers
+class Solution {
+private:
+    int extend(string& s, int i, int j) {
+        int count = 0;
+        while(i >= 0 && j < s.size()) {
+            if (s[i] == s[j]) count++;
+            else break;
+            i--;
+            j++;
+        }
+        return count;
+    }
+
+public:
+    int countSubstrings(string s) {
+        int n = s.size();
+        int res = 0;
+        for (int i = 0; i < n; ++i) {
+            // Handle the case that palindromic string has odd number of characters
+            // 'aba'
+            res += extend(s, i, i);
+            // Even number of characters: 'abba'
+            res += extend(s, i, i+1);
+        }
+        return res;
+    }
+};
