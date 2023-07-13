@@ -25,7 +25,8 @@
         "map": "cpp",
         "cstdlib": "cpp",
         "atomic": "cpp",
-        "system_error": "cpp"
+        "system_error": "cpp",
+        "xmemory": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

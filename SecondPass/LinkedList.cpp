@@ -283,7 +283,9 @@ public:
     24. Swap Nodes in Pairs
     https://leetcode.com/problems/swap-nodes-in-pairs/
  
-    Given a linked list, swap every two adjacent nodes and return its head. You must solve the problem without modifying the values in the list's nodes (i.e., only nodes themselves may be changed.)
+    Given a linked list, swap every two adjacent nodes and return its head. You must solve the 
+    problem without modifying the values in the list's nodes (i.e., only nodes themselves may be 
+    changed.)
 
     Example 1:
     Input: head = [1,2,3,4]
@@ -396,7 +398,8 @@ public:
     160. Intersection of Two Linked Lists
     https://leetcode.com/problems/intersection-of-two-linked-lists/
  
-    Given the heads of two singly linked-lists headA and headB, return the node at which the two lists intersect. If the two linked lists have no intersection at all, return null.
+    Given the heads of two singly linked-lists headA and headB, return the node at which the two 
+    lists intersect. If the two linked lists have no intersection at all, return null.
     For example, the following two linked lists begin to intersect at node c1:
 
 

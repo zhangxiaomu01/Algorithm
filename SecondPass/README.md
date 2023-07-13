@@ -175,3 +175,8 @@ ID | Name | Difficulty | Category
 1584|[**Min Cost to Connect All Points**](https://leetcode.com/problems/min-cost-to-connect-all-points/)| Medium | Kruskal’s algorithm + Union Find / Prim's algorithm
 T01|A* implementation| N/A | A* algorithm
 207|[**Course Schedule**](https://leetcode.com/problems/course-schedule/)| Medium | Topological sorting
+
+## MonotonicStack
+ID | Name | Difficulty | Category
+ ---- | ------------- | -------- | ------
+739|[Daily Temperatures](https://leetcode.com/problems/daily-temperatures/)| Medium | Monotonic stack
