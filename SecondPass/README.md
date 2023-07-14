@@ -180,3 +180,8 @@ T01|A* implementation| N/A | A* algorithm
 ID | Name | Difficulty | Category
  ---- | ------------- | -------- | ------
 739|[Daily Temperatures](https://leetcode.com/problems/daily-temperatures/)| Medium | Monotonic stack
+
+## Design
+ID | Name | Difficulty | Category
+ ---- | ------------- | -------- | ------
+146|[LRU Cache](https://leetcode.com/problems/lru-cache/)| Medium | Class design
