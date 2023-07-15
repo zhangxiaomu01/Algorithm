@@ -180,7 +180,8 @@ T01|A* implementation| N/A | A* algorithm
 ID | Name | Difficulty | Category
  ---- | ------------- | -------- | ------
 739|[Daily Temperatures](https://leetcode.com/problems/daily-temperatures/)| Medium | Monotonic stack
-42|[Trapping Rain Water](https://leetcode.com/problems/trapping-rain-water/)| Medium | Monotonic stack / Two pointers
+42|[**Trapping Rain Water**](https://leetcode.com/problems/trapping-rain-water/)| Hard | Monotonic stack / Two pointers
+84|[**Largest Rectangle in Histogram**](https://leetcode.com/problems/largest-rectangle-in-histogram/)| Hard | Monotonic stack / Two pointers
 
 ## Design
 ID | Name | Difficulty | Category

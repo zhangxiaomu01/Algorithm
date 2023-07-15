@@ -124,3 +124,92 @@ public:
         return res;
     }
 };
+
+ /*
+    84. Largest Rectangle in Histogram
+    https://leetcode.com/problems/largest-rectangle-in-histogram/
+    Given an array of integers heights representing the histogram's bar height where the width of each bar is 1, return 
+    the area of the largest rectangle in the histogram.
+
+    Example 1:
+    Input: heights = [2,1,5,6,2,3]
+    Output: 10
+    Explanation: The above is a histogram where width of each bar is 1.
+    The largest rectangle is shown in the red area, which has an area = 10 units.
+
+    Example 2:
+    Input: heights = [2,4]
+    Output: 4
+    
+
+    Constraints:
+    1 <= heights.length <= 10^5
+    0 <= heights[i] <= 10^4
+ */
+class Solution {
+public:
+    int largestRectangleArea(vector<int>& heights) {
+        // Adds the placeholder.
+         heights.insert(heights.begin(), 0);
+         heights.push_back(0);
+
+         // increasing stack, note that it saves the indices.
+         stack<int> st;
+         st.push(0);
+         int n = heights.size();
+         int res = 0;
+
+         for (int i = 1; i < n; ++i) {
+             while(!st.empty() && heights[i] < heights[st.top()]) {
+                int index = st.top();
+                int currentHeight = heights[index];
+                st.pop();
+                if (!st.empty()) {
+                    int left = st.top();
+                    int right = i;
+                    int width = right - left - 1;
+                    res = max(res, currentHeight * width);
+                }
+             }
+             // We can safely ignore the heights[i] == heights[st.top()] condition
+             // Because in the end, we always hit height == 0, then we will calculate
+             // res correctly!
+             st.push(i);
+         }
+        return res;
+    }
+};
+
+// Two pointer: not my solution / Not easy to implement!
+class Solution {
+public:
+    int largestRectangleArea(vector<int>& heights) {
+        vector<int> minLeftIndex(heights.size());
+        vector<int> minRightIndex(heights.size());
+        int size = heights.size();
+
+        // 记录每个柱子 左边第一个小于该柱子的下标
+        minLeftIndex[0] = -1; // 注意这里初始化，防止下面while死循环
+        for (int i = 1; i < size; i++) {
+            int t = i - 1;
+            // 这里不是用if，而是不断向左寻找的过程
+            while (t >= 0 && heights[t] >= heights[i]) t = minLeftIndex[t];
+            minLeftIndex[i] = t;
+        }
+        // 记录每个柱子 右边第一个小于该柱子的下标
+        minRightIndex[size - 1] = size; // 注意这里初始化，防止下面while死循环
+        for (int i = size - 2; i >= 0; i--) {
+            int t = i + 1;
+            // 这里不是用if，而是不断向右寻找的过程
+            while (t < size && heights[t] >= heights[i]) t = minRightIndex[t];
+            minRightIndex[i] = t;
+        }
+        // 求和
+        int result = 0;
+        for (int i = 0; i < size; i++) {
+            int sum = heights[i] * (minRightIndex[i] - minLeftIndex[i] - 1);
+            result = max(sum, result);
+        }
+        return result;
+    }
+};
