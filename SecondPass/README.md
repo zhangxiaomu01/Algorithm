@@ -183,6 +183,7 @@ ID | Name | Difficulty | Category
 42|[**Trapping Rain Water**](https://leetcode.com/problems/trapping-rain-water/)| Hard | Monotonic stack / Two pointers
 84|[**Largest Rectangle in Histogram**](https://leetcode.com/problems/largest-rectangle-in-histogram/)| Hard | Monotonic stack / Two pointers
 496|[Next Greater Element I](https://leetcode.com/problems/next-greater-element-i/)| Easy | Monotonic stack
+503|[Next Greater Element II](https://leetcode.com/problems/next-greater-element-ii/)| Medium | Monotonic stack
 
 ## Design
 ID | Name | Difficulty | Category
