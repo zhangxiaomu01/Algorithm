@@ -666,8 +666,8 @@ public:
     // Return the parent of node v
     int find(int v) {
         if (parent[v] == -1) return v;
-
-        return find(parent[v]); 
+        parent[v] = find(parent[v]);
+        return parent[v]; 
     }
 
     void unite(int s, int t) {
@@ -680,7 +680,7 @@ public:
         else if (rank[parentS] < rank[parentT]) parent[parentS] = parentT;
         else {
             parent[parentT] = parentS;
-            rank[parentT] ++;
+            rank[parentS] ++;
         } 
     }
 
@@ -928,3 +928,93 @@ public:
         return true;
     }
 };
+
+ /*
+    547. Number of Provinces
+    https://leetcode.com/problems/number-of-provinces/
+    There are n cities. Some of them are connected, while some are not. If city a is connected directly with city b, and 
+    city b is connected directly with city c, then city a is connected indirectly with city c.
+
+    A province is a group of directly or indirectly connected cities and no other cities outside of the group.
+
+    You are given an n x n matrix isConnected where isConnected[i][j] = 1 if the ith city and the jth city are directly 
+    connected, and isConnected[i][j] = 0 otherwise.
+
+    Return the total number of provinces.
+
+    
+
+    Example 1:
+    Input: isConnected = [[1,1,0],[1,1,0],[0,0,1]]
+    Output: 2
+
+    Example 2:
+    Input: isConnected = [[1,0,0],[0,1,0],[0,0,1]]
+    Output: 3
+    
+
+    Constraints:
+    1 <= n <= 200
+    n == isConnected.length
+    n == isConnected[i].length
+    isConnected[i][j] is 1 or 0.
+    isConnected[i][i] == 1
+    isConnected[i][j] == isConnected[j][i]
+ */
+class UnionFind {
+private:
+    vector<int> parent;
+    vector<int> rank;
+
+public:
+    UnionFind(int n) {
+        parent = vector<int>(n, -1);
+        rank = vector<int>(n, 0);
+        for (int i = 0; i < n; ++i) parent[i] = i;
+    }
+    
+public:
+    int Find(int x) {
+        if (x == parent[x]) return x;
+        // Needs to update the parent[x] here to compress the path.
+        parent[x] = Find(parent[x]);
+        return parent[x];
+    }
+
+    void Union(int x, int y) {
+        int px = Find(x);
+        int py = Find(y);
+        if (px == py) return;
+        if (rank[px] < rank[py]) {
+            parent[px] = py;
+        } else if (rank[px] > rank[py]) {
+            parent[py] = px;
+        } else {
+            parent[py] = px;
+            rank[px]++;
+        }
+    }
+};
+
+
+class Solution {
+public:
+    int findCircleNum(vector<vector<int>>& isConnected) {
+        int n = isConnected.size();
+        UnionFind uf(n);
+        int res = n;
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (i == j) continue;
+                if (isConnected[i][j] == 1 && uf.Find(i) != uf.Find(j)) {
+                    uf.Union(i, j);
+                    res--;
+                }
+            }
+        }
+        return res;
+    }
+};
+
+// We could also do BFS or DFS, just maitain a visited[n] array, and iterate through 1 .. n, to make sure that we have
+// visisted all the nodes, mean while we do BFS or DFS for nodes that we did not visit, and res += 1. Omit the implement.

@@ -175,6 +175,7 @@ ID | Name | Difficulty | Category
 1584|[**Min Cost to Connect All Points**](https://leetcode.com/problems/min-cost-to-connect-all-points/)| Medium | Kruskal’s algorithm + Union Find / Prim's algorithm
 T01|A* implementation| N/A | A* algorithm
 207|[**Course Schedule**](https://leetcode.com/problems/course-schedule/)| Medium | Topological sorting
+547|[Number of Provinces](https://leetcode.com/problems/number-of-provinces/)| Medium | Union Find + BFS/DFS
 
 ## MonotonicStack
 ID | Name | Difficulty | Category
