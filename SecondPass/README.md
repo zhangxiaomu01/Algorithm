@@ -190,3 +190,8 @@ ID | Name | Difficulty | Category
 ID | Name | Difficulty | Category
  ---- | ------------- | -------- | ------
 146|[LRU Cache](https://leetcode.com/problems/lru-cache/)| Medium | Class design
+
+## Greedy
+ID | Name | Difficulty | Category
+ ---- | ------------- | -------- | ------
+455|[Assign Cookies](https://leetcode.com/problems/assign-cookies/)| Easy | Greedy
