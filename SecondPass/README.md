@@ -195,3 +195,4 @@ ID | Name | Difficulty | Category
 ID | Name | Difficulty | Category
  ---- | ------------- | -------- | ------
 455|[Assign Cookies](https://leetcode.com/problems/assign-cookies/)| Easy | Greedy
+376|[**Wiggle Subsequence**](https://leetcode.com/problems/wiggle-subsequence/)| Medium | Greedy
