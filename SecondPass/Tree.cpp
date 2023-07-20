@@ -486,9 +486,11 @@ public:
  /*
     572. Subtree of Another Tree
     https://leetcode.com/problems/subtree-of-another-tree/
-    Given the roots of two binary trees root and subRoot, return true if there is a subtree of root with the same structure and node values of subRoot and false otherwise.
+    Given the roots of two binary trees root and subRoot, return true if there is a subtree of root with the same structure 
+    and node values of subRoot and false otherwise.
 
-    A subtree of a binary tree tree is a tree that consists of a node in tree and all of this node's descendants. The tree tree could also be considered as a subtree of itself.
+    A subtree of a binary tree tree is a tree that consists of a node in tree and all of this node's descendants. The tree 
+    tree could also be considered as a subtree of itself.
 
 
     Example 1:
@@ -509,20 +511,23 @@ public:
 // Recursive
 class Solution {
 private:
-    bool checkTrees(TreeNode* left, TreeNode* right) {
-        if ((!left && right) || (!right && left)) return false;
-        if (left == right && left == nullptr) return true;
-        if (left->val != right->val) return false;
+    bool isSameTree(TreeNode* p, TreeNode* q) {
+        if (!p && !q) return true;
+        if (p && !q) return false;
+        if (q && !p) return false;
+        if (p->val != q->val) return false;
 
-        // Note we need to check the left and right child trees and determine
-        // whether they are symmetric!
-        return checkTrees(left->left, right -> right) && checkTrees(left->right, right->left);
-
+        return isSameTree(p->left, q->left) && isSameTree(p->right, q->right);
     }
 public:
-    bool isSymmetric(TreeNode* root) {
-        if (!root) return true;
-        return checkTrees(root->left, root -> right);
+    bool isSubtree(TreeNode* root, TreeNode* subRoot) {
+        if (!root && !subRoot) return true;
+        if (!root && subRoot) return false;
+        if (root && !subRoot) return false;
+        if (isSameTree(root, subRoot)) return true;
+
+        return isSubtree(root->left, subRoot) || isSubtree(root->right, subRoot);
+        
     }
 };
 
