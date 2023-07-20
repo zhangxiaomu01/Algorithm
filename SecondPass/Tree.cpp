@@ -671,7 +671,8 @@ class Solution {
     104. Maximum Depth of Binary Tree
     https://leetcode.com/problems/maximum-depth-of-binary-tree/
     Given the root of a binary tree, return its maximum depth.
-    A binary tree's maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.
+    A binary tree's maximum depth is the number of nodes along the longest path from the root node down to the farthest 
+    leaf node.
 
 
     Example 1:
@@ -682,7 +683,6 @@ class Solution {
     Input: root = [1,null,2]
     Output: 2
     
-
     Constraints:
     The number of nodes in the tree is in the range [0, 104].
     -100 <= Node.val <= 100
@@ -788,7 +788,9 @@ public:
     222. Count Complete Tree Nodes
     https://leetcode.com/problems/count-complete-tree-nodes/
     Given the root of a complete binary tree, return the number of the nodes in the tree.
-    According to Wikipedia, every level, except possibly the last, is completely filled in a complete binary tree, and all nodes in the last level are as far left as possible. It can have between 1 and 2h nodes inclusive at the last level h.
+    According to Wikipedia, every level, except possibly the last, is completely filled in a complete binary tree, and 
+    all nodes in the last level are as far left as possible. It can have between 1 and 2h nodes inclusive at the last 
+    level h.
     Design an algorithm that runs in less than O(n) time complexity.
 
     
@@ -1035,40 +1037,22 @@ public:
 // Recursive
 class Solution {
 private:
+    int sumLeft(TreeNode* node, bool isLeft) {
+        if (!node) return 0;
 
-    void traversal(TreeNode* cur, vector<int>& path, vector<string>& result) {
-        path.push_back(cur->val);
-        if (cur->left == NULL && cur->right == NULL) {
-            string sPath;
-            for (int i = 0; i < path.size() - 1; i++) {
-                sPath += to_string(path[i]);
-                sPath += "->";
-            }
-            sPath += to_string(path[path.size() - 1]);
-            result.push_back(sPath);
-            return;
-        }
-        if (cur->left) { // Left
-            traversal(cur->left, path, result);
-            path.pop_back(); // backtrack left node
-        }
-        if (cur->right) { // right
-            traversal(cur->right, path, result);
-            path.pop_back(); // backtrack right node
-        }
+        if (isLeft && !node->left && !node->right) return node->val;
+
+        return sumLeft(node->left, true) + sumLeft(node->right, false);
+
     }
-
 public:
-    vector<string> binaryTreePaths(TreeNode* root) {
-        vector<string> result;
-        vector<int> path;
-        if (root == NULL) return result;
-        traversal(root, path, result);
-        return result;
+    int sumOfLeftLeaves(TreeNode* root) {
+        if (!root || (!root->left && !root->right)) return 0;
+
+        return sumLeft(root->left, true) + sumLeft(root->right, false);
     }
 };
 
-// Iterative
 class Solution {
 public:
     int sumOfLeftLeaves(TreeNode* root) {
@@ -1152,37 +1136,22 @@ public:
 
 // Iterative
 class Solution {
-private:
-
-    void traversal(TreeNode* cur, vector<int>& path, vector<string>& result) {
-        path.push_back(cur->val);
-        if (cur->left == NULL && cur->right == NULL) {
-            string sPath;
-            for (int i = 0; i < path.size() - 1; i++) {
-                sPath += to_string(path[i]);
-                sPath += "->";
-            }
-            sPath += to_string(path[path.size() - 1]);
-            result.push_back(sPath);
-            return;
-        }
-        if (cur->left) { // Left
-            traversal(cur->left, path, result);
-            path.pop_back(); // backtrack left node
-        }
-        if (cur->right) { // right
-            traversal(cur->right, path, result);
-            path.pop_back(); // backtrack right node
-        }
-    }
-
 public:
-    vector<string> binaryTreePaths(TreeNode* root) {
-        vector<string> result;
-        vector<int> path;
-        if (root == NULL) return result;
-        traversal(root, path, result);
-        return result;
+    int findBottomLeftValue(TreeNode* root) {
+        queue<TreeNode* > q;
+        q.push(root);
+        int potentialRes;
+        while (!q.empty()) {
+            int level = q.size();
+            for (int i = 0; i < level; ++i) {
+                TreeNode* cur = q.front();
+                q.pop();
+                if (i == 0) potentialRes = cur->val;
+                if (cur -> left) q.push(cur -> left);
+                if (cur -> right) q.push(cur -> right);
+            }
+        }
+        return potentialRes;
     }
 };
 
@@ -2112,7 +2081,8 @@ public:
  /*
     701. Insert into a Binary Search Tree
     https://leetcode.com/problems/insert-into-a-binary-search-tree/
-    You are given the root node of a binary search tree (BST) and a value to insert into the tree. Return the root node of the BST after the insertion.
+    You are given the root node of a binary search tree (BST) and a value to insert into the tree. Return the root node 
+    of the BST after the insertion.
     It is guaranteed that the new value does not exist in the original BST.
     Notice that there may exist multiple valid ways for the insertion, as long as the tree remains a BST after
     insertion. You can return any of them.
@@ -2177,7 +2147,8 @@ public:
  /*
     450. Delete Node in a BST
     https://leetcode.com/problems/delete-node-in-a-bst/
-    Given a root node reference of a BST and a key, delete the node with the given key in the BST. Return the root node reference (possibly updated) of the BST.
+    Given a root node reference of a BST and a key, delete the node with the given key in the BST. Return the root node 
+    reference (possibly updated) of the BST.
 
     Basically, the deletion can be divided into two stages:
 
