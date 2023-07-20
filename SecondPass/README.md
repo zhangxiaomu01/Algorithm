@@ -176,6 +176,7 @@ ID | Name | Difficulty | Category
 T01|A* implementation| N/A | A* algorithm
 207|[**Course Schedule**](https://leetcode.com/problems/course-schedule/)| Medium | Topological sorting
 547|[Number of Provinces](https://leetcode.com/problems/number-of-provinces/)| Medium | Union Find + BFS/DFS
+785|[**Is Graph Bipartite?**](https://leetcode.com/problems/is-graph-bipartite/)| Medium | BFS/DFS + coloring
 
 ## MonotonicStack
 ID | Name | Difficulty | Category
