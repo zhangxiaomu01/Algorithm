@@ -198,3 +198,4 @@ ID | Name | Difficulty | Category
 455|[Assign Cookies](https://leetcode.com/problems/assign-cookies/)| Easy | Greedy
 376|[**Wiggle Subsequence**](https://leetcode.com/problems/wiggle-subsequence/)| Medium | Greedy
 55|[Jump Game](https://leetcode.com/problems/jump-game/)| Medium | Greedy
+45|[**Jump Game II**](https://leetcode.com/problems/jump-game-ii/)| Medium | Greedy
