@@ -298,8 +298,8 @@ public:
 
     Constraints:
     n == gas.length == cost.length
-    1 <= n <= 105
-    0 <= gas[i], cost[i] <= 104
+    1 <= n <= 10^5
+    0 <= gas[i], cost[i] <= 10^4
  */
 class Solution {
 public:
@@ -320,5 +320,54 @@ public:
         // No way to finish the loop!
         if (totalSum < 0) return -1;
         return res;
+    }
+};
+
+ /*
+    135. Candy
+    https://leetcode.com/problems/candy/
+    There are n children standing in a line. Each child is assigned a rating value given in the integer array ratings.
+
+    You are giving candies to these children subjected to the following requirements:
+    Each child must have at least one candy.
+    Children with a higher rating get more candies than their neighbors.
+    Return the minimum number of candies you need to have to distribute the candies to the children.
+
+    
+    Example 1:
+    Input: ratings = [1,0,2]
+    Output: 5
+    Explanation: You can allocate to the first, second and third child with 2, 1, 2 candies respectively.
+
+    Example 2:
+    Input: ratings = [1,2,2]
+    Output: 4
+    Explanation: You can allocate to the first, second and third child with 1, 2, 1 candies respectively.
+    The third child gets 1 candy because it satisfies the above two conditions.
+    
+
+    Constraints:
+    n == ratings.length
+    1 <= n <= 2 * 10^4
+    0 <= ratings[i] <= 2 * 10^4
+ */
+class Solution {
+public:
+    int candy(vector<int>& ratings) {
+        int n = ratings.size();
+        ratings.insert(ratings.begin(), INT_MAX);
+        ratings.push_back(INT_MAX);
+        vector<int> res(n+2, 1);
+        for (int i = 1; i < ratings.size() - 1; ++i) {
+            if (ratings[i] > ratings[i-1]) res[i] = res[i-1] + 1;
+        }
+        for (int i = ratings.size() - 2; i >= 1; --i) {
+            if (ratings[i] > ratings[i+1]) res[i] = max(res[i], res[i+1] + 1);
+        }
+        res.erase(res.begin());
+        res.pop_back();
+        int numOfCandies = 0;
+        for (int e : res) numOfCandies += e;
+        return numOfCandies;
     }
 };

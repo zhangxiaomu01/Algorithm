@@ -200,4 +200,5 @@ ID | Name | Difficulty | Category
 55|[Jump Game](https://leetcode.com/problems/jump-game/)| Medium | Greedy
 45|[**Jump Game II**](https://leetcode.com/problems/jump-game-ii/)| Medium | Greedy
 1005|[Maximize Sum Of Array After K Negations](https://leetcode.com/problems/maximize-sum-of-array-after-k-negations/)| Easy | Greedy
-134|[Gas Station](https://leetcode.com/problems/gas-station/)| Medium | Greedy
+134|[**Gas Station**](https://leetcode.com/problems/gas-station/)| Medium | Greedy
+135|[Candy](https://leetcode.com/problems/candy/)| Hard | Greedy
