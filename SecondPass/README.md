@@ -34,6 +34,7 @@ ID | Name | Difficulty | Category
 19|[Remove Nth Node From End of List](https://leetcode.com/problems/remove-nth-node-from-end-of-list/)| Medium | Two pointers
 160|[Intersection of Two Linked Lists](https://leetcode.com/problems/intersection-of-two-linked-lists/)| Medium | List manipulation
 142|[Linked List Cycle II](https://leetcode.com/problems/linked-list-cycle-ii/)| Medium | Two pointers
+86|[**Partition List**](https://leetcode.com/problems/partition-list/)| Medium | Two dummy lists
 
 ## Hash Map & Set
 ID | Name | Difficulty | Category
