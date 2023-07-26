@@ -192,6 +192,7 @@ ID | Name | Difficulty | Category
 ID | Name | Difficulty | Category
  ---- | ------------- | -------- | ------
 146|[LRU Cache](https://leetcode.com/problems/lru-cache/)| Medium | Class design
+295|[**Find Median from Data Stream**](https://leetcode.com/problems/find-median-from-data-stream/)| Hard | Class design
 
 ## Greedy
 ID | Name | Difficulty | Category
