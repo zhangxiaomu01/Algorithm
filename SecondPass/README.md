@@ -206,3 +206,4 @@ ID | Name | Difficulty | Category
 135|[Candy](https://leetcode.com/problems/candy/)| Hard | Greedy
 860|[Lemonade Change](https://leetcode.com/problems/lemonade-change/)| Easy | Greedy
 406|[Queue Reconstruction by Height](https://leetcode.com/problems/queue-reconstruction-by-height/)| Medium | Greedy
+452|[Minimum Number of Arrows to Burst Balloons](https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/)| Medium | Greedy
