@@ -208,3 +208,4 @@ ID | Name | Difficulty | Category
 406|[Queue Reconstruction by Height](https://leetcode.com/problems/queue-reconstruction-by-height/)| Medium | Greedy
 452|[Minimum Number of Arrows to Burst Balloons](https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/)| Medium | Greedy
 435|[Non-overlapping Intervals](https://leetcode.com/problems/non-overlapping-intervals/)| Medium | Greedy
+763|[Partition Labels](https://leetcode.com/problems/partition-labels/)| Medium | Greedy
