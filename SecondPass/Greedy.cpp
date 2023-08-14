@@ -661,3 +661,51 @@ public:
         return res;
     }
 };
+
+ /*
+    738. Monotone Increasing Digits
+    https://leetcode.com/problems/monotone-increasing-digits/
+    An integer has monotone increasing digits if and only if each pair of adjacent digits x and y 
+    satisfy x <= y.
+
+    Given an integer n, return the largest number that is less than or equal to n with monotone 
+    increasing digits.
+
+    
+    Example 1:
+    Input: n = 10
+    Output: 9
+
+    Example 2:
+    Input: n = 1234
+    Output: 1234
+
+    Example 3:
+    Input: n = 332
+    Output: 299
+    
+    Constraints:
+    0 <= n <= 10^9
+ */
+class Solution {
+public:
+    int monotoneIncreasingDigits(int n) {
+        string digits = to_string(n);
+        if (digits.size() <= 1) return stoi(digits);
+        cout << digits << endl;
+        int len = digits.size();
+        int startOfNine = INT_MAX;
+        for (int i = len - 1; i >= 1; --i) {
+            // Whenever we detect y > x, then we decrement x and make y to be 9 (the largest)
+            if (digits[i] < digits[i-1]) {
+                startOfNine = i;
+                digits[i] = '9';
+                digits[i-1] --;
+            }
+        }
+        // For special case 1000 etc.
+        for (int i = startOfNine; i < len; ++i) digits[i] = '9';
+
+        return stoi(digits);
+    }
+};
