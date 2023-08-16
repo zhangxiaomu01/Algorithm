@@ -210,3 +210,4 @@ ID | Name | Difficulty | Category
 435|[Non-overlapping Intervals](https://leetcode.com/problems/non-overlapping-intervals/)| Medium | Greedy
 763|[Partition Labels](https://leetcode.com/problems/partition-labels/)| Medium | Greedy
 738|[**Monotone Increasing Digits**](https://leetcode.com/problems/monotone-increasing-digits/)| Medium | Greedy
+968|[**Binary Tree Cameras**](https://leetcode.com/problems/binary-tree-cameras/)| Hard | Greedy
